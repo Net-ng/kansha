@@ -18,3 +18,5 @@ nbproject
 *.fts
 syntax: regexp
 ^data/kansha\.fts$
+^data/assets$
+

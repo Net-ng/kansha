@@ -1,0 +1,1437 @@
+# French translations for kansha.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the kansha project.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+# Vincent Millet <vincent.millet@net-ng.com>, 2012.
+# Gwendal Paugam <gwendal.paugam@net-ng.com>, 2012.
+# Vincent Rialland <vincent.rialland@net-ng.com>, 2013, 2014.
+# Marc Légier <marc.legier@net-ng.com>, 2014.
+# Romuald Texier-Marcadé <romuald.texier-marcade@net-ng.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kansha 0.0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-02-09 12:00+0100\n"
+"PO-Revision-Date: 2015-02-09 12:27+0100\n"
+"Last-Translator: Romuald Texier-Marcadé <romuald.texier-marcade@net-ng.com>\n"
+"Language-Team: French <>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.7.3\n"
+
+#: kansha/notifications.py:36
+#, python-format
+msgid "Card \"%(card)s\" has been added to column \"%(column)s\""
+msgstr "La carte \"%(card)s\" a été ajoutée à la liste \"%(column)s\""
+
+#: kansha/notifications.py:37
+#, python-format
+msgid "User %(author)s has deleted card \"%(card)s\""
+msgstr "L'utilisateur %(author)s a supprimé la carte \"%(card)s\""
+
+#: kansha/notifications.py:38
+#, python-format
+msgid "User %(author)s has archived card \"%(card)s\""
+msgstr "%(author)s a archivé la carte \"%(card)s\""
+
+#: kansha/notifications.py:39
+#, python-format
+msgid ""
+"Card \"%(card)s\" has been moved from column \"%(from)s\" to column \"%(to)s"
+"\""
+msgstr ""
+"La carte \"%(card)s\" a été déplacée de la liste \"%(from)s\" à la liste "
+"\"%(to)s\""
+
+#: kansha/notifications.py:40
+#, python-format
+msgid "Card \"%(from)s\" has been renamed to \"%(to)s\""
+msgstr "La carte \"%(from)s\" a été renommée en \"%(to)s\""
+
+#: kansha/notifications.py:41
+#, python-format
+msgid "Card \"%(card)s\" has been weighted from (%(from)s) to (%(to)s)"
+msgstr ""
+"La pondération de la carte \"%(card)s\" est passée de (%(from)s) à (%(to)s)"
+
+#: kansha/notifications.py:42
+#, python-format
+msgid "User %(user)s has been assigned to card \"%(card)s\""
+msgstr "%(user)s a été assigné à la carte %(card)s"
+
+#: kansha/notifications.py:43
+#, python-format
+msgid "User %(user)s has been unassigned from card \"%(card)s\""
+msgstr "%(user)s n'est plus assigné à la carte %(card)s"
+
+#: kansha/notifications.py:44
+#, python-format
+msgid "User %(author)s has commented card \"%(card)s\""
+msgstr "%(author)s a commenté la carte \"%(card)s\""
+
+#: kansha/notifications.py:45
+#, python-format
+msgid "User %(author)s has added file \"%(file)s\" to card \"%(card)s\""
+msgstr "%(author)s a ajouté le fichier \"%(file)s\" la carte \"%(card)s\""
+
+#: kansha/notifications.py:46
+#, python-format
+msgid ""
+"User %(author)s has added the checklist \"%(list)s\" to card \"%(card)s\""
+msgstr "%(author)s a ajouté la liste \"%(list)s\" à la carte \"%(card)s\""
+
+#: kansha/notifications.py:47
+#, python-format
+msgid ""
+"User %(author)s has deleted the checklist \"%(list)s\" from card \"%(card)s\""
+msgstr "%(author)s a détruit la liste \"%(list)s\" de la carte \"%(card)s\""
+
+#: kansha/notifications.py:48
+#, python-format
+msgid ""
+"User %(author)s has checked the item %(item)s from the checklist \"%(list)s"
+"\", on card \"%(card)s\""
+msgstr ""
+"%(author)s a coché l'élément \"%(item)s\" de la liste \"%(list)s\" sur la "
+"carte \"%(card)s\""
+
+#: kansha/notifications.py:49
+#, python-format
+msgid ""
+"User %(author)s has unchecked the item %(item)s from the checklist \"%(list)s"
+"\", on card \"%(card)s\""
+msgstr ""
+"%(author)s a décoché l'élément \"%(item)s\" de la liste \"%(list)s\" sur la "
+"carte \"%(card)s\""
+
+#: kansha/notifications.py:60
+msgid "Cards affectation:"
+msgstr "Affectation de carte(s) :"
+
+#: kansha/notifications.py:61
+msgid "Cards modification:"
+msgstr "Modification de carte(s) :"
+
+#: kansha/notifications.py:62
+msgid "Cards addition / removal:"
+msgstr "Ajout / suppression de carte(s) :"
+
+#: kansha/notifications.py:177
+#, python-format
+msgid "[%(app)s] Board \"%(board)s\" - %(count)s new action(s)"
+msgstr "[%(app)s] Board \"%(board)s\" - %(count)s nouvelle(s) action(s)"
+
+#: kansha/notifications.py:182
+#, python-format
+msgid ""
+"The following actions have been made on the board \"%(board)s\" in the last "
+"%(hours)s hours:\n"
+msgstr ""
+"Les actions suivantes ont été effectuées sur le board \"%(board)s\" ces "
+"%(hours)s dernières heures :\n"
+
+#: kansha/notifications.py:183
+msgid "The following actions have been made on the board "
+msgstr "Les actions suivantes ont été effectuées sur le board "
+
+#: kansha/notifications.py:185
+#, python-format
+msgid " in the last %(hours)s hours:"
+msgstr " ces %(hours)s dernières heures :"
+
+#: kansha/notifications.py:217
+#, python-format
+msgid ""
+"To unsubscribe from board \"%(board)s\" alerts, click on %(url)s and modify "
+"notifications parameters in the \"settings\" menu of the \"Board\" tab."
+msgstr ""
+"Pour vous désabonner des alertes sur actions du board \"%(board)s\", cliquez "
+"sur %(url)s et modifiez les paramètres de notification le menu \"Préférences"
+"\" de l'onglet \"Board\""
+
+#: kansha/notifications.py:218
+#, python-format
+msgid "To unsubscribe from board \"%(board)s\" alerts, "
+msgstr "Pour vous désabonner des alertes sur actions du board \"%(board)s\", "
+
+#: kansha/notifications.py:219
+msgid "click here"
+msgstr "cliquez ici"
+
+#: kansha/notifications.py:220
+msgid ""
+" and modify notifications parameters in the \"settings\" menu of the \"Board"
+"\" tab."
+msgstr ""
+" et modifiez les paramètres de notification le menu \"Préférences\" de "
+"l'onglet \"Board\""
+
+#: kansha/notifications.py:232 kansha/board/comp.py:117
+msgid "Action log"
+msgstr "Historique"
+
+#: kansha/notifications.py:235
+msgid "all users"
+msgstr "tous utilisateurs"
+
+#: kansha/notifications.py:239
+msgid "all cards"
+msgstr "toutes cartes"
+
+#: kansha/app/app.py:275
+msgid "Go back"
+msgstr "Retour"
+
+#: kansha/app/app.py:280
+msgid "You are not authorized to access this board"
+msgstr "Vous n'avez pas l'autorisation d'accéder à ce board"
+
+#: kansha/app/app.py:283
+msgid "This board doesn't exists"
+msgstr "Ce board n'existe pas"
+
+#: kansha/app/app.py:286
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: kansha/app/app.py:292
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+#: kansha/app/urls.py:61
+#, python-format
+msgid "Change email success for user %s"
+msgstr "L'utilisateur %s a été enregistré avec succès"
+
+#: kansha/app/urls.py:65
+#, python-format
+msgid "Change email failure for user %s"
+msgstr "Changement de mot de passe échoué pour l'utilisateur %s"
+
+#: kansha/app/view.py:94
+msgid "Synchronization error"
+msgstr "Erreur de synchronisation"
+
+#: kansha/app/view.py:96
+msgid "click here to resync"
+msgstr "cliquer ici pour le synchroniser"
+
+#: kansha/app/view.py:97
+msgid "Your board is out of sync, please "
+msgstr "Votre board est désynchronisé, merci de "
+
+#: kansha/app/view.py:104
+msgid "Operation in progress"
+msgstr "Opération en cours"
+
+#: kansha/app/view.py:106
+msgid "Please wait until operation completes."
+msgstr "Veuillez attendre que l'opération soit terminée, s'il vous plaît."
+
+#: kansha/authentication/login.py:75
+msgid "Back"
+msgstr "Retour"
+
+#: kansha/authentication/login.py:110 kansha/board/view.py:613
+#: kansha/board/view.py:627
+msgid "or"
+msgstr "ou"
+
+#: kansha/authentication/database/forms.py:82
+#: kansha/authentication/ldap/forms.py:49
+msgid "Login failed"
+msgstr "Identifiant ou mot de passe erroné"
+
+#: kansha/authentication/database/forms.py:97
+#: kansha/authentication/database/forms.py:225
+#: kansha/authentication/database/forms.py:469
+msgid "Log in"
+msgstr "Se connecter"
+
+#: kansha/authentication/database/forms.py:101
+#: kansha/authentication/ldap/forms.py:61
+msgid "username"
+msgstr "nom d'utilisateur"
+
+#: kansha/authentication/database/forms.py:103
+#: kansha/authentication/ldap/forms.py:63
+msgid "password"
+msgstr "mot de passe"
+
+#: kansha/authentication/database/forms.py:107
+msgid "Forgot your Password?"
+msgstr "mot de passe oublié ?"
+
+#: kansha/authentication/database/forms.py:109
+msgid "No account? "
+msgstr "Pas encore de compte ? "
+
+#: kansha/authentication/database/forms.py:110
+msgid "Create one"
+msgstr "Créer un compte"
+
+#: kansha/authentication/database/forms.py:138
+#: kansha/user/user_profile.py:202
+#, python-format
+msgid "Username %s is not available. Please choose another one."
+msgstr "L'identifiant %s n'est pas disponible. Merci d'en utiliser un autre."
+
+#: kansha/authentication/database/forms.py:146
+msgid "Invalid captcha"
+msgstr "Captcha invalide"
+
+#: kansha/authentication/database/forms.py:152
+msgid "Entered too late"
+msgstr "Temp expiré, trop tard !"
+
+#: kansha/authentication/database/forms.py:157
+#: kansha/authentication/database/forms.py:318
+#: kansha/user/user_profile.py:245
+msgid "The two passwords don't match"
+msgstr "Les mots de passe ne sont pas identiques"
+
+#: kansha/authentication/database/forms.py:189
+msgid "Register"
+msgstr "Enregistrement"
+
+#: kansha/authentication/database/forms.py:195
+#: kansha/authentication/database/forms.py:452
+#: kansha/user/user_profile.py:124 kansha/user/user_profile.py:315
+msgid "Username"
+msgstr "Identifiant"
+
+#: kansha/authentication/database/forms.py:196
+#: kansha/authentication/database/forms.py:453
+msgid "Email address"
+msgstr "Adresse email"
+
+#: kansha/authentication/database/forms.py:197
+#: kansha/googleuser/view.py:25 kansha/user/user_profile.py:127
+#: kansha/user/user_profile.py:318
+msgid "Fullname"
+msgstr "Nom complet"
+
+#: kansha/authentication/database/forms.py:198
+#: kansha/authentication/database/forms.py:362
+msgid "Password"
+msgstr "Mot de passe"
+
+#: kansha/authentication/database/forms.py:200
+#: kansha/authentication/database/forms.py:364
+msgid "Password (repeat)"
+msgstr "Mot de passe (Répéter)"
+
+#: kansha/authentication/database/forms.py:215
+msgid "Enter the captcha text"
+msgstr "Entrer le texte de la captcha"
+
+#: kansha/authentication/database/forms.py:221
+msgid "Create new account"
+msgstr "Créer un nouveau compte"
+
+#: kansha/authentication/database/forms.py:224
+msgid "Already have an account? "
+msgstr "Vous avez déjà un compte ? "
+
+#: kansha/authentication/database/forms.py:234
+msgid "refresh captcha"
+msgstr "regenerer captcha"
+
+#: kansha/authentication/database/forms.py:258
+msgid "Registration successful!"
+msgstr "Enregistrement réussi !"
+
+#: kansha/authentication/database/forms.py:261
+#, python-format
+msgid ""
+"You are now a registered user of %s. You can login\n"
+"                    on the home page of the application."
+msgstr ""
+"Vous êtes maintenant enregistré sur %s. Vous pouvez vous logguer sur la page "
+"d'accueil de l'application."
+
+#: kansha/authentication/database/forms.py:268
+#: kansha/authentication/database/forms.py:288
+#: kansha/authentication/database/forms.py:540
+#: kansha/authentication/database/forms.py:562
+#: kansha/authentication/database/forms.py:582
+#: kansha/authentication/database/forms.py:702
+#: kansha/authentication/database/forms.py:937
+#: kansha/authentication/database/forms.py:959
+msgid "Ok"
+msgstr "Ok"
+
+#: kansha/authentication/database/forms.py:280
+msgid "Registration failure!"
+msgstr "Enregistrement échoué !"
+
+#: kansha/authentication/database/forms.py:283
+msgid ""
+"Registration failure! The token received is either expired or invalid. "
+"Please register again."
+msgstr "Enregistrement échoué ! Veuillez vous enregistrer à nouveau."
+
+#: kansha/authentication/database/forms.py:313
+msgid "Invalid password"
+msgstr "Mot de passe invalide"
+
+#: kansha/authentication/database/forms.py:355
+#: kansha/authentication/database/forms.py:383
+msgid "Change password"
+msgstr "Changer de mot de passe"
+
+#: kansha/authentication/database/forms.py:367
+#: kansha/user/user_profile.py:341
+msgid "Old Password"
+msgstr "Ancien mot de passe"
+
+#: kansha/authentication/database/forms.py:387 kansha/board/view.py:234
+#: kansha/board/view.py:338 kansha/board/view.py:685
+#: kansha/card/view.py:318 kansha/column/view.py:154
+#: kansha/column/view.py:202 kansha/comment/view.py:71
+#: kansha/comment/view.py:96 kansha/description/view.py:54
+#: kansha/label/view.py:71 kansha/title/view.py:56
+msgid "Cancel"
+msgstr "Annuler"
+
+#: kansha/authentication/database/forms.py:411
+msgid "This username is not registered on our database"
+msgstr "Ce nom d'utilisateur n'existe pas."
+
+#: kansha/authentication/database/forms.py:420
+msgid "This email address does not match the user's email address"
+msgstr "L'adresse email ne correspond à cet utilisateur"
+
+#: kansha/authentication/database/forms.py:444
+msgid "Forgot password"
+msgstr "Mot de pase oublié"
+
+#: kansha/authentication/database/forms.py:447
+msgid ""
+"Please enter your username and your email address and you'll receive an "
+"email that contains a link to reset your password."
+msgstr ""
+"Entrer votre nom d'utilisateur et votre email et vous recevrez un lien par "
+"email afin de changer votre mot de passe."
+
+#: kansha/authentication/database/forms.py:466
+msgid "Reset password"
+msgstr "Modifier votre mot de passe"
+
+#: kansha/authentication/database/forms.py:469
+msgid "Remember your password?"
+msgstr "Vous vous souvenez de votre mot de passe?"
+
+#: kansha/authentication/database/forms.py:508
+#, python-format
+msgid ""
+"\n"
+"        Hello %(fullname)s,\n"
+"\n"
+"        We received a request to reset your password. If you are at the "
+"origin of this\n"
+"        request, please click on this confirmation link: "
+"%(confirmation_url)s. Otherwise,\n"
+"        feel free to ignore this email.\n"
+"\n"
+"        See you soon on %(app_title)s.\n"
+"        "
+msgstr ""
+"\n"
+"        Bonjour %(fullname)s,\n"
+"\n"
+"        Nous avons reçu une demande de modification de votre mot de passe. "
+"Si vous êtes bien à l'origine de cette requête,\n"
+"s'il vous plaît veuillez cliquer sur le lien de confirmation suivant:\n"
+"        %(confirmation_url)s. sinon, veuillez ignorer cet email.\n"
+"\n"
+"        A bientôt sur %(app_title)s.\n"
+"        "
+
+#: kansha/authentication/database/forms.py:518
+#, python-format
+msgid "%(app_title)s: Password Reset"
+msgstr "%(app_title)s: changement de mot de passe"
+
+#: kansha/authentication/database/forms.py:531
+msgid "Password change successful!"
+msgstr "Changement de mot de passe réussi !"
+
+#: kansha/authentication/database/forms.py:534
+msgid "Your password have been changed successfully."
+msgstr "Votre mot de passe a été modifié avec succès."
+
+#: kansha/authentication/database/forms.py:553
+msgid "Email sent!"
+msgstr "Email envoyé !"
+
+#: kansha/authentication/database/forms.py:556
+msgid "An email has been sent!"
+msgstr "Un email a été envoyé !"
+
+#: kansha/authentication/database/forms.py:573
+msgid "Password reset failure!"
+msgstr "Le changement de mot de passe a échoué !"
+
+#: kansha/authentication/database/forms.py:576
+msgid "Password reset failure! Please try again."
+msgstr "Le changement de mot de passe a échoué ! Veuillez réessayer."
+
+#: kansha/authentication/database/forms.py:639
+#, python-format
+msgid ""
+"\n"
+"            Hello moderator,\n"
+"\n"
+"            %(fullname)s is willing to register an account (%(login)s) on "
+"the %(app_title)s application.\n"
+"\n"
+"            Her (his) email address is %(email)s. Please verify it before "
+"accepting this account creation.\n"
+"\n"
+"            In order to confirm that email address and accept the user's "
+"registration,\n"
+"            please click on this confirmation link: %(confirmation_url)s.\n"
+"\n"
+"            If you don't accept this request, feel free to ignore this "
+"email.\n"
+"            Nothing will change into the user's pending account until your "
+"click\n"
+"            on the confirmation link.\n"
+"\n"
+"            Once confirmed, the user can login with her (his) login "
+"\"%(login)s\" and\n"
+"            the password she (he) provided.\n"
+"            "
+msgstr ""
+"\n"
+"Bonjour modérateur,\n"
+"\n"
+"%(fullname)s souhaite ouvrir un compte (%(login)s) sur l'application "
+"%(app_title)s.\n"
+"\n"
+"Son adresse email est %(email)s. Veuillez la vérifier avant d'accepter cet "
+"enregistrement.\n"
+"\n"
+"Pour accepter cette demande et valider l'adresse mail, il vous suffit de "
+"cliquer sur ce lien :\n"
+" %(confirmation_url)s.\n"
+"\n"
+"Si vous refusez cette demande, vous pouvez ignorer ce message et la demande "
+"restera en l'état.\n"
+"\n"
+"Une fois cette présente demande confirmée, l'utilisatrice (-teur) pourra se "
+"connecter avec son login\n"
+"%(login)s et le mot de passe qu'elle (il) a saisi.\n"
+"            "
+
+#: kansha/authentication/database/forms.py:656
+#, python-format
+msgid "%(app_title)s: Confirm user registration"
+msgstr "%(app_title)s: Confirmer l'enregistrement d'un utilisateur"
+
+#: kansha/authentication/database/forms.py:658
+#, python-format
+msgid ""
+"\n"
+"            Hello %(fullname)s,\n"
+"\n"
+"            In order to confirm your email address in the %(app_title)s "
+"application,\n"
+"            please click on this confirmation link: %(confirmation_url)s.\n"
+"\n"
+"            If you are not at the origin of this request, feel free to "
+"ignore this\n"
+"            email. Nothing will change into your account until your click on "
+"the\n"
+"            confirmation link.\n"
+"\n"
+"            Once confirmed, you can login with your login \"%(login)s\" and "
+"the password you just provided.\n"
+"\n"
+"            See you soon on %(app_title)s.\n"
+"            "
+msgstr ""
+"\n"
+"        Bonjour %(fullname)s,\n"
+"\n"
+"        Afin de confirmer votre adresse email dans l'application "
+"%(app_title)s ,\n"
+"        veuillez cliquer sur le lien de confirmation suivant:\n"
+"\t %(confirmation_url)s.\n"
+"\n"
+"        Si vous n'êtes as à l'origine de cette requête, veuillez ignorer cet "
+"emaill . \n"
+"\n"
+"        Une fois la confirmation effectuée, vous pourrez vous identifier "
+"avec le nom d'utilisateur \"%(login)s\" et le mot de passe précédemment "
+"fourni.\n"
+"\n"
+"        A bientôt sur %(app_title)s.\n"
+"        "
+
+#: kansha/authentication/database/forms.py:672
+#, python-format
+msgid "%(app_title)s: Confirm your email address"
+msgstr "%(app_title)s: Confirmer votre adresse email"
+
+#: kansha/authentication/database/forms.py:687
+msgid "Registration request sent"
+msgstr "Demande d'inscription envoyée."
+
+#: kansha/authentication/database/forms.py:687
+msgid "Confirm your email address!"
+msgstr "Confirmer votre adresse email !"
+
+#: kansha/authentication/database/forms.py:691
+msgid ""
+"An email has been sent to the moderator. You will be contacted when\n"
+"                        your account is activated."
+msgstr ""
+"Un email a été envoyé au modérateur. Vous serez contacté lorsque "
+"votre compte sera activé."
+
+#: kansha/authentication/database/forms.py:694
+msgid ""
+"An email has been sent to your email address. You have to click on the\n"
+"                        confirmation link in this email in order to confirm "
+"your email address in the\n"
+"                        application."
+msgstr ""
+"Un email vous a été envoyé à votre nouvelle adresse.\n"
+"Vous devez cliquer sur le lien de confirmation afin de valider\n"
+"votre nouvelle adresse email dans l'application."
+
+#: kansha/authentication/database/forms.py:749
+#, python-format
+msgid ""
+"\n"
+"        Hello,\n"
+"\n"
+"        You were invited by %(host_name)s (%(host_email)s) to the board "
+"\"%(board_title)s\".\n"
+"\n"
+"        To view the board, click on this link : %(confirmation_url)s.\n"
+"\n"
+"        If you don't already have an account, register with email %(email)s "
+"and you will automatically join the board.\n"
+"\n"
+"        See you soon on %(app_title)s.\n"
+"        "
+msgstr ""
+"\n"
+"        Bonjour,\n"
+"\n"
+"        Vous avez été invité par %(host_name)s (%(host_email)s) à rejoindre "
+"le board \"%(board_title)s\".\n"
+"\n"
+"        Pour consulter ce board, cliquez sur ce lien : "
+"%(confirmation_url)s.\n"
+"\n"
+"        Si vous ne possédez pas encore de compte, enregistrez-vous avec "
+"l'email %(email)s et vous rejoindrez automatiquement ce board.\n"
+"\n"
+"        A bientôt sur %(app_title)s."
+
+#: kansha/authentication/database/forms.py:761
+#, python-format
+msgid "%(app_title)s: Invitation to the board \"%(board_title)s\""
+msgstr "%(app_title)s: Invitation à rejoindre le board \"%(board_title)s\""
+
+#: kansha/authentication/database/forms.py:805
+#, python-format
+msgid "Registration successful for user %s"
+msgstr "L'utilisateur %s a été enregistré avec succès"
+
+#: kansha/authentication/database/forms.py:808
+#, python-format
+msgid "Registration failure for user %s"
+msgstr "Echec de l'enregistrement de l'utilisateur %s"
+
+#: kansha/authentication/database/forms.py:894
+#, python-format
+msgid "Resetting the password for user %s"
+msgstr "Changement de mot de passe pour l'utilisateur %s"
+
+#: kansha/authentication/database/forms.py:900
+#, python-format
+msgid "Password reset failure for user %s"
+msgstr "Changement de mot de passe échoué pour l'utilisateur %s"
+
+#: kansha/authentication/database/forms.py:928
+msgid "Email change successful!"
+msgstr "Changement d'email effectué !"
+
+#: kansha/authentication/database/forms.py:931
+msgid "Your email have been changed successfully."
+msgstr "Votre email a été changé avec succès."
+
+#: kansha/authentication/database/forms.py:950
+msgid "Email change failure!"
+msgstr "Le changement d'adresse email a échoué !"
+
+#: kansha/authentication/database/forms.py:953
+msgid "Email change failure! Please retry."
+msgstr "Le changement d'adresse email a échoué ! Veuillez recommencer."
+
+#: kansha/authentication/database/validators.py:26
+msgid "Should not be empty"
+msgstr "Le champ ne peut être vide"
+
+#: kansha/authentication/database/validators.py:31
+msgid "Should only contain ascii letters, digits or underscore characters"
+msgstr ""
+"Le champ ne peut contenir que caractères sans accent, des chiffres ou des "
+"soulignés."
+
+#: kansha/authentication/database/validators.py:35
+msgid "Should start with an uppercase ascii letter"
+msgstr "Le champ doit commencé avec une majuscule."
+
+#: kansha/authentication/database/validators.py:38
+msgid "Should start with an ascii letter"
+msgstr "Le champ doit commencé avec un caractère non accentué."
+
+#: kansha/authentication/database/validators.py:42
+#, python-format
+msgid "Identifier too long (max. %d characters)"
+msgstr "Identifaint trop long (max. %d caractères)"
+
+#: kansha/authentication/database/validators.py:47
+#, python-format
+msgid "Size must be less than %d KB"
+msgstr "Le taille doit être inférieure à %d Ko."
+
+#: kansha/authentication/database/validators.py:54
+msgid "Transfer was interrupted"
+msgstr "Transfert interrompu."
+
+#: kansha/authentication/database/validators.py:77
+#: kansha/authentication/database/validators.py:83
+#: kansha/board/boardconfig.py:119
+msgid "Required field"
+msgstr "Champ requis"
+
+#: kansha/authentication/database/validators.py:83
+msgid "Invalid email address"
+msgstr "Adresse email invalide"
+
+#: kansha/authentication/database/validators.py:104
+#: kansha/user/user_profile.py:218
+#, python-format
+msgid "Password too short: should have at least %d characters"
+msgstr "Le mot de passe est trop court : au moins %d caractères sont démandés"
+
+#: kansha/authentication/ldap/forms.py:56
+msgid "Log in with LDAP"
+msgstr "S'identifier avec LDAP"
+
+#: kansha/board/boardconfig.py:32 kansha/user/user_profile.py:42
+msgid "Profile"
+msgstr "Profil"
+
+#: kansha/board/boardconfig.py:34 kansha/board/view.py:383
+msgid "Card labels"
+msgstr "Libellé des cartes"
+
+#: kansha/board/boardconfig.py:35
+msgid "Card weights"
+msgstr "Pondération des cartes"
+
+#: kansha/board/boardconfig.py:36
+msgid "Background"
+msgstr "Image de fond"
+
+#: kansha/board/boardconfig.py:128
+msgid "Must be composed of integers"
+msgstr "Doit être composé d'entiers"
+
+#: kansha/board/comp.py:101 kansha/board/comp.py:104
+#, python-format
+msgid "%s more..."
+msgstr "%s de plus"
+
+#: kansha/board/comp.py:111 kansha/board/comp.py:128
+msgid "Add list"
+msgstr "Ajouter une liste"
+
+#: kansha/board/comp.py:112 kansha/board/comp.py:138
+msgid "Edit board description"
+msgstr "Editer la description du board"
+
+#: kansha/board/comp.py:113
+msgid "Preferences"
+msgstr "Préférences"
+
+#: kansha/board/comp.py:114
+msgid "Export board"
+msgstr "Exporter le board"
+
+#: kansha/board/comp.py:115
+msgid "Delete board"
+msgstr "Effacer le board"
+
+#: kansha/board/comp.py:116 kansha/board/view.py:134
+msgid "Leave this board"
+msgstr "Quitter ce board"
+
+#: kansha/board/comp.py:154 kansha/board/view.py:520
+msgid "Archive"
+msgstr "Archive"
+
+#: kansha/board/comp.py:472
+msgid "Column"
+msgstr "Colonne"
+
+#: kansha/board/comp.py:472
+msgid "Title"
+msgstr "Titre"
+
+#: kansha/board/comp.py:472 kansha/board/view.py:327
+msgid "Description"
+msgstr "Description"
+
+#: kansha/board/comp.py:472 kansha/due_date/view.py:65
+msgid "Due date"
+msgstr "Echéance"
+
+#: kansha/board/comp.py:475
+msgid "Weight"
+msgstr "Pondération"
+
+#: kansha/board/comp.py:476 kansha/board/view.py:488
+msgid "Comments"
+msgstr "Commentaires"
+
+#: kansha/board/comp.py:486
+msgid "Archived cards"
+msgstr "Cartes archivées"
+
+#: kansha/board/comp.py:629 kansha/board/comp.py:650
+msgid "Can't remove last manager"
+msgstr "Impossible de supprimer le dernier administrateur"
+
+#: kansha/board/comp.py:866
+msgid "board"
+msgstr "board"
+
+#: kansha/board/view.py:46 kansha/board/view.py:151
+msgid "This board will be destroyed. Are you sure?"
+msgstr "Ce board va être supprimé. Voulez-vous continuer ?"
+
+#: kansha/board/view.py:50 kansha/board/view.py:135
+msgid ""
+"You won't be able to access this board anymore. Are you sure you want to "
+"leave it anyway?"
+msgstr ""
+"Vous n'aurez plus accès à ce board. Etes vous sur de vouloir le quitter "
+"définitivement ?"
+
+#: kansha/board/view.py:96
+msgid "search"
+msgstr "chercher"
+
+#: kansha/board/view.py:102 kansha/board/view.py:105
+msgid "Calendar mode"
+msgstr "Mode agenda"
+
+#: kansha/board/view.py:103 kansha/board/view.py:106
+msgid "Board mode"
+msgstr "Mode du board"
+
+#: kansha/board/view.py:131
+msgid "Archive this board"
+msgstr "Archiver ce board"
+
+#: kansha/board/view.py:152
+msgid "Delete this board"
+msgstr "Supprimer ce board"
+
+#: kansha/board/view.py:153
+msgid "Restore this board"
+msgstr "Restaurer ce board"
+
+#: kansha/board/view.py:183 kansha/card/view.py:269
+msgid "All members"
+msgstr "Membres"
+
+#: kansha/board/view.py:193
+msgid "Invite members"
+msgstr "Inviter des membres"
+
+#: kansha/board/view.py:197
+msgid "Favorites"
+msgstr "Favoris"
+
+#: kansha/board/view.py:227
+msgid "Create a new board"
+msgstr "Créer un nouveau board"
+
+#: kansha/board/view.py:230 kansha/card/view.py:316
+#: kansha/column/view.py:151 kansha/user/view.py:193
+msgid "Add"
+msgstr "Ajouter"
+
+#: kansha/board/view.py:334 kansha/board/view.py:468
+#: kansha/board/view.py:682 kansha/card/view.py:138
+#: kansha/card/view.py:146 kansha/column/view.py:199
+#: kansha/comment/view.py:68 kansha/comment/view.py:93
+#: kansha/description/view.py:50 kansha/googleuser/view.py:45
+#: kansha/label/view.py:68 kansha/title/view.py:53
+#: kansha/user/user_profile.py:147
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: kansha/board/view.py:355
+msgid "Board configuration"
+msgstr "Configuration du board"
+
+#: kansha/board/view.py:361
+msgid "Menu"
+msgstr "Menu"
+
+#: kansha/board/view.py:375
+msgid "Labels"
+msgstr "Libellés"
+
+#: kansha/board/view.py:400
+msgid "Weights"
+msgstr "Pondérations"
+
+#: kansha/board/view.py:408
+msgid "Weighting cards"
+msgstr "Pondération des cartes"
+
+#: kansha/board/view.py:409
+msgid "Activate cards weights"
+msgstr "Activer la pondération des cartes"
+
+#: kansha/board/view.py:420 kansha/board/view.py:426
+#: kansha/board/view.py:433
+msgid "All affected weights will be reseted. Are you sure ?"
+msgstr ""
+"Les pondérations actuellement affectées vont être réinitialisé. Voulez-vous "
+"continuer ?"
+
+#: kansha/board/view.py:422 kansha/board/view.py:493
+#: kansha/board/view.py:509
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: kansha/board/view.py:429
+msgid "Free integer"
+msgstr "Entier libre"
+
+#: kansha/board/view.py:429
+msgid "Card weights can be any integer"
+msgstr "Une pondération peut être n'importe quel entier"
+
+#: kansha/board/view.py:436
+msgid "Integer sequence"
+msgstr "Liste d'entiers"
+
+#: kansha/board/view.py:436
+msgid "Choosen within a sequence of integers"
+msgstr ""
+"Les pondérations peuvent être choisies parmis une liste prédéfinie d'entiers"
+
+#: kansha/board/view.py:439
+msgid "Enter a sequence of integers"
+msgstr "Saisissez une liste d'entiers"
+
+#: kansha/board/view.py:452
+msgid "Edit"
+msgstr "Modifier"
+
+#: kansha/board/view.py:477
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: kansha/board/view.py:478
+msgid "Choose whether the board is private or public."
+msgstr "Définissez si le board est privé ou public."
+
+#: kansha/board/view.py:482
+msgid "Private"
+msgstr "Privé"
+
+#: kansha/board/view.py:485 kansha/board/view.py:501
+#: kansha/board/view.py:517
+msgid "Public"
+msgstr "Public"
+
+#: kansha/board/view.py:489
+msgid ""
+"Commenting allows members to make short messages on cards. You can enable or "
+"disable this feature."
+msgstr ""
+"Permet aux utilisateur de laisser des messages sur les cartes. Vous pouvez "
+"activer ou non cette fonctionnalité."
+
+#: kansha/board/view.py:496 kansha/board/view.py:512
+msgid "Members"
+msgstr "Membres"
+
+#: kansha/board/view.py:504
+msgid "Votes"
+msgstr "Votes"
+
+#: kansha/board/view.py:505
+msgid "Allow votes"
+msgstr "Autoriser les commentaires"
+
+#: kansha/board/view.py:521
+msgid "View archive column"
+msgstr "Afficher/Masquer la colonne de cartes archivées"
+
+#: kansha/board/view.py:529
+msgid "Show"
+msgstr "Afficher"
+
+#: kansha/board/view.py:531
+msgid "Hide"
+msgstr "Masquer"
+
+#: kansha/board/view.py:533
+msgid "Notifications"
+msgstr "Notifications"
+
+#: kansha/board/view.py:534
+msgid "You will be notified by email of changes made in this board to cards"
+msgstr ""
+"Vous serez notifié par email des changements apportés à ce board sur ces "
+"cartes"
+
+#: kansha/board/view.py:538 kansha/toolbox/calendar_widget.py:192
+msgid "None"
+msgstr "Aucune"
+
+#: kansha/board/view.py:540
+msgid "Affected to me"
+msgstr "Me sont affectées"
+
+#: kansha/board/view.py:542
+msgid "All"
+msgstr "Toutes"
+
+#: kansha/board/view.py:570 kansha/board/view.py:578
+msgid "Background image"
+msgstr "Image de fond"
+
+#: kansha/board/view.py:588
+msgid "Choose an image"
+msgstr "Choisir une image"
+
+#: kansha/board/view.py:604 kansha/gallery/view.py:77
+msgid "Max file size exceeded"
+msgstr "Taille de fichier maximale dépassée"
+
+#: kansha/board/view.py:614
+msgid "Reset background"
+msgstr "Réinitialiser le fond"
+
+#: kansha/board/view.py:619
+msgid "Board title color"
+msgstr "Couleur du titre"
+
+#: kansha/board/view.py:628
+msgid "Reset to default color"
+msgstr "Réinitialiser la couleur"
+
+#: kansha/board/view.py:641
+msgid "No background selected"
+msgstr "Aucune image de fond"
+
+#: kansha/board/view.py:659 kansha/label/view.py:55
+msgid "Change color"
+msgstr "Changer la couleur"
+
+#: kansha/card/comp.py:251
+#, python-format
+msgid "User not found : %s"
+msgstr "Utilisateur non trouvé: %s"
+
+#: kansha/card/comp.py:297
+msgid "card"
+msgstr "carte"
+
+#: kansha/card/view.py:97 kansha/comment/view.py:37
+#: kansha/gallery/view.py:144
+msgid "Delete"
+msgstr "Effacer"
+
+#: kansha/card/view.py:103
+msgid "This card will be deleted. Are you sure ?"
+msgstr "Cette carte va être supprimée. Voulez-vous continuer ?"
+
+#: kansha/card/view.py:225
+msgid "weight"
+msgstr "pondération"
+
+#: kansha/card/view.py:282
+msgid "Add members"
+msgstr "Membres"
+
+#: kansha/card/view.py:285
+msgid "Suggestions"
+msgstr "Suggestions"
+
+#: kansha/card/view.py:296
+msgid "Add a card"
+msgstr "Ajouter une carte"
+
+#: kansha/card/view.py:333
+msgid " added this card "
+msgstr " a ajouté une carte "
+
+#: kansha/card/view.py:345 kansha/flow/view.py:26
+msgid "at"
+msgstr "à"
+
+#: kansha/card/view.py:345 kansha/flow/view.py:26
+msgid "on"
+msgstr "le"
+
+#: kansha/checklist/view.py:22
+msgid "Add item"
+msgstr "Ajouter un item"
+
+#: kansha/checklist/view.py:42
+msgid "Edit title"
+msgstr "Éditer le titre"
+
+#: kansha/checklist/view.py:54 kansha/checklist/view.py:74
+msgid "Checklist title"
+msgstr "Titre de la liste"
+
+#: kansha/checklist/view.py:87
+msgid "Checklist"
+msgstr "Liste"
+
+#: kansha/column/comp.py:53
+msgid "List actions"
+msgstr "Actions sur la liste"
+
+#: kansha/column/comp.py:85
+msgid "Archive cards"
+msgstr "Cartes archivées"
+
+#: kansha/column/comp.py:219
+msgid "Limit of cards reached fo this list"
+msgstr "Nombre limite de cartes atteint pour cette liste"
+
+#: kansha/column/comp.py:380
+#, python-format
+msgid "Must be be bigger than %s"
+msgstr "Doit être supérieur à %s"
+
+#: kansha/column/view.py:54
+msgid "Delete this list"
+msgstr "Effacer cette liste"
+
+#: kansha/column/view.py:56
+msgid "Set cards limit"
+msgstr "Nombre max. de cartes"
+
+#: kansha/column/view.py:61
+msgid "All cards will be deleted. Are you sure ?"
+msgstr "Toutes les cartes vont être supprimées. Voulez-vous continuer ?"
+
+#: kansha/column/view.py:62
+msgid "Purge the cards"
+msgstr "Purger les cartes archivées"
+
+#: kansha/column/view.py:142
+msgid "Name"
+msgstr "Nom"
+
+#: kansha/column/view.py:143
+msgid "List title"
+msgstr "Titre de la liste"
+
+#: kansha/column/view.py:145
+msgid "Position"
+msgstr "Position"
+
+#: kansha/column/view.py:162
+msgid "Number max of cards"
+msgstr "Nombre max. de cartes"
+
+#: kansha/comment/view.py:34
+msgid " wrote "
+msgstr " a écrit "
+
+#: kansha/comment/view.py:87
+msgid "Add comment."
+msgstr "Ajouter un commentaire"
+
+#: kansha/comment/view.py:106
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "commentaire"
+msgstr[1] "commentaires"
+
+#: kansha/description/view.py:32 kansha/description/view.py:46
+msgid "Add description."
+msgstr "Ajouter une description"
+
+#: kansha/description/view.py:71
+#, python-format
+msgid "This %s has a description"
+msgstr "Cette %s a une description"
+
+#: kansha/gallery/comp.py:69 kansha/user/user_profile.py:290
+#, python-format
+msgid "File must be less than %d KB"
+msgstr "La taille doit être inférieure à %d Ko."
+
+#: kansha/gallery/view.py:62
+msgid "Add file"
+msgstr "Fichier"
+
+#: kansha/gallery/view.py:87
+msgid "file"
+msgid_plural "files"
+msgstr[0] "Fichier"
+msgstr[1] "fichiers"
+
+#: kansha/gallery/view.py:122
+msgid " added a file "
+msgstr " a ajouté un fichier "
+
+#: kansha/gallery/view.py:142
+msgid "Open"
+msgstr "Ouvrir"
+
+#: kansha/gallery/view.py:146
+msgid "Make cover"
+msgstr "Utiliser l'image"
+
+#: kansha/gallery/view.py:150
+msgid "Remove cover"
+msgstr "Ne plus utiliser l'image"
+
+#: kansha/gallery/view.py:166
+msgid "Use the controls below to create the cover of your card."
+msgstr "Choisisez quelle partie de l'image fera la couverture de la carte"
+
+#: kansha/gallery/view.py:182
+msgid "Done"
+msgstr "Choisir"
+
+#: kansha/googleuser/view.py:28 kansha/user/user_profile.py:130
+#: kansha/user/user_profile.py:321
+msgid "Email"
+msgstr "Email"
+
+#: kansha/googleuser/view.py:31 kansha/user/user_profile.py:133
+#: kansha/user/user_profile.py:326
+msgid "Language"
+msgstr "Langue"
+
+#: kansha/googleuser/view.py:40 kansha/user/user_profile.py:142
+#: kansha/user/user_profile.py:335
+msgid "Picture"
+msgstr "Image"
+
+#: kansha/title/view.py:52
+#, python-format
+msgid "Unsupported field_type %r"
+msgstr "Type non supporté %r"
+
+#: kansha/toolbox/calendar_widget.py:33
+msgid "Invalid date format !"
+msgstr "Format de date invalide !"
+
+#: kansha/toolbox/calendar_widget.py:135
+#: kansha/toolbox/calendar_widget.py:136
+msgid "Previous"
+msgstr "Précédent"
+
+#: kansha/toolbox/calendar_widget.py:147
+#: kansha/toolbox/calendar_widget.py:148
+msgid "Next"
+msgstr "Suivant"
+
+#: kansha/toolbox/calendar_widget.py:190
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: kansha/toolbox/overlay.py:75 kansha/toolbox/popin.py:54
+msgid "Close this dialog window."
+msgstr "Fermer cette fenêtre"
+
+#: kansha/user/user_cards.py:94
+msgid "n.c."
+msgstr "n.c."
+
+#: kansha/user/user_profile.py:27
+msgid "english"
+msgstr "anglais"
+
+#: kansha/user/user_profile.py:28
+msgid "french"
+msgstr "français"
+
+#: kansha/user/user_profile.py:40
+msgid "Boards"
+msgstr "Boards"
+
+#: kansha/user/user_profile.py:41
+msgid "My cards"
+msgstr "Mes cartes"
+
+#: kansha/user/user_profile.py:232
+msgid "This password doesn't match the old one."
+msgstr "Ce mot de passe ne correspond pas à l'ancien"
+
+#: kansha/user/user_profile.py:268
+msgid "A confirmation email has been sent."
+msgstr "Un email de confirmation a été envoyé"
+
+#: kansha/user/user_profile.py:277
+msgid "The password has been changed"
+msgstr "Le mot de passe a été changé"
+
+#: kansha/user/user_profile.py:294
+msgid "Invalid image file"
+msgstr "Fichier image invalide"
+
+#: kansha/user/user_profile.py:349
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#: kansha/user/user_profile.py:352
+msgid "Repeat new password"
+msgstr "Répéter nouveau mot de passe"
+
+#: kansha/user/user_profile.py:446
+msgid "Archived Boards"
+msgstr "Boards archivés"
+
+#: kansha/user/user_profile.py:451
+msgid "These boards will be destroyed. Are you sure?"
+msgstr "Ces boards vont être supprimés. Voulez-vous continuer ?"
+
+#: kansha/user/user_profile.py:452
+msgid "Purger"
+msgstr "Purger"
+
+#: kansha/user/view.py:65 kansha/user/view.py:87
+#: kansha/user/view.py:127 kansha/user/view.py:239
+msgid "Remove"
+msgstr "Supprimer"
+
+#: kansha/user/view.py:85 kansha/user/view.py:125
+msgid "Manager"
+msgstr "Administrateur"
+
+#: kansha/user/view.py:106
+msgid "You are the last manager, you can't leave this board."
+msgstr "Vous êtes le dernier administrateur, vous ne pouvez quitter ce board."
+
+#: kansha/user/view.py:135
+msgid "Home"
+msgstr "Accueil"
+
+#: kansha/user/view.py:136
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: kansha/user/view.py:237
+msgid "Resend invitation"
+msgstr "Renvoyer l'invitation"
+
+#: kansha/vote/view.py:23
+#, python-format
+msgid "Unvote (%s)"
+msgstr "Unvote (%s)"
+
+#: kansha/vote/view.py:26
+#, python-format
+msgid "Vote (%s)"
+msgstr "Voter (%s)"
+
+#: kansha/vote/view.py:38
+msgid "vote"
+msgid_plural "votes"
+msgstr[0] "vote"
+msgstr[1] "votes"
+
+#~ msgid " wrote on "
+#~ msgstr " a écrit le "
+
+#~ msgid "Invite user to the board:"
+#~ msgstr "Inviter un utilisateur sur le board"
+
+#~ msgid "as Manager"
+#~ msgstr "En tant qu'administrateur"
+
+#~ msgid "Change permissions"
+#~ msgstr "Changer de mot de passe"
+
+#~ msgid "Remove from board"
+#~ msgstr "Retirer du board"
+
+#~ msgid "Member only"
+#~ msgstr "Membre uniquement"
+
+#~ msgid "My friends"
+#~ msgstr "Mes amis"
+
+#~ msgid "Invite"
+#~ msgstr "Inviter"
+
+#~ msgid "An error occured"
+#~ msgstr "Une erreur s'est produite"
+
+#~ msgid "there is some errors in your restructured text"
+#~ msgstr "Il y a des erreurs dans le restructured text"
+
+#~ msgid "Kansha"
+#~ msgstr "Kansha"
+
+#~ msgid "Are you sure ?"
+#~ msgstr "Êtes vous sur ?"
+
+#~ msgid "here"
+#~ msgstr "ici"
+
+#~ msgid "This invitation is not valid"
+#~ msgstr "Cette invitation n'est pas valide"
+
+#~ msgid "This invitation is not for you"
+#~ msgstr "Cette invitation ne vous est pas destinée"
+
+#~ msgid "Invitation"
+#~ msgstr "Invitation"
+
+#~ msgid "Do you want to join the board \"%s\"?"
+#~ msgstr "Voulez vous rejoindre le board \"%s\" ?"
+
+#~ msgid "Accept"
+#~ msgstr "Accepter"
+
+#~ msgid "Decline"
+#~ msgstr "Refuser"
+
+#~ msgid "Card \"%(card)s\" has been deleted"
+#~ msgstr "La carte \"%(card)s\" a été supprimée"
+
+#~ msgid "Board background"
+#~ msgstr "Image de fond"
+
+#~ msgid " or "
+#~ msgstr "ou"
+
+#~ msgid "Log in with AUI"
+#~ msgstr "S'identifier avec LDAP"
+
+#~ msgid "New checklist"
+#~ msgstr "Nouvelle liste"

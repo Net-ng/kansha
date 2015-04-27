@@ -1,0 +1,3 @@
+/*! jquery-searchinput v0.1.2 by Glenn Dwiyatcita - 28-04-2014 */
+
+.searchinput-icon-search{background:url(images/icon-searchclear.png) no-repeat 0 0;position:absolute;width:16px;height:16px;z-index:2000}.searchinput-icon-clear{background:url(images/icon-searchclear.png) no-repeat 0 -16px;position:absolute;width:16px;height:16px;cursor:pointer;z-index:2000}.searchinput-icon-clear:hover{background:url(images/icon-searchclear.png) no-repeat -16px -16px}

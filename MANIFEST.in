@@ -1,0 +1,8 @@
+graft alembic
+graft conf
+graft static
+graft data/locale
+graft data/captcha
+include data/logs/EMPTY_DIR
+include README.rst
+include VERSION.txt

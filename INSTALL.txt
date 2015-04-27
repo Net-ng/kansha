@@ -1,0 +1,4 @@
+KANSHA Configuration and deployment in production
+================================================
+
+See the detailled documentation in the doc/ folder.

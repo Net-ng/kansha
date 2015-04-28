@@ -22,7 +22,7 @@ https://virtualenv.pypa.io/en/latest/
 
 Finally, in your activated virtual environment, type::
 
-  pip install -f http://www.nagare.org/snapshots/  --allow-all-external --trusted-host www.nagare.org --allow-unverified PEAK-Rules kansha
+  easy_install --find-links http://www.nagare.org/snapshots/ kansha
 
 
 Run

@@ -38,7 +38,8 @@ setup(
     install_requires=(
         'PEAK-Rules==0.5a1.dev-r2713',
         'nagare[database,i18n]', 'docutils', 'Pillow', 'pycrypto', 'Babel',
-        'requests', 'oauth2', 'SQLAlchemy==0.9.8', 'dateutils', 'xlwt'
+        'requests', 'oauth2', 'SQLAlchemy==0.9.8', 'dateutils', 'xlwt',
+        'Paste==1.7.5'
     ),
     extras_require={'test': ('nose',),
                     'debug': ('WebError',),

@@ -40,7 +40,7 @@ More details at https://virtualenv.pypa.io/en/latest/
 
 Finally, when your virtual environment is active in your shell, type::
 
-  easy_install --find-links http://www.nagare.org/snapshots/ kansha
+  easy_install --find-links http://www.nagare.org/snapshots/ https://bitbucket.org/net-ng/kansha/get/tip.tar.gz
 
 **Note to PIP users**: you currently can not use ``pip`` to install `kansha` because some data files and folders would be spread all over ``site-package``.
 The command ``easy_install`` puts each distribution into its own folder.

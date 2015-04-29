@@ -398,6 +398,8 @@ class UserBoards(object):
                                  id_),
                              on_board_restore=lambda id_=b.id: self.restore_board(
                                  id_),
+                             on_board_leave=lambda id_=b.id: self.leave_board(
+                                 id_),
                              load_data=False)
             if not b.archived:
                 self.boards.append(component.Component(_b))
@@ -438,6 +440,16 @@ class UserBoards(object):
                 break
         if archived_board_index is not None:
             self.archived_boards.pop(archived_board_index)
+
+    def leave_board(self, board_id):
+        """ remove board from list """
+        board_index = None
+        for index, comp in enumerate(self.boards):
+            if comp().id == board_id:
+                board_index = index
+                break
+        if board_index is not None:
+            self.boards.pop(board_index)
 
     def purge_archived_boards(self):
         for board in self.archived_boards:

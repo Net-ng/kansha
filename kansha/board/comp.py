@@ -62,7 +62,7 @@ class Board(object):
 
     def __init__(self, id_, app_title, custom_css, mail_sender, assets_manager,
                  search_engine, on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, load_data=True):
+                 on_board_restore=None, on_board_leave=None, load_data=True):
         """Initialization
 
         In:
@@ -78,6 +78,7 @@ class Board(object):
         self.on_board_delete = on_board_delete
         self.on_board_archive = on_board_archive
         self.on_board_restore = on_board_restore
+        self.on_board_leave = on_board_leave
         self.assets_manager = assets_manager
         self.search_engine = search_engine
         self.columns = []
@@ -461,8 +462,8 @@ class Board(object):
             self.data.remove_manager(board_member)
         for column in self.columns:
             column().remove_board_member(user)
-        if self.on_board_delete is not None:
-            self.on_board_delete()
+        if self.on_board_leave is not None:
+            self.on_board_leave()
         return True
 
     def export(self):

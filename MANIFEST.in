@@ -1,8 +1,9 @@
 graft alembic
-graft conf
 graft static
+graft conf
 graft data/locale
 graft data/captcha
 include data/logs/EMPTY_DIR
 include README.rst
 include VERSION.txt
+exclude conf/kansha.cfg.local

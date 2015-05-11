@@ -1,3 +1,5 @@
 static/js/jquery-searchinput/* linguist-vendored
 static/js/jquery-linkify/* linguist-vendored
 static/js/fullcalendar-2.2.6/* linguist-vendored
+static/js/moment.js linguist-vendored
+

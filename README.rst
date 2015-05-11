@@ -1,5 +1,5 @@
 KANSHA
-=====
+======
 
 Kansha is a web application to manage and share collaborative pinboards.
 
@@ -22,7 +22,7 @@ https://virtualenv.pypa.io/en/latest/
 
 Finally, in your activated virtual environment, type::
 
-  easy_install --find-links http://www.nagare.org/snapshots/ https://bitbucket.org/net-ng/kansha/get/tip.tar.gz
+  easy_install --find-links http://www.nagare.org/snapshots/ kansha
 
 
 Run
@@ -58,3 +58,8 @@ Fortunately, you can run Kansha with:
 
 
 See the ``doc/`` folder in the source for detailled documentation about configuration and deployment on production servers.
+
+Contribute
+----------
+
+Join us on Github (https://github.com/Net-ng/kansha) or Bitbucket (https://bitbucket.org/net-ng/kansha)!

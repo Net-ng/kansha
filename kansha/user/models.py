@@ -51,6 +51,7 @@ class DataUser(Entity):
     _salt = Field(Unicode(255), colname='salt', nullable=False)
     _password = Field(Unicode(255), colname='password', nullable=True)
     registration_date = Field(DateTime, nullable=False)
+    last_login = Field(DateTime, nullable=True)
     board_members = OneToMany('DataBoardMember')
     boards = AssociationProxy(
         'board_members', 'board',

@@ -24,8 +24,8 @@ with open(path.join(here, 'VERSION.txt'), encoding='utf-8') as f:
 setup(
     name='kansha',
     version=version,
-    author='',
-    author_email='',
+    author='Net-ng',
+    author_email='contact@net-ng.com',
     description='Manage and share collaborative pinboards on the web.',
     long_description=long_description,
     license='BSD',

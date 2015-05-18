@@ -7,6 +7,13 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from datetime import datetime, timedelta, date
+from glob import glob
+import os.path
+import json
+import time
+
+from nagare import database
 
 from .models import DataBoard
 from ..label.models import DataLabel
@@ -16,7 +23,6 @@ from ..column.models import DataColumn
 from ..comment.models import DataComment
 from ..vote.models import DataVote
 
-from datetime import datetime, timedelta
 
 DEFAULT_LABELS = (
     (u'Green', u'#22C328'),
@@ -97,7 +103,48 @@ class BoardsManager(object):
         column_2.cards = cards
         column_2.nb_max_cards = len(cards) + 2
 
-    def index_user_cards(self, user, search_engine):
+    @staticmethod
+    def index_user_cards(user, search_engine):
         for card in user.my_cards:
             search_engine.add_document(FTSCard.from_model(card))
         search_engine.commit()
+
+    @staticmethod
+    def create_boards_from_templates(user, folder):
+        '''user is a DataUser'''
+        for tplf_name in glob(os.path.join(folder, '*.btpl')):
+            tpl = json.loads(open(tplf_name).read())
+            board = DataBoard(title=tpl['title'])
+            for i, (title, color) in enumerate(DEFAULT_LABELS):
+                __ = DataLabel(title=title,
+                               color=color,
+                               index=i,
+                               board=board)
+            database.session.flush()
+            for i, col in enumerate(tpl.get('columns', [])):
+                cards = col.pop('cards', [])
+                col = DataColumn(title=col['title'],
+                                 index=i,
+                                 board=board)
+                for card in cards:
+                    comments = card.pop('comments', [])
+                    labels = card.pop('tags', [])
+                    due_date = card.pop('due_date', None)
+                    if due_date:
+                        due_date = time.strptime(due_date, '%Y-%m-%d')
+                        due_date = date(*due_date[:3])
+                    card = DataCard(title=card['title'],
+                                    description=card.get('description', u''),
+                                    author=user,
+                                    due_date=due_date,
+                                    creation_date=datetime.utcnow(),
+                                    column=col,
+                                    labels=[board.labels[i] for i in labels])
+                    for comment in comments:
+                        comment = DataComment(comment=comment,
+                                              author=user,
+                                              creation_date=datetime.utcnow(),
+                                              card=card)
+            board.members.append(user)
+            board.managers.append(user)
+            database.session.flush()

@@ -28,7 +28,7 @@ from ..board.boardsmanager import BoardsManager
 
 from ..user.usermanager import UserManager
 from ..user import user_profile
-from ..googleuser import comp
+from ..googleuser import comp as google # for side effects only
 
 from ..security import SecurityManager, Unauthorized
 
@@ -118,11 +118,12 @@ class Kansha(object):
 
 class MainTask(component.Task):
 
-    def __init__(self, app_title, custom_css, main_app, mail_sender, auth_cfg, assets_manager, search):
+    def __init__(self, app_title, custom_css, main_app, mail_sender, cfg, assets_manager, search):
         self.app_title = app_title
         self.custom_css = custom_css
         self.mail_sender = mail_sender
-        self.auth_cfg = auth_cfg
+        self.auth_cfg = cfg['auth_cfg']
+        self.tpl_cfg = cfg['tpl_cfg']
         self.app = Kansha(
             self.app_title, self.custom_css, mail_sender, assets_manager, search)
         self.main_app = main_app
@@ -136,10 +137,14 @@ class MainTask(component.Task):
             comp.call(login.Login(self.app_title, self.custom_css,
                                   self.mail_sender, self.auth_cfg, self.assets_manager))
             user = security.get_user()
-            if not user.get_last_board():
-                # first connection. Index default cards
+            if user.last_login is None:
+                # first connection.
+                # Load template boards if any, then
+                self.app.boards_manager.create_boards_from_templates(user.data, self.tpl_cfg)
+                # index cards
                 self.app.boards_manager.index_user_cards(user.data,
                                                          self.search_engine)
+            user.update_last_login()
 
 
         comp.call(self.app.initialization())
@@ -150,17 +155,16 @@ class MainTask(component.Task):
 
 class App(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, auth_cfg, assets_manager, search):
+    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager, search):
         self.app_title = app_title
         self.custom_css = custom_css
         self.mail_sender = mail_sender
-        self.auth_cfg = auth_cfg
         self.assets_manager = assets_manager
         self.search_engine = search
         self.task = component.Component(MainTask(self.app_title,
                                                  self.custom_css,
                                                  self, mail_sender,
-                                                 auth_cfg,
+                                                 cfg,
                                                  self.assets_manager, search))
 
 
@@ -233,6 +237,7 @@ class WSGIApp(wsgi.WSGIApp):
         self.auth_cfg = {'dbauth': conf['dbauth'],
                          'oauth': conf['oauth'],
                          'ldapauth': conf['ldapauth']}
+        self.tpl_cfg = conf['application']['templates']
 
     def set_publisher(self, publisher):
         if self.as_root:
@@ -240,10 +245,11 @@ class WSGIApp(wsgi.WSGIApp):
                                            self)
 
     def create_root(self):
+        cfg = {'tpl_cfg': self.tpl_cfg, 'auth_cfg': self.auth_cfg}
         return super(WSGIApp, self).create_root(self.app_title,
                                                 self.custom_css,
                                                 self.mail_sender,
-                                                self.auth_cfg,
+                                                cfg,
                                                 self.assets_manager,
                                                 self.search_engine)
 

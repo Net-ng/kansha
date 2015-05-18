@@ -10,6 +10,7 @@
 
 import pkg_resources
 import peak.rules
+from datetime import datetime
 
 from nagare import presentation, component, i18n
 from nagare.security import common as security_common
@@ -145,6 +146,13 @@ class User(security_common.User):
          - True if user is manager of the board
         """
         return board in self.data.managed_boards
+
+    @property
+    def last_login(self):
+        return self.data.last_login
+
+    def update_last_login(self):
+        self.data.last_login = datetime.utcnow()
 
 
 @peak.rules.when(usermanager.get_user_class, """source == 'application'""")

@@ -21,8 +21,9 @@ class DataChecklist(Entity):
     index = Field(Integer)
 
     def __unicode__(self):
-        titles = [item.title for item in self.items]
-        titles.insert(0, self.title)
+        titles = [item.title for item in self.items if item.title]
+        if self.title:
+            titles.insert(0, self.title)
         return u'\n'.join(titles)
 
 

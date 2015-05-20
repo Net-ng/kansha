@@ -44,6 +44,7 @@ setup(
     extras_require={'test': ('nose',),
                     'debug': ('WebError',),
                     'ldap': ('python-ldap',),
+                    'postgres': ('psycopg2',),
                     'mysql': ('oursql',),
                     'elastic': ('elasticsearch',)},
     message_extractors={'kansha': [('**.py', 'python', None)]},

@@ -193,6 +193,12 @@ Database
 Kansha uses SQLAlchemy to connect to databases. Adapt the URI in the configuration file to your own setup. Depending on the DBMS you use, you may need to create the target database first.
 For documentation on how to write such URIs, see http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html#database-urls.
 
+Note for Postgresql (recommended) users:
+
+ *  install the needed dependencies::
+
+    easy_install kansha[postgres]
+
 Note for MySQL users:
 
  * install the needed dependencies::

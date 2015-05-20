@@ -124,11 +124,13 @@ def get_subscribers():
 
 
 def get_events(board, hours=None):
+    '''board to None means "everything".'''
     since = datetime.utcnow() - timedelta(hours=hours)
     q = DataHistory.query
-    q = q.filter_by(board=board)
+    if board:
+        q = q.filter_by(board=board)
     q = q.filter(DataHistory.when >= since)
-    q = q.order_by(DataHistory.action, DataHistory.when)
+    q = q.order_by(DataHistory.board_id, DataHistory.action, DataHistory.when)
     return q
 
 

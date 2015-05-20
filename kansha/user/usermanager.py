@@ -13,7 +13,7 @@ from nagare.namespaces import xhtml
 from nagare import component, i18n
 from ..toolbox import autocomplete
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def get_user_class(source):
@@ -46,9 +46,14 @@ class UserManager(object):
         return DataUser.search(value)
 
     @staticmethod
-    def get_all_users():
-        """Return all users"""
-        return DataUser.query.all()
+    def get_all_users(hours=0):
+        """Return all users if `hours` is 0 or just those who have registrated
+        for the last hours."""
+        q = DataUser.query
+        if hours:
+            since = datetime.utcnow() - timedelta(hours=hours)
+            q = q.filter(DataUser.registration_date >= since)
+        return q.all()
 
     @staticmethod
     def get_by_username(username):

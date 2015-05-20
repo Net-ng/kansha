@@ -238,6 +238,7 @@ class WSGIApp(wsgi.WSGIApp):
                          'oauth': conf['oauth'],
                          'ldapauth': conf['ldapauth']}
         self.tpl_cfg = conf['application']['templates']
+        self.activity_monitor = conf['application'].get('activity_monitor', '')
 
     def set_publisher(self, publisher):
         if self.as_root:

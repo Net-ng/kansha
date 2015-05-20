@@ -85,7 +85,8 @@ def render_Board(self, h, comp, *args):
         with h.div(class_='header'):
             h << self.title.render(h.AsyncRenderer())
             h << comp.render(h, 'switch')
-        h << comp.render(h.AsyncRenderer(), self.model)
+        with h.div(class_='bbody'):
+            h << comp.render(h.AsyncRenderer(), self.model)
     return h.root
 
 

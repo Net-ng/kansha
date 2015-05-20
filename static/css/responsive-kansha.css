@@ -262,9 +262,7 @@ a:active {
 #viewport-wrapper {
     z-index: 1500;
     clear: both;
-    height: calc(100% - 65px);
-    height: -moz-calc(100% - 65px);
-    height: -webkit-calc(100% - 65px);
+    height: 100%;
 }
 
 .board {
@@ -273,8 +271,14 @@ a:active {
     overflow-y: hidden; /* board viewport already has one */
 }
 
-.board > div:last-child {
-    height: 100%
+.bbody {
+    position: absolute;
+    top: 65px;
+    bottom: 0;
+}
+
+.bbody > div:first-child {
+    height: 100%;
 }
 
 .board .header {
@@ -2820,6 +2824,10 @@ input:focus, textarea:focus {
 
     .board .header {
         margin-top: 50px;
+    }
+
+    .bbody {
+        top: 115px;
     }
 }
 

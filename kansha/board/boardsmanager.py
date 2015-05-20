@@ -126,7 +126,7 @@ class BoardsManager(object):
                 col = DataColumn(title=col['title'],
                                  index=i,
                                  board=board)
-                for card in cards:
+                for j, card in enumerate(cards):
                     comments = card.pop('comments', [])
                     labels = card.pop('tags', [])
                     due_date = card.pop('due_date', None)
@@ -139,6 +139,7 @@ class BoardsManager(object):
                                     due_date=due_date,
                                     creation_date=datetime.utcnow(),
                                     column=col,
+                                    index=j,
                                     labels=[board.labels[i] for i in labels])
                     for comment in comments:
                         comment = DataComment(comment=comment,

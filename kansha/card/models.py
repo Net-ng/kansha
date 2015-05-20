@@ -72,6 +72,9 @@ class DataCard(Entity):
         column = card.column
         card.delete()
         session.flush()
+        # legacy databases may be broken…
+        if index is None:
+            return
         q = cls.query
         q = q.filter(cls.index >= index)
         q = q.filter(cls.column == column)

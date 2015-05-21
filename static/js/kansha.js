@@ -646,7 +646,7 @@
         showCardsLimitEdit: function (col) {
             var counter = Dom.get(col.id + '_counter');
             var option = Dom.get(col.id + '_counter_option');
-            var limit = parseInt(localStorage[col.id]);
+            var limit = parseInt(localStorage[col.id], 10);
             if (counter && limit > 0) {
                 Dom.removeClass(counter, 'hidden');
             }

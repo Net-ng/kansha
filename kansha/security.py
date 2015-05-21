@@ -7,6 +7,10 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from base64 import b64encode, b64decode
+
+from Crypto.Cipher import Blowfish
+from Crypto import Random
 
 from peak.rules import when
 
@@ -33,6 +37,8 @@ class Unauthorized(Exception):
 
 class Authentication(form_auth.Authentication):
 
+    KEY = 'a*/-+@45JZWiuet:uietsVLMRS/*-+41"_bépçè€.;'
+
     def _create_user(self, username):
         if username is not None:
             return get_app_user(username)
@@ -45,6 +51,32 @@ class Authentication(form_auth.Authentication):
 
     def denies(self, detail):
         raise Unauthorized()
+
+    def cookie_decode(self, cookie):
+        a_iv, token = cookie.split(':')
+        iv = b64decode(a_iv)
+        cipher = Blowfish.new(self.KEY, Blowfish.MODE_CBC, iv)
+        cookie = cipher.decrypt(b64decode(token)).replace('@','')
+
+        return super(Authentication, self).cookie_decode(cookie)
+
+    def cookie_encode(self, *ids):
+        cookie = super(Authentication, self).cookie_encode(*ids)
+
+        bs = Blowfish.block_size
+        iv = Random.new().read(bs)
+        cipher = Blowfish.new(self.KEY, Blowfish.MODE_CBC, iv)
+        # pad cookie to block size.
+        # Cookie is ascii base64 + ':', so we can safely pad with '@'.
+        missing_bytes = bs - (len(cookie) % bs)
+        cookie += '@' * missing_bytes
+
+        return '%s:%s' % (
+            b64encode(iv),
+            b64encode(cipher.encrypt(cookie))
+        )
+
+        return cookie
 
 
 class Rules(common.Rules):

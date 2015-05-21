@@ -230,7 +230,7 @@ class WSGIApp(wsgi.WSGIApp):
         self.search_engine = SearchEngine(**conf['search'])
 
         # other
-        self.security = SecurityManager()
+        self.security = SecurityManager(conf['application']['crypto_key'])
         self.debug = conf['application']['debug']
         self.default_locale = i18n.Locale(
             conf['locale']['major'], conf['locale']['minor'])

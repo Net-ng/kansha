@@ -53,10 +53,13 @@ class Authentication(form_auth.Authentication):
         raise Unauthorized()
 
     def cookie_decode(self, cookie):
-        a_iv, token = cookie.split(':')
-        iv = b64decode(a_iv)
-        cipher = Blowfish.new(self.KEY, Blowfish.MODE_CBC, iv)
-        cookie = cipher.decrypt(b64decode(token)).replace('@','')
+        try:
+            a_iv, token = cookie.split(':')
+            iv = b64decode(a_iv)
+            cipher = Blowfish.new(self.KEY, Blowfish.MODE_CBC, iv)
+            cookie = cipher.decrypt(b64decode(token)).replace('@','')
+        except ValueError:
+            return (None, None)
 
         return super(Authentication, self).cookie_decode(cookie)
 
@@ -217,6 +220,7 @@ class Rules(common.Rules):
 
 class SecurityManager(Authentication, Rules):
 
-    def __init__(self):
+    def __init__(self, crypto_key):
         Authentication.__init__(self)
         Rules.__init__(self)
+        self.KEY = crypto_key

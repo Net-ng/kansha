@@ -91,6 +91,9 @@ Kansha features can be activated and customized with a configuration file like t
     as_root = on
     title = <<APP_TITLE>>
     custom_css = <<CUSTOM_CSS>>  # path or empty
+    templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
+    activity_monitor = <<MONITOR_EMAIL>> # optional
+    crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
 
     [database]
     debug = off

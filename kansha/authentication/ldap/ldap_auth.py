@@ -11,7 +11,7 @@ from nagare import log
 try:
     import ldap
 except ImportError:
-    print 'INFO: python_ldap not installed'
+    ldap = None
 import sys
 import types
 
@@ -45,6 +45,7 @@ class LDAPAuth(object):
         Return:
             - a server connection
         """
+        assert ldap, 'python_ldap not installed'
         return ldap.initialize(self.server)
 
     def get_user_dn(self, uid):

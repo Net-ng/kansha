@@ -36,6 +36,7 @@ setup(
     package_data={'': ['*.cfg', '*.ini', '*.jpg']},
     zip_safe=False,
     install_requires=(
+        'alembic',
         'PEAK-Rules==0.5a1.dev-r2713',
         'nagare[database,i18n]==0.4.1.post467', 'docutils', 'Pillow', 'pycrypto', 'Babel',
         'requests', 'oauth2', 'SQLAlchemy==0.9.8', 'dateutils', 'xlwt',
@@ -49,6 +50,16 @@ setup(
                     'elastic': ('elasticsearch',)},
     message_extractors={'kansha': [('**.py', 'python', None)]},
     entry_points="""
+      [console_scripts]
+      kansha-admin = kansha.app:run
+
+      [kansha.commands]
+      alembic-current = kansha.alembic.admin:AlembicCurrentCommand
+      alembic-downgrade = kansha.alembic.admin:AlembicDowngradeCommand
+      alembic-revision = kansha.alembic.admin:AlembicRevisionCommand
+      alembic-stamp = kansha.alembic.admin:AlembicStampCommand
+      alembic-upgrade = kansha.alembic.admin:AlembicUpgradeCommand
+
       [nagare.applications]
       kansha = kansha.app:app
       [nagare.commands]

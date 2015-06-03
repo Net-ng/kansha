@@ -48,6 +48,8 @@ def main(hours, url):
         # for usr in new_users:
         #     print usr.fullname, usr.username, usr.email, usr.registration_date
 
+        if not (events or new_users):
+            return
         h = xhtml.Renderer()
         with h.html:
             h << h.h1('Boards')

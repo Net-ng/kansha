@@ -131,7 +131,7 @@ def get_events(board, hours=None):
         q = q.filter_by(board=board)
     q = q.filter(DataHistory.when >= since)
     q = q.order_by(DataHistory.board_id, DataHistory.action, DataHistory.when)
-    return q
+    return q.all()
 
 
 def get_history(board, cardid=None, username=None):

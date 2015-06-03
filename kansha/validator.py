@@ -8,12 +8,8 @@
 # this distribution.
 #--
 
-from lxml import etree
-from lxml.html import clean
+from lxml import html
 
 
 def clean_text(text):
-    cc = clean.Cleaner()
-    text = cc.clean_html(text)
-    text = etree.fromstring(text).text
-    return text
+    return html.fromstring(text).text_content()

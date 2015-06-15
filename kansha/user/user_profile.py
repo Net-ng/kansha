@@ -363,7 +363,7 @@ def render(self, h, comp, *args):
                           h.input(type='password').action(self.password_repeat)
                           .error(self.password_repeat.error))
             with h.div(class_=''):
-                h << h.input("Save",
+                h << h.input(_("Save"),
                              class_="btn btn-primary btn-small",
                              type='submit').action(self.commit)
     return h.root

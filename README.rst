@@ -5,7 +5,7 @@ KANSHA
 
 Kansha is a web application to manage and share collaborative pinboards.
 
-Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above, with the mouse. Kansha is currently not compatible with touch devices.
+Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
 
 
 Quickstart

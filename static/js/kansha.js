@@ -149,7 +149,7 @@
             var zone = ECN('navActions', '', navId)[0];
             if (Dom.hasClass(tab, 'expand')[0]) {
                 nextMarginTop = -zone.clientHeight;
-                Dom.setStyle(navId, 'z-index', 'auto');
+                Dom.setStyle(navId, 'z-index', 25);
                 Dom.replaceClass(tab, 'tab expand', 'tab collapse');
                 Dom.setStyle('mask', 'display', 'none');
             } else {

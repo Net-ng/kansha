@@ -61,6 +61,7 @@ a:active {
     position: fixed;
     margin-bottom: 0;
     height: auto;
+    z-index: 25;
 }
 
 .navbar .tab {

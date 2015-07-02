@@ -14,8 +14,6 @@ Quickstart
 Installation
 ~~~~~~~~~~~~
 
-Nagare, the framework used by Kansha, needs stackless python 2.7 to run.
-
 You can install stackless python 2.7 from there:
 http://www.stackless.com/wiki/Download
 

@@ -47,7 +47,7 @@ a:active {
     background: none repeat scroll 0 0 #000;
     height: 100%;
     opacity: 0.55;
-    position: absolute;
+    position: fixed;
     width: 100%;
     z-index: 25;
     display: none;
@@ -58,9 +58,10 @@ a:active {
 }
 
 .navbar {
-    position: absolute;
+    position: fixed;
     margin-bottom: 0;
     height: auto;
+    z-index: 25;
 }
 
 .navbar .tab {
@@ -283,6 +284,8 @@ a:active {
 
 .board .header {
     text-align: right;
+    position: fixed;
+    width: 100%;
 }
 
 .board .header .nagare-generated {

@@ -149,7 +149,7 @@
             var zone = ECN('navActions', '', navId)[0];
             if (Dom.hasClass(tab, 'expand')[0]) {
                 nextMarginTop = -zone.clientHeight;
-                Dom.setStyle(navId, 'z-index', 'auto');
+                Dom.setStyle(navId, 'z-index', 25);
                 Dom.replaceClass(tab, 'tab expand', 'tab collapse');
                 Dom.setStyle('mask', 'display', 'none');
             } else {
@@ -328,8 +328,6 @@
                 // Add listener on the Esc key
                 keylisteners: new YAHOO.util.KeyListener(document, {keys: 27}, NS.app.closePopin, 'keyup')
             });
-            // No top/left offset
-            NS.app.popin.cfg.setProperty("x", 0);
             // Register the close function
             NS.app.closePopinFunction = closeFunction;
             // Render the panel

@@ -1,6 +1,8 @@
 KANSHA
 ======
 
+|docs|
+
 Kansha is a web application to manage and share collaborative pinboards.
 
 Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above, with the mouse. Kansha is currently not compatible with touch devices.
@@ -63,3 +65,8 @@ Contribute
 ----------
 
 Join us on Github (https://github.com/Net-ng/kansha) or Bitbucket (https://bitbucket.org/net-ng/kansha)!
+
+.. |docs| image:: https://readthedocs.org/projects/kansha/badge
+    :alt: Documentation Status
+    :scale: 100%
+    :target: http://kansha.readthedocs.org

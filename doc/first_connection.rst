@@ -1,7 +1,7 @@
 First connection
 ================
 
-Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above, with the mouse.
+Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
 
 Login screen
 ------------

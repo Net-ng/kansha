@@ -9,7 +9,7 @@ Board management
 Manage access rights
 --------------------
 
-.. figure:: _static/boards.png
+.. figure:: _static/boards.PNG
 
    The list of the boards the logged used (user3) has access to.
 

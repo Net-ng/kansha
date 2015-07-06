@@ -178,7 +178,9 @@ class WSGIApp(wsgi.WSGIApp):
                         'title': 'string(default="")',
                         'custom_css': 'string(default="")'},
         'dbauth': {'activated': 'boolean(default=True)',
-                   'moderator': 'string(default="")'},
+                   'moderator': 'string(default=""),',
+                   'default_username': 'string(default="")',
+                   'default_password': 'string(default="")'},
         'oauth': {
             'activated': 'boolean(default=False)',
             'google': {'activated': 'boolean(default=True)',

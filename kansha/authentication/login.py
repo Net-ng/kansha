@@ -85,7 +85,7 @@ class Login(object):
         """
         logins = []
         if auth_cfg['dbauth']['activated']:
-            logins.append(database_form.Login(app_title, custom_css, mail_sender, auth_cfg['dbauth']['moderator']))
+            logins.append(database_form.Login(app_title, custom_css, mail_sender, auth_cfg['dbauth']))
         if auth_cfg['oauth']['activated']:
             logins.append(oauth.Login(auth_cfg['oauth']))
         if auth_cfg['ldapauth']['activated']:

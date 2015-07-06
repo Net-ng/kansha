@@ -65,9 +65,9 @@ class Login(object):
 
     def __init__(self, app_title, custom_css, mail_sender, config):
         self.error_message = ''
-        self.registration_task = RegistrationTask(app_title, custom_css, mail_sender, config.get('moderator', ''))
-        self.default_username = config.get('default_username', u'')
-        self.default_password = config.get('default_password', u'')
+        self.registration_task = RegistrationTask(app_title, custom_css, mail_sender, config['moderator'])
+        self.default_username = config['default_username']
+        self.default_password = config['default_password']
         self.pwd_reset = PasswordResetTask(app_title, custom_css, mail_sender)
         self.content = component.Component()
 

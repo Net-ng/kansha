@@ -1,12 +1,20 @@
-from __future__ import absolute_import, unicode_literals
+# -*- coding:utf-8 -*-
+#--
+# Copyright (c) 2012-2014 Net-ng.
+# All rights reserved.
+#
+# This software is licensed under the BSD License, as described in
+# the file LICENSE.txt, which you should have received as part of
+# this distribution.
+#--
 
 import os.path
 
-from alembic import command
 import pkg_resources
+from alembic import command
 from alembic import config
-from nagare.admin.command import Command
 from nagare.admin import util
+from nagare.admin.command import Command
 
 
 class AlembicRevisionCommand(Command):
@@ -14,13 +22,24 @@ class AlembicRevisionCommand(Command):
 
     @staticmethod
     def set_options(optparser):
-        optparser.add_option('-m', '--message', dest='message', default=None, help="Message string to use with 'revision'")
+        optparser.add_option(
+            '-m',
+            '--message',
+            dest='message',
+            default=None,
+            help="Message string to use with 'revision'"
+        )
 
     @staticmethod
     def run(parser, options, args):
         cfg = config.Config()
-        cfg.set_main_option('script_location',
-                            os.path.join(pkg_resources.require('kansha')[0].location, 'kansha/alembic'))
+        cfg.set_main_option(
+            'script_location',
+            os.path.join(
+                pkg_resources.require('kansha')[0].location,
+                'kansha/alembic'
+            )
+        )
         command.revision(cfg, message=options.message)
 
 
@@ -78,7 +97,15 @@ class AlembicCurrentCommand(Command):
     @staticmethod
     def set_options(optparser):
         optparser.usage += ' [application]'
-        optparser.add_option('-v', '--verbose', action='store_const', const=True, default=False, dest='verbose', help='Use more verbose output')
+        optparser.add_option(
+            '-v',
+            '--verbose',
+            action='store_const',
+            const=True,
+            default=False,
+            dest='verbose',
+            help='Use more verbose output'
+        )
 
     @staticmethod
     def run(parser, options, args):
@@ -103,7 +130,15 @@ class AlembicStampCommand(Command):
     @staticmethod
     def set_options(optparser):
         optparser.usage += ' [application]'
-        optparser.add_option('-v', '--verbose', action='store_const', const=True, default=False, dest='verbose', help='Use more verbose output')
+        optparser.add_option(
+            '-v',
+            '--verbose',
+            action='store_const',
+            const=True,
+            default=False,
+            dest='verbose',
+            help='Use more verbose output'
+        )
 
     @staticmethod
     def run(parser, options, args):
@@ -129,6 +164,11 @@ def _set_sqlalchemy_uri(cfg, application, error):
 
 def _build_alembic_config():
     cfg = config.Config()
-    cfg.set_main_option('script_location',
-                        os.path.join(pkg_resources.require('kansha')[0].location, 'kansha/alembic'))
+    cfg.set_main_option(
+        'script_location',
+        os.path.join(
+            pkg_resources.require('kansha')[0].location,
+            'kansha/alembic'
+        )
+    )
     return cfg

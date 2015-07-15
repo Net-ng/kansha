@@ -129,7 +129,7 @@ class AlembicStampCommand(Command):
 
     @staticmethod
     def set_options(optparser):
-        optparser.usage += ' [application]'
+        optparser.usage += ' revision [application]'
         optparser.add_option(
             '-v',
             '--verbose',

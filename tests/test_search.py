@@ -59,14 +59,15 @@ class TestSchema(unittest.TestCase):
         self.assertEqual(doc.price, 5.6, u'attribute not set')
 
 
-class TestSQLiteEngine(unittest.TestCase):
+class SearchTestCase(object):
 
     collection = u'test'
-    index_folder = u'/tmp'
+
+    def _create_search_engine(self):
+        raise NotImplementedError()
 
     def setUp(self):
-        self.engine = sqliteengine.SQLiteFTSEngine(
-            self.collection, self.index_folder)
+        self.engine = self._create_search_engine()
         self.engine.create_collection([MyDocument, Person])
 
     def tearDown(self):
@@ -181,15 +182,16 @@ class TestSQLiteEngine(unittest.TestCase):
         self.assertEqual(len(res), 2)
 
 
+class TestSQLiteEngine(SearchTestCase, unittest.TestCase):
 
-    # TODO: test other query (==, >, <, ....)
+    def _create_search_engine(self):
+        return sqliteengine.SQLiteFTSEngine(self.collection, u'/tmp')
 
 
-class TestElasticEngine(TestSQLiteEngine):
+class TestElasticEngine(SearchTestCase, unittest.TestCase):
 
-    def setUp(self):
+    def _create_search_engine(self):
         try:
-            self.engine = elasticengine.ElasticSearchEngine(self.collection)
+            return elasticengine.ElasticSearchEngine(self.collection)
         except ValueError as exc:
             self.skipTest(unicode(exc))
-        self.engine.create_collection([MyDocument, Person])

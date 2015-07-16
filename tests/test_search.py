@@ -188,5 +188,8 @@ class TestSQLiteEngine(unittest.TestCase):
 class TestElasticEngine(TestSQLiteEngine):
 
     def setUp(self):
-        self.engine = elasticengine.ElasticSearchEngine(self.collection)
+        try:
+            self.engine = elasticengine.ElasticSearchEngine(self.collection)
+        except ValueError as exc:
+            self.skipTest(unicode(exc))
         self.engine.create_collection([MyDocument, Person])

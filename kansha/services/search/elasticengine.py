@@ -114,7 +114,9 @@ class ElasticSearchEngine(object):
 
     def __init__(self, index, host=None, port=None):
         '''Only one host for now.'''
-        assert es_installed, 'elasticsearch not installed'
+        if not es_installed:
+            raise ValueError('elasticsearch not installed')
+
         assert(index.isalpha())
         self.init_state(index, host, port)
 

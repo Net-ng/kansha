@@ -1,3 +1,21 @@
+syntax: glob
+*.pyc
+*.pyo
+*.orig
+*.rej
+*.egg-info
+dist
+*.db
+*.log
+*.log.*
+*.mo
+.DS_Store
+.project
+.pydevproject
+.settings
+nbproject
+*.local.cfg
+*.fts
 .idea/.name
 .idea/encodings.xml
 .idea/kansha.iml

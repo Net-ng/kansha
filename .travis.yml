@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.7"
+before_install:
+  - "sudo apt-get update -qq"
+  - "sudo apt-get install -y gcc make libxml2-dev libxslt-dev libjpeg8-dev libopenjpeg-dev libwebp-dev libmysqld-dev libldap2-dev libsasl2-dev libpcre3-dev libtiff5-dev libpq-dev"
+services:
+  - elasticsearch
+install:
+  - "python setup develop --find-links http://www.nagare.org/snapshots/"
+  - "pip install elasticsearch"
+before_script:
+  - sleep 10
+script: nosetests

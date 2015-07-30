@@ -7,7 +7,7 @@ before_install:
 services:
   - elasticsearch
 install:
-  - "python setup develop --find-links http://www.nagare.org/snapshots/"
+  - "python setup.py develop --find-links http://www.nagare.org/snapshots/"
   - "pip install elasticsearch"
   - "pip install sphinx"
   - "pip install coveralls"

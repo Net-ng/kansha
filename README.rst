@@ -3,6 +3,7 @@ KANSHA
 
 |docs|
 |travis|
+|coverage|
 |climate|
 
 Kansha is a web application to manage and share collaborative pinboards.
@@ -79,3 +80,8 @@ Join us on Github (https://github.com/Net-ng/kansha) or Bitbucket (https://bitbu
 
 .. |travis| image:: https://travis-ci.org/Net-ng/kansha.svg
     :target: https://travis-ci.org/Net-ng/kansha
+
+
+.. |coverage| image:: https://coveralls.io/repos/Net-ng/kansha/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/Net-ng/kansha?branch=master
+

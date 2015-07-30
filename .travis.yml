@@ -10,9 +10,12 @@ install:
   - "python setup develop --find-links http://www.nagare.org/snapshots/"
   - "pip install elasticsearch"
   - "pip install sphinx"
+  - "pip install coveralls"
 before_script:
   - sleep 10
 script:
-  - nosetests
+  - nosetests --with-coverage --cover-package=kansha
   - "cd doc && make html"
+after_success:
+  coveralls
 

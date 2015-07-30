@@ -1,0 +1,8 @@
+languages:
+  Ruby: false
+  JavaScript: true
+  PHP: false
+  Python: true
+exclude_paths:
+  - "static/js/moment.js"
+  - "static/js/fullcalendar-2.2.6/fullcalendar.js"

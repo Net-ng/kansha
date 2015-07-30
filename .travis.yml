@@ -14,7 +14,7 @@ install:
 before_script:
   - sleep 10
 script:
-  - nosetests --with-coverage --cover-package=kansha
+  - coverage run --source=kansha --timid setup.py nosetests
   - "cd doc && make html"
 after_success:
   coveralls

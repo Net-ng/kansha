@@ -9,6 +9,10 @@ services:
 install:
   - "python setup develop --find-links http://www.nagare.org/snapshots/"
   - "pip install elasticsearch"
+  - "pip install sphinx"
 before_script:
   - sleep 10
-script: nosetests
+script:
+  - nosetests
+  - "cd doc && make html"
+

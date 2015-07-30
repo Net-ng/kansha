@@ -15,6 +15,7 @@ dist
 nbproject
 *.local.cfg
 *.fts
+doc/_build
 .idea/.name
 .idea/encodings.xml
 .idea/kansha.iml

@@ -114,6 +114,9 @@ Kansha features can be activated and customized with a configuration file like t
     activated = <<AUTH_DB>>
     # moderator email if needed
     moderator = <<MOD_EMAIL>> # or empty
+    # default values to fill in the login form (useful for a demo board)
+    default_username = <<DEFAULT_USERNAME>>
+    default_password = <<DEFAULT_PASSWORD>>
 
     # authenticate with LDAP
     [ldapauth]

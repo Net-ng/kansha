@@ -63,9 +63,11 @@ def redirect_to(url):
 
 class Login(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, moderator=''):
+    def __init__(self, app_title, custom_css, mail_sender, config):
         self.error_message = ''
-        self.registration_task = RegistrationTask(app_title, custom_css, mail_sender, moderator)
+        self.registration_task = RegistrationTask(app_title, custom_css, mail_sender, config['moderator'])
+        self.default_username = config['default_username']
+        self.default_password = config['default_password']
         self.pwd_reset = PasswordResetTask(app_title, custom_css, mail_sender)
         self.content = component.Component()
 
@@ -99,9 +101,9 @@ def render_Login_form(self, h, comp, *args):
             if self.error_message:
                 h << h.br << h.div(self.error_message, class_="error")
             h << h.label(_("username"), for_="username")
-            h << h.input(type='text', name='__ac_name', id="username")
+            h << h.input(type='text', name='__ac_name', id="username", value=self.default_username)
             h << h.label(_("password"), for_="password")
-            h << h.input(type='password', name='__ac_password', id="password")
+            h << h.input(type='password', name='__ac_password', id="password", value=self.default_password)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=u'OK', class_="btn btn-primary btn-small").action(self.log_in, comp)
             h << h.a(_('Forgot your Password?')).action(self.content.call, self.pwd_reset)

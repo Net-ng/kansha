@@ -24,3 +24,4 @@ doc/_build
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 .idea/workspace.xml
+data/assets/*

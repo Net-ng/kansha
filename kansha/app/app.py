@@ -211,7 +211,7 @@ class WSGIApp(wsgi.WSGIApp):
     def set_config(self, config_filename, conf, error):
         super(WSGIApp, self).set_config(config_filename, conf, error)
         conf = configobj.ConfigObj(
-            conf, configspec=configobj.ConfigObj(self.ConfigSpec))
+            conf, configspec=configobj.ConfigObj(self.ConfigSpec), interpolation='Template')
         config.validate(config_filename, conf, error)
 
         self.as_root = conf['application']['as_root']

@@ -16,7 +16,6 @@ before_script:
 script:
   - "cd doc && make html && cd ../"
   - coverage run --source=kansha --timid setup.py nosetests
-  - coverage report -m
 after_success:
-  coveralls --verbose
+  coveralls
 

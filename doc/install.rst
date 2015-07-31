@@ -221,6 +221,9 @@ sqlite
     * collection (the name of the index)
     * index_folder (folder where the index is stored)
 
+    Supported versions of sqlite: you need sqlite 3.8.0 or newer. Yet, the search engine can work with limited functionality down to sqlite 3.7.7.
+    As far as Kansha is concerned, it should not make any difference, since it doesn't use the missing features (for the moment).
+
 elastic
     ElasticSearch based plugin. Configuration options are:
 

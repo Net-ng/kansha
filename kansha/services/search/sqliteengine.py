@@ -201,10 +201,21 @@ class SQLiteFTSEngine(object):
             for fname, field in doctype.fields.iteritems():
                 if not field.indexed:
                     notindexed.append("notindexed=" + fname)
-            c.execute(
-                '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7", %s);''' %
-                (doctype.__name__,
-                 ','.join(doctype.fields.keys()),
-                 ','.join(notindexed))
-            )
+            slversion = sqlite3.sqlite_version_info[:3]
+            if slversion > (3, 8, 0):
+                c.execute(
+                    '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7", %s);''' %
+                    (doctype.__name__,
+                     ','.join(doctype.fields.keys()),
+                     ','.join(notindexed))
+                )
+            elif slversion > (3, 7, 7):
+                print "Warning: older version of sqlite3 detected, please upgrade to sqlite 3.8.0 or newer."
+                c.execute(
+                    '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7");''' %
+                    (doctype.__name__,
+                     ','.join(doctype.fields.keys()))
+                )
+            else:
+                raise ImportError('Your version of sqlite3 is too old, please upgrade to sqlite 3.8.0 or newer.')
         self.commit()

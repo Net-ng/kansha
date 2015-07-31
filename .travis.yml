@@ -1,0 +1,21 @@
+language: python
+python:
+  - "2.7"
+before_install:
+  - "sudo apt-get update -qq"
+  - "sudo apt-get install -y gcc make libxml2-dev libxslt-dev libjpeg8-dev libopenjpeg-dev libwebp-dev libmysqld-dev libldap2-dev libsasl2-dev libpcre3-dev libtiff4-dev libpq-dev"
+services:
+  - elasticsearch
+install:
+  - "python setup.py develop --find-links http://www.nagare.org/snapshots/"
+  - "pip install elasticsearch"
+  - "pip install sphinx"
+  - "pip install coveralls"
+before_script:
+  - sleep 10
+script:
+  - coverage run --source=kansha --timid setup.py nosetests
+  - "cd doc && make html"
+after_success:
+  coveralls
+

@@ -82,7 +82,7 @@ def set_context(user=None):
     """ """
     local.request = local.Thread()
     security.set_user(user)
-    security.set_manager(SecurityManager())
+    security.set_manager(SecurityManager('somekey'))
 
 
 def get_or_create_data_user(suffixe=''):

@@ -77,7 +77,7 @@ class SQLiteFTSEngine(object):
     '''
 
     def __init__(self, index, index_folder):
-        assert(index.isalpha())
+        assert(index.isalnum())
         self.init_state(index, index_folder)
 
     def init_state(self, collection, index_folder):

@@ -7,7 +7,7 @@ KANSHA
 |climate|
 |requires|
 
-Kansha is an open source web application to manage and share collaborative scrum boards and `more <http://www.kansha.org>`.
+Kansha is an open source web application to manage and share collaborative scrum boards and `more <http://www.kansha.org>`_.
 
 Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
 
@@ -18,21 +18,21 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
- * Run the latest code from Github with Docker::
+* Run the latest code from Github with Docker::
 
-   docker run -p 8080:8080 netng/kansha
+ docker run -p 8080:8080 netng/kansha
 
- * Test the latest stable release online, with content: http://demo.kansha.org
- * Or run from source: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
+* Test the latest stable release online, with content: http://demo.kansha.org
+* Or run from source: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
 
 Contribute
 ----------
 
 Join us!
 
- * Github: https://github.com/Net-ng/kansha
- * Bitbucket: https://bitbucket.org/net-ng/kansha
- * Mailing list: http://groups.google.com/group/kansha-users
+* Github: https://github.com/Net-ng/kansha
+* Bitbucket: https://bitbucket.org/net-ng/kansha
+* Mailing list: http://groups.google.com/group/kansha-users
 
 .. |docs| image:: https://readthedocs.org/projects/kansha/badge
     :alt: Documentation Status

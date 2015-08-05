@@ -5,10 +5,12 @@ KANSHA
 |travis|
 |coverage|
 |climate|
+|requires|
 
-Kansha is a web application to manage and share collaborative pinboards.
+Kansha is an open source web application to manage and share collaborative scrum boards and `more <http://www.kansha.org>`.
 
 Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
+
 
 .. image:: doc/_static/satory_project.png
    :target: http://demo.kansha.org
@@ -16,58 +18,21 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
-Installation
-~~~~~~~~~~~~
+ * Run the latest code from Github with Docker::
 
-You can install stackless python 2.7 from there:
-http://www.stackless.com/wiki/Download
+   docker run -p 8080:8080 netng/kansha
 
-Then, we recommend using a virtual environment for deploying Kansha:
-https://virtualenv.pypa.io/en/latest/
-
-Finally, in your activated virtual environment, type::
-
-  easy_install --find-links http://www.nagare.org/snapshots/ kansha
-
-
-Run
-~~~
-
-To get quickly up and running, let's use the built-in web server, database and search engine with the default configuration.
-
-1. First initialize the database (first run only)::
-
-    nagare-admin create-db kansha
-
-2. Build the search indexes (can be repeated anytime)::
-
-    nagare-admin create-index kansha
-
-3. Launch::
-
-    nagare-admin serve kansha
-
-Now kansha is listening. Just point your browser to http://localhost:8080 and enjoy!
-
-
-Production setup
-----------------
-
-The built-in server, database and search engine are very convenient for testing, but they are not recommended for production setups.
-
-Fortunately, you can run Kansha with:
-
-* any database supported by SQLAlchemy (complete list at http://docs.sqlalchemy.org/en/rel_0_9/dialects/index.html);
-* behind any webserver which supports Fast CGI (FCGI);
-* with ElasticSearch as search engine.
-
-
-See the ``doc/`` folder in the source for detailled documentation about configuration and deployment on production servers.
+ * Test the latest stable release online, with content: http://demo.kansha.org
+ * Or run from source: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
 
 Contribute
 ----------
 
-Join us on Github (https://github.com/Net-ng/kansha) or Bitbucket (https://bitbucket.org/net-ng/kansha)!
+Join us!
+
+ * Github: https://github.com/Net-ng/kansha
+ * Bitbucket: https://bitbucket.org/net-ng/kansha
+ * Mailing list: http://groups.google.com/group/kansha-users
 
 .. |docs| image:: https://readthedocs.org/projects/kansha/badge
     :alt: Documentation Status
@@ -81,7 +46,9 @@ Join us on Github (https://github.com/Net-ng/kansha) or Bitbucket (https://bitbu
 .. |travis| image:: https://travis-ci.org/Net-ng/kansha.svg
     :target: https://travis-ci.org/Net-ng/kansha
 
-
 .. |coverage| image:: https://coveralls.io/repos/Net-ng/kansha/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/Net-ng/kansha?branch=master
 
+.. |requires| image:: https://requires.io/github/Net-ng/kansha/requirements.svg?branch=master
+     :target: https://requires.io/github/Net-ng/kansha/requirements/?branch=master
+     :alt: Requirements Status

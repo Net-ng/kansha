@@ -181,50 +181,45 @@ class RegistrationForm(editor.Editor):
 
 @presentation.render_for(RegistrationForm)
 def render_RegistrationForm(self, h, comp, *args):
-    with h.body(class_='yui-skin-sam'):
-        with h.div(id='application'):
-            h << self.header
-            h << self.header.render(h, 'hide')
+    h << self.header.render(h, 'hide')
+    with h.h1:
+        h << _("Register")
 
-            with h.div(class_='login-form'):
-                with h.h1:
-                    h << _("Register")
+    # autocomplete="off": do not store the password
+    with h.form(autocomplete="off").post_action(self.validate_passwords_match):
+        with h.div(class_='fields'):
+            fields = (
+                (_('Username'), 'username', 'text', self.username),
+                (_('Email address'), 'email', 'text', self.email),
+                (_('Fullname'), 'fullname', 'text', self.fullname),
+                (_('Password'),
+                    'password', 'password', self.password),
+                (_('Password (repeat)'), 'password-repeat',
+                    'password', self.password_repeat)
+            )
+            for label, css_class, input_type, property in fields:
+                with h.div(class_='%s-field field' % css_class):
+                    id_ = h.generate_id("field")
+                    with h.label(for_=id_):
+                        h << label
+                    h << h.input(id=id_,
+                                 type=input_type,
+                                 value=property()).action(property).error(property.error)
 
-                # autocomplete="off": do not store the password
-                with h.form(autocomplete="off").post_action(self.validate_passwords_match):
-                    with h.div(class_='fields'):
-                        fields = (
-                            (_('Username'), 'username', 'text', self.username),
-                            (_('Email address'), 'email', 'text', self.email),
-                            (_('Fullname'), 'fullname', 'text', self.fullname),
-                            (_('Password'),
-                                'password', 'password', self.password),
-                            (_('Password (repeat)'), 'password-repeat',
-                                'password', self.password_repeat)
-                        )
-                        for label, css_class, input_type, property in fields:
-                            with h.div(class_='%s-field field' % css_class):
-                                id_ = h.generate_id("field")
-                                with h.label(for_=id_):
-                                    h << label
-                                h << h.input(id=id_,
-                                             type=input_type,
-                                             value=property()).action(property).error(property.error)
+            with h.div(class_='captcha-field field'):
+                id_ = h.generate_id("field")
+                with h.label(for_=id_):
+                    h << _("Enter the captcha text")
+                h << h.input(id=id_,
+                             type='text').action(self.captcha_text).error(self.captcha_text.error)
+            h << comp.render(h.AsyncRenderer(), 'captcha')
+        with h.div(class_='actions'):
+            h << h.input(type='submit',
+                         value=_("Create new account"),
+                         class_="btn btn-primary btn-small").action(self.on_ok, comp)
 
-                        with h.div(class_='captcha-field field'):
-                            id_ = h.generate_id("field")
-                            with h.label(for_=id_):
-                                h << _("Enter the captcha text")
-                            h << h.input(id=id_,
-                                         type='text').action(self.captcha_text).error(self.captcha_text.error)
-                        h << comp.render(h.AsyncRenderer(), 'captcha')
-                    with h.div(class_='actions'):
-                        h << h.input(type='submit',
-                                     value=_("Create new account"),
-                                     class_="btn btn-primary btn-small").action(self.on_ok, comp)
-
-                    h << _("Already have an account? ") << h.a(
-                        _("Log in")).action(comp.answer)
+        h << _("Already have an account? ") << h.a(
+            _("Log in")).action(comp.answer)
 
     return h.root
 
@@ -436,39 +431,34 @@ def render_password_reset_form(self, h, comp, *args):
         user = self.commit()
         if user:
             comp.answer(user.username)
-    with h.body(class_='yui-skin-sam'):
-        with h.div(id='application'):
-            h << self.header
-            h << self.header.render(h, 'hide')
+    h << self.header.render(h, 'hide')
+    with h.h1:
+        h << _("Forgot password")
 
-            with h.div(class_='login-form'):
-                with h.h1:
-                    h << _("Forgot password")
+    with h.p:
+        h << _("""Please enter your username and your email address and you'll receive an email that contains a link to reset your password.""")
 
-                with h.p:
-                    h << _("""Please enter your username and your email address and you'll receive an email that contains a link to reset your password.""")
+    with h.form.post_action(self.validate_email_match_user_email):
+        with h.div(class_='fields'):
+            fields = (
+                (_('Username'), 'username', 'text', self.username),
+                (_('Email address'), 'email', 'text', self.email),
+            )
+            for label, css_class, input_type, property in fields:
+                with h.div(class_='%s-field field' % css_class):
+                    id = h.generate_id("field")
+                    with h.label(for_=id):
+                        h << label
+                    h << h.input(id=id,
+                                 type=input_type,
+                                 value=property()).action(property).error(property.error)
 
-                with h.form.post_action(self.validate_email_match_user_email):
-                    with h.div(class_='fields'):
-                        fields = (
-                            (_('Username'), 'username', 'text', self.username),
-                            (_('Email address'), 'email', 'text', self.email),
-                        )
-                        for label, css_class, input_type, property in fields:
-                            with h.div(class_='%s-field field' % css_class):
-                                id = h.generate_id("field")
-                                with h.label(for_=id):
-                                    h << label
-                                h << h.input(id=id,
-                                             type=input_type,
-                                             value=property()).action(property).error(property.error)
+        with h.div(class_='actions'):
+            h << h.input(type='submit',
+                         value=_("Reset password"),
+                         class_='btn btn-primary btn-small').action(commit)
 
-                    with h.div(class_='actions'):
-                        h << h.input(type='submit',
-                                     value=_("Reset password"),
-                                     class_='btn btn-primary btn-small').action(commit)
-
-                    h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer))
+        h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer))
 
     return h.root
 
@@ -546,22 +536,18 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
 @presentation.render_for(PasswordResetConfirmation, model='email')
 def render_password_reset_confirmation_failure(self, h, comp, *args):
     """Renders a password change acknowledgment message"""
-    with h.body(class_='yui-skin-sam'):
-        with h.div(id='application'):
-            h << self.header
-            h << self.header.render(h, 'hide')
-            with h.div(class_='login-form'):
-                with h.h1:
-                    h << _("Email sent!")
+    h << self.header.render(h, 'hide')
+    with h.h1:
+        h << _("Email sent!")
 
-                with h.p:
-                    h << _("""An email has been sent!""")
+    with h.p:
+        h << _("""An email has been sent!""")
 
-                with h.form:
-                    with h.div(class_='actions'):
-                        h << h.input(type='submit',
-                                     class_='btn btn-primary btn-small',
-                                     value=_("Ok")).action(comp.answer)
+    with h.form:
+        with h.div(class_='actions'):
+            h << h.input(type='submit',
+                         class_='btn btn-primary btn-small',
+                         value=_("Ok")).action(comp.answer)
     return h.root
 
 
@@ -680,28 +666,24 @@ class EmailConfirmation(object):
 
 @presentation.render_for(EmailConfirmation)
 def render_registration_confirmation(self, h, comp, *args):
-    with h.body(class_='yui-skin-sam'):
-        with h.div(id='application'):
-            h << self.header
-            h << self.header.render(h, 'hide')
-            with h.div(class_='login-form'):
-                with h.h1:
-                    h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
+    h << self.header.render(h, 'hide')
+    with h.h1:
+        h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
 
-                with h.p:
-                    if self.moderator:
-                        h << _("""An email has been sent to the moderator. You will be contacted when
-                        your account is activated.""")
-                    else:
-                        h << _("""An email has been sent to your email address. You have to click on the
-                        confirmation link in this email in order to confirm your email address in the
-                        application.""")
+    with h.p:
+        if self.moderator:
+            h << _("""An email has been sent to the moderator. You will be contacted when
+            your account is activated.""")
+        else:
+            h << _("""An email has been sent to your email address. You have to click on the
+            confirmation link in this email in order to confirm your email address in the
+            application.""")
 
-                with h.form:
-                    with h.div(class_='actions'):
-                        h << h.input(type='submit',
-                                     class_='btn btn-primary btn-small',
-                                     value=_("Ok")).action(comp.answer)
+    with h.form:
+        with h.div(class_='actions'):
+            h << h.input(type='submit',
+                         class_='btn btn-primary btn-small',
+                         value=_("Ok")).action(comp.answer)
 
     return h.root
 

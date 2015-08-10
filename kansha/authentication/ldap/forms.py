@@ -51,21 +51,19 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render(self, h, comp, *args):
-    with h.div(id="LDAPLogin"):
-        with h.h1:
-            h << _("Log in with LDAP")
+    with h.div(class_="LDAPLogin"):
         with h.form:
-            if self.error_message:
-                h << h.br << h.div(self.error_message, class_="error")
+            # if self.error_message:
+            #     h << h.br << h.div(self.error_message, class_="error")
             uid = var.Var()
-            h << h.label(_("username"), for_="username")
-            h << h.input(type='text', name='__ac_name', id="ldap_username").action(uid)
-            h << h.label(_("password"), for_="password")
+            h << h.input(type='text', name='__ac_name',
+                         id="ldap_username", placeholder=_("username")).action(uid)
             passwd = var.Var()
             h << h.input(
-                type='password', name='__ac_password', id="ldap_password").action(passwd)
+                type='password', name='__ac_password',
+                id="ldap_password", placeholder=_("password")).action(passwd)
             with h.div(class_='actions'):
-                h << h.input(type='submit', value=u'OK',
+                h << h.input(type='submit', value=_(u'Sign in with LDAP'),
                              class_="btn btn-primary btn-small"
                              ).action(lambda: self.connect(uid(), passwd(), comp))
 

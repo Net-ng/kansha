@@ -8,7 +8,7 @@
 # this distribution.
 #--
 
-from nagare import presentation, component, database, security
+from nagare import presentation, component, database, security, i18n
 from ...user import usermanager
 from . import oauth_providers
 
@@ -23,7 +23,7 @@ class GoogleConnexion(object):
 
 @presentation.render_for(GoogleConnexion)
 def render(self, h, comp, *args):
-    h << h.a(h.img(src="img/google-signin.png", class_="oauth google")).action(lambda: comp.call(self.google))
+    h << h.a(i18n._('Sign in with Google'), class_="oauth google").action(lambda: comp.call(self.google))
     return h.root
 
 
@@ -37,7 +37,7 @@ class FacebookConnexion(object):
 
 @presentation.render_for(FacebookConnexion)
 def render(self, h, comp, *args):
-    h << h.a(h.img(src="img/fb-signin.png", class_="oauth facebook")).action(lambda: comp.call(self.facebook))
+    h << h.a(i18n._('Sign in with Facebook'), class_="oauth facebook").action(lambda: comp.call(self.facebook))
     return h.root
 
 
@@ -82,7 +82,7 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render(self, h, comp, *args):
-    with h.div(id="oauthLogin"):
+    with h.div(class_="oauthLogin"):
         for (source, oauth) in self.oauth_modules.items():
             h << oauth.on_answer(lambda u, source=source: comp.answer(self.connect(u, source)))
     return h.root

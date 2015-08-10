@@ -1,0 +1,64 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:100,300,400,500,700);
+@import url(http://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Condensed);
+
+html{height: 100%; background: #f8f8f8 url("../img/background.jpg") repeat-x;}
+body{font-family: 'Ubuntu', sans-serif;margin:0;padding:0;height: 100%; background: #f8f8f8 url("../img/background.jpg") repeat-x;}
+h1, h2{font-family: inherit}
+h3{font-family: 'Roboto', sans-serif;font-weight: 300}
+ul {font-weight: 300}
+li {font-family: 'Roboto', sans-serif;font-size: 24px;list-style-type: none}
+
+.body-login{min-height:520px;position: relative}
+.logo{display: block;background: url(../img/logo.png) no-repeat top center;width: 173px;height: 315px;position: absolute;left: 53px;top:0}
+ .header h1{font-weight: 400;font-size:25px;position: absolute;margin: 0;width: 273px;text-align: center;top:300px}
+.title{text-align: center}
+.title h2{font-weight: 200;margin: 0;text-align: center;font-size: 60px}
+.title .error{font-size: 20px; font-weight: 200; background: rgba(0, 0, 0, 0) url("../img/warning.png") no-repeat left center;color: #c22e2e;padding-left: 25px;display: inline-block}
+.container{display: table;margin: auto;border:1px solid #e5e5e5; margin-top: 20px}
+form{position: relative;display: block;vertical-align: top;padding:30px}
+label{display: block;font-size: 22px;font-weight: 300}
+input[type="text"]{border:1px solid #e5e5e5;padding:10px;margin-bottom: 15px;display: block;font-weight: 200;font-size: 20px;max-width: 240px}
+input[type="text"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-color:#e6a323;outline: none}
+input[type="password"]{border:1px solid #e5e5e5;padding:10px;display: block;font-weight: 200;font-size: 20px;max-width: 240px}
+input[type="password"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-color:#e6a323;outline: none}
+.btn{background: #F49B25;color:#333;border: 0;display: inline-block;font-size: 17px;padding: 10px 30px;margin:18px 0 0 0;text-decoration: none; text-transform: uppercase;}
+.databaseLogin{position: relative;display: table-cell;vertical-align: top;font-size:16px;font-weight: 200;border-left:1px solid #e5e5e5;}
+.LDAPLogin{position: relative;display: table-cell;vertical-align: top;font-size:16px;font-weight: 200;border-left:1px solid #e5e5e5;}
+.oauthLogin{position: relative;display: table-cell;vertical-align: middle;padding:30px;font-size:16px;font-weight: 200;border-left:1px solid #e5e5e5;background: #f9f9f9}
+.oauthLogin a{display: block;width: 100%;border:1px solid #e5e5e5;height: 41px;margin:15px 0;text-decoration: none;padding: 0 10px 0 50px;line-height: 41px}
+.oauthLogin .google{background: white url(../img/google.png) no-repeat center left}
+.oauthLogin .google:hover{background-color:#c75541;color:white}
+.oauthLogin .facebook{background: white url(../img/facebook.png) no-repeat center left}
+.oauthLogin .facebook:hover{background-color:#39569b;color:white}
+.oauthLogin .linkedin{background: white url(../img/linkedin.png) no-repeat center left}
+.oauthLogin .linkedin:hover{background-color:#1883bb;color:white}
+.message{text-align: center;padding:10px; margin-bottom: 50px;}
+.credits{text-align: center;position: fixed;bottom: 0;width: 100%;padding:10px 0; background-color: #E7E7E7;
+    box-shadow: 0 0 1px rgb(151, 151, 151);}
+
+
+.field label, .field input {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    width: 15em;
+}
+
+@media (max-width: 1370px) {
+    .body-login{min-height:auto}
+    .logo {position: static;margin: 0 auto}
+    .header h1 {position: static;margin-bottom: 20px;width: 100%;padding:0 10px}
+    .title h2{font-size:40px}
+    .credits{position: static;padding:20px}
+    form{display: block}
+    .databaseLogin{display: block;border-left: 0;border-top:1px solid #e5e5e5}
+    .oauthLogin{display: block;border-left: 0;border-top:1px solid #e5e5e5}
+    .LDAPLogin{display: block;border-left: 0;border-top:1px solid #e5e5e5}
+}
+
+
+@media (max-width: 400px) {
+    input{width: 100%}
+}

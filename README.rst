@@ -18,12 +18,17 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
-* Run the latest code from Github with Docker::
+* Run the latest development image built from Github with Docker::
 
- docker run -p 8080:8080 netng/kansha
+   docker run -p 8080:8080 netng/kansha
 
 * Test the latest stable release online, with content: http://demo.kansha.org
 * Or run from source: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
+
+Issues
+------
+
+If you have any problems with or questions about Kansha, please contact us through a `GitHub issue <https://github.com/Net-ng/kansha/issues>`_.
 
 Contribute
 ----------

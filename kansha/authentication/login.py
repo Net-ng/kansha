@@ -21,8 +21,8 @@ from .ldap import forms as ldap
 
 class Header(object):
 
-    def __init__(self, app_title, custom_css):
-        self.app_title = app_title
+    def __init__(self, banner, custom_css):
+        self.banner = banner
         self.custom_css = custom_css
 
 
@@ -30,7 +30,7 @@ class Header(object):
 def render_Header(self, h, comp, *args):
     """Head renderer"""
 
-    h.head << h.head.title(self.app_title)
+    h.head << h.head.title(self.banner)
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
@@ -41,17 +41,18 @@ def render_Header(self, h, comp, *args):
 
     with h.div(class_='header'):
         h << h.div(class_='logo')
-        h << h.h1(self.app_title)
+        h << h.h1(self.banner)
     return h.root
 
 
 class Login(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, auth_cfg, assets_manager):
+    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager):
         """Login components
 
         """
         logins = []
+        auth_cfg = cfg['auth_cfg']
         if auth_cfg['dbauth']['activated']:
             logins.append(database_form.Login(app_title, custom_css, mail_sender, auth_cfg['dbauth']))
         if auth_cfg['oauth']['activated']:
@@ -61,8 +62,13 @@ class Login(object):
 
         self.app_title = app_title
         self.logins = [component.Component(login) for login in logins]
-        self.header = component.Component(Header(self.app_title, custom_css))
-        self.disclaimer = auth_cfg['disclaimer']
+        self.header = component.Component(
+            Header(
+                cfg['pub_cfg']['banner'],
+                custom_css
+            )
+        )
+        self.disclaimer = cfg['pub_cfg']['disclaimer']
 
 
 @presentation.render_for(Login)

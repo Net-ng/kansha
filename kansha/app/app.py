@@ -129,18 +129,19 @@ class MainTask(component.Task):
         self.main_app = main_app
         self.assets_manager = assets_manager
         self.search_engine = search
+        self.cfg = cfg
 
     def go(self, comp):
         user = security.get_user()
         while user is None:
             # not logged ? Call login component
             comp.call(login.Login(self.app_title, self.custom_css,
-                                  self.mail_sender, self.auth_cfg, self.assets_manager))
+                                  self.mail_sender, self.cfg, self.assets_manager))
             user = security.get_user()
             if user.last_login is None:
                 # first connection.
                 # Load template boards if any, then
-                self.app.boards_manager.create_boards_from_templates(user.data, self.tpl_cfg)
+                self.app.boards_manager.create_boards_from_templates(user.data, self.cfg['tpl_cfg'])
                 # index cards
                 self.app.boards_manager.index_user_cards(user.data,
                                                          self.search_engine)
@@ -175,6 +176,7 @@ class WSGIApp(wsgi.WSGIApp):
     ConfigSpec = {
         'application': {'as_root': 'boolean(default=True)',
                         'title': 'string(default="")',
+                        'banner': 'string(default="")',
                         'custom_css': 'string(default="")',
                         'disclaimer': 'string(default="")'},
         'dbauth': {'activated': 'boolean(default=True)',
@@ -236,11 +238,21 @@ class WSGIApp(wsgi.WSGIApp):
         self.debug = conf['application']['debug']
         self.default_locale = i18n.Locale(
             conf['locale']['major'], conf['locale']['minor'])
-        self.auth_cfg = {'dbauth': conf['dbauth'],
-                         'oauth': conf['oauth'],
-                         'ldapauth': conf['ldapauth'],
-                         'disclaimer': conf['application']['disclaimer']}
-        self.tpl_cfg = conf['application']['templates']
+        auth_cfg = {
+            'dbauth': conf['dbauth'],
+            'oauth': conf['oauth'],
+            'ldapauth': conf['ldapauth']
+        }
+        tpl_cfg = conf['application']['templates']
+        pub_cfg = {
+            'disclaimer': conf['application']['disclaimer'].decode('utf-8'),
+            'banner': conf['application']['banner'].decode('utf-8')
+        }
+        self.app_cfg = {
+            'auth_cfg': auth_cfg,
+            'tpl_cfg': tpl_cfg,
+            'pub_cfg': pub_cfg
+        }
         self.activity_monitor = conf['application'].get('activity_monitor', '')
 
     def set_publisher(self, publisher):
@@ -249,11 +261,10 @@ class WSGIApp(wsgi.WSGIApp):
                                            self)
 
     def create_root(self):
-        cfg = {'tpl_cfg': self.tpl_cfg, 'auth_cfg': self.auth_cfg}
         return super(WSGIApp, self).create_root(self.app_title,
                                                 self.custom_css,
                                                 self.mail_sender,
-                                                cfg,
+                                                self.app_cfg,
                                                 self.assets_manager,
                                                 self.search_engine)
 

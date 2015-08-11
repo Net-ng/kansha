@@ -89,7 +89,8 @@ Kansha features can be activated and customized with a configuration file like t
     debug = off
     redirect_after_post = on
     as_root = on
-    title = <<APP_TITLE>>
+    title = <<APP_TITLE>> # should be short!
+    banner = <<LONG_TITLE>> # or motto/slogan or empty
     custom_css = <<CUSTOM_CSS>>  # path or empty
     templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
     activity_monitor = <<MONITOR_EMAIL>> # optional

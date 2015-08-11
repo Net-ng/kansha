@@ -76,6 +76,8 @@ a:active {
     cursor: pointer;
     padding: 0 10px 0 10px;
     z-index: 25;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .collapse:hover {
@@ -103,6 +105,7 @@ a:active {
     box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.47);
     z-index: 30;
     height: 40px;
+
 }
 
 .navbar #mainActions {
@@ -178,8 +181,12 @@ a:active {
     background-position: -204px -792px;
 }
 
+#mainNavbar .tab {
+    width: 175px;
+}
+
 #boardNavbar .tab {
-    left: 205px;
+    left: 255px;
 }
 
 #boardNavbar .overlay-body textarea {

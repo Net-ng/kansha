@@ -25,3 +25,4 @@ doc/_build
 .idea/vcs.xml
 .idea/workspace.xml
 data/assets/*
+data/templates/*

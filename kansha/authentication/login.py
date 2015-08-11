@@ -34,13 +34,13 @@ def render_Header(self, h, comp, *args):
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
-    h.head.css_url('css/bootstrap.min.css')
-    h.head.css_url('css/responsive-kansha.css')
+    h.head.css_url('css/knacss.css')
+    h.head.css_url('css/login.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
-    h.head.css_url('css/fonts.css')
 
-    with h.div(id_="application_title"):
+    with h.div(class_='header'):
+        h << h.div(class_='logo')
         h << h.h1(self.app_title)
     return h.root
 
@@ -92,26 +92,27 @@ class Login(object):
             logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
 
         self.app_title = app_title
-        self.error_message = ''
         self.logins = [component.Component(login) for login in logins]
         self.header = component.Component(Header(self.app_title, custom_css))
+        self.disclaimer = auth_cfg['disclaimer']
 
 
 @presentation.render_for(Login)
 def render_Login(self, h, comp, *args):
     with h.body(class_='body-login'):
-        with h.div(class_='wrap'):
-            with h.div(class_='container'):
-                h << self.header
-                with h.div(id='application'):
-                    with h.div(class_='login-form'):
-                        for index, login in enumerate(self.logins, 1):
-                            h << login.on_answer(comp.answer)
-                            if index != len(self.logins):
-                                h << h.span(_('or'))
+        h << self.header
+        with h.div(class_='title'):
+            h << h.h2(_(u'Sign in'))
+            for login in self.logins:
+                if getattr(login(), 'error_message', u''):
+                    h << h.small(login().error_message, class_='error')
+        with h.div(class_='container'):
+            for index, login in enumerate(self.logins, 1):
+                h << login.on_answer(comp.answer)
 
+        with h.div(class_='message'):
+            h << h.parse_htmlstring(self.disclaimer) if self.disclaimer else u''
         with h.div(class_='credits'):
-            with h.div(class_='container'):
-                h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
+            h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
 
     return h.root

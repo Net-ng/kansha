@@ -19,7 +19,7 @@ Kansha supports four different authentication schemes:
 
 The administrator of Kansha may choose to enable one or several of those authentication methods. So, your actual login screen may differ from the one pictured above.
 
-The intaller created several demonstration accounts for you. They are: user1, user2, user3. They all have the same password: *password*.
+The installer created several demonstration accounts for you. They are: user1, user2, user3. They all have the same password: *password*.
 
 .. _dbauth:
 

@@ -1919,93 +1919,6 @@ input:focus, textarea:focus {
     background: #000
 }
 
-/* login form*/
-
-#application_title {
-    margin: 0 auto;
-    width: 457px;
-    margin-top: 63px;
-    background: none repeat scroll 0 0 white;
-    position: relative;
-    left: -490px;
-    -webkit-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    transform: rotate(90deg);
-    /* IE 8 hack \9 */
-    margin-top: 0 \9;
-    margin-bottom: 63px \9;
-}
-
-#application_title h1 {
-    font: 24px OpenSansSemiBold;
-    letter-spacing: 26px;
-    padding-left: 12px;
-    text-align: right;
-    text-transform: uppercase;
-}
-
-#application #application #application_title {
-    visibility: hidden;
-}
-
-.login-form {
-    margin: 0 auto;
-    width: 890px;
-    position: relative;
-    top: -72px
-}
-
-.login-form h1 {
-    font: normal 23px OpenSanslight
-}
-
-.login-form #googleLogin {
-    padding-top: 80px;
-    margin-left: 283px;
-    height: 127px;
-    border-left: 1px solid #CCCCCC
-}
-
-.login-form #googleLogin span {
-    font: normal 18px OpenSansLight;
-    padding: 0 20px
-}
-
-.login-form .error {
-    background: url("../img/warning.png") no-repeat left center;
-    font: normal 15px OpenSansSemibold;
-    color: #c22e2e;
-    padding-left: 24px;
-    position: relative;
-    top: -10px
-}
-
-.login-form span {
-    float: left;
-    font: normal 23px OpenSansRegular;
-    padding: 80px 12px 12px 12px
-}
-
-.login-form .databaseLogin {
-    float: left;
-    width: 254px;
-    margin: 0 8px
-}
-
-.login-form #LDAPLogin {
-    float: left;
-    width: 254px;
-    margin: 0 8px
-}
-
-.login-form #oauthLogin {
-    float: left;
-    width: 158px;
-    margin: 0 8px;
-    padding-top: 50px
-}
 
 .nagare-error-message {
     background: url("../img/warning.png") no-repeat left center;
@@ -2039,10 +1952,6 @@ input:focus, textarea:focus {
     position: relative;
 }
 
-.login-form .actions {
-    margin: 15px 0
-}
-
 /* structure */
 .row-fluid > [class*="span"] {
     margin-left: 5.564%
@@ -2056,20 +1965,6 @@ input:focus, textarea:focus {
     width: 67.812%
 }
 
-#captchaImage {
-    float: left;
-    margin-bottom: 15px;
-}
-
-#captchaRefresh {
-    background: url("../img/iconmonstr-refresh-5-icon.png") no-repeat left center;
-    display: inline-block;
-    height: 30px;
-    width: 30px;
-    margin-left: 15px;
-    position: relative;
-    top: 15px;
-}
 
 /*Home page*/
 #home-user {

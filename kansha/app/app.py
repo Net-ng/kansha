@@ -140,9 +140,9 @@ class MainTask(component.Task):
             user = security.get_user()
             if user.last_login is None:
                 # first connection.
-                # Load template boards if any, then
+                # Load template boards if any,
                 self.app.boards_manager.create_boards_from_templates(user.data, self.cfg['tpl_cfg'])
-                # index cards
+                # then index cards
                 self.app.boards_manager.index_user_cards(user.data,
                                                          self.search_engine)
             user.update_last_login()

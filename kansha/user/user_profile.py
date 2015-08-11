@@ -477,6 +477,6 @@ def render_userboards(self, h, comp, *args):
 
             onclick = 'return confirm("%s")' % _(
                 "These boards will be destroyed. Are you sure?")
-            h << h.a(_("Purger"), class_="btn btn-primary btn-small",
+            h << h.a(_("Delete"), class_="btn btn-primary btn-small",
                      type='submit', onclick=onclick).action(self.purge_archived_boards)
     return h.root

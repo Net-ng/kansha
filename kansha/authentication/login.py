@@ -92,9 +92,9 @@ class Login(object):
             logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
 
         self.app_title = app_title
-        self.error_message = ''
         self.logins = [component.Component(login) for login in logins]
         self.header = component.Component(Header(self.app_title, custom_css))
+        self.disclaimer = auth_cfg['disclaimer']
 
 
 @presentation.render_for(Login)
@@ -111,7 +111,7 @@ def render_Login(self, h, comp, *args):
                 h << login.on_answer(comp.answer)
 
         with h.div(class_='message'):
-            h << "message here"
+            h << h.parse_htmlstring(self.disclaimer) if self.disclaimer else u''
         with h.div(class_='credits'):
             h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
 

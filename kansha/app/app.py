@@ -146,7 +146,6 @@ class MainTask(component.Task):
                                                          self.search_engine)
             user.update_last_login()
 
-
         comp.call(self.app.initialization())
         # Logout
         if user is not None:
@@ -176,7 +175,8 @@ class WSGIApp(wsgi.WSGIApp):
     ConfigSpec = {
         'application': {'as_root': 'boolean(default=True)',
                         'title': 'string(default="")',
-                        'custom_css': 'string(default="")'},
+                        'custom_css': 'string(default="")',
+                        'disclaimer': 'string(default="")'},
         'dbauth': {'activated': 'boolean(default=True)',
                    'moderator': 'string(default=""),',
                    'default_username': 'string(default="")',
@@ -238,7 +238,8 @@ class WSGIApp(wsgi.WSGIApp):
             conf['locale']['major'], conf['locale']['minor'])
         self.auth_cfg = {'dbauth': conf['dbauth'],
                          'oauth': conf['oauth'],
-                         'ldapauth': conf['ldapauth']}
+                         'ldapauth': conf['ldapauth'],
+                         'disclaimer': conf['application']['disclaimer']}
         self.tpl_cfg = conf['application']['templates']
         self.activity_monitor = conf['application'].get('activity_monitor', '')
 

@@ -94,6 +94,7 @@ Kansha features can be activated and customized with a configuration file like t
     templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
     activity_monitor = <<MONITOR_EMAIL>> # optional
     crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
+    disclaimer = # message to display on login screens, below the forms (optional)
 
     [database]
     debug = off

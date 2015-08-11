@@ -16,7 +16,7 @@ li {font-family: 'Roboto', sans-serif;font-size: 24px;list-style-type: none}
 .title h2{font-weight: 200;margin: 0;text-align: center;font-size: 60px}
 .title .error{font-size: 20px; font-weight: 200; background: rgba(0, 0, 0, 0) url("../img/warning.png") no-repeat left center;color: #c22e2e;padding-left: 25px;display: inline-block}
 .container{display: table;margin: auto;border:1px solid #e5e5e5; margin-top: 20px}
-form{position: relative;display: block;vertical-align: top;padding:30px}
+form{position: relative;display: block;padding:30px}
 label{display: block;font-size: 22px;font-weight: 300}
 input[type="text"]{border:1px solid #e5e5e5;padding:10px;margin-bottom: 15px;display: block;font-weight: 200;font-size: 20px;max-width: 240px}
 input[type="text"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-color:#e6a323;outline: none}
@@ -46,6 +46,21 @@ input[type="password"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-colo
     width: 15em;
 }
 
+#captchaImage {
+    float: right;
+    margin-bottom: 15px;
+}
+
+#captchaRefresh {
+    background: url("../img/iconmonstr-refresh-5-icon.png") no-repeat left center;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    margin-left: 8px;
+    position: relative;
+    top: 15px;
+}
+
 @media (max-width: 1370px) {
     .body-login{min-height:auto}
     .logo {position: static;margin: 0 auto}
@@ -58,6 +73,12 @@ input[type="password"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-colo
     .LDAPLogin{display: block;border-left: 0;border-top:1px solid #e5e5e5}
 }
 
+@media (max-width: 700px) {
+    #captchaImage {
+        float: none;
+        margin-bottom: 15px;
+    }
+}
 
 @media (max-width: 400px) {
     input{width: 100%}

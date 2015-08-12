@@ -52,6 +52,7 @@ input[type="password"]:focus{box-shadow:0 0 5px rgba(230,163,35,0.8);border-colo
     border-left:1px solid #e5e5e5;
     background-color: white;
     min-width: 330px;
+    max-width: 700px;
 }
 .LDAPLogin{position: relative;display: table-cell;vertical-align: top;font-size:16px;font-weight: 200;border-left:1px solid #e5e5e5; background-color: white;}
 .oauthLogin{position: relative;display: table-cell;vertical-align: middle;padding:30px;font-size:16px;font-weight: 200;border-left:1px solid #e5e5e5;background: #f9f9f9}

@@ -57,11 +57,11 @@ def render(self, h, comp, *args):
             #     h << h.br << h.div(self.error_message, class_="error")
             uid = var.Var()
             h << h.input(type='text', name='__ac_name',
-                         id="ldap_username", placeholder=_("username")).action(uid)
+                         id="ldap_username", placeholder=_("Enter username")).action(uid)
             passwd = var.Var()
             h << h.input(
                 type='password', name='__ac_password',
-                id="ldap_password", placeholder=_("password")).action(passwd)
+                id="ldap_password", placeholder=_("Enter password")).action(passwd)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in with LDAP'),
                              class_="btn btn-primary btn-small"

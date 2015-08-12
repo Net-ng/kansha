@@ -63,12 +63,22 @@ def redirect_to(url):
 class Login(object):
 
     def __init__(self, app_title, custom_css, mail_sender, config):
-        self.error_message = ''
+        self._error_message = ''
         self.registration_task = RegistrationTask(app_title, custom_css, mail_sender, config['moderator'])
         self.default_username = config['default_username']
         self.default_password = config['default_password']
         self.pwd_reset = PasswordResetTask(app_title, custom_css, mail_sender)
         self.content = component.Component()
+
+    @property
+    def error_message(self):
+        return self._error_message or getattr(self.content(), 'error_message', u'')
+
+    @error_message.setter
+    def error_message(self, value):
+        self._error_message = u''
+        if self.content():
+            setattr(self.content(), 'error_message', u'')
 
     def log_in(self, comp):
         u = security.get_user()
@@ -80,7 +90,7 @@ class Login(object):
             database.session.flush()
             comp.answer(u)
         else:
-            self.error_message = _('Login failed')
+            self._error_message = _('Login failed')
 
 
 @presentation.render_for(Login)
@@ -98,10 +108,10 @@ def render_Login_form(self, h, comp, *args):
             # if self.error_message:
             #     h << h.br << h.div(self.error_message, class_="error")
             h << h.input(type='text', name='__ac_name', id="username",
-                         value=self.default_username, placeholder=_("username"))
+                         value=self.default_username, placeholder=_("Enter username"))
             h << h.input(type='password', name='__ac_password', id="password",
-                         value=self.default_password, placeholder=_("password"))
-            h << h.a(_('Forgot your Password?')).action(self.content.call, self.pwd_reset)
+                         value=self.default_password, placeholder=_("Enter password"))
+            h << h.a(_('Forgot password?')).action(self.content.call, self.pwd_reset)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in'), class_="btn btn-primary btn-small").action(self.log_in, comp)
                 with h.div:
@@ -124,6 +134,7 @@ class RegistrationForm(editor.Editor):
         self.captcha_text = editor.Property('').validate(self.validate_captcha)
         self.header = component.Component(Header(app_title, custom_css))
         self.user_manager = usermanager.UserManager()
+        self.error_message = u''
 
     def init_captcha_image(self):
         self.captcha_image = component.Component(captcha.Captcha())
@@ -161,6 +172,7 @@ class RegistrationForm(editor.Editor):
                       'password_repeat', 'captcha_text')
         if not self.is_validated(properties):
             self.captcha_image.becomes(captcha.Captcha())
+            self.error_message = _(u'Unable to process. Check your input below.')
             return None
 
         # register the user in the database
@@ -269,11 +281,8 @@ def render_registration_confirmation_failure(self, h, comp, *args):
         h << self.header
         with h.div(class_='title'):
             h << h.h2(_(u'Sign up'))
-
+            h << h.small(_("Registration failure!"), class_='error')
         with h.div(class_='container'):
-            with h.h3:
-                h << _("Registration failure!")
-
             with h.p:
                 h << _("""Registration failure! The token received is either expired or invalid. Please register again.""")
 
@@ -301,6 +310,7 @@ class PasswordEditor(editor.Editor):
         self.password_repeat = editor.Property(
             '').validate(validators.validate_password)
         self.header = component.Component(Header(app_title, custom_css))
+        self.error_message = u''
 
     def validate_old_password(self, value):
         validators.validate_non_empty_string(value)
@@ -322,6 +332,7 @@ class PasswordEditor(editor.Editor):
             properties.insert(0, 'old_password')
 
         if not self.is_validated(properties):
+            self.error_message = _(u'Invalid input!')
             return False
 
         # change the user's password in the database
@@ -345,7 +356,9 @@ def render_password_editor(self, h, comp, *args):
         h << self.header
         with h.div(class_='title'):
             h << h.h2(_(u'Change password'))
-
+            if self.error_message:
+                h << h.small(self.error_message, class_='error')
+                self.error_message = u''
         with h.div(class_='container'):
 
             # autocomplete="off" prevent IE & Firefox from remembering the
@@ -395,6 +408,7 @@ class PasswordResetForm(editor.Editor):
         self.username = editor.Property('').validate(self.validate_username)
         self.email = editor.Property('').validate(validators.validate_email)
         self.header = component.Component(Header(app_title, custom_css))
+        self.error_message = u''
 
     def validate_username(self, value):
         value = validators.validate_identifier(value)
@@ -417,6 +431,7 @@ class PasswordResetForm(editor.Editor):
     def commit(self):
         properties = ('username', 'email')
         if not self.is_validated(properties):
+            self.error_message = _(u'Invalid input!')
             return None
 
         return self._get_user_by_username(self.username.value)
@@ -535,17 +550,18 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
 def render_password_reset_confirmation_failure(self, h, comp, *args):
     """Renders a password change acknowledgment message"""
     h << self.header.render(h, 'hide')
-    with h.h3:
-        h << _("Email sent!")
+    with h.div(class_='databaseLogin'):
+        with h.h3:
+            h << _("Email sent!")
 
-    with h.p:
-        h << _("""An email has been sent!""")
+        with h.p:
+            h << _("""An email has been sent!""")
 
-    with h.form:
-        with h.div(class_='actions'):
-            h << h.input(type='submit',
-                         class_='btn btn-primary btn-small',
-                         value=_("Ok")).action(comp.answer)
+        with h.form:
+            with h.div(class_='actions'):
+                h << h.input(type='submit',
+                             class_='btn btn-primary btn-small',
+                             value=_("Ok")).action(comp.answer)
     return h.root
 
 
@@ -555,11 +571,8 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
         h << self.header
         with h.div(class_='title'):
             h << h.h2(_(u'Change password'))
-
+            h << h.small(_("Password reset failure!"), class_='error')
         with h.div(class_='container'):
-            with h.h3:
-                h << _("Password reset failure!")
-
             with h.p:
                 h << _("""Password reset failure! Please try again.""")
 
@@ -667,23 +680,24 @@ class EmailConfirmation(object):
 @presentation.render_for(EmailConfirmation)
 def render_registration_confirmation(self, h, comp, *args):
     h << self.header.render(h, 'hide')
-    with h.h3:
-        h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
+    with h.div(class_='databaseLogin'):
+        with h.h3:
+            h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
 
-    with h.p:
-        if self.moderator:
-            h << _("""An email has been sent to the moderator. You will be contacted when
-            your account is activated.""")
-        else:
-            h << _("""An email has been sent to your email address. You have to click on the
-            confirmation link in this email in order to confirm your email address in the
-            application.""")
+        with h.p:
+            if self.moderator:
+                h << _("""An email has been sent to the moderator. You will be contacted when
+                your account is activated.""")
+            else:
+                h << _("""An email has been sent to your email address. You have to click on the
+                confirmation link in this email in order to confirm your email address in the
+                application.""")
 
-    with h.form:
-        with h.div(class_='actions'):
-            h << h.input(type='submit',
-                         class_='btn btn-primary btn-small',
-                         value=_("Ok")).action(comp.answer)
+        with h.form:
+            with h.div(class_='actions'):
+                h << h.input(type='submit',
+                             class_='btn btn-primary btn-small',
+                             value=_("Ok")).action(comp.answer)
 
     return h.root
 

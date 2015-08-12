@@ -80,6 +80,7 @@ def render_Login(self, h, comp, *args):
             for login in self.logins:
                 if getattr(login(), 'error_message', u''):
                     h << h.small(login().error_message, class_='error')
+                    login().error_message = u''
         with h.div(class_='container'):
             for index, login in enumerate(self.logins, 1):
                 h << login.on_answer(comp.answer)

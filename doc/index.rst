@@ -6,7 +6,7 @@
 Welcome to Kansha's documentation!
 ==================================
 
-Kansha is a web application to manage and share collaborative pinboards.
+Kansha is an open source web application to manage and share collaborative scrum boards and `more <http://www.kansha.org>`_.
 
 Contents:
 

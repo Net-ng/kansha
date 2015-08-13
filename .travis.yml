@@ -1,21 +1,27 @@
 language: python
 python:
-  - "2.7"
+- '2.7'
 before_install:
-  - "sudo apt-get update -qq"
-  - "sudo apt-get install -y gcc make libxml2-dev libxslt-dev libjpeg8-dev libopenjpeg-dev libwebp-dev libmysqld-dev libldap2-dev libsasl2-dev libpcre3-dev libtiff4-dev libpq-dev"
+- sudo apt-get update -qq
+- sudo apt-get install -y gcc make libxml2-dev libxslt-dev libjpeg8-dev libopenjpeg-dev
+  libwebp-dev libmysqld-dev libldap2-dev libsasl2-dev libpcre3-dev libtiff4-dev libpq-dev
 services:
-  - elasticsearch
+- elasticsearch
 install:
-  - "python setup.py develop --find-links http://www.nagare.org/snapshots/"
-  - "pip install elasticsearch"
-  - "pip install sphinx"
-  - "pip install coveralls"
+- easy_install .
+- pip install elasticsearch
+- pip install sphinx
+- pip install coveralls
 before_script:
-  - sleep 10
+- sleep 10
 script:
-  - "cd doc && make html && cd ../"
-  - coverage run --source=kansha --timid setup.py nosetests
-after_success:
-  coveralls
-
+- cd doc && make html && cd ../
+- coverage run --source=kansha --timid setup.py nosetests
+after_success: coveralls
+deploy:
+  provider: pypi
+  user: Net-ng
+  password:
+    secure: c9jMMtFUVRs+JGPBr4WunK1ziky/1GJbrqe7JqMBHnDXXvbr2xOXvmhOB/hvZghdrXDkAopjcsCYUDdU0maS1AcM7y8YGNl6HbfD3ZWJVCcIIW+2HWKseNxTo9Mh2Iai4EL+ty8bFC4T4XKA1bpGPS+/cW30Qekj6t7nWKFqDuBz70zW1a/FekvyZYw6hs6mBr68ouGfip1C5khy+ceDx49ElI1KVXAiIXgjp3b5Z8tCmVuD3+7sLPsOh0X4USyJlHlg5uz734Te8IzaMPfd30U2ZnPd8SxPaJivB9CgVrlzytaVWAgTzsucnTJJ6Fgg8ec2iD57Q3DYA1sOozRuMlSI4vZ/CLO+jG1wQd91dNly1X23gGiGX85xXkxgoFxgF5XrAsG9pvf76ACKb8zT+6DduGW37gxdZqWZZvZ5A8ysHf4cGAc9Ain0newjfZheu6p+Cw0St4FjTZqNdhujUbEcT0D+uD/hCcjeXUMp79Q3x770NEEVeFpU7EjKfmc3TrlKr+rVSVd5WhHM1J2oV2aM8gO1n/UI77H9b9fI8tfC+SoykagOJ64xSTuWUdi3nGOZpGsjC3uVRlBbQy1Jv4A5slIzdJZ4rlqggyBdPeCpNAc5URzWEktSQqIzYaaVVdejfIf0bfyBm2/4r7TqRD9fZap72BwqLiyGBFjqR7w=
+  on:
+    tags: true

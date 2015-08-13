@@ -2,6 +2,7 @@ KANSHA
 ======
 
 |docs|
+|pypiv|
 |travis|
 |coverage|
 |climate|
@@ -58,3 +59,7 @@ Join us!
 .. |requires| image:: https://requires.io/github/Net-ng/kansha/requirements.svg?branch=master
      :target: https://requires.io/github/Net-ng/kansha/requirements/?branch=master
      :alt: Requirements Status
+
+.. |pypiv| image:: https://img.shields.io/pypi/dw/kansha.svg
+     :target: https://pypi.python.org/pypi/kansha/
+     :alt: PyPI entry

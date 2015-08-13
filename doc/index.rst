@@ -16,6 +16,8 @@ Contents:
    install
    first_connection
    board_management
+   contribute
+   faq
 
 Index
 =====

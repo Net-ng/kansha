@@ -3,177 +3,45 @@
 Production setup
 ================
 
-The built-in server, database and search engine are very convenient for testing, but they are not recommended for production setups.
+The built-in server, database and search engine are very convenient for testing,
+but they are not recommended for production sites
+(*Well, in fact, the default search engine is quite capable; do some benchmarks to decide*).
 
 Fortunately, you can run Kansha with:
 
 * any database supported by SQLAlchemy (complete list at http://docs.sqlalchemy.org/en/rel_0_9/dialects/index.html);
 * behind any webserver which supports Fast CGI (FCGI);
+* different authentication backends;
 * with ElasticSearch as search engine.
 
-Configuration file
-------------------
+For instructions on how to configure Kansha and for detailled explanations of each option, please read the :ref:`configuration_guide`.
 
-Kansha features can be activated and customized with a configuration file like this:
+In this section, we concentrate on how to deploy Kansha as a multiprocess application backend behind a web server.
 
-.. code-block:: INI
+Installation
+------------
 
-    [application]
-    path = app kansha
-    name = kansha
-    debug = off
-    redirect_after_post = on
-    as_root = on
-    title = <<APP_TITLE>> # should be short!
-    banner = <<LONG_TITLE>> # or motto/slogan or empty
-    custom_css = <<CUSTOM_CSS>>  # path or empty
-    templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
-    activity_monitor = <<MONITOR_EMAIL>> # optional
-    crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
-    disclaimer = # message to display on login screens, below the forms (optional)
+As in the quickstart guide, follow the installation steps from :ref:`python_install`.
 
-    [database]
-    debug = off
-    activated = on
-    uri = postgres://<<DBUSER>>:<<DBPASS>>@<<DBHOST>>:<<DBPORT>>/<<DBNAME>> # adapt to your own DBMS
-    metadata = elixir:metadata
-    populate = kansha.populate:populate
-    # especially useful for mysql
-    #pool_recycle = 3600
+You also need to install:
 
-    [search]
-    engine = sqlite
-    collection = kansha
-    index_folder = <<DATA_DIR>>
+* the database you want to use;
+* memcached;
+* your favorite web server with FCGI support;
+* and if you choose to, ElasticSearch.
 
-    # built in authentication system
-    [dbauth]
-    activated = <<AUTH_DB>>
-    # moderator email if needed
-    moderator = <<MOD_EMAIL>> # or empty
-    # default values to fill in the login form (useful for a demo board)
-    default_username = <<DEFAULT_USERNAME>>
-    default_password = <<DEFAULT_PASSWORD>>
+You can use the default configurations for memcached and ElasticSearch.
 
-    # authenticate with LDAP
-    [ldapauth]
-    activated = <<AUTH_LDAP>>
-    server = <<AUTH_LDAP_SERVER>>
-    users_base_dn = <<AUTH_LDAP_USERS_BASE_DN>>
-    cls = <<AUTH_LDAP_CLASS>>
+Then configure Kansha (:ref:`configuration_guide`).
 
-    # authenticate with google or facebook
-    [oauth]
-    activated = <<AUTH_OAUTH>>
+In any case, you always need to::
 
-    [[google]]
-    activated = <<AUTH_OAUTH_GOOGLE>>
-    key = <<AUTH_OAUTH_GOOGLE_KEY>>
-    secret = <<AUTH_OAUTH_GOOGLE_SECRET>>
+    $ <STACKLESS_DIR>/bin/nagare-admin create-db --no-populate <kansha-conf>
+    $ <STACKLESS_DIR>/bin/nagare-admin create-index <kansha-conf>
 
-    [[facebook]]
-    activated = <<AUTH_OAUTH_FACEBOOK>>
-    key = <<AUTH_OAUTH_FACEBOOK_KEY>>
-    secret = <<AUTH_OAUTH_FACEBOOK_SECRET>>
+When you **first** deploy.
 
-    [mail]
-    activated = on
-    smtp_host = <<MAIL_HOST>>
-    smtp_port = <<MAIL_PORT>>
-    default_sender = <<MAIL_SENDER>>
-
-    [assetsmanager]
-    basedir = <<DATA_DIR>>/assets/
-    max_size = 2048
-
-    [locale]
-    major = fr
-    minor = FR
-
-    [logging]
-
-    [[logger]]
-    level=INFO
-
-    [[handler]]
-    class=logging.handlers.RotatingFileHandler
-    args="('<<DATA_DIR>>/logs/<<LOG_FILE>>', 'a', 10485760, 8, 'UTF-8')"
-
-
-Just replace the <<PLACEHOLDERS>> with your actual values.
-
-To manage and run Kansha with your own custom configuration::
-
-    nagare-admin create-db path/to/your/custom.conf
-    nagare-admin create-index path/to/your/custom.conf
-    nagare-admin serve path/to/your/custom.conf
-
-
-
-Authentication
---------------
-
-You can use up to four different systems to authenticate your users in Kansha. You can activate as many authentication systems as you want.
-
-dbauth
-    Database authentication. Users must register first via the web interface. If moderation is activated with the ``moderator`` directive, all registrations must be approved.
-
-ldapauth
-    Authenticate your users against an LDAP or Active Directory database. You will need some additional packages::
-
-        easy_install kansha[ldap]
-
-google
-    Open your application to Google account owners. Needs oauth activated.
-
-facebook
-    Open your application to facebook users. Needs oauth activated.
-
-
-Database
---------
-
-Kansha uses SQLAlchemy to connect to databases. Adapt the URI in the configuration file to your own setup. Depending on the DBMS you use, you may need to create the target database first.
-For documentation on how to write such URIs, see http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html#database-urls.
-
-Note for Postgresql (recommended) users:
-
- *  install the needed dependencies::
-
-        $ easy_install kansha[postgres]
-
-Note for MySQL users:
-
- * install the needed dependencies::
-
-        $ easy_install kansha[mysql]
-
- * in the configuration file, the option ``pool_recycle`` has to be set to a value consistent with the ``wait_timeout`` system variable of MySQL.
-
-Search engine
--------------
-
-We currently support two search engine plugins for Kansha:
-
-sqlite
-    SQLite FTS based plugin. Configuration options are:
-
-    * collection (the name of the index)
-    * index_folder (folder where the index is stored)
-
-    Supported versions of sqlite: you need sqlite 3.8.0 or newer. Yet, the search engine can work with limited functionality down to sqlite 3.7.7.
-    As far as Kansha is concerned, it should not make any difference, since it doesn't use the missing features (for the moment).
-
-elastic
-    ElasticSearch based plugin. Configuration options are:
-
-    * collection (name of the index)
-    * host
-    * port
-
-In order to use ElasticSearch, install the needed dependencies::
-
-    easy_install kansha[elastic]
+The ``--no-populate`` option ensures that the default users (*user1*, *user2* and *user3*) are not created.
 
 Deployment behind a web server
 ------------------------------
@@ -215,6 +83,17 @@ Append these directives to your configuration file:
 
 Set the <<PLACEHOLDERS>> as appropriate.
 
+Optimize how static contents are served
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+nagare-admin create-rules
+
+Using a supervisor
+^^^^^^^^^^^^^^^^^^
+
+Optional, to be written…
+
+
 Periodic tasks
 --------------
 
@@ -231,3 +110,21 @@ Where the <<PLACEHOLDERS>> are correctly replaced by, respectively:
 You can locate the ``send_notifications.py`` file in your python installation (``site-packages``).
 
 Place this command in a crontab and check that the timespan matches the time interval between each run.
+
+
+Upgrading a production site
+---------------------------
+
+We mean *upgrading Kansha*.
+
+First activate the virtual environment from which you are running Kansha and just type::
+
+    $ easy_install --upgrade kansha
+
+Or, if you want a specific version instead of the latest stable (replace X, Y and Z with the actual numbers)::
+
+    $ easy_install kansha==X.Y.Z
+
+Migrate database and/or indexes (more to come).
+
+Now restart Kansha.

@@ -16,6 +16,7 @@ before_script:
 - sleep 10
 script:
 - cd doc && make html && cd ../
+- python setup.py compile_catalog
 - coverage run --source=kansha --timid setup.py nosetests
 after_success: coveralls
 deploy:

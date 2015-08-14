@@ -99,9 +99,9 @@ class NngLDAPAuth(LDAPAuth):
         return profile
 
 
-class PJMSLDAPAuth(LDAPAuth):
+class ADLDAPAuth(LDAPAuth):
     def connect(self):
-        conn = super(PJMSLDAPAuth, self).connect()
+        conn = super(ADLDAPAuth, self).connect()
         conn.set_option(ldap.OPT_REFERRALS, 0)
         conn.protocol_version = 3
         return conn

@@ -53,6 +53,7 @@ setup(
       kansha = kansha.app:app
       [nagare.commands]
       create-index = kansha.batch.create_index:ReIndex
+      save-config = kansha.batch.save_config:SaveConfig
       [search.engines]
       dummy = kansha.services.search.dummyengine:DummySearchEngine
       sqlite = kansha.services.search.sqliteengine:SQLiteFTSEngine

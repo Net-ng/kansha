@@ -22,7 +22,9 @@ Just type::
 
     $ docker run -p 8080:8080 netng/kansha
 
-Now point your browser to  http://localhost:8080 and enjoy!
+Now point your browser to  ``http://localhost:8080`` and enjoy!
+
+*If you are using Boot2docker or Docker Machine (Windows/MacOS), replace* ``localhost`` *above by the IP address of your virtual machine.*
 
 Update your local image
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -37,15 +39,21 @@ For that purpose, we provide the Dockerfile used to produce the public image on 
 Then you have to adapt it. See :ref:`production_setup` for details.
 
 
+.. _python_install:
+
 Python package
 --------------
+
+The following instructions apply to UNIX-like systems, like Linux or MacOS X.
 
 Installation
 ^^^^^^^^^^^^
 
 Nagare, the framework used by Kansha, needs `Stackless Python`_ (version 2.7.X) to run.
 
-In order to install it via the sources, complete the following commands::
+Unfortunatly, none of the major Linux distributions offer packages for Stackless, so you have to build it from sources.
+
+In order to install it via the sources, first ensure you have the :ref:`prerequisite system dependencies <requirements>`, then complete the following commands::
 
     $ mkdir <STACKLESS_DIR>
     $ wget http://www.stackless.com/binaries/stackless-278-export.tar.bz2
@@ -78,19 +86,19 @@ Finally, when your virtual environment is active in your shell, type::
 
     $ easy_install kansha
 
-**Note to PIP users**: you currently can not use ``pip`` to install `kansha` because some data files and folders would be spread all over ``site-package``.
-The command ``easy_install`` puts each distribution into its own folder.
+**Note to PIP users**: you currently should not use ``pip`` to install `kansha` because some data files and folders would be spread all over ``site-packages``.
+The command ``easy_install`` puts each distribution into its own folder, preventing conflicts.
 
 Test run
 ^^^^^^^^
 
 To get quickly up and running, let's use the built-in web server, database and search engine with the default configuration.
 
-1. First initialize the database (first run only)::
+1. First, initialize the database (first run only)::
 
     $ nagare-admin create-db kansha
 
-2. Build the search indexes (can be repeated anytime)::
+2. Build the search indexes (can be safely repeated anytime)::
 
     $ nagare-admin create-index kansha
 

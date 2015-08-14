@@ -10,6 +10,10 @@ Give some feedback
 Bug reports
 ^^^^^^^^^^^
 
+Need Version.
+Install and test pre-releases.
+
+
 Feature requests
 ^^^^^^^^^^^^^^^^
 
@@ -24,6 +28,16 @@ Translate
 Fix bugs and code new features
 ------------------------------
 
+Developper setup
+
+processes & practices (pep8, CSS formating rules, release cycle, version numbering…)
+
+unit tests
+
+Review others' code.
+
 
 Spread the word!
 ----------------
+
+If you enjoy Kansha, share it! It's open source and free, even for companies. Don't hesitate to promote it inside your organization or working team. It's a profitable tool for collaborators on a project.

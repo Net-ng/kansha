@@ -36,8 +36,8 @@ Then configure Kansha (:ref:`configuration_guide`).
 
 In any case, you always need to::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin create-db --no-populate <kansha-conf>
-    $ <STACKLESS_DIR>/bin/nagare-admin create-index <kansha-conf>
+    $ <STACKLESS_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
+    $ <STACKLESS_DIR>/bin/nagare-admin create-index </path/to/your/kansha.cfg>
 
 When you **first** deploy.
 
@@ -93,6 +93,8 @@ Using a supervisor
 
 Optional, to be written…
 
+
+.. _periodic_tasks:
 
 Periodic tasks
 --------------

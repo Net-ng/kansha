@@ -33,7 +33,7 @@ setup(
     url='',
     packages=find_packages(),
     include_package_data=True,
-    package_data={'': ['*.cfg', '*.ini']},
+    package_data={'': ['*.cfg', '*.ini', '*.jpg']},
     zip_safe=False,
     install_requires=(
         'PEAK-Rules==0.5a1.dev-r2713',

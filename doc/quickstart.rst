@@ -109,3 +109,12 @@ To get quickly up and running, let's use the built-in web server, database and s
 Now kansha is listening. Just point your browser to http://localhost:8080 and enjoy!
 
 For production sites, we recommend you use an external web server, see :ref:`production_setup`.
+
+Upgrading
+^^^^^^^^^
+
+Upgrading Kansha without loosing data is very easy::
+
+    $ <STACKLESS_DIR>/bin/easy_install --upgrade kansha
+
+And then restart.

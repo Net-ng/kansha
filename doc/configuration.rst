@@ -307,6 +307,8 @@ secret
     Write here the secret that authenticates your site by the service you intend to use (you have to register with the service first to get one)
 
 
+.. _mail:
+
 Mail
 ----
 

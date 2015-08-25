@@ -91,10 +91,12 @@ if you missed some tricks or tidbitts you learned the hard way later;
 please contribute directly to the manual.
 
 
+.. _direct_doc:
+
 Direct contribution
 ^^^^^^^^^^^^^^^^^^^
 
-First, you'll need to prepare your :ref:`devel`.
+First, you'll need to prepare your :ref:`develenv`.
 
 Like many other Python projects, we use `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ to write the documentation,
 and `Sphinx <http://sphinx-doc.org/>`_ and `Readthedocs <https://readthedocs.org/>`_ to format it into HTML pages.
@@ -149,8 +151,87 @@ And, *maybe*, a direct contributor will discuss, pick and implement your request
 Translate
 ---------
 
-po files
-extract, update, compile
+Fixing supported languages or supporting a new language (yours!) is quite easy.
+
+Before you start, you'll need to prepare your :ref:`develenv`.
+
+Kansha/Nagare uses `Babel <http://babel.pocoo.org/docs/>`_ for localization.
+
+
+.. _fix_lang:
+
+Fix supported languages
+^^^^^^^^^^^^^^^^^^^^^^^
+
+First, extract the messages::
+
+    $ cd <KANSHA_DIR>
+    $ python setup.py extract_messages
+
+That command extracted all the messages of the application marked for localization into :file:`<KANSHA_DIR>/data/locale/messages.pot`.
+
+Then, update the translation catalogs (for all languages)::
+
+    $ python setup.py update_catalog
+
+Now you can edit the translation file for the language of your choice.
+You'll find it at :file:`<KANSHA_DIR>/data/locale/xx/LC_MESSAGES/messages.po`
+where xx is the two-letter ISO code of the target language.
+
+If you intend to edit the :file:`.po` file with a text editor, you may need to learn the `PO format <http://pology.nedohodnik.net/doc/user/en_US/ch-poformat.html>`_ first.
+
+Otherwise, there are some PO editors out there:
+
+* The best known is Poedit: https://poedit.net/
+* For Eclipse users, the gted extension: http://www.gted.org/
+
+When you are done editing the po file, you have to compile it before you see the result in Kansha::
+
+    $ python setup.py compile_catalog
+
+The command produces a MO file at :file:`<KANSHA_DIR>/data/locale/xx/LC_MESSAGES/messages.mo` for each language.
+
+Now restart Kansha to check your translations (the ``--reload`` switch to :command:`nagare-admin serve` is not enough).
+
+If everything is OK, you can commit the PO file **you've edited** and not the other ones that were modified as a side effect of ``update_catalog``. You commit **one** PO file at a time.
+
+Now you can push.
+
+Workflow summary:
+
+1. Extract messages::
+
+    $ python setup.py extract_messages
+
+2. Update catalogs::
+
+    $ python setup.py update_catalog
+
+3. Edit a PO file in a language you master
+4. Compile it::
+
+    $ python setup.py compile_catalog
+
+5. Restart Kansha.
+6. Check the translations.
+7. Repeat from 3 (always same PO file) until done.
+8. Commit your PO file with an explanatory commit message.
+9. Repeat from 3 for another PO file (optional).
+10. Push.
+11. Submit a Pull Request.
+
+
+Add a new language
+^^^^^^^^^^^^^^^^^^
+
+If you want to transalte Kansha in a new language that is not already present in :file:`<KANSHA_DIR>/data/locale/`, just initialize it with::
+
+    $ python setup.py init_catalog --locale xx
+
+where xx is the two-letter ISO code of the target language.
+
+From here, you can proceed as in :ref:`fix_lang`.
+
 
 .. _contribute_code:
 
@@ -165,7 +246,7 @@ processes & practices (pep8, CSS formating rules, release cycle, version numberi
 
 unit tests
 
-documentation
+translation, documentation
 
 Review others' code.
 

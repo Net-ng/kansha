@@ -42,6 +42,7 @@ setup(
         'Paste==1.7.5.1'
     ),
     extras_require={'test': ('nose',),
+                    'htmldocs': ('sphinx',),
                     'debug': ('WebError',),
                     'ldap': ('python-ldap',),
                     'postgres': ('psycopg2',),

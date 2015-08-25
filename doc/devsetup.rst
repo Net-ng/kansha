@@ -65,6 +65,7 @@ That is, any modification done to the files in :file:`kansha/kansha` will be ava
 Finally, install all the optional dependencies of Kansha::
 
     $ pip install kansha[test]
+    $ pip install kansha[htmldocs]
     $ pip install kansha[ldap]
     $ pip install kansha[postgres]
     $ pip install kansha[mysql]

@@ -1,7 +1,7 @@
 How to contribute to Kansha
 ===========================
 
-You don't have to be a developper to help Kansha get better.
+You don't have to be a developer to help Kansha get better.
 You can contribute in many ways depending on your skills and preferences.
 
 Spread the word!
@@ -9,6 +9,8 @@ Spread the word!
 
 If you enjoy Kansha, share it! It's open source and free, even for companies. Don't hesitate to promote it inside your organization or working team. It's a profitable tool for collaborators on a project.
 
+
+.. _feedback:
 
 Give some feedback
 ------------------
@@ -81,9 +83,66 @@ Requesting a new feature.
 Contribute to the documention
 -----------------------------
 
+We try hard to keep the documentation accurate and up-to-date, and volunteers are welcome.
+
+If you find typos, inaccuracies, mistakes or misleading information;
+if you think some features of Kansha deserve more detailled explanations;
+if you missed some tricks or tidbitts you learned the hard way later;
+please contribute directly to the manual.
+
+
+Direct contribution
+^^^^^^^^^^^^^^^^^^^
+
 First, you'll need to prepare your :ref:`devel`.
 
-git,rst,sphinx,preview, PR
+Like many other Python projects, we use `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ to write the documentation,
+and `Sphinx <http://sphinx-doc.org/>`_ and `Readthedocs <https://readthedocs.org/>`_ to format it into HTML pages.
+
+Besides `plain reST <http://sphinx-doc.org/rest.html>`_, we also make heavy use of Sphinx extended `directives <http://sphinx-doc.org/markup/index.html>`_.
+
+The source documentation is located in :file:`<KANSHA_DIR>/doc`. To build the html version locally, just type::
+
+    $ cd <KANSHA_DIR>/doc
+    $ make html
+
+You will then find the HTML files in :file:`<KANSHA_DIR>/doc/_build/html/`.
+
+Documentation workflow:
+
+1. Redact;
+2. check your grammar, spelling and syntax;
+3. build the HTML;
+4. proofread;
+5. repeat from 1. until your text is clear, complete and correct;
+6. commit with appropriate message;
+7. go to 1 until your work is done;
+8. push;
+9. submit a pull request on github.
+
+To avoid duplicate work or conflicts, you'd better fill an issue first, to announce what you are going to do , on `GitHub Issues`_. For that, proceed as below :ref:`indirect_doc`, except you don't have to redact your contribution inside the issue. Instead, you assign it to you.
+
+
+.. _indirect_doc:
+
+Indirect contribution
+^^^^^^^^^^^^^^^^^^^^^
+
+If the workflow described above is too complicated for you, there is an alternative, yet much less effective: submit an *enhancement* issue on `GitHub Issues`_ and wait for a volunteer to implement it.
+
+#. Click on the green button "New issue".
+#. You will be asked to log in (or register) if you have not already done so.
+#. As title, enter a  short one-sentence summary that explains the proposed prose.
+#. As comment, you:
+
+    * tell us whether you propose a fix or new paragraphs/sections;
+    * precise where in the manual you contribution should go;
+    * **redact** the part of the manual you want to add or fix.
+
+#. Apply the "enhancement" label.
+#. Submit the issue.
+
+And, *maybe*, a direct contributor will discuss, pick and implement your request.
 
 .. _contribute_trans:
 
@@ -98,11 +157,15 @@ extract, update, compile
 Fix bugs and code new features
 ------------------------------
 
-Developper setup
+developer setup
+
+issue first
 
 processes & practices (pep8, CSS formating rules, release cycle, version numbering…)
 
 unit tests
+
+documentation
 
 Review others' code.
 

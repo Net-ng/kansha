@@ -1,8 +1,5 @@
-
 Kansha installation
 ===================
-
-Contents:
 
 .. toctree::
    :maxdepth: 2
@@ -11,3 +8,4 @@ Contents:
    configuration
    production
    devsetup
+

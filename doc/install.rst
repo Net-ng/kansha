@@ -10,3 +10,4 @@ Contents:
    quickstart
    configuration
    production
+   devsetup

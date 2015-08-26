@@ -124,8 +124,9 @@ On the home screen you have access to:
 * the list of all the cards you are assigned to (*My cards*);
 * your profile, which you can edit.
 
-You are encouraged to upload a picture of your face on your profile.
+On your profile, you can change the language of the interface. If your favorite language is missing, consider :ref:`contributing <contribute_trans>`.
 
+You are encouraged to upload a picture of your face on your profile.
 
 
 Searching
@@ -133,6 +134,6 @@ Searching
 
 Use the search input to search the cards.
 
-Type your query terms here and hit return: the matching cards will be highlighted.
+Type your query terms here: the irrelevant cards are filtered out as you type and the matching cards are highlighted.
 
-The search engine indexes the title, description, comments and labels.
+The search engine looks at the title, description, comments and labels of cards.

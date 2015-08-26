@@ -26,11 +26,14 @@ On the boards you own, you can:
 
 Archive the board:
     The board will not be accessible anymore, but it is not destroyed. You can restore it anytime.
+
 Add members:
     The *add member* icon (pointed by the orange arrow on the screenshot above) allows you to invite members to you board.
     Invited people can already be users of the application, in which case you can find them by username or email, or you can invite
     new people by entering their emails. The *favorites* is the list of users you are already in relation with.
-    You can not revoke members.
+
+Revoke members:
+    Click on a member, then on "Remove".
 
 On the boards you are simply a member of, you can opt-out anytime.
 
@@ -52,7 +55,7 @@ Votes
     Same for voting.
 Archive
     Deleted cards are still recoverable for they are actually archived. Show the archive column to see them.
-    If you purge the archive (action in the archive column menu), archived cards are definetly destroyed.
+    If you purge the archive (action in the archive column menu), archived cards are definitetly destroyed.
 Notifications
     This preference is open to all members so they can subscribe to activity digests for this board.
 
@@ -70,4 +73,4 @@ Cards can be weighted by order of importance. If you enable that ranking, you ca
 
 Background
 ^^^^^^^^^^
-Here you can set a wallpaper to you board and change the board title color to match. In particular, if the background image is dark, set a lighter title color for better readability.
+Here you can set a wallpaper to your board and change the board title color to match. In particular, if the background image is dark, set a lighter title color for better readability.

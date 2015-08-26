@@ -3,7 +3,7 @@
 System dependencies
 ===================
 
-These are the sytem dependencies needed to compile Stackless Python 2.7 and some of python extensions used by Kansha.
+These are the sytem dependencies needed to compile Stackless Python 2.7 and some of the python extensions used by Kansha.
 
 Debian based Linux distributions
 --------------------------------

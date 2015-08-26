@@ -238,17 +238,98 @@ From here, you can proceed as in :ref:`fix_lang`.
 Fix bugs and code new features
 ------------------------------
 
-developer setup
+You want to actively contribute to the code: welcome aboard!
 
-issue first
+Pick up (*or fill in*) a bug or a feature request in the `GitHub Issues`_ and let's go!
 
-processes & practices (pep8, CSS formating rules, release cycle, version numbering…)
+Preparation
+^^^^^^^^^^^
 
-unit tests
+First, check the issue is not already assigned to someone.
+If it is free, declare your intentions by posting a comment on the issue.
+That will start a discussion with the other developers, who may give you valuable advice.
+If you are new to Nagare development, you should choose to fix some bugs first, before implementing new features.
+If everything goes well, you'll be assigned to that issue.
 
-translation, documentation
+If not already done, prepare your :ref:`develenv`.
 
-Review others' code.
+Now you can code. Kansha is developed upon the Nagare Framework. If you are not already familiar with Nagare development, these are useful resources:
+
+* The `Nagare tutorial <http://www.nagare.org/trac/wiki/NagareTutorial>`_
+* The `Nagare documentation <http://www.nagare.org/trac/wiki>`_
+* The `Nagare API <http://www.nagare.org/trac/api>`_
+
+
+Guidelines
+^^^^^^^^^^
+
+Backend
+"""""""
+
+Nagare applications are based on components, so always think *component*.
+
+Components should be reusable. Components should not necessarily match business/domain objects. Components correspond to functional parts of the user interface and business logic. They may use several domain objects. Domain objects must not be aware of components.
+
+As a consequence, the main view of a component should generate one and only one DOM tree (i.e. only one root, usually a ``div``).
+
+Kansha uses semantic HTML5 for the UI. Avoid presentation specific markup and inline styles.
+
+Python code should comply with PEP8. That requirement may be relaxed when it is difficult or impossible to follow, e.g. in views with many context managers (``with … :``).
+
+Use docstrings and comments to make it easier for other developers to understand your code.
+
+All UI messages and labels should be in UTF8 and marked for localization.
+
+Write unit tests for internal functions, classes and API (we use :program:`nose`).
+
+Frontend
+""""""""
+
+The frontend must work on Internet Explorer >=9, Firefox, Chrome and Safari. Test before submitting a Pull Request.
+
+CSS
+    Please don't overqualify your selectors! Overqualified selectors are slow, add clutter, are difficult to read and go against component reusability. That rule was not followed in the past and it was a mistake.
+
+    To minimize git merge conflicts and to improve readability, write one property per line, with 4 space indentation (like python code). Selectors are not indented. Always put a space after the colon (:).
+
+    Tools like CSS lint can help.
+
+Javascript
+    Most of these `recommendations <http://isobar-idev.github.io/code-standards/#javascript_javascript>`_ apply here as well. Use what is already in place instead of adding new layers of code. Don't do in Javascript what can be done with asynchronous Nagare views. Always favor the Nagare way.
+
+    Tools like jshint or jslint can help.
+
+General
+"""""""
+
+If you add or modify UI messages or labels, please :ref:`translate <fix_lang>` them in the languages you master.
+
+If you add a new feature, or if you modify the behavior or UI of an existing feature, please :ref:`update <direct_doc>` the documentation.
+
+Workflow
+^^^^^^^^
+
+1. Develop;
+2. translate (if appliable);
+3. update the manual (if new feature, modified UI or behavior);
+4. write unit tests for internal funtionality and API (*for the latter, write the tests first, then develop*);
+5. test (IE9/Firefox/Chrome/Safari);
+6. repeat from 1. until your tests (automatic and/or manual) pass;
+7. commit with appropriate message;
+8. go to 1 until your work is done;
+9. push;
+10. submit a pull request on github.
+
+
+Review Pull Requests
+--------------------
+
+An other appreciated contribution is when you review others' pull requests. That' s also an excellent way to socialize and be part of the community.
+
+Mailing list
+------------
+
+It's highly recommended that you subscribe to the mailing list if you plan to contribute to Kansha: http://groups.google.com/group/kansha-users
 
 
 .. _GitHub Issues: https://github.com/Net-ng/kansha/issues

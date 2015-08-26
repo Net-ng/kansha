@@ -19,13 +19,14 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
+`Try Kansha online <http://demo.kansha.org>`_ or install it on a computer:
+
 * Run the latest stable release with Docker::
 
    docker run -p 8080:8080 netng/kansha
 
-* Or test it online, with content: http://demo.kansha.org
-* Install and run a stable release from Pypi: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
-* Or run from source: see the `documentation <http://kansha.readthedocs.org/en/latest/install.html>`_
+* Install and run a stable release from Pypi: see the `documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
+* Or run from source: see the `documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
 
 Issues
 ------

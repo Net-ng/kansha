@@ -46,7 +46,7 @@ First, create a stackless virtual environment so your development environment re
 
 <VENV_DIR> is whereever you want your virtual environment be created. Note that we won't be working in that directory directly, so it can be a hidden one.
 
-Fork the Kansha on `GitHub <https://github.com/Net-ng/kansha>`_.
+Fork the Kansha project on `GitHub <https://github.com/Net-ng/kansha>`_.
 
 Clone your project locally. Now you have a ``kansha`` folder (<KANSHA_DIR> in the following). That's where the actual development will take place.
 
@@ -113,16 +113,21 @@ Now that your environment is ready and kansha is running is development mode, le
 Generic workflow:
 
 1. Develop;
-2. write unit tests for internal funtionality and API (*for the latter, write the tests first, then develop*);
-3. test;
-4. repeat from 1. until your tests (automatic and/or manual) pass;
-5. commit with appropriate message;
-6. go to 1 until your work is done;
-7. push;
-8. submit a pull request on github.
+2. translate (if appliable);
+3. document;
+4. write unit tests for internal funtionality and API (*for the latter, write the tests first, then develop*);
+5. test;
+6. repeat from 1. until your tests (automatic and/or manual) pass;
+7. commit with appropriate message;
+8. go to 1 until your work is done;
+9. push;
+10. submit a pull request on github.
 
 Specific recommendations and workflows are described in theses sections:
 
 * :ref:`contribute_doc`
 * :ref:`contribute_trans`
 * :ref:`contribute_code`
+
+
+It's highly recommended that you subscribe to the mailing list: http://groups.google.com/group/kansha-users

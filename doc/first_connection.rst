@@ -124,6 +124,8 @@ On the home screen you have access to:
 * the list of all the cards you are assigned to (*My cards*);
 * your profile, which you can edit.
 
+On your profile, you can change the language of the interface. If your favorite language is missing, consider :ref:`contributing <contribute_trans>`.
+
 You are encouraged to upload a picture of your face on your profile.
 
 

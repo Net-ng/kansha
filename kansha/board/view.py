@@ -32,7 +32,16 @@ from nagare import i18n
 def render_Board_menu(self, h, comp, *args):
     with h.div(class_='navbar', id='boardNavbar'):
         with h.div(class_='navActions', id='boardActions'):
-            h << h.a(self.icons['preferences']).action(lambda: self.popin.call(popin.Popin(self.config, "edit")))
+            h << h.a(self.icons['preferences']).action(
+                lambda: self.popin.call(
+                    popin.Popin(
+                        component.Component(
+                            BoardConfig(self)
+                        ),
+                        "edit"
+                    )
+                )
+            )
 
             if security.has_permissions('edit', self):
                 h << self.add_list_overlay
@@ -40,7 +49,16 @@ def render_Board_menu(self, h, comp, *args):
 
             h << h.a(self.icons['export']).action(self.export)
 
-            h << h.a(self.icons['history']).action(lambda: self.popin.call(popin.Popin(self.history, 'history')))
+            h << h.a(self.icons['history']).action(
+                lambda: self.popin.call(
+                    popin.Popin(
+                        component.Component(
+                            notifications.ActionLog(self)
+                        ),
+                        'history'
+                    )
+                )
+            )
 
             if security.has_permissions('manage', self):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")

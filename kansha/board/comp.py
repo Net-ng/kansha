@@ -139,12 +139,6 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
-        # Board configuration component
-        self.config = component.Component(BoardConfig(self))
-
-        # Board history
-        self.history = component.Component(notifications.ActionLog(self))
-
         # Archive column
         self.archive_column = None
         archive_columns = [column.Column(c.id, self, self.assets_manager, self.search_engine, c) for c in self.data.columns if c.archive]

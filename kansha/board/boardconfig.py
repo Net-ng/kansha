@@ -29,11 +29,11 @@ class BoardConfig(object):
             - ``board`` -- the board object will want to configure
         """
         self.board = board
-        self.menu = [(_(u'Profile'), BoardProfile(board))]
+        self.menu = [(_(u'Profile'), BoardProfile)]
         if security.has_permissions('manage', self.board):
-            self.menu.append((_(u'Card labels'), BoardLabels(board)))
-            self.menu.append((_(u'Card weights'), BoardWeights(board)))
-            self.menu.append((_(u'Background'), BoardBackground(board)))
+            self.menu.append((_(u'Card labels'), BoardLabels))
+            self.menu.append((_(u'Card weights'), BoardWeights))
+            self.menu.append((_(u'Background'), BoardBackground))
         self.selected = None
         self.content = component.Component(None)
         self.select(self.menu[0][0])
@@ -46,8 +46,9 @@ class BoardConfig(object):
         """
         for label, o in self.menu:
             if label == v:
-                self.content.becomes(o)
+                self.content.becomes(o(self.board))
                 self.selected = v
+                break
 
 
 class BoardLabels(object):

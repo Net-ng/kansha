@@ -145,7 +145,7 @@ custom_css
     Path to a CSS file that will be applied to every page, after the default styles, so you can amend and personalize the look of your site.
 
 templates
-    Path to a folder containing boards in JSON format. Each new user created on your site will have private boards loaded from those templates. Let empty if you don't use that.
+    Path to a folder containing boards in JSON format. Each new user created on your site will have private boards loaded from those templates. Leave empty if you don't use that.
 
 activity_monitor
     Email address or nothing. If an email address is provided, activity reports will be sent to it regularly. See :ref:`periodic_tasks`.
@@ -191,7 +191,7 @@ Search
 ------
 
 You can choose one out of two search backends for the moment: SQLite or ElasticSearch.
-They both work independently from the database you choose to store your data in.
+They both work independently from the database you chose to store your data in.
 
 The SQLite backend is quite capable and should be enough for most sites. More demanding sites may require ElasticSearch, or you may already have a running cluster on your network. Do some benchmarks before you choose, you may be surprised.
 

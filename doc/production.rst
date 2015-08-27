@@ -54,7 +54,8 @@ The steps are:
 
 1. install, configure and start memcached;
 2. configure kansha to start FCGI processes;
-3. install, configure and start your favorite web server with FCGI connectivity to Kansha processes.
+3. install, configure and start your favorite web server with FCGI connectivity to Kansha processes;
+4. start Kansha.
 
 Configure Kansha for FCGI
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -144,6 +145,16 @@ Your web server is better at serving static content than Kansha, so you'd better
 If you are using Apache, Nginx or Lighttpd, you'll find the detailled instructions in the `deployment section of the Nagare manual <http://www.nagare.org/trac/wiki/ApplicationDeployment>`_.
 
 
+Start Kansha
+^^^^^^^^^^^^
+
+Once you have configured the FCGI publisher, you can start Kansha as usual::
+
+    $ <STACKLESS_DIR>/bin/nagare-admin serve </path/to/your/kansha.cfg>
+
+That command starts the backend FCGI processes.
+
+
 Using a supervisor
 ^^^^^^^^^^^^^^^^^^
 
@@ -162,10 +173,10 @@ Kansha emits notifications users can subscribe to. In order for those notificati
 Where the <<PLACEHOLDERS>> are correctly replaced by, respectively:
 
 * the path to the configuration file of Kansha;
-* the timespan covered by the reports;
+* the timespan covered by the reports (in hours);
 * the url of the application.
 
-You can locate the ``send_notifications.py`` file in your python installation (``site-packages``).
+You can locate the ``send_notifications.py`` file in your python virtual environment (:path:`<VENV_DIR>/lib/python2.7/site-packages/kansha/batch/`).
 
 Place this command in a crontab and check that the timespan matches the time interval between each run.
 
@@ -180,11 +191,11 @@ We mean *upgrading Kansha* while keeping your data.
 
 First activate the virtual environment from which you are running Kansha and just type::
 
-    $ <STACKLESS_DIR>/bin/easy_install --upgrade kansha
+    $ easy_install --upgrade kansha
 
 Or, if you want a specific version instead of the latest stable (replace X, Y and Z with the actual numbers)::
 
-    $ <STACKLESS_DIR>/bin/easy_install kansha==X.Y.Z
+    $ easy_install kansha==X.Y.Z
 
 Migrate database and/or indexes (more to come).
 

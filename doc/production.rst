@@ -199,4 +199,6 @@ Or, if you want a specific version instead of the latest release (replace X, Y a
 
 Migrate database and/or indexes (more to come).
 
+Update the rewrite rules for static resources.
+
 Now restart Kansha.

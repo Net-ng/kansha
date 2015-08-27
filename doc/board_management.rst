@@ -14,7 +14,7 @@ Manage access rights
    The list of the boards the logged used has access to.
 
 
-In the board list on you home, you can see all boards you have access to:
+In the board list on your home, you can see all boards you have access to:
 
 * the boards you own;
 * the boards you've been invited to.
@@ -28,7 +28,7 @@ Archive the board:
     The board will not be accessible anymore, but it is not destroyed. You can restore it anytime.
 
 Add members:
-    The *add member* icon (pointed by the orange arrow on the screenshot above) allows you to invite members to you board.
+    The *add member* icon (pointed by the orange arrow on the screenshot above) allows you to invite members to your board.
     Invited people can already be users of the application, in which case you can find them by username or email, or you can invite
     new people by entering their emails. The *favorites* is the list of users you are already in relation with.
 

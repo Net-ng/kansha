@@ -18,7 +18,7 @@ Give some feedback
 Bug reports
 ^^^^^^^^^^^
 
-Help us improving Kansha by reporting the bugs or unexpected behaviors you may encounter, by following the steps below.
+Help us improve Kansha by reporting the bugs or unexpected behaviors you may encounter, by following the steps below.
 
 Can you reproduce the issue?
     Try to reproduce your bug using a recent version of the software, to see whether it has already been fixed. The easiest way to test the latest stable version of Kansha is on the `demo <http://demo.kansha.org>`_.
@@ -96,7 +96,7 @@ please contribute directly to the manual.
 Direct contribution
 ^^^^^^^^^^^^^^^^^^^
 
-First, you'll need to prepare your :ref:`develenv`.
+First, you'll need to prepare your :ref:`develenv`. Keep the virtual environment activated, or activate it.
 
 Like many other Python projects, we use `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ to write the documentation,
 and `Sphinx <http://sphinx-doc.org/>`_ and `Readthedocs <https://readthedocs.org/>`_ to format it into HTML pages.
@@ -153,7 +153,7 @@ Translate
 
 Fixing supported languages or supporting a new language (yours!) is quite easy.
 
-Before you start, you'll need to prepare your :ref:`develenv`.
+Before you start, you'll need to prepare your :ref:`develenv`. Keep the virtual environment activated, or activate it.
 
 Kansha/Nagare uses `Babel <http://babel.pocoo.org/docs/>`_ for localization.
 
@@ -185,7 +185,7 @@ Otherwise, there are some PO editors out there:
 * The best known is Poedit: https://poedit.net/
 * For Eclipse users, the gted extension: http://www.gted.org/
 
-When you are done editing the po file, you have to compile it before you see the result in Kansha::
+When you are done editing the PO file, you have to compile it before you see the results in Kansha::
 
     $ python setup.py compile_catalog
 
@@ -251,13 +251,13 @@ That will start a discussion with the other developers, who may give you valuabl
 If you are new to Nagare development, you should choose to fix some bugs first, before implementing new features.
 If everything goes well, you'll be assigned to that issue.
 
-If not already done, prepare your :ref:`develenv`.
+If not already done, prepare your :ref:`develenv`. Keep the virtual environment activated, or activate it.
 
 Now you can code. Kansha is developed upon the Nagare Framework. If you are not already familiar with Nagare development, these are useful resources:
 
-* The `Nagare tutorial <http://www.nagare.org/trac/wiki/NagareTutorial>`_
-* The `Nagare documentation <http://www.nagare.org/trac/wiki>`_
-* The `Nagare API <http://www.nagare.org/trac/api>`_
+* The `Nagare tutorial <http://www.nagare.org/trac/wiki/NagareTutorial>`_.
+* The `Nagare documentation <http://www.nagare.org/trac/wiki>`_.
+* The `Nagare API <http://www.nagare.org/trac/api>`_.
 
 
 Guidelines

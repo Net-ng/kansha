@@ -40,7 +40,7 @@ To install `virtualenv` within your fresh Stackless Python, you can execute the 
 Install Kansha for development
 ------------------------------
 
-First, create a stackless virtual environment so your development environment remain isolated::
+First, create a stackless virtual environment so your development environment remains isolated::
 
     $ <STACKLESS_DIR>/bin/virtualenv <VENV_DIR>
 
@@ -99,7 +99,7 @@ Now kansha is listening. Just point your browser to http://localhost:8080 and ch
 
 The ``--reload`` switch is handy for development, as the server then reloads kansha whenever a python file is modified.
 
-Later, each time you'll want to run Kansha in development mode,remember these steps::
+Later, each time you'll want to run Kansha in development mode, remember these steps::
 
     $ cd <KANSHA_DIR>
     $ source <VENV_DIR>/bin/activate

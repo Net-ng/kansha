@@ -189,13 +189,13 @@ Upgrading a production site
 
 We mean *upgrading Kansha* while keeping your data.
 
-First activate the virtual environment from which you are running Kansha and just type::
+Just type::
 
-    $ easy_install --upgrade kansha
+    $ <VENV_DIR>/bin/easy_install --upgrade kansha
 
-Or, if you want a specific version instead of the latest stable (replace X, Y and Z with the actual numbers)::
+Or, if you want a specific version instead of the latest release (replace X, Y and Z with the actual numbers)::
 
-    $ easy_install kansha==X.Y.Z
+    $ <VENV_DIR>/bin/easy_install kansha==X.Y.Z
 
 Migrate database and/or indexes (more to come).
 

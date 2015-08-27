@@ -88,7 +88,7 @@ Finally, when your virtual environment is active in your shell, type::
 
 .. pip install --allow-external PEAK-Rules  --allow-unverified PEAK-Rules --find-links=http://www.nagare.org/snapshots/ --trusted-host www.nagare.org kansha
 
-**Note to PIP users**: you currently should not use ``pip`` to install :program:`kansha` because some data files and folders would be spread all over ``site-packages``.
+**Note to PIP users**: you currently should not use :command:`pip` to install :program:`Kansha` because some data files and folders would be spread all over ``site-packages``.
 The command :command:`easy_install` puts each distribution into its own folder, preventing conflicts.
 
 **easy_install caveat**: :command:`easy_install` ignores completely `semantic versioning <https://www.python.org/dev/peps/pep-0440/>`_ and may install the lastest development release instead of the latest stable. In that case, you'd better specify the version you want explicitly, for example::

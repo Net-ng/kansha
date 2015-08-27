@@ -176,7 +176,7 @@ Where the <<PLACEHOLDERS>> are correctly replaced by, respectively:
 * the timespan covered by the reports (in hours);
 * the url of the application.
 
-You can locate the ``send_notifications.py`` file in your python virtual environment (:path:`<VENV_DIR>/lib/python2.7/site-packages/kansha/batch/`).
+You can locate the ``send_notifications.py`` file in your python virtual environment (:file:`<VENV_DIR>/lib/python2.7/site-packages/kansha/batch/`).
 
 Place this command in a crontab and check that the timespan matches the time interval between each run.
 

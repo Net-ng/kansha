@@ -3,6 +3,8 @@
 Configuration Guide
 ===================
 
+In the following, <VENV_DIR> refers to the python virtual environment where you installed Kansha.
+
 ``nagare-admin`` reference
 --------------------------
 
@@ -102,15 +104,15 @@ Just replace the <<PLACEHOLDERS>> with your actual values.
 
 For your convenience, you can generate a configuration template into your current directory::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin save-config kansha
+    $ <VENV_DIR>/bin/nagare-admin save-config kansha
 
 The template is ``kansha.cfg``. Edit it as you need. Ensure the folders you set for logs, assets… do exist.
 
 To manage and run Kansha with your own custom configuration::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin create-db /path/to/your/kansha.cfg
-    $ <STACKLESS_DIR>/bin/nagare-admin create-index /path/to/your/kansha.cfg
-    $ <STACKLESS_DIR>/bin/nagare-admin serve /path/to/your/kansha.cfg
+    $ <VENV_DIR>/bin/nagare-admin create-db /path/to/your/kansha.cfg
+    $ <VENV_DIR>/bin/nagare-admin create-index /path/to/your/kansha.cfg
+    $ <VENV_DIR>/bin/nagare-admin serve /path/to/your/kansha.cfg
 
 
 The different sections are detailled below.
@@ -178,13 +180,13 @@ Note for Postgresql (recommended DBMS for production sites) users:
 
  *  install the needed dependencies::
 
-        $ <STACKLESS_DIR>/bin/easy_install kansha[postgres]
+        $ <VENV_DIR>/bin/easy_install kansha[postgres]
 
 Note for MySQL users:
 
  * install the needed dependencies::
 
-        $ <STACKLESS_DIR>/bin/easy_install kansha[mysql]
+        $ <VENV_DIR>/bin/easy_install kansha[mysql]
 
 
 Search
@@ -219,7 +221,7 @@ ElasticSearch backend
 
 You need to install the python driver first::
 
-    $ <STACKLESS_DIR>/bin/easy_install kansha[elastic]
+    $ <VENV_DIR>/bin/easy_install kansha[elastic]
 
 Configuration options:
 
@@ -262,7 +264,7 @@ Use this module to authenticate your users against an LDAP or Active Directory d
 
 You will need to install some additional packages::
 
-        $ <STACKLESS_DIR>/bin/easy_install kansha[ldap]
+        $ <VENV_DIR>/bin/easy_install kansha[ldap]
 
 Configuration options:
 

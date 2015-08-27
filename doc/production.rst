@@ -18,7 +18,7 @@ For instructions on how to configure Kansha and for detailled explanations of ea
 
 In this section, we concentrate on how to deploy Kansha as a multiprocess application backend behind a web server.
 
-In the following, <STACKLESS_DIR> is the path to the directory where you have previously installed stackless python.
+In the following, <VENV_DIR> is the path to the python virtual environment you've installed Kansha in.
 
 Installation
 ------------
@@ -38,8 +38,8 @@ Then configure Kansha (:ref:`configuration_guide`).
 
 In any case, you always need to::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
-    $ <STACKLESS_DIR>/bin/nagare-admin create-index </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin create-index </path/to/your/kansha.cfg>
 
 When you **first** deploy.
 
@@ -150,7 +150,7 @@ Start Kansha
 
 Once you have configured the FCGI publisher, you can start Kansha as usual::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin serve </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin serve </path/to/your/kansha.cfg>
 
 That command starts the backend FCGI processes.
 
@@ -168,7 +168,7 @@ Periodic tasks
 
 Kansha emits notifications users can subscribe to. In order for those notifications to be sent, you have to call a batch task regularly::
 
-    $ <STACKLESS_DIR>/bin/nagare-admin batch <<PATHTOCONFFILE>> kansha/batch/send_notifications.py <<TIMESPAN>> <<APPURL>>
+    $ <VENV_DIR>/bin/nagare-admin batch <<PATHTOCONFFILE>> kansha/batch/send_notifications.py <<TIMESPAN>> <<APPURL>>
 
 Where the <<PLACEHOLDERS>> are correctly replaced by, respectively:
 

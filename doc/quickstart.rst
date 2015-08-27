@@ -122,6 +122,6 @@ Upgrading
 
 Upgrading Kansha without loosing data is very easy::
 
-    $ <STACKLESS_DIR>/bin/easy_install --upgrade kansha
+    $ easy_install --upgrade kansha
 
 And then restart.

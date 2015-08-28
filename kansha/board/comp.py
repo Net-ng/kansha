@@ -24,7 +24,6 @@ from ..column import comp as column
 from ..description import comp as description
 from ..title import comp as title
 from .boardsmanager import BoardsManager
-from .boardconfig import BoardConfig
 from .models import DataBoard, DataBoardMember
 from ..column.models import DataColumn
 from ..user.comp import PendingUser
@@ -146,6 +145,7 @@ class Board(object):
             self.archive_column = archive_columns[0]
         else:
             # Create the unique archive column
+            print "create archive"
             indexes = [c.index for c in self.data.columns]
             col_id = self.create_column(index=max(indexes) + 1, title=_('Archive'), archive=True)
             self.archive_column = component.Component(column.Column(col_id, self, self.assets_manager, self.search_engine))

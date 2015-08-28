@@ -89,7 +89,7 @@ class Column(object):
             - the board title
         """
         if self.is_archive:
-            return i18n._(u'Archive cards')
+            return i18n._(u'Archived cards')
         return self.data.title
 
     @property

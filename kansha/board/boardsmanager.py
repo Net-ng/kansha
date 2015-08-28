@@ -115,7 +115,8 @@ class BoardsManager(object):
         for tplf_name in glob(os.path.join(folder, '*.btpl')):
             tpl = json.loads(open(tplf_name).read())
             board = DataBoard(title=tpl['title'])
-            for i, (title, color) in enumerate(DEFAULT_LABELS):
+            labels_def = tpl.get('tags', DEFAULT_LABELS)
+            for i, (title, color) in enumerate(labels_def):
                 __ = DataLabel(title=title,
                                color=color,
                                index=i,

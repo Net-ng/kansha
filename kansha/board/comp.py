@@ -244,7 +244,8 @@ class Board(object):
         if title == '':
             return False
         col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
-        self.columns.insert(index, component.Component(column.Column(col.id, self, self.assets_manager, self.search_engine), 'new'))
+        if not archive or (archive and self.archive):
+            self.columns.insert(index, component.Component(column.Column(col.id, self, self.assets_manager, self.search_engine), 'new'))
         self.increase_version()
         return col.id
 

@@ -148,7 +148,7 @@ class Board(object):
             print "create archive"
             indexes = [c.index for c in self.data.columns]
             col_id = self.create_column(index=max(indexes) + 1, title=_('Archive'), archive=True)
-            self.archive_column = component.Component(column.Column(col_id, self, self.assets_manager, self.search_engine))
+            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

@@ -54,7 +54,7 @@
         var iconClickHandler = function (inputEl, iconEl) {
             if (iconEl.hasClass('searchinput-icon-clear')) {
                 inputEl.val('').focus();
-                inputEl.change();
+                inputEl.trigger('input');
                 toggleSearchIcon(iconEl, true);
             }
         };
@@ -71,6 +71,9 @@
 
             prepareIconHolder(inputEl);
             computeIconOffset(inputEl, iconEl);
+            // Net-ng patch: check if input has already a value
+            inputHandler(inputEl, iconEl);
+
             inputEl.after(iconEl);
 
             inputEl.on('input', function () {

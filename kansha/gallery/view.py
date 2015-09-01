@@ -143,11 +143,17 @@ def render_overlay_menu(self, h, comp, *args):
                           onclick="window.open('%s');YAHOO.kansha.app.hideOverlay()" % self.assets_manager.get_image_url(self.filename)))
             h << h.li(h.a(_('Delete')).action(lambda: comp.answer(('delete', self))))
             if self.is_image():
-                h << h.li(h.a(_('Make cover')).action(ajax.Update(render=lambda h: comp.render(h),
-                                                                  action=lambda: self.crop(comp, card_cmp, card_id, card_model),
-                                                                  component_to_update=id_)))
                 if self.is_cover:
-                    h << h.li(h.a(_('Remove cover')).action(lambda: comp.answer(('remove_cover', self))))
+                    h << h.li(h.a(_('Remove cover')).action(
+                        lambda: comp.answer(('remove_cover', self))))
+                else:
+                    h << h.li(h.a(_('Make cover')).action(
+                        ajax.Update(
+                            render=lambda h: comp.render(h),
+                            action=lambda: self.crop(comp, card_cmp, card_id, card_model),
+                            component_to_update=id_)
+                        )
+                    )
     return h.root
 
 

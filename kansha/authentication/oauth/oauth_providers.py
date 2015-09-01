@@ -228,6 +228,13 @@ class Facebook(OAuth2):
 
     profile_endpoint = 'https://graph.facebook.com/me'
 
+    @staticmethod
+    def username(name):
+        return name.replace(u'-', u'').replace(u' ', u'.')
+
+    def get_raw_profile(self):
+        return self.fetch(self.profile_endpoint, access_token=self.access_token, fields='id,name,email')
+
     def get_profile(self):
 
         _, profile = super(Facebook, self).get_profile()
@@ -235,14 +242,14 @@ class Facebook(OAuth2):
             'id': profile['id'],
             'name': profile['name'],
             'email': profile.get('email',
-                                 profile['username'] + '@facebook.com'),
+                                 self.username(profile['name']) + '@facebook.com'),
             'picture': self.get_picture_url()
         }, profile
 
     def get_picture_url(self):
         """Get URL picture"""
         profile_picture = self.fetch(self.profile_endpoint, post=False,
-                                     fields='picture', oauth_token=self.access_token)
+                                     fields='picture', access_token=self.access_token)
         if not(profile_picture['picture']['data']['is_silhouette']):
             return profile_picture['picture']['data']['url']
         else:

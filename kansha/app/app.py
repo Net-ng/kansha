@@ -83,7 +83,9 @@ class Kansha(object):
             return
         if self.boards_manager.get_by_id(id_):
             b = board.Board(id_, self.app_title, self.custom_css, self.mail_sender,
-                            self.assets_manager, self.search_engine, self.select_last_board)
+                            self.assets_manager, self.search_engine,
+                            on_board_archive=self.select_last_board,
+                            on_board_leave=self.select_last_board)
             self.content.becomes(b)
             # if user is logged, update is last board
             user = security.get_user()

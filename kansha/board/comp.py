@@ -112,7 +112,7 @@ class Board(object):
                       'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
                       'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
                       'export': component.Component(Icon("icon-download", _("Export board"))),
-                      'delete': component.Component(Icon("icon-trash", _("Delete board"))),
+                      'archive': component.Component(Icon("icon-trash", _("Archive board"))),
                       'leave': component.Component(Icon("icon-leave", _("Leave this board"))),
                       'history': component.Component(Icon("icon-history", _("Action log"))),
                       }

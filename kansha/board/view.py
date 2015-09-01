@@ -61,8 +61,8 @@ def render_Board_menu(self, h, comp, *args):
             )
 
             if security.has_permissions('manage', self):
-                onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.a(self.icons['delete'], onclick=onclick).action(self.delete)
+                onclick = 'return confirm("%s")' % _("This board will be archived. Are you sure?")
+                h << h.a(self.icons['archive'], onclick=onclick).action(self.archive_board)
             else:
                 h << h.a(self.icons['leave'], onclick='return confirm("%s")' %
                          _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")).action(self.leave)

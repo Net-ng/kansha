@@ -193,7 +193,8 @@ input[type="password"]:focus {
     margin: 15px 0;
     text-decoration: none;
     padding: 0 10px 0 50px;
-    line-height: 41px
+    line-height: 41px;
+    background-color: white;
 }
 
 .oauthLogin .google {
@@ -220,6 +221,15 @@ input[type="password"]:focus {
 
 .oauthLogin .linkedin:hover {
     background-color: #1883bb;
+    color: white
+}
+
+.oauthLogin .twitter {
+    background: white url(../img/twitter.png) no-repeat center left
+}
+
+.oauthLogin .twitter:hover {
+    background-color: #5ea9dd;
     color: white
 }
 

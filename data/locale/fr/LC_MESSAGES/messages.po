@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kansha 0.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-01 10:02+0200\n"
+"POT-Creation-Date: 2015-09-01 17:02+0200\n"
 "PO-Revision-Date: 2015-08-12 10:58+0200\n"
 "Last-Translator: Romuald Texier-Marcadé <romuald.texier-marcade@net-"
 "ng.com>\n"
@@ -735,13 +735,10 @@ msgstr "Le mot de passe est trop court : au moins %d caractères sont démandés
 msgid "Sign in with LDAP"
 msgstr "S'identifier avec LDAP"
 
-#: kansha/authentication/oauth/forms.py:26
-msgid "Sign in with Google"
-msgstr "S'identifier avec Google"
-
-#: kansha/authentication/oauth/forms.py:40
-msgid "Sign in with Facebook"
-msgstr "S'identifier avec Facebook"
+#: kansha/authentication/oauth/forms.py:30
+#, python-format
+msgid "Sign in with %s"
+msgstr "S'identifier avec %s"
 
 #: kansha/board/boardconfig.py:32 kansha/user/user_profile.py:43
 msgid "Profile"
@@ -785,8 +782,8 @@ msgid "Export board"
 msgstr "Exporter le board"
 
 #: kansha/board/comp.py:115
-msgid "Delete board"
-msgstr "Effacer le board"
+msgid "Archive board"
+msgstr "Archiver"
 
 #: kansha/board/comp.py:116 kansha/board/view.py:188
 msgid "Leave this board"
@@ -832,9 +829,9 @@ msgstr "Impossible de supprimer le dernier administrateur"
 msgid "board"
 msgstr "board"
 
-#: kansha/board/view.py:64 kansha/board/view.py:205
-msgid "This board will be destroyed. Are you sure?"
-msgstr "Ce board va être supprimé. Voulez-vous continuer ?"
+#: kansha/board/view.py:64
+msgid "This board will be archived. Are you sure?"
+msgstr "Ce board va être archivé. Voulez-vous continuer ?"
 
 #: kansha/board/view.py:68 kansha/board/view.py:189
 msgid ""
@@ -870,6 +867,10 @@ msgstr "Mode du board"
 #: kansha/board/view.py:185
 msgid "Archive this board"
 msgstr "Archiver ce board"
+
+#: kansha/board/view.py:205
+msgid "This board will be destroyed. Are you sure?"
+msgstr "Ce board va être supprimé. Voulez-vous continuer ?"
 
 #: kansha/board/view.py:206
 msgid "Delete this board"
@@ -1469,4 +1470,13 @@ msgstr[1] "votes"
 
 #~ msgid "Archive cards"
 #~ msgstr "Cartes archivées"
+
+#~ msgid "Sign in with Google"
+#~ msgstr "S'identifier avec Google"
+
+#~ msgid "Sign in with Facebook"
+#~ msgstr "S'identifier avec Facebook"
+
+#~ msgid "Delete board"
+#~ msgstr "Effacer le board"
 

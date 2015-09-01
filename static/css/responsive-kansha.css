@@ -22,7 +22,8 @@ form {
     margin: 0 0 3px 0;
 }
 
-textarea, input {
+textarea,
+input {
     width: 96%;
 }
 
@@ -105,7 +106,6 @@ a:active {
     box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.47);
     z-index: 30;
     height: 40px;
-
 }
 
 .navbar #mainActions {
@@ -317,6 +317,7 @@ a:active {
     padding: 4px 8px;
     min-width: 0;
     margin: 0 5px;
+    margin-bottom: 10px;
 }
 
 .board #switch_zone .btn.unselected:hover {
@@ -333,13 +334,37 @@ a:active {
     left: 0;
 }
 
-.board #search {
-	width: 10em;
-	vertical-align: sub;
+#search {
+    width: 10em;
+    /*vertical-align: sub;*/
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+}
 
+#search:focus, #search.highlight  {
+    border-color: rgba(230, 163, 35, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(203, 163, 35, 0.6);
+    outline: 0;
+    outline: thin dotted \9;
+}
+
+#search.nomatches {
+    background-color: #eca2a6;
+}
+
+#show_results {
+    min-width: 200px;
+    font-size: 24px;
+    color: #e6a323;
+    display: inline-block;
+    margin-right: 20px;
+    padding: 5px;
+}
+
+
+span.nomatches {
+    color: red;
 }
 
 .boardItemLabel {
@@ -368,7 +393,8 @@ a:active {
     margin-top: -9px;
 }
 
-.board .boardTitle a, .board .boardTitle a:hover {
+.board .boardTitle a,
+.board .boardTitle a:hover {
     color: #5c5c5c;
     text-decoration: none;
     text-overflow: ellipsis;
@@ -397,7 +423,8 @@ a:active {
     width: 200px;
 }
 
-.board-header a, .board-header a:hover {
+.board-header a,
+.board-header a:hover {
     color: #5c5c5c;
     text-decoration: none;
     display: inline-block;
@@ -436,8 +463,7 @@ a:active {
 
 #application {
     z-index: 2000;
-    height: 100%;
-    /*overflow: hidden;*/
+    height: 100%;    /*overflow: hidden;*/
 }
 
 #lists {
@@ -485,7 +511,7 @@ a:active {
     max-width: 590px;
     padding: 5px 30px 15px 50px;
     border-radius: 10px;
-    background : white;
+    background: white;
 }
 
 .yui-skin-sam .yui-panel .panel-header {
@@ -538,7 +564,8 @@ a:active {
     top: -6px;
 }
 
-.overlay, .yui-overlay {
+.overlay,
+.yui-overlay {
     font-family: OpenSansLight;
     visibility: hidden;
     position: absolute;
@@ -573,8 +600,7 @@ a:active {
 }
 
 .overlay-body li a {
-    color: #7f7f7f !important;
-    /*padding-left: 11px;*/
+    color: #7f7f7f !important;    /*padding-left: 11px;*/
     cursor: pointer;
 }
 
@@ -628,20 +654,13 @@ a:active {
     -moz-box-shadow: #d1d1d1 3px 3px 1px;
     box-shadow: #d1d1d1 3px 3px 1px;
     background: rgba(235, 235, 235, 0.8);
-    background: -moz-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%,
-    rgba(230, 230, 230, 0.8) 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(235, 235,
-    235, 0.8)), color-stop(100%, rgba(230, 230, 230, 0.8)));
-    background: -webkit-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%,
-    rgba(230, 230, 230, 0.8) 100%);
-    background: -o-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%,
-    rgba(230, 230, 230, 0.8) 100%);
-    background: -ms-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%,
-    rgba(230, 230, 230, 0.8) 100%);
-    background: linear-gradient(to bottom, rgba(235, 235, 235, 0.8) 0%,
-    rgba(230, 230, 230, 0.8) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebebeb',
-    endColorstr='#e6e6e6', GradientType=0);
+    background: -moz-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%, rgba(230, 230, 230, 0.8) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(235, 235, 235, 0.8)), color-stop(100%, rgba(230, 230, 230, 0.8)));
+    background: -webkit-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%, rgba(230, 230, 230, 0.8) 100%);
+    background: -o-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%, rgba(230, 230, 230, 0.8) 100%);
+    background: -ms-linear-gradient(top, rgba(235, 235, 235, 0.8) 0%, rgba(230, 230, 230, 0.8) 100%);
+    background: linear-gradient(to bottom, rgba(235, 235, 235, 0.8) 0%, rgba(230, 230, 230, 0.8) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebebeb', endColorstr='#e6e6e6', GradientType=0);
     height: calc(100% - 21px);
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
@@ -719,7 +738,9 @@ a:active {
     padding-top: 3px
 }
 
-.list-header .title a, .list .header .title a:hover, .list .header .title a:visited {
+.list-header .title a,
+.list .header .title a:hover,
+.list .header .title a:visited {
     color: #5c5c5c;
     text-decoration: none;
     display: block;
@@ -837,8 +858,8 @@ a:active {
 }
 
 .list-body h4 {
-	text-align: right;
-	margin: 1em;
+    text-align: right;
+    margin: 1em;
 }
 
 .card:hover {
@@ -857,8 +878,7 @@ a:active {
     word-wrap: break-word;
     -webkit-box-shadow: #d6d6d6 3px 1px 1px;
     -moz-box-shadow: #d6d6d6 3px 1px 1px;
-    box-shadow: #d6d6d6 3px 1px 1px;
-    /*   z-index: 1000;*/
+    box-shadow: #d6d6d6 3px 1px 1px;    /*   z-index: 1000;*/
 }
 
 .archive {
@@ -881,7 +901,8 @@ a:active {
     clear: both
 }
 
-.card a, .card a:hover {
+.card a,
+.card a:hover {
     color: black;
     text-decoration: none;
     display: block;
@@ -973,7 +994,7 @@ a:active {
 }
 
 .card.highlight {
-	border: solid 2px green;
+    border: solid 2px #e6a323;
 }
 
 .card .members {
@@ -983,11 +1004,13 @@ a:active {
 }
 
 .cardactions .members {
-	width: 120px;
-	min-height: 25px;
+    width: 120px;
+    min-height: 25px;
 }
 
-.card .members a, .cardactions .members a {
+.card .members a,
+.cardactions .members a {
+
     /*display: inline-block;*/
     width: auto;
     float: left;
@@ -1011,16 +1034,19 @@ a:active {
     overflow: hidden
 }
 
-.card .members.highlight .add, .cardactions .members.highlight .add {
+.card .members.highlight .add,
+.cardactions .members.highlight .add {
     display: inline-block;
 }
 
-.card .members .add a, .cardactions .members .add a {
+.card .members .add a,
+.cardactions .members .add a {
     text-indent: 500px;
     white-space: nowrap;
 }
 
-.card .members .miniavatar, .cardactions .members .miniavatar {
+.card .members .miniavatar,
+.cardactions .members .miniavatar {
     display: inline-block;
     width: 22px;
     height: 22px;
@@ -1028,13 +1054,15 @@ a:active {
     margin-right: 5px;
 }
 
-.card .members .more, .cardactions .members .more {
+.card .members .more,
+.cardactions .members .more {
     float: left;
     margin-right: 2px;
     margin-left: -4px
 }
 
-.card .members .more > a, .cardactions .members .more > a {
+.card .members .more > a,
+.cardactions .members .more > a {
     display: inline-block;
     width: 11px;
     height: 15px;
@@ -1560,7 +1588,9 @@ ul.board-labels .label-title input {
     margin-bottom: 10px;
 }
 
-.card-edit-form .header, .card-edit-form .header a, .card-edit-form .header a:hover {
+.card-edit-form .header,
+.card-edit-form .header a,
+.card-edit-form .header a:hover {
     text-decoration: none;
 }
 
@@ -1824,7 +1854,12 @@ textarea.expanded {
     background: #93B70A
 }
 
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
     background-color: #7E9C12
 }
 
@@ -1840,7 +1875,13 @@ textarea.expanded {
     border: 1px solid #8c3110
 }
 
-.remove:hover, .remove:focus, .buttonDeleteCard .btn :hover, .buttonDeleteCard .btn :active, .buttonDeleteCard .btn.active, .buttonDeleteCard .btn.disabled, .buttonDeleteCard .btn[disabled] {
+.remove:hover,
+.remove:focus,
+.buttonDeleteCard .btn:hover,
+.buttonDeleteCard .btn:active,
+.buttonDeleteCard .btn.active,
+.buttonDeleteCard .btn.disabled,
+.buttonDeleteCard .btn[disabled] {
     background-color: #A01A00
 }
 
@@ -1890,11 +1931,6 @@ textarea.expanded {
     left: 5px;
 }
 
-input:focus, textarea:focus {
-    border-color: rgba(0, 0, 0, 0.28);
-    box-shadow: 0 1px 1px rgba(159, 201, 3, 0.075) inset, 0 0 8px rgba(159, 201, 3, 0.6);
-    outline: 0 none
-}
 
 .list.reduced .list-body {
     display: none
@@ -1925,7 +1961,6 @@ input:focus, textarea:focus {
 .yui-skin-sam .mask {
     background: #000
 }
-
 
 .nagare-error-message {
     background: url("../img/warning.png") no-repeat left center;
@@ -1971,7 +2006,6 @@ input:focus, textarea:focus {
 .row-fluid > .span8 {
     width: 67.812%
 }
-
 
 /*Home page*/
 #home-user {
@@ -2124,7 +2158,6 @@ input:focus, textarea:focus {
     background: #ebebeb
 }
 
-
 #home-user .span8 .span8 input {
     margin-top: 5px
 }
@@ -2165,22 +2198,21 @@ input:focus, textarea:focus {
     padding: 15px
 }
 
-
 #home-user #lists {
-	margin-bottom: 50px;
+    margin-bottom: 50px;
 }
 
 #home-user #lists .list {
-	margin-left: 0;
-	margin-right: 10px;
-	margin-bottom: 15px;
-	width: 48%;
-	display: block !important;
-	float: left !important;
+    margin-left: 0;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    width: 48%;
+    display: block !important;
+    float: left !important;
 }
 
 #home-user #lists .list .title a {
-	float: none;
+    float: none;
 }
 
 /* Members */
@@ -2264,6 +2296,7 @@ input:focus, textarea:focus {
 }
 
 .yui-skin-sam .yui-ac-container {
+
     /*display: inline-block;*/
     top: 0 !important;
     left: 0 !important;
@@ -2465,7 +2498,8 @@ input:focus, textarea:focus {
     background: #BD2828;
 }
 
-@media all and (min-width: 1200px) {
+
+@media all and (min-width:1200px) {
     #home-user .span8 {
         width: 80%;
     }
@@ -2473,10 +2507,10 @@ input:focus, textarea:focus {
     #home-user .span8 .span8 {
         width: 30%;
     }
+
 }
 
-
-@media all and (min-width: 814px) and (max-width: 1200px){
+@media all and (min-width:814px) and (max-width:1200px) {
     #home-user .span8 {
         width: 70%;
     }
@@ -2487,7 +2521,7 @@ input:focus, textarea:focus {
 
 }
 
-@media all and (max-width: 1360px) {
+@media all and (max-width:1360px) {
     .navbar {
         height: 58px;
         margin-top: -57px
@@ -2609,9 +2643,19 @@ input:focus, textarea:focus {
         display: block;
         margin-bottom: 5px
     }
+
+    .board .header {
+        margin-top: 50px;
+    }
+
+    .bbody {
+        top: 115px;
+    }
+
 }
 
-@media (max-width: 813px) {
+
+@media (max-width:813px) {
     body {
         padding: 0;
         overflow: auto;
@@ -2643,7 +2687,8 @@ input:focus, textarea:focus {
         margin-bottom: 5px;
     }
 
-    .card-edit-form .card-edit-comment textarea, .card-edit-form .description textarea {
+    .card-edit-form .card-edit-comment textarea,
+    .card-edit-form .description textarea {
         width: 96.77419%;
     }
 
@@ -2728,16 +2773,9 @@ input:focus, textarea:focus {
         width: 95%;
     }
 
-    .board .header {
-        margin-top: 50px;
-    }
-
-    .bbody {
-        top: 115px;
-    }
 }
 
-@media all and (max-width: 640px) {
+@media all and (max-width:640px) {
     .navbar {
         margin-top: 0;
         height: 40px;
@@ -2780,6 +2818,7 @@ input:focus, textarea:focus {
     .board-labels .compact {
         display: inline;
     }
+
 }
 
 .credits {
@@ -2869,7 +2908,8 @@ input:focus, textarea:focus {
     border: 1px solid #ccc
 }
 
-.checklists .checklist .nagare-generated, .checklists .checklist form {
+.checklists .checklist .nagare-generated,
+.checklists .checklist form {
     display: inline-block
 }
 

@@ -120,13 +120,21 @@
          */
         highlight_cards: function (card_ids) {
             var root = Dom.get('lists'),
-                cards = ECN('card', 'div', root);
+                cards = ECN('card', 'div', root),
+                search_input = Dom.get('search');
             Dom.removeClass(cards, 'highlight');
             if (card_ids.length > 0) {
                 Dom.addClass(cards, 'hidden');
                 Dom.replaceClass(card_ids, 'hidden', 'highlight');
+                if (card_ids[0] === null) {
+                    Dom.addClass(search_input, 'nomatches');
+                } else {
+                    Dom.addClass(search_input, 'highlight');
+                }
             } else {
                 Dom.removeClass(cards, 'hidden');
+                Dom.removeClass(search_input, 'highlight');
+                Dom.removeClass(search_input, 'nomatches');
             }
         },
 

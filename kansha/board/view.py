@@ -77,7 +77,7 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
 
-    h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.min.js')
+    h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')
     h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
     h.head.javascript('searchinput', "jQuery(document).ready(function ($) {$('#search').searchInput();});")
@@ -111,6 +111,21 @@ def render_Board(self, h, comp, *args):
 @presentation.render_for(Board, 'search_results')
 def render_Board_search_results(self, h, comp, *args):
     h << h.script('YAHOO.kansha.app.highlight_cards(%s);' % ajax.py2js(list(self.card_matches), h))
+    h << comp.render(h, 'num_matches')
+    return h.root
+
+
+@presentation.render_for(Board, 'num_matches')
+def render_Board_num_matches(self, h, comp, *args):
+    if self.card_matches:
+
+        if None in self.card_matches:
+            h << h.span(i18n._(u'No matches'), class_='nomatches')
+        else:
+            n = len(self.card_matches)
+            h << (i18n._N(u'%d match', u'%d matches', n) % n)
+    else:
+        h << u' '
     return h.root
 
 
@@ -124,10 +139,19 @@ def render_Board_item(self, h, comp, *args):
                             render=lambda renderer: comp.render(renderer, 'search_results')
                         ).generate_action(1, h).replace('this', 'elt')
             oninput = 'debounce(this, function(elt) { %s; }, 500)' % search_cb
-            h << h.span(id_='show_results')
+            with h.div(id_='show_results'):
+                h << comp.render(h, 'num_matches')
+            if self.card_matches:
+                if None in self.card_matches:
+                    klass = 'nomatches'
+                else:
+                    klass = 'highlight'
+            else:
+                klass = ''
             h << h.input(type='text', id_='search', placeholder=_(u'search'),
                          value=self.last_search,
-                         oninput=oninput)
+                         oninput=oninput,
+                         class_=klass)
             #h << h.a(h.i(class_='icon-search', title=_('search')), class_='btn unselected')
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn unselected').action(self.switch_view)
             h << h.SyncRenderer().a(h.i(class_='icon-th-list'), title=_('Board mode'), class_='btn disabled')

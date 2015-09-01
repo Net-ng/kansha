@@ -291,10 +291,11 @@ a:active {
 }
 
 .board .header {
-    text-align: right;
+    /*text-align: right;*/
     position: fixed;
     width: 100%;
 }
+
 
 .board .header .nagare-generated {
     display: inline-block;
@@ -302,35 +303,40 @@ a:active {
 
 .board .boardTitle {
     display: inline-block;
-    text-align: right;
     color: #5c5c5c;
     font: normal 33px OpenSansLight;
     padding: 10px 10px;
+    margin-left: 400px;
 }
 
-.board #switch_zone {
-    display: inline-block;
+#switch_zone {
+    /*display: inline-block;*/
     vertical-align: text-bottom;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top: 10px;
+    width: 490px;
 }
 
-.board #switch_zone .btn {
+#switch_zone .btn {
     padding: 4px 8px;
     min-width: 0;
     margin: 0 5px;
     margin-bottom: 10px;
 }
 
-.board #switch_zone .btn.unselected:hover {
+#switch_zone .btn.unselected:hover {
     border: 1px solid #CCCCCC;
 }
 
-.board #switch_zone .btn.unselected {
+#switch_zone .btn.unselected {
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
 }
 
-.board #switch_zone .btn [class^="icon-"] {
+#switch_zone .btn [class^="icon-"] {
     left: 0;
 }
 
@@ -355,11 +361,11 @@ a:active {
 
 #show_results {
     min-width: 200px;
-    font-size: 24px;
+    font-size: 18px;
     color: #e6a323;
     display: inline-block;
-    margin-right: 20px;
     padding: 5px;
+    text-align: right;
 }
 
 
@@ -2644,8 +2650,9 @@ textarea.expanded {
         margin-bottom: 5px
     }
 
-    .board .header {
+    .board .boardTitle {
         margin-top: 50px;
+        margin-left: 50px;
     }
 
     .bbody {
@@ -2771,6 +2778,19 @@ textarea.expanded {
     #home-user .span8 {
         padding-top: 10px;
         width: 95%;
+    }
+
+    .board .boardTitle {
+        margin-top: 100px;
+        margin-left: 20px;
+    }
+
+    #switch_zone {
+        top: 50px;
+    }
+
+    .bbody {
+        top: 165px;
     }
 
 }

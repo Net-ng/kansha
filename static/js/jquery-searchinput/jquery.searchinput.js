@@ -25,7 +25,7 @@
             var inputBorderTop = parseInt(inputEl.css('border-top-width'))
                 , inputPaddingTop = parseInt(inputEl.css('padding-top'))
                 , iconOffsetY = (inputEl.height() - ICON_HEIGHT) / 2
-                , inputOffsetTop = inputEl.offset().top
+                , inputOffsetTop = inputEl.position().top // Net-ng: position is more appropriate
                 , iconOffsetTop = inputOffsetTop + inputBorderTop + inputPaddingTop + iconOffsetY;
             iconEl.css('top', iconOffsetTop);
 
@@ -33,9 +33,10 @@
             var inputBorderLeft = parseInt(inputEl.css('border-left-width'))
                 , inputPaddingLeft = parseInt(inputEl.css('padding-left'))
                 , iconOffsetX = inputEl.width() + ICON_PADDING
-                , inputOffsetLeft = inputEl.offset().left
+                , inputOffsetLeft = inputEl.position().left // Net-ng: position is more appropriate
                 , iconOffsetLeft = inputOffsetLeft + inputBorderLeft + inputPaddingLeft + iconOffsetX;
             iconEl.css('left', iconOffsetLeft);
+            console.log(iconOffsetTop, iconOffsetLeft);
         };
 
         var toggleSearchIcon = function (iconEl, isSearchIcon) {

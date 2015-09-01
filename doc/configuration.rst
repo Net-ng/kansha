@@ -62,19 +62,16 @@ Kansha features can be activated and customized with a configuration file like t
     users_base_dn = <<AUTH_LDAP_USERS_BASE_DN>>
     cls = <<AUTH_LDAP_CLASS>>
 
-    # authenticate with google or facebook
+    # authenticate with third party apps
     [oauth]
     activated = <<AUTH_OAUTH>>
 
-    [[google]]
-    activated = <<AUTH_OAUTH_GOOGLE>>
-    key = <<AUTH_OAUTH_GOOGLE_KEY>>
-    secret = <<AUTH_OAUTH_GOOGLE_SECRET>>
+    # as many oauth providers as you wish
+    [[<<PROVIDER>>]]
+    activated = <<AUTH_OAUTH>>
+    key = <<AUTH_OAUTH_KEY>>
+    secret = <<AUTH_OAUTH_SECRET>>
 
-    [[facebook]]
-    activated = <<AUTH_OAUTH_FACEBOOK>>
-    key = <<AUTH_OAUTH_FACEBOOK_KEY>>
-    secret = <<AUTH_OAUTH_FACEBOOK_SECRET>>
 
     [mail]
     activated = on
@@ -283,21 +280,14 @@ cls
     * ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` for InetOrgPerson
     * ``kansha.authentication.ldap.ldap_auth:ADLDAPAuth`` for Active Directory
 
-Module group ``oauth``
-^^^^^^^^^^^^^^^^^^^^^^
+Module ``oauth``
+^^^^^^^^^^^^^^^^
 
-This governs the OAuth based authentication system. You need to activate it if you wish to let your users connect with their Google or Facebook accounts.
+This governs the OAuth based authentication system. You need to activate it if you wish to let your users connect with their accounts on third party sites or applications.
 
-It provides two modules:
+For that, you configure a provider as a subsection of ``oauth``.
 
-google
-    Open your application to Google account owners. Needs oauth activated.
-
-facebook
-    Open your application to facebook users. Needs oauth activated.
-
-
-For each, the options are:
+The name of the subsection is the provider name (list below) in lowercase. Each subsection has the following configuration parameters:
 
 activated
     ``on`` or ``off``.
@@ -307,6 +297,43 @@ key
 
 secret
     Write here the secret that authenticates your site by the service you intend to use (you have to register with the service first to get one)
+
+
+The availble providers are:
+
+* Google,
+* Twitter,
+* Facebook,
+* Github,
+* Dropbox,
+* Salesforce,
+* Flickr,
+* Vimeo,
+* Bitbucket,
+* Yahoo,
+* Dailymotion,
+* Viadeo,
+* Linkedin,
+* Foursquare,
+* or Instagram.
+
+Example:
+
+.. code-block:: INI
+
+    [oauth]
+    activated = on
+
+    [[google]]
+    activated = on
+    key = xxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+    secret = XXXXXXXXXXXXXXXXXXXXXXXX
+
+    [[facebook]]
+    activated = on
+    key = 0000000000000000000
+    secret = XXXXXXXXXXXXXXXXXXXXXXXX
+
 
 
 .. _mail:

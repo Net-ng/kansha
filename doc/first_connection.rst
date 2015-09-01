@@ -10,12 +10,11 @@ Login screen
 
    Login screen with all authentication methods enabled
 
-Kansha supports four different authentication schemes:
+Kansha supports three different authentication schemes:
 
 * :ref:`dbauth`
 * :ref:`ldapauth`
-* :ref:`googleauth`
-* :ref:`fbauth`
+* :ref:`oauth` (Google, Facebook, Twitter…)
 
 The administrator of Kansha may choose to enable one or several of those authentication methods. So, your actual login screen may differ from the one pictured above.
 
@@ -42,19 +41,31 @@ LDAP authentication
 
 If LDAP authentication is enabled, you can login to Kansha with the credentials you already use to sign on the other applications of your company.
 
-.. _googleauth:
+.. _oauth:
 
-Google authentication
-^^^^^^^^^^^^^^^^^^^^^
+OAuth authentication
+^^^^^^^^^^^^^^^^^^^^
 
-By enabling the Google authentication module, the administrator of Kansha grants access to all Google account owners.
+OAuth authentication allows users of third party applications to log in Kansha.
 
-.. _fbauth:
+The administrator of Kansha may grant access to users of:
 
-Facebook authentication
-^^^^^^^^^^^^^^^^^^^^^^^
+* Google,
+* Twitter,
+* Facebook,
+* Github,
+* Dropbox,
+* Salesforce,
+* Flickr,
+* Vimeo,
+* Bitbucket,
+* Yahoo,
+* Dailymotion,
+* Viadeo,
+* Linkedin,
+* Foursquare,
+* or Instagram.
 
-By enabling the Facebook authentication module, the administrator of Kansha grants access to all Facebook users.
 
 Welcome board
 -------------

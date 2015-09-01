@@ -13,31 +13,23 @@ from ...user import usermanager
 from . import oauth_providers
 
 
-class GoogleConnexion(object):
+class OAuthConnection(object):
 
-    source = 'google'
+    def __init__(self, provider):
 
-    def __init__(self, google):
-        self.google = google
+        self.provider = provider
 
-
-@presentation.render_for(GoogleConnexion)
-def render(self, h, comp, *args):
-    h << h.a(i18n._('Sign in with Google'), class_="oauth google").action(lambda: comp.call(self.google))
-    return h.root
+    @property
+    def source(self):
+        return self.provider.name
 
 
-class FacebookConnexion(object):
-
-    source = 'facebook'
-
-    def __init__(self, facebook):
-        self.facebook = facebook
-
-
-@presentation.render_for(FacebookConnexion)
-def render(self, h, comp, *args):
-    h << h.a(i18n._('Sign in with Facebook'), class_="oauth facebook").action(lambda: comp.call(self.facebook))
+@presentation.render_for(OAuthConnection)
+def render_button(self, h, comp, *args):
+    h << h.a(
+        i18n._('Sign in with %s') % self.source.capitalize(),
+        class_="oauth " + self.source
+    ).action(lambda: comp.call(self.provider))
     return h.root
 
 
@@ -45,18 +37,22 @@ class Login(object):
 
     def __init__(self, oauth_cfg):
         self.oauth_modules = {}
-        google_cfg = oauth_cfg['google']
-        if google_cfg['activated']:
-            self.oauth_modules['google'] = component.Component(
-                GoogleConnexion(oauth_providers.Google(google_cfg['key'],
-                                                       google_cfg['secret'],
-                                                       ['profile', 'email'])))
-        facebook_cfg = oauth_cfg['facebook']
-        if facebook_cfg['activated']:
-            self.oauth_modules['facebook'] = component.Component(
-                FacebookConnexion(oauth_providers.Facebook(facebook_cfg['key'],
-                                                           facebook_cfg['secret'],
-                                                           ['email'])))
+
+        for source, cfg in oauth_cfg.iteritems():
+            try:
+                if cfg['activated']:
+                    self.oauth_modules[source] = component.Component(
+                        OAuthConnection(
+                            oauth_providers.providers[source](
+                                cfg['key'],
+                                cfg['secret'],
+                                ['profile', 'email']
+                            )
+                        )
+                    )
+            except TypeError:
+                # source is not a provider entry
+                continue
 
     def connect(self, oauth_user, source):
         if oauth_user is None:

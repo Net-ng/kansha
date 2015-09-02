@@ -61,11 +61,21 @@ def render_card_edit(self, h, comp, *args):
 def render(self, h, comp, *args):
     card = ajax.py2js(self, h)
     if card:
+        clicked_cb = h.a.action(
+            lambda: comp.answer(comp)
+        ).get('onclick')
+
+        dropped_cb = h.a.action(
+            self.new_start_from_ajax, with_request=True
+        ).get('onclick')[:-2]
+
         h << h.script(u"""YAHOO.kansha.app.add_event($('#calendar'), %(card)s,
-                         function() { %(callback)s} )""" % {'card': card, 'callback': h.a.action(
-            lambda: comp.answer(
-                comp)).get(
-            'onclick')})
+                         function() { %(clicked_cb)s},
+                         function(start) { %(dropped_cb)s&start="+start);} )""" % {
+                            'card': card,
+                            'clicked_cb': clicked_cb,
+                            'dropped_cb': dropped_cb
+                         })
     return h.root
 
 

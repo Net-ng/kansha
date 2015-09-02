@@ -8,6 +8,8 @@
 # this distribution.
 # --
 
+import dateutil.parser
+
 from nagare import component, log, security
 from nagare.i18n import _, _L
 
@@ -287,6 +289,11 @@ class Card(object):
 
     def remove_cover(self):
         self.data.remove_cover()
+
+    def new_start_from_ajax(self, request, response):
+        start = dateutil.parser.parse(request.GET['start']).date()
+        self.due_date().set_value(start)
+
 
 
 class CardTitle(title.Title):

@@ -702,15 +702,22 @@
         },
 
         create_board_calendar: function (calendar) {
-            calendar.fullCalendar({aspectRatio: 2,
-                eventClick: function (calEvent, jsEvent, view) {
-                    calEvent.callback();
-                }});
+            calendar.fullCalendar(
+                {
+                    aspectRatio: 2,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        calEvent.clicked_cb();
+                    },
+                    eventDrop: function(calEvent, delta, revertFunc) {
+                        calEvent.dropped_cb(calEvent.start.format());
+                    }
+                });
         },
 
-        add_event: function (calendar, event, callback) {
+        add_event: function (calendar, event, clicked_cb, dropped_cb) {
             var myEvent = event;
-            myEvent.callback = callback;
+            myEvent.clicked_cb = clicked_cb;
+            myEvent.dropped_cb = dropped_cb;
             calendar.fullCalendar('renderEvent', myEvent, true);
         }
 

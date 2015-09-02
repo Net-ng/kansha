@@ -453,6 +453,7 @@ class UserBoards(object):
 
     def purge_archived_boards(self):
         for board in self.archived_boards:
+            board().on_board_delete = None  # don't call self.delete_board!
             board().delete()
         self.archived_boards = []
 

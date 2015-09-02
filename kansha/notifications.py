@@ -75,7 +75,6 @@ class JSONType(TypeDecorator):
 
     def process_result_value(self, value, dialect):
         if value is not None:
-            print value
             value = json.loads(value)
         return value
 

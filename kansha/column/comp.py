@@ -248,10 +248,8 @@ class Column(object):
         c.delete()
 
     def reload(self):
-        print "reload", len(self.data.cards)
         self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
                       for c in self.data.cards]
-        print len(self.cards)
 
     def archive_card(self, c):
         """Delete card

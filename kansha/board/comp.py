@@ -159,7 +159,6 @@ class Board(object):
             self.archive_column = archive
         else:
             # Create the unique archive column
-            print "create archive"
             last_idx = max(c.index for c in self.data.columns)
             col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
             self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)

@@ -11,6 +11,7 @@
 import json
 import re
 import unicodedata
+import itertools
 from cStringIO import StringIO
 
 from nagare import security, component, log
@@ -80,14 +81,17 @@ class Board(object):
         self.on_board_leave = on_board_leave
         self.assets_manager = assets_manager
         self.search_engine = search_engine
-        self.columns = []
-        if load_data:
-            self.load_data()
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())
         self.card_matches = set()  # search results
         self.last_search = u''
+
+        self.columns = []
+        self.archive_column = None
+        if load_data:
+            self.load_data()
+
 
         # Member part
         self.overlay_add_members = component.Component(
@@ -138,26 +142,32 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
-        # Archive column
-        self.archive_column = None
-        archive_columns = [column.Column(c.id, self, self.assets_manager, self.search_engine, c) for c in self.data.columns if c.archive]
-        if len(archive_columns):
-            self.archive_column = archive_columns[0]
-        else:
-            # Create the unique archive column
-            print "create archive"
-            indexes = [c.index for c in self.data.columns]
-            col_id = self.create_column(index=max(indexes) + 1, title=_('Archive'), archive=True)
-            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
-
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
     def load_data(self):
-        if self.archive and security.has_permissions('manage', self):
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine, c)) for c in self.data.columns]
+        columns = []
+        archive = None
+        for c in self.data.columns:
+            col = column.Column(c.id, self, self.assets_manager, self.search_engine, c)
+            if c.archive:
+                archive = col
+            else:
+                columns.append(component.Component(col))
+
+        if archive is not None:
+            self.archive_column = archive
         else:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine, c)) for c in self.data.columns if not c.archive]
+            # Create the unique archive column
+            print "create archive"
+            last_idx = max(c.index for c in self.data.columns)
+            col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
+            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
+
+        if self.archive and security.has_permissions('manage', self):
+            columns.append(component.Component(self.archive_column))
+
+        self.columns = columns
 
     def increase_version(self):
         refresh = False

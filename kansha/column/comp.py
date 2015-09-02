@@ -141,7 +141,7 @@ class Column(object):
     def delete(self):
         """Delete itself"""
         for card in self.cards:
-            card().delete()
+            self.archive_card(card())
         DataColumn.delete_column(self.data)
 
     def move_cards(self, cards):
@@ -248,8 +248,10 @@ class Column(object):
         c.delete()
 
     def reload(self):
+        print "reload", len(self.data.cards)
         self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
                       for c in self.data.cards]
+        print len(self.cards)
 
     def archive_card(self, c):
         """Delete card

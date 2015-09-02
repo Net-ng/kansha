@@ -168,7 +168,7 @@ class Card(object):
         """
         data_card = self.data
         data_card.index = card_index
-        data_card.column = column.data
+        column.data.cards.append(data_card)
         self.column = column
 
     def get_authorized_users(self):

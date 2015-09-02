@@ -36,7 +36,6 @@
                 , inputOffsetLeft = inputEl.position().left // Net-ng: position is more appropriate
                 , iconOffsetLeft = inputOffsetLeft + inputBorderLeft + inputPaddingLeft + iconOffsetX;
             iconEl.css('left', iconOffsetLeft);
-            console.log(iconOffsetTop, iconOffsetLeft);
         };
 
         var toggleSearchIcon = function (iconEl, isSearchIcon) {

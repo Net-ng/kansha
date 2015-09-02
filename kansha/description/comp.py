@@ -43,10 +43,11 @@ class Description(object):
         In:
             - ``text`` -- the text of the description
         """
+        text = text.strip()
         if text:
             text = validator.clean_text(text)
-            self.text = text
-            self.parent.data.description = text
+        self.text = text
+        self.parent.data.description = text
 
     def __nonzero__(self):
         """Return False if the description if empty

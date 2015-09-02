@@ -43,32 +43,34 @@ class BoardTest(unittest.TestCase):
         helpers.set_dummy_context()
         board = helpers.create_board()
         assert (board.archive_column is not None)
-        self.assertEqual(board.count_columns(), 4)
+        self.assertEqual(board.count_columns(), 3)
         board.create_column(0, helpers.word())
-        self.assertEqual(board.count_columns(), 5)
+        self.assertEqual(board.count_columns(), 4)
 
     def test_add_column_ko(self):
         """Add a column with empty title to a board"""
         helpers.set_dummy_context()
         board = helpers.create_board()
-        self.assertEqual(board.count_columns(), 4)
+        self.assertEqual(board.count_columns(), 3)
         self.assertEqual(board.create_column(0, ''), False)
 
     def test_delete_column(self):
-        """Delete column to a board"""
+        """Delete column from a board"""
         helpers.set_dummy_context()
+        user = helpers.create_user()
+        helpers.set_context(user)
         board = helpers.create_board()
         assert (board.archive_column is not None)
-        self.assertEqual(board.count_columns(), 4)
+        self.assertEqual(board.count_columns(), 3)
         column_id = board.columns[0]().db_id
         board.delete_column(column_id)
-        self.assertEqual(board.count_columns(), 3)
+        self.assertEqual(board.count_columns(), 2)
 
     def test_move_cards(self):
         """Test move cards"""
         helpers.set_dummy_context()
         board = helpers.create_board()
-        self.assertEqual(len(board.columns), 4)
+        self.assertEqual(len(board.columns), 3)
         move_cards_value = """[
             ["list_2", ["card_10", "card_1", "card_3", "card_5"]],
             ["list_1", ["card_7", "card_2", "card_8", "card_11"]],

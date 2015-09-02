@@ -295,7 +295,6 @@ class Card(object):
         self.due_date().set_value(start)
 
 
-
 class CardTitle(title.Title):
 
     """Card title component

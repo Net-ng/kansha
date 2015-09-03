@@ -65,10 +65,6 @@ def render(self, h, comp, *args):
             lambda: comp.answer(comp)
         ).get('onclick')
 
-        # dropped_cb = h.a.action(
-        #     self.new_start_from_ajax, with_request=True
-        # ).get('onclick')[:-2]
-
         dropped_cb = h.a.action(
             ajax.Update(
                 action=self.new_start_from_ajax,

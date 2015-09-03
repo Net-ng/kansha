@@ -204,9 +204,9 @@ class Google(OpenIDConnect):
 class Twitter(OAuth1):
     name = 'twitter'
 
-    request_token_endpoint = 'https://twitter.com/oauth/request_token'
-    authorization_endpoint = 'https://twitter.com/oauth/authorize'
-    token_endpoint = 'https://twitter.com/oauth/access_token'
+    request_token_endpoint = 'https://api.twitter.com/oauth/request_token'
+    authorization_endpoint = 'https://api.twitter.com/oauth/authorize'
+    token_endpoint = 'https://api.twitter.com/oauth/access_token'
 
     profile_endpoint = 'https://api.twitter.com/1.1/account/verify_credentials.json'
 
@@ -227,6 +227,10 @@ class Facebook(OAuth2):
     token_endpoint = 'https://graph.facebook.com/oauth/access_token'
 
     profile_endpoint = 'https://graph.facebook.com/me'
+
+    def __init__(self, key, secret, scopes=()):
+        scopes = ['public_profile' if s == 'profile' else s for s in scopes]
+        super(Facebook, self).__init__(key, secret, scopes)
 
     @staticmethod
     def username(name):

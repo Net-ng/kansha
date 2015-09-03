@@ -28,9 +28,7 @@ class GoogleUser(comp.User):
         self._data = kw.get('data')
 
 
-@peak.rules.when(usermanager.get_user_class, """source == 'facebook'""")
-@peak.rules.when(usermanager.get_user_class, """source == 'google'""")
-@peak.rules.when(usermanager.get_user_class, """source == 'ldap'""")
+@peak.rules.when(usermanager.get_user_class, """source != 'application'""")
 def get_user_class(source):
     return GoogleUser
 

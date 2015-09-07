@@ -303,19 +303,21 @@ The availble providers are:
 
 * Google,
 * Twitter,
-* Facebook,
-* Github,
-* Dropbox,
-* Salesforce,
-* Flickr,
-* Vimeo,
-* Bitbucket,
-* Yahoo,
-* Dailymotion,
-* Viadeo,
-* Linkedin,
-* Foursquare,
-* or Instagram.
+* Facebook.
+
+..
+    * Github,
+    * Dropbox,
+    * Salesforce,
+    * Flickr,
+    * Vimeo,
+    * Bitbucket,
+    * Yahoo,
+    * Dailymotion,
+    * Viadeo,
+    * Linkedin,
+    * Foursquare,
+    * or Instagram.
 
 Example:
 

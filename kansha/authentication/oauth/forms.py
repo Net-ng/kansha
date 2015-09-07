@@ -10,6 +10,7 @@
 
 from nagare import presentation, component, database, security, i18n
 from ...user import usermanager
+from ..database.forms import RegistrationTask
 from . import oauth_providers
 
 
@@ -18,25 +19,44 @@ class OAuthConnection(object):
     def __init__(self, provider):
 
         self.provider = provider
+        self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
 
     @property
     def source(self):
         return self.provider.name
 
+    def trigger_provider(self, comp):
+        r = self.content.call(self.provider)  # here is the trick
+        comp.answer(r)
+
 
 @presentation.render_for(OAuthConnection)
+def render_connect(self, h, comp, *args):
+    if self.content() is not None:
+        return self.content
+    else:
+        return comp.render(h, 'button')
+
+@presentation.render_for(OAuthConnection, 'button')
 def render_button(self, h, comp, *args):
     h << h.a(
         i18n._('Sign in with %s') % self.source.capitalize(),
         class_="oauth " + self.source
-    ).action(lambda: comp.call(self.provider))
+    ).action(self.trigger_provider, comp)
     return h.root
 
 
 class Login(object):
 
-    def __init__(self, oauth_cfg):
+    def __init__(self, app_title, custom_css, mail_sender, oauth_cfg):
         self.oauth_modules = {}
+        self._error_message = u''
+        self.app_title = app_title
+        self.custom_css = custom_css
+        self.mail_sender = mail_sender
+        self.oauth_cfg = oauth_cfg
+        self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
+
 
         for source, cfg in oauth_cfg.iteritems():
             try:
@@ -46,7 +66,7 @@ class Login(object):
                             oauth_providers.providers[source](
                                 cfg['key'],
                                 cfg['secret'],
-                                ['profile', 'email']
+                                ['public_profile' if source == 'facebook' else 'profile', 'email']
                             )
                         )
                     )
@@ -54,31 +74,64 @@ class Login(object):
                 # source is not a provider entry
                 continue
 
-    def connect(self, oauth_user, source):
+    @property
+    def error_message(self):
+        return self._error_message or getattr(self.content(), 'error_message', u'')
+
+    @error_message.setter
+    def error_message(self, value):
+        self._error_message = value
+        if self.content():
+            setattr(self.content(), 'error_message', u'')
+
+
+    def connect(self, comp, oauth_user, source):
         if oauth_user is None:
-            u = None
-        else:
-            profile = oauth_user.get_profile()[0]
-            data_user = usermanager.UserManager.get_by_username(profile['id'])
-            # if user exists update data
-            if not data_user:
-                u = profile
-                data_user = usermanager.UserManager().create_user(profile['id'], None,
-                                                                  profile.get('name'),
-                                                                  profile['email'],
-                                                                  source=source,
-                                                                  picture=profile.get('picture'))
-            data_user.update(profile.get('name'), profile['email'],
-                             picture=profile.get('picture'))
-            database.session.flush()
-            u = usermanager.get_app_user(profile['id'], data=data_user)
-            security.set_user(u)
-        return u
+            self._error_message = i18n._(u'Authentication failed')
+            return
+        profile = oauth_user.get_profile()[0]
+        data_user = usermanager.UserManager.get_by_username(profile['id'])
+        # if user exists update data
+        if not data_user:
+            data_user = usermanager.UserManager().create_user(profile['id'], None,
+                                                              profile.get('name'),
+                                                              profile['email'],
+                                                              source=source,
+                                                              picture=profile.get('picture'))
+        # update takes care of not overwriting the existing email with an empty one
+        data_user.update(profile.get('name'), profile['email'],
+                         picture=profile.get('picture'))
+        # thus if data_user.email is empty, that means it has always been so.
+        if not data_user.email:
+            self.content.call(
+                RegistrationTask(
+                    self.app_title,
+                    self.custom_css,
+                    self.mail_sender,
+                    '',
+                    data_user.username
+                )
+            )
+            return
+        database.session.flush()
+        u = usermanager.get_app_user(profile['id'], data=data_user)
+        security.set_user(u)
+
+        comp.answer(u)
 
 
 @presentation.render_for(Login)
 def render(self, h, comp, *args):
+
+    if self.content() is not None:
+        return self.content
+    else:
+        return comp.render(h, 'buttons')
+
+
+@presentation.render_for(Login, 'buttons')
+def render_buttons(self, h, comp, *args):
     with h.div(class_="oauthLogin"):
         for (source, oauth) in self.oauth_modules.items():
-            h << oauth.on_answer(lambda u, source=source: comp.answer(self.connect(u, source)))
+            h << oauth.on_answer(lambda u, source=source: self.connect(comp, u, source))
     return h.root

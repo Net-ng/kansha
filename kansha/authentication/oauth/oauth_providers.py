@@ -38,6 +38,7 @@ class OAuth1(object):
         return data
 
     def get_auth_url(self, callback_url, **kw):
+        self.token = None
         data = self.fetch(self.request_token_endpoint,
                           oauth_callback=callback_url,
                           post=True, **kw)
@@ -112,10 +113,11 @@ class OAuth2(object):
         kw['redirect_uri'] = callback_url
         if self.scopes:
             kw['scope'] = ' '.join(self.scopes)
-
         return '%s?%s' % (self.authorization_endpoint, urllib.urlencode(kw))
 
     def extract_token(self, code):
+        if not code:
+            return None
         self.code = code
         self.access_token = self.get_token(code)
         return self
@@ -138,10 +140,10 @@ class OAuth2(object):
 
 @presentation.render_for(OAuth2)
 def render(self, h, comp, *args):
-    action = lambda request, response: comp.answer(self.extract_token(request.params['code']))
+    action = lambda request, response: comp.answer(self.extract_token(request.params.get('code')))
     callback = h.a.action(action, with_request=True).get('href')
     callback, state = callback.split('/?')
-
+    print state
     h.response.status = 301
     h.response.headers['location'] = self.get_auth_url(h.request.relative_url(callback), state=state)
     return ''
@@ -228,13 +230,9 @@ class Facebook(OAuth2):
 
     profile_endpoint = 'https://graph.facebook.com/me'
 
-    def __init__(self, key, secret, scopes=()):
-        scopes = ['public_profile' if s == 'profile' else s for s in scopes]
-        super(Facebook, self).__init__(key, secret, scopes)
-
-    @staticmethod
-    def username(name):
-        return name.replace(u'-', u'').replace(u' ', u'.')
+    # def __init__(self, key, secret, scopes=()):
+    #     scopes = ['public_profile' if s == 'profile' else s for s in scopes]
+    #     super(Facebook, self).__init__(key, secret, scopes)
 
     def get_raw_profile(self):
         return self.fetch(self.profile_endpoint, access_token=self.access_token, fields='id,name,email')
@@ -245,8 +243,7 @@ class Facebook(OAuth2):
         return {
             'id': profile['id'],
             'name': profile['name'],
-            'email': profile.get('email',
-                                 self.username(profile['name']) + '@facebook.com'),
+            'email': profile.get('email'),
             'picture': self.get_picture_url()
         }, profile
 
@@ -576,7 +573,8 @@ class Middleware(object):
 
     def __call__(self, environ, start_response):
         params = dict(urlparse.parse_qsl(environ['QUERY_STRING']))
-        if ('state' in params) and ('code' in params):
+        print params
+        if ('state' in params):
             environ['QUERY_STRING'] += ('&' + params['state'])
 
         return self.app(environ, start_response)

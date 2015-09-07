@@ -287,7 +287,7 @@ class WSGIApp(wsgi.WSGIApp):
 
     def __call__(self, environ, start_response):
         query = environ['QUERY_STRING']
-        if ('state=' in query) and ('code=' in query):
+        if ('state=' in query) and (('code=' in query) or ('error=' in query)):
             request = webob.Request(environ)
             environ['QUERY_STRING'] += ('&' + request.params['state'])
 

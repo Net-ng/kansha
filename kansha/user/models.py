@@ -83,7 +83,8 @@ class DataUser(Entity):
 
     def update(self, fullname, email, picture=None):
         self.fullname = fullname
-        self.email = email
+        if email:
+            self.email = email
         self.picture = picture
 
     def check_password(self, clear_password):
@@ -95,6 +96,11 @@ class DataUser(Entity):
         """Change the user password"""
         self._salt = self._create_random_salt()
         self._password = self._encrypt_password(self._salt, clear_password)
+
+    def set_email_to_confirm(self, email_to_confirm):
+        if email_to_confirm:
+            self.email_to_confirm = email_to_confirm
+
 
     def is_validated(self):
         return self.email_to_confirm is None

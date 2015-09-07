@@ -153,7 +153,7 @@ input[type="password"]:focus {
     text-transform: uppercase;
 }
 
-.databaseLogin {
+.databaseLogin, .regForm {
     position: relative;
     display: table-cell;
     vertical-align: top;
@@ -317,7 +317,7 @@ input[type="password"]:focus {
         display: block
     }
 
-    .databaseLogin {
+    .databaseLogin, .regForm {
         display: block;
         border-left: 0;
         border-top: 1px solid #e5e5e5

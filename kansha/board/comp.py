@@ -11,7 +11,6 @@
 import json
 import re
 import unicodedata
-import itertools
 from cStringIO import StringIO
 
 from nagare import security, component, log

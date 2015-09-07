@@ -52,19 +52,21 @@ The administrator of Kansha may grant access to users of:
 
 * Google,
 * Twitter,
-* Facebook,
-* Github,
-* Dropbox,
-* Salesforce,
-* Flickr,
-* Vimeo,
-* Bitbucket,
-* Yahoo,
-* Dailymotion,
-* Viadeo,
-* Linkedin,
-* Foursquare,
-* or Instagram.
+* Facebook.
+
+..
+    * Github,
+    * Dropbox,
+    * Salesforce,
+    * Flickr,
+    * Vimeo,
+    * Bitbucket,
+    * Yahoo,
+    * Dailymotion,
+    * Viadeo,
+    * Linkedin,
+    * Foursquare,
+    * or Instagram.
 
 
 Welcome board

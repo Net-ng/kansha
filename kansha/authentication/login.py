@@ -56,7 +56,7 @@ class Login(object):
         if auth_cfg['dbauth']['activated']:
             logins.append(database_form.Login(app_title, custom_css, mail_sender, auth_cfg['dbauth']))
         if auth_cfg['oauth']['activated']:
-            logins.append(oauth.Login(auth_cfg['oauth']))
+            logins.append(oauth.Login(app_title, custom_css, mail_sender, auth_cfg['oauth']))
         if auth_cfg['ldapauth']['activated']:
             logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
 

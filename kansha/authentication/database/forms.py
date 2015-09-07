@@ -18,7 +18,7 @@ from nagare import (presentation, editor, component, security, log, database)
 from nagare.i18n import _
 
 from . import validators, captcha
-from kansha.user import comp as user, usermanager
+from kansha.user import usermanager
 from kansha.models import DataToken
 
 UserConfirmationTimeout = timedelta(hours=12)
@@ -52,7 +52,7 @@ def render_Header(self, h, comp, *args):
 
 @presentation.render_for(Header, 'hide')
 def render_Header_hide(self, h, comp, *args):
-    h.head.css('hide_logins', u'''.body-login .oauthLogin, .body-login .LDAPLogin {display:none;}''')
+    h.head.css('hide_logins', u'''.body-login .oauthLogin, .body-login .LDAPLogin,  .body-login .databaseLogin {display:none;}''')
     return h.root
 
 
@@ -76,7 +76,7 @@ class Login(object):
 
     @error_message.setter
     def error_message(self, value):
-        self._error_message = u''
+        self._error_message = value
         if self.content():
             setattr(self.content(), 'error_message', u'')
 
@@ -191,7 +191,7 @@ class RegistrationForm(editor.Editor):
 @presentation.render_for(RegistrationForm)
 def render_RegistrationForm(self, h, comp, *args):
     h << self.header.render(h, 'hide')
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='regForm'):
         # autocomplete="off": do not store the password
         with h.form(autocomplete="off").post_action(self.validate_passwords_match):
             with h.div(class_='fields'):
@@ -238,6 +238,77 @@ def render_RegistrationForm_captcha(self, h, comp, *args):
         h << h.a(id="captchaRefresh", title=_("refresh captcha")).action(self.init_captcha_image)
     return h.root
 # ----------------------------------------------------------
+
+
+class EmailRegistrationForm(editor.Editor):
+
+    """Registration form for creating a new (unconfirmed) user"""
+
+    def __init__(self, app_title, custom_css, username):
+        self.email = editor.Property('').validate(validators.validate_email)
+        self.email_repeat = editor.Property('').validate(validators.validate_email)
+        self.header = component.Component(Header(app_title, custom_css))
+        self.error_message = u''
+        self.username = username
+        self.app_title = app_title
+
+    def validate_emails_match(self):
+        if self.email.value != self.email_repeat.value:
+            self.email_repeat.error = _("The two emails don't match")
+
+    def commit(self):
+
+        properties = ('email', 'email_repeat')
+        if not self.is_validated(properties):
+            self.error_message = _(u'Unable to process. Check your input below.')
+            return None
+
+        u = usermanager.UserManager.get_by_username(self.username)
+        if u:
+            u.set_email_to_confirm(self.email.value)
+            return self.username
+
+        self.error_message = _(u'Something went wrong: user does not exist! Please contact the administrator of this site.')
+        return None
+
+    def on_ok(self, comp):
+        email = self.commit()
+        if email:
+            comp.answer(email)
+
+
+@presentation.render_for(EmailRegistrationForm)
+def render_RegistrationForm(self, h, comp, *args):
+    h << self.header.render(h, 'hide')
+    with h.div(class_='regForm'):
+        # autocomplete="off": do not store the password
+        with h.form(autocomplete="off").post_action(self.validate_emails_match):
+            h << h.p(_(u'Your profile is missing an email address. You have to enter a valid email address to open an account on %s') % self.app_title)
+            with h.div(class_='fields'):
+                fields = (
+                    (_('Email address'), 'email', 'text', self.email),
+                    (_('Email address (repeat)'), 'email', 'text', self.email_repeat),
+                )
+                for label, css_class, input_type, property in fields:
+                    with h.div(class_='%s-field field' % css_class):
+                        id_ = h.generate_id("field")
+                        with h.label(for_=id_):
+                            h << label
+                        h << h.input(id=id_,
+                                     type=input_type,
+                                     value=property()).action(property).error(property.error)
+
+            with h.div(class_='actions'):
+                h << h.input(type='submit',
+                             value=_("Create new account"),
+                             class_="btn btn-primary btn-small").action(self.on_ok, comp)
+
+            h << _("Already have an account? ") << h.a(
+                _("Log in")).action(comp.answer)
+
+    return h.root
+
+# -----------------------------------------------------------------------
 
 
 class RegistrationConfirmation(object):
@@ -444,7 +515,7 @@ def render_password_reset_form(self, h, comp, *args):
         if user:
             comp.answer(user.username)
     h << self.header.render(h, 'hide')
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='regForm'):
 
         with h.p:
             h << _("""Please enter your username and your email address and you'll receive an email that contains a link to reset your password.""")
@@ -550,7 +621,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
 def render_password_reset_confirmation_failure(self, h, comp, *args):
     """Renders a password change acknowledgment message"""
     h << self.header.render(h, 'hide')
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='regForm'):
         with h.h3:
             h << _("Email sent!")
 
@@ -680,7 +751,7 @@ class EmailConfirmation(object):
 @presentation.render_for(EmailConfirmation)
 def render_registration_confirmation(self, h, comp, *args):
     h << self.header.render(h, 'hide')
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='regForm'):
         with h.h3:
             h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
 
@@ -767,7 +838,12 @@ class RegistrationTask(component.Task):
 
     """A task that handles the user registration process"""
 
-    def __init__(self, app_title, custom_css, mail_sender, moderator=''):
+    def __init__(self, app_title, custom_css, mail_sender, moderator='', username=''):
+        '''
+        Register a new user (`username` not provided)
+        or register email for an existing unconfirmed user (`username` provided).
+        If `moderator` is set to an email address, all confirmation requests are sent there instead of user's email.
+        '''
         self.app_title = app_title
         self.custom_css = custom_css
         self.mail_sender = mail_sender
@@ -775,6 +851,7 @@ class RegistrationTask(component.Task):
         self.confirmation_base_url = mail_sender.application_url
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
+        self.username = username
 
     def _create_email_confirmation(self, username):
         confirmation_url = '/'.join((self.confirmation_base_url, 'register', username))
@@ -786,7 +863,16 @@ class RegistrationTask(component.Task):
             # step 1:
             # - ask the user to fill a registration form
             # - send him a confirmation email
-            username = comp.call(RegistrationForm(self.app_title, self.custom_css))
+            if self.username:
+                username = comp.call(
+                    EmailRegistrationForm(
+                        self.app_title,
+                        self.custom_css,
+                        self.username
+                    )
+                )
+            else:
+                username = comp.call(RegistrationForm(self.app_title, self.custom_css))
             if username:
                 confirmation = self._create_email_confirmation(username)
                 confirmation.send_email(self.mail_sender)

@@ -52,10 +52,10 @@ The administrator of Kansha may grant access to users of:
 
 * Google,
 * Twitter,
-* Facebook.
+* Facebook,
+* Github.
 
 ..
-    * Github,
     * Dropbox,
     * Salesforce,
     * Flickr,

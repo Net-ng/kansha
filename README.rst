@@ -6,7 +6,9 @@ KANSHA
 |travis|
 |coverage|
 |climate|
-|requires|
+
+..
+    |requires|
 
 Kansha is an open source web application to manage and share collaborative scrum boards and `more <http://www.kansha.org>`_.
 

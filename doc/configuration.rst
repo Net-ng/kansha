@@ -303,10 +303,9 @@ The availble providers are:
 
 * Google,
 * Twitter,
-* Facebook.
-
+* Facebook,
+* Github.
 ..
-    * Github,
     * Dropbox,
     * Salesforce,
     * Flickr,

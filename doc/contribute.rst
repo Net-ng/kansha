@@ -141,7 +141,7 @@ If the workflow described above is too complicated for you, there is an alternat
     * precise where in the manual you contribution should go;
     * **redact** the part of the manual you want to add or fix.
 
-#. Apply the "enhancement" label.
+#. Apply the "docs" label, plus the "enhancement" or the "bug" label depending on whether you are proposing an improvement or a fix to the documentation, respectively.
 #. Submit the issue.
 
 And, *maybe*, a direct contributor will discuss, pick and implement your request.

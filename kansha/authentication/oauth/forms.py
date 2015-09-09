@@ -107,7 +107,7 @@ class Login(object):
                                                               source=source,
                                                               picture=profile.get('picture'))
         # update takes care of not overwriting the existing email with an empty one
-        data_user.update(profile.get('name', name), profile['email'],
+        data_user.update(name, profile['email'],
                          picture=profile.get('picture'))
         # thus if data_user.email is empty, that means it has always been so.
         if not data_user.email:

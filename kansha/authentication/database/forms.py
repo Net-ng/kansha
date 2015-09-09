@@ -1007,8 +1007,9 @@ class ChangeEmailConfirmation(object):
         self.header = component.Component(Header(app_title, custom_css))
 
 
-@presentation.render_for(ChangeEmailConfirmation, model='success')
-def render_change_email_confirmation_success(self, h, comp, *args):
+@presentation.render_for(ChangeEmailConfirmation, 'success')
+@presentation.render_for(ChangeEmailConfirmation, 'failure')
+def render_change_email_confirmation_success(self, h, comp, model):
     """Renders an email change acknowledgment message"""
     with h.body(class_='body-login'):
         h << self.header
@@ -1017,10 +1018,16 @@ def render_change_email_confirmation_success(self, h, comp, *args):
 
         with h.div(class_='container'):
             with h.h3:
-                h << _("Email change successful!")
+                if model == 'success':
+                    h << _("Email change successful!")
+                else:
+                    h << _("Email change failure!")
 
             with h.p:
-                h << _("""Your email have been changed successfully.""")
+                if model == 'success':
+                    h << _("""Your email have been changed successfully.""")
+                else:
+                    h << _("""Email change failure! Please retry.""")
 
             with h.form:
                 with h.div(class_='actions'):
@@ -1031,24 +1038,4 @@ def render_change_email_confirmation_success(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(ChangeEmailConfirmation, model='failure')
-def render_change_email_confirmation_failure(self, h, comp, *args):
-    """Renders an email change acknowledgment message"""
-    with h.body(class_='body-login'):
-        h << self.header
-        with h.div(class_='title'):
-            h << h.h2(_(u'Change email'))
 
-        with h.div(class_='container'):
-            with h.h3:
-                h << _("Email change failure!")
-
-            with h.p:
-                h << _("""Email change failure! Please retry.""")
-
-            with h.form:
-                with h.div(class_='actions'):
-                    h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
-                                 value=_("Ok")).action(lambda: redirect_to(self.redirect_url))
-    return h.root

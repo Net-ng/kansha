@@ -47,11 +47,24 @@ def render_User_search(self, h, comp, *args):
     return h.div(comp)
 
 
+@presentation.render_for(User, model='overlay-member')
+@presentation.render_for(User, model='overlay-manager')
 @presentation.render_for(User, model='overlay-remove')
-def render_User_overlay_remove(self, h, comp, *args):
-    h << component.Component(overlay.Overlay(
-        lambda r: (comp.render(r, "avatar"), {'class': 'miniavatar'}),
-        lambda r: comp.render(r, 'remove'), dynamic=False, cls='card-overlay'))
+@presentation.render_for(User, model='overlay-last_manager')
+@presentation.render_for(PendingUser, model='overlay-pending')
+def render_User_overlay_remove(self, h, comp, model):
+    sub_model = model[8:]
+    h << component.Component(
+        overlay.Overlay(
+            lambda r: (
+                comp.render(r, "avatar"),
+                {'class': 'miniavatar'}
+            ),
+            lambda r: comp.render(r, sub_model),
+            dynamic=False,
+            cls='card-overlay' if model == 'remove' else 'board-labels-overlay'
+        )
+    )
     return h.root
 
 
@@ -67,33 +80,25 @@ def render_User_remove(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(User, model='overlay-manager')
-def render_User_overlay_manager(self, h, comp, *args):
-    h << component.Component(overlay.Overlay(
-        lambda r: (comp.render(r, "avatar"), {'class': 'miniavatar'}),
-        lambda r: comp.render(r, 'manager'), dynamic=False, cls='board-labels-overlay'))
-    return h.root
-
-
+@presentation.render_for(User, "member")
 @presentation.render_for(User, "manager")
-def render_User_manager(self, h, comp, *args):
+def render_User_manager(self, h, comp, model):
     """Render for search result"""
     with h.div(class_='member'):
         h << comp.render(h, None)
         with h.span(class_="actions"):
             with h.form:
-                h << h.input(value=_("Manager"), type="submit",
-                             class_="btn btn-primary btn-small toggle").action(ajax.Update(action=lambda: comp.answer('toggle_role')))
-                h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=lambda: comp.answer('remove')))
-    return h.root
-
-
-@presentation.render_for(User, model='overlay-last_manager')
-def render_User_overlay_last_manager(self, h, comp, *args):
-    h << component.Component(overlay.Overlay(
-        lambda r: (comp.render(r, "avatar"), {'class': 'miniavatar'}),
-        lambda r: comp.render(r, 'last_manager'), dynamic=False, cls='board-labels-overlay'))
+                h << h.input(
+                        value=_("Manager"),
+                        type="submit",
+                        class_=("btn btn-primary btn-small toggle" if model == 'manager'
+                                else "btn btn-primary btn-small")
+                     ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
+                h << h.input(
+                        value=_("Remove"),
+                        type="submit",
+                        class_="btn btn-primary btn-small remove"
+                    ).action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
 
@@ -104,28 +109,6 @@ def render_User_last_manager(self, h, comp, *args):
         h << comp.render(h, None)
         with h.span(class_="actions last-manager"):
             h << _("You are the last manager, you can't leave this board.")
-    return h.root
-
-
-@presentation.render_for(User, model='overlay-member')
-def render_User_overlay_member(self, h, comp, *args):
-    h << component.Component(overlay.Overlay(
-        lambda r: (comp.render(r, "avatar"), {'class': 'miniavatar'}),
-        lambda r: comp.render(r, 'member'), dynamic=False, cls='board-labels-overlay'))
-    return h.root
-
-
-@presentation.render_for(User, "member")
-def render_User_member(self, h, comp, *args):
-    """Render for search result"""
-    with h.div(class_='member'):
-        h << comp.render(h, None)
-        with h.span(class_="actions"):
-            with h.form:
-                h << h.input(value=_("Manager"), type="submit",
-                             class_="btn btn-primary btn-small").action(ajax.Update(action=lambda: comp.answer('toggle_role')))
-                h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
 
@@ -199,14 +182,6 @@ def render_NewMember(self, h, comp, *args):
     return h.root
 
 # Pending User
-
-
-@presentation.render_for(PendingUser, model='overlay-pending')
-def render_PendingUser_overlay_pending(self, h, comp, *args):
-    h << component.Component(overlay.Overlay(
-        lambda r: (comp.render(r, "avatar"), {'class': 'miniavatar'}),
-        lambda r: comp.render(r, 'pending'), dynamic=False, cls='board-labels-overlay'))
-    return h.root
 
 
 @presentation.render_for(PendingUser)

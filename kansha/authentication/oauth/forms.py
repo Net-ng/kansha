@@ -46,6 +46,14 @@ def render_button(self, h, comp, *args):
     return h.root
 
 
+SCOPES = {
+    'google': ('profile', 'email'),
+    'facebook':  ('public_profile', 'email'),
+    'twitter': ('profile', 'email'),
+    'github': ('user:email',)
+}
+
+
 class Login(object):
 
     def __init__(self, app_title, custom_css, mail_sender, oauth_cfg):
@@ -66,7 +74,7 @@ class Login(object):
                             oauth_providers.providers[source](
                                 cfg['key'],
                                 cfg['secret'],
-                                ['public_profile' if source == 'facebook' else 'profile', 'email']
+                                SCOPES.get(source, ('profile', 'email'))
                             )
                         )
                     )

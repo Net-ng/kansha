@@ -264,13 +264,22 @@ class Github(OAuth2):
     token_endpoint = 'https://github.com/login/oauth/access_token'
 
     profile_endpoint = 'https://api.github.com/user'
+    email_endpoint = 'https://api.github.com/user/emails'
+
+    def get_email(self):
+        resp = self.fetch(self.email_endpoint, post=False,
+                             access_token=self.access_token)
+        for email in resp:
+            if email['primary']:
+                return email['email']
+        return ''
 
     def get_profile(self):
         _, profile = super(Github, self).get_profile()
         return {
             'id': str(profile['id']),
             'name': profile['name'],
-            'email': profile['email'],
+            'email': self.get_email(),
             'picture': profile['avatar_url']
         }, profile
 

@@ -234,6 +234,15 @@ input[type="password"]:focus {
     color: white
 }
 
+.oauthLogin .github {
+    background: white url(../img/git.png) no-repeat center left
+}
+
+.oauthLogin .github:hover {
+    background-color: #939393;
+    color: white
+}
+
 .message {
     text-align: center;
     padding: 10px;

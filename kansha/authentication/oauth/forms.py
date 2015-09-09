@@ -99,15 +99,15 @@ class Login(object):
         profile = oauth_user.get_profile()[0]
         data_user = usermanager.UserManager.get_by_username(profile['id'])
         # if user exists update data
-        missing_name = i18n._(u'Please provide a full name in %s') % source
+        name = profile['name'] or (i18n._(u'Please provide a full name in %s') % source)
         if not data_user:
             data_user = usermanager.UserManager().create_user(profile['id'], None,
-                                                              profile.get('name', missing_name),
+                                                              name,
                                                               profile['email'],
                                                               source=source,
                                                               picture=profile.get('picture'))
         # update takes care of not overwriting the existing email with an empty one
-        data_user.update(profile.get('name', missing_name), profile['email'],
+        data_user.update(profile.get('name', name), profile['email'],
                          picture=profile.get('picture'))
         # thus if data_user.email is empty, that means it has always been so.
         if not data_user.email:

@@ -192,7 +192,7 @@ Search
 You can choose one out of two search backends for the moment: SQLite or ElasticSearch.
 They both work independently from the database you chose to store your data in.
 
-The SQLite backend is quite capable and should be enough for most sites. More demanding sites may require ElasticSearch, or you may already have a running cluster on your network. Do some benchmarks before you choose, you may be surprised.
+The SQLite backend is quite fast and capable but is only able to do prefix searches. More demanding sites may require ElasticSearch, or you may already have a running cluster on your network.
 
 SQLite backend
 ^^^^^^^^^^^^^^

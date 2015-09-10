@@ -294,7 +294,7 @@ class WSGIApp(wsgi.WSGIApp):
         return super(WSGIApp, self).__call__(environ, start_response)
 
     def on_exception(self, request, response):
-        exc_class, e, _tb = sys.exc_info()
+        exc_class, e = sys.exc_info()[:2]
         for k, v in request.POST.items():
             if isinstance(v, cgi.FieldStorage):
                 request.POST[k] = u'Content not displayed'

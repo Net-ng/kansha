@@ -315,7 +315,6 @@ class NewColumn(object):
         In:
             - ``board`` -- the board the new column will belong
         """
-        self.columns = board.columns
         self.board = board
         self.index = var.Var()
         self.title = var.Var()
@@ -325,7 +324,7 @@ class NewColumn(object):
     def count_board_columns(self):
         """Return the number of columns in the board
         """
-        return len(self.columns)
+        return len(self.board.columns)
 
     def create_column(self, comp):
         """Create the column.

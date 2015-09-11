@@ -73,7 +73,7 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render_Login(self, h, comp, *args):
-    with h.body(class_='body-login'):
+    with h.body(class_='body-login slots%s' % len(self.logins)):
         h << self.header
         with h.div(class_='title'):
             h << h.h2(_(u'Sign in'))

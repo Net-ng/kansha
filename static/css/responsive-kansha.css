@@ -471,6 +471,7 @@ span.nomatches {
     height: 100%;    /*overflow: hidden;*/
 }
 
+
 #lists {
     overflow-x: auto;
     overflow-y: hidden;
@@ -2014,7 +2015,7 @@ textarea.expanded {
 
 /*Home page*/
 #home-user {
-    padding: 100px 20px 10px 0;
+    padding: 100px 20px 54px 0;
 }
 
 #home-user .row-fluid {

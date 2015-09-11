@@ -61,6 +61,7 @@ class Column(object):
         elif data[0] == 'purge':
             for card in self.cards:
                 card().delete()
+            self.reload()
 
     @property
     def data(self):

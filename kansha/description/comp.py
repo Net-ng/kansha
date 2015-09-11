@@ -43,6 +43,10 @@ class Description(object):
         In:
             - ``text`` -- the text of the description
         """
+        # historically, canceling the description edition calls this function with None.
+        # FIXME: that should not happen.
+        if text is None:
+            return
         text = text.strip()
         if text:
             text = validator.clean_text(text)

@@ -318,10 +318,6 @@ input[type="password"]:focus {
         font-size: 40px
     }
     */
-    .credits {
-        position: static;
-        padding: 20px
-    }
 
     form {
         display: block

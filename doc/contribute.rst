@@ -31,7 +31,7 @@ Reporting a new bug.
 
     #. Click on the green button "New issue".
     #. You will be asked to log in (or register) if you have not already done so.
-    #. As title, enter a  short one-sentence summary that explains the problem.
+    #. As title, enter a  short one-sentence summary that explains the problem, biginning with "[Bug]".
     #. As comment, tell us:
 
        * The version of the Kansha software on which you raised the bug (visible in the footer of your home page, or of the login page).
@@ -41,7 +41,6 @@ Reporting a new bug.
        * The web browsers or computer systems you've seen the bug on.
        * Whether the problem appears every time, only occasionally, only on certain pages, or only in specific circumstances.
 
-    #. Apply the "bug" label.
     #. You may also attach a log file or screenshot (but make sure that no confidential data is included or shown).
     #. Submit the issue.
 
@@ -69,12 +68,11 @@ Requesting a new feature.
 
     #. Click on the green button "New issue".
     #. You will be asked to log in (or register) if you have not already done so.
-    #. As title, enter a  short one-sentence summary that explains the expected feature.
+    #. As title, enter a  short one-sentence summary that explains the expected feature, beginning with "[Feature request]".
     #. As comment, tell us:
 
        * A description of what you would like to achieve, and why. A `user story <https://help.rallydev.com/writing-great-user-story>`_ is an effective way of conveying this.
 
-    #. Apply the "enhancement" label.
     #. Submit the issue.
 
 
@@ -134,14 +132,13 @@ If the workflow described above is too complicated for you, there is an alternat
 
 #. Click on the green button "New issue".
 #. You will be asked to log in (or register) if you have not already done so.
-#. As title, enter a  short one-sentence summary that explains the proposed prose.
+#. As title, enter a  short one-sentence summary that explains the proposed prose, beginning with "[Docs]".
 #. As comment, you:
 
     * tell us whether you propose a fix or new paragraphs/sections;
     * precise where in the manual you contribution should go;
     * **redact** the part of the manual you want to add or fix.
 
-#. Apply the "docs" label, plus the "enhancement" or the "bug" label depending on whether you are proposing an improvement or a fix to the documentation, respectively.
 #. Submit the issue.
 
 And, *maybe*, a direct contributor will discuss, pick and implement your request.

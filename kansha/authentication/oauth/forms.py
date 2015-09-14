@@ -125,6 +125,10 @@ class Login(object):
         u = usermanager.get_app_user(profile['id'], data=data_user)
         security.set_user(u)
 
+        # After a successful OAuth authentication, we need to manually switch to the user's locale
+        # so the first rendering phase uses the correct language
+        i18n.set_locale(u.get_locale())
+
         comp.answer(u)
 
 

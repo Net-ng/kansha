@@ -64,8 +64,15 @@ class User(security_common.User):
 
     def get_locale(self):
         if self.data.language == 'fr':
-            return i18n.Locale('fr', 'FR')
-        return i18n.Locale('en', 'US')
+            locale = i18n.Locale('fr', 'FR')
+        else:
+            locale = i18n.Locale('en', 'US')
+
+        # At this point, the locale object only knows about builtin Nagare translation directories
+        # We need to register Kansha's translation directories too (get them from the current locale)
+        locale.translation_directories.update(i18n.get_locale().translation_directories)
+
+        return locale
 
     def update_password(self, new_password):
         """Update the password of the connected user

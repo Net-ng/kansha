@@ -164,6 +164,7 @@ class App(object):
 
     def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager, search):
         self.app_title = app_title
+        self.banner = cfg['pub_cfg']['banner']
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.assets_manager = assets_manager

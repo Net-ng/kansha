@@ -2152,6 +2152,10 @@ textarea.expanded {
     max-width: 800px;
 }
 
+#home-user .span8 ul.unstyled label {
+    margin-bottom: 0;
+}
+
 #home-user .new-board-name {
     max-width: 770px;
 }
@@ -2444,6 +2448,17 @@ textarea.expanded {
 .calendar .calendar-content table tr td.today a {
     color: #5b5959;
     font-weight: bold;
+}
+
+.calendar .calendar-content table tr th.week_number,
+.calendar .calendar-content table tr td.week_number {
+    color: #5b5959;
+    background-color: #f3f3f3;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    margin-right: 2px;
+    border-right: solid 1px lightgrey;
 }
 
 .calendar .calendar-header select {

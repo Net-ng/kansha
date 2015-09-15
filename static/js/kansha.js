@@ -701,7 +701,7 @@
             Dom.setStyle(Selector.query('#application .board'), 'background-size', size);
         },
 
-        create_board_calendar: function (calendar) {
+        create_board_calendar: function (calendar, displayWeekNumbers) {
             calendar.fullCalendar(
                 {
                     aspectRatio: 2,
@@ -710,7 +710,8 @@
                     },
                     eventDrop: function(calEvent, delta, revertFunc) {
                         calEvent.dropped_cb(calEvent.start.format());
-                    }
+                    },
+                    weekNumbers: displayWeekNumbers
                 });
         },
 

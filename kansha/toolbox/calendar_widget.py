@@ -12,6 +12,7 @@ import calendar
 from datetime import date, datetime
 from dateutil import relativedelta
 from nagare import ajax, presentation, i18n, var
+from nagare import security
 from nagare.i18n import _
 
 
@@ -123,6 +124,7 @@ class Calendar(object):
 
 @presentation.render_for(Calendar)
 def render_async(self, h, comp, *args):
+    display_week_numbers = security.get_user().display_week_numbers
     with h.div(class_='calendar-input'):
         input_id = h.generate_id('input')
         calendar_id = h.generate_id('calendar')
@@ -164,11 +166,18 @@ def render_async(self, h, comp, *args):
                 with h.table:
                     with h.thead:
                         with h.tr:
+                            if display_week_numbers:
+                                h << h.th(h.span(_('Wk'), title=_('Week number')), class_='week_number')
+
                             days = [day.capitalize() for day in i18n.get_day_names().itervalues()]
                             h << [h.th(h.span(d[:2], title=d)) for d in days]
                     with h.tbody:
                         for line in calendar.monthcalendar(self.current.year, self.current.month):
                             with h.tr:
+                                if display_week_numbers:
+                                    week_number = date(self.current.year, self.current.month, max(1, line[0])).isocalendar()[1]
+                                    h << h.td(week_number, class_='week_number')
+
                                 for day in line:
                                     if day == 0:
                                         h << h.td(class_='not-this-month')

@@ -161,6 +161,15 @@ class User(security_common.User):
     def update_last_login(self):
         self.data.last_login = datetime.utcnow()
 
+    @property
+    def display_week_numbers(self):
+        """Return user's choice to see week numbers in calendars
+
+        Return:
+         - True if user want to see week numbers in calendars
+        """
+        return self.data.display_week_numbers
+
 
 @peak.rules.when(usermanager.get_user_class, """source == 'application'""")
 def get_user_class(source):

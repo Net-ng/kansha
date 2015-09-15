@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kansha 1.0.4b1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-09 18:20+0200\n"
+"POT-Creation-Date: 2015-09-15 16:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,6 +163,10 @@ msgstr ""
 msgid "all cards"
 msgstr ""
 
+#: kansha/validator.py:45
+msgid "Must be a boolean"
+msgstr ""
+
 #: kansha/app/app.py:309
 msgid "Go back"
 msgstr ""
@@ -247,7 +251,7 @@ msgstr ""
 msgid "Sign up"
 msgstr ""
 
-#: kansha/authentication/database/forms.py:148 kansha/user/user_profile.py:207
+#: kansha/authentication/database/forms.py:148 kansha/user/user_profile.py:220
 #, python-format
 msgid "Username %s is not available. Please choose another one."
 msgstr ""
@@ -261,7 +265,7 @@ msgid "Entered too late"
 msgstr ""
 
 #: kansha/authentication/database/forms.py:167
-#: kansha/authentication/database/forms.py:394 kansha/user/user_profile.py:250
+#: kansha/authentication/database/forms.py:394 kansha/user/user_profile.py:263
 msgid "The two passwords don't match"
 msgstr ""
 
@@ -271,8 +275,8 @@ msgid "Unable to process. Check your input below."
 msgstr ""
 
 #: kansha/authentication/database/forms.py:199
-#: kansha/authentication/database/forms.py:526 kansha/user/user_profile.py:129
-#: kansha/user/user_profile.py:322
+#: kansha/authentication/database/forms.py:526 kansha/user/user_profile.py:130
+#: kansha/user/user_profile.py:335
 msgid "Username"
 msgstr ""
 
@@ -283,7 +287,7 @@ msgid "Email address"
 msgstr ""
 
 #: kansha/authentication/database/forms.py:201 kansha/googleuser/view.py:25
-#: kansha/user/user_profile.py:132 kansha/user/user_profile.py:325
+#: kansha/user/user_profile.py:133 kansha/user/user_profile.py:338
 msgid "Fullname"
 msgstr ""
 
@@ -389,12 +393,12 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
-#: kansha/authentication/database/forms.py:445 kansha/user/user_profile.py:350
+#: kansha/authentication/database/forms.py:445 kansha/user/user_profile.py:363
 msgid "Old Password"
 msgstr ""
 
-#: kansha/authentication/database/forms.py:465 kansha/board/view.py:288
-#: kansha/board/view.py:392 kansha/board/view.py:739 kansha/card/view.py:336
+#: kansha/authentication/database/forms.py:465 kansha/board/view.py:289
+#: kansha/board/view.py:394 kansha/board/view.py:741 kansha/card/view.py:336
 #: kansha/column/view.py:157 kansha/column/view.py:206
 #: kansha/comment/view.py:71 kansha/comment/view.py:96
 #: kansha/description/view.py:54 kansha/label/view.py:71
@@ -658,7 +662,7 @@ msgid "Invalid email address"
 msgstr ""
 
 #: kansha/authentication/database/validators.py:104
-#: kansha/user/user_profile.py:223
+#: kansha/user/user_profile.py:236
 #, python-format
 msgid "Password too short: should have at least %d characters"
 msgstr ""
@@ -681,11 +685,11 @@ msgstr ""
 msgid "Please provide a full name in %s"
 msgstr ""
 
-#: kansha/board/boardconfig.py:32 kansha/user/user_profile.py:43
+#: kansha/board/boardconfig.py:32 kansha/user/user_profile.py:44
 msgid "Profile"
 msgstr ""
 
-#: kansha/board/boardconfig.py:34 kansha/board/view.py:437
+#: kansha/board/boardconfig.py:34 kansha/board/view.py:439
 msgid "Card labels"
 msgstr ""
 
@@ -726,11 +730,11 @@ msgstr ""
 msgid "Archive board"
 msgstr ""
 
-#: kansha/board/comp.py:119 kansha/board/view.py:188
+#: kansha/board/comp.py:119 kansha/board/view.py:189
 msgid "Leave this board"
 msgstr ""
 
-#: kansha/board/comp.py:162 kansha/board/view.py:574
+#: kansha/board/comp.py:162 kansha/board/view.py:576
 msgid "Archive"
 msgstr ""
 
@@ -742,7 +746,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: kansha/board/comp.py:482 kansha/board/view.py:381
+#: kansha/board/comp.py:482 kansha/board/view.py:383
 msgid "Description"
 msgstr ""
 
@@ -754,11 +758,11 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
-#: kansha/board/comp.py:486 kansha/board/view.py:542
+#: kansha/board/comp.py:486 kansha/board/view.py:544
 msgid "Comments"
 msgstr ""
 
-#: kansha/board/comp.py:496 kansha/column/comp.py:92
+#: kansha/board/comp.py:496 kansha/column/comp.py:93
 msgid "Archived cards"
 msgstr ""
 
@@ -770,240 +774,240 @@ msgstr ""
 msgid "board"
 msgstr ""
 
-#: kansha/board/view.py:64
+#: kansha/board/view.py:65
 msgid "This board will be archived. Are you sure?"
 msgstr ""
 
-#: kansha/board/view.py:68 kansha/board/view.py:189
+#: kansha/board/view.py:69 kansha/board/view.py:190
 msgid ""
 "You won't be able to access this board anymore. Are you sure you want to "
 "leave it anyway?"
 msgstr ""
 
-#: kansha/board/view.py:123
+#: kansha/board/view.py:124
 msgid "No matches"
 msgstr ""
 
-#: kansha/board/view.py:126
+#: kansha/board/view.py:127
 #, python-format
 msgid "%d match"
 msgid_plural "%d matches"
 msgstr[0] ""
 msgstr[1] ""
 
-#: kansha/board/view.py:151
+#: kansha/board/view.py:152
 msgid "search"
 msgstr ""
 
-#: kansha/board/view.py:156 kansha/board/view.py:159
+#: kansha/board/view.py:157 kansha/board/view.py:160
 msgid "Calendar mode"
 msgstr ""
 
-#: kansha/board/view.py:157 kansha/board/view.py:160
+#: kansha/board/view.py:158 kansha/board/view.py:161
 msgid "Board mode"
 msgstr ""
 
-#: kansha/board/view.py:185
+#: kansha/board/view.py:186
 msgid "Archive this board"
 msgstr ""
 
-#: kansha/board/view.py:205
+#: kansha/board/view.py:206
 msgid "This board will be destroyed. Are you sure?"
 msgstr ""
 
-#: kansha/board/view.py:206
+#: kansha/board/view.py:207
 msgid "Delete this board"
 msgstr ""
 
-#: kansha/board/view.py:207
+#: kansha/board/view.py:208
 msgid "Restore this board"
 msgstr ""
 
-#: kansha/board/view.py:237 kansha/card/view.py:287
+#: kansha/board/view.py:238 kansha/card/view.py:287
 msgid "All members"
 msgstr ""
 
-#: kansha/board/view.py:247
+#: kansha/board/view.py:248
 msgid "Invite members"
 msgstr ""
 
-#: kansha/board/view.py:251
+#: kansha/board/view.py:252
 msgid "Favorites"
 msgstr ""
 
-#: kansha/board/view.py:281
+#: kansha/board/view.py:282
 msgid "Create a new board"
 msgstr ""
 
-#: kansha/board/view.py:284 kansha/card/view.py:334 kansha/column/view.py:154
+#: kansha/board/view.py:285 kansha/card/view.py:334 kansha/column/view.py:154
 #: kansha/user/view.py:176
 msgid "Add"
 msgstr ""
 
-#: kansha/board/view.py:388 kansha/board/view.py:522 kansha/board/view.py:736
+#: kansha/board/view.py:390 kansha/board/view.py:524 kansha/board/view.py:738
 #: kansha/card/view.py:153 kansha/card/view.py:161 kansha/column/view.py:203
 #: kansha/comment/view.py:68 kansha/comment/view.py:93
 #: kansha/description/view.py:50 kansha/googleuser/view.py:45
 #: kansha/label/view.py:68 kansha/title/view.py:53
-#: kansha/user/user_profile.py:152 kansha/user/user_profile.py:366
+#: kansha/user/user_profile.py:157 kansha/user/user_profile.py:385
 msgid "Save"
 msgstr ""
 
-#: kansha/board/view.py:409
+#: kansha/board/view.py:411
 msgid "Board configuration"
 msgstr ""
 
-#: kansha/board/view.py:415
+#: kansha/board/view.py:417
 msgid "Menu"
 msgstr ""
 
-#: kansha/board/view.py:429
+#: kansha/board/view.py:431
 msgid "Labels"
 msgstr ""
 
-#: kansha/board/view.py:454
+#: kansha/board/view.py:456
 msgid "Weights"
 msgstr ""
 
-#: kansha/board/view.py:462
+#: kansha/board/view.py:464
 msgid "Weighting cards"
 msgstr ""
 
-#: kansha/board/view.py:463
+#: kansha/board/view.py:465
 msgid "Activate cards weights"
 msgstr ""
 
-#: kansha/board/view.py:474 kansha/board/view.py:480 kansha/board/view.py:487
+#: kansha/board/view.py:476 kansha/board/view.py:482 kansha/board/view.py:489
 msgid "All affected weights will be reseted. Are you sure ?"
 msgstr ""
 
-#: kansha/board/view.py:476 kansha/board/view.py:547 kansha/board/view.py:563
+#: kansha/board/view.py:478 kansha/board/view.py:549 kansha/board/view.py:565
 msgid "Disabled"
 msgstr ""
 
-#: kansha/board/view.py:483
+#: kansha/board/view.py:485
 msgid "Free integer"
 msgstr ""
 
-#: kansha/board/view.py:483
+#: kansha/board/view.py:485
 msgid "Card weights can be any integer"
 msgstr ""
 
-#: kansha/board/view.py:490
+#: kansha/board/view.py:492
 msgid "Integer sequence"
 msgstr ""
 
-#: kansha/board/view.py:490
+#: kansha/board/view.py:492
 msgid "Choosen within a sequence of integers"
 msgstr ""
 
-#: kansha/board/view.py:493
+#: kansha/board/view.py:495
 msgid "Enter a sequence of integers"
 msgstr ""
 
-#: kansha/board/view.py:506
+#: kansha/board/view.py:508
 msgid "Edit"
 msgstr ""
 
-#: kansha/board/view.py:531
+#: kansha/board/view.py:533
 msgid "Visibility"
 msgstr ""
 
-#: kansha/board/view.py:532
+#: kansha/board/view.py:534
 msgid "Choose whether the board is private or public."
 msgstr ""
 
-#: kansha/board/view.py:536
+#: kansha/board/view.py:538
 msgid "Private"
 msgstr ""
 
-#: kansha/board/view.py:539 kansha/board/view.py:555 kansha/board/view.py:571
+#: kansha/board/view.py:541 kansha/board/view.py:557 kansha/board/view.py:573
 msgid "Public"
 msgstr ""
 
-#: kansha/board/view.py:543
+#: kansha/board/view.py:545
 msgid ""
 "Commenting allows members to make short messages on cards. You can enable"
 " or disable this feature."
 msgstr ""
 
-#: kansha/board/view.py:550 kansha/board/view.py:566
+#: kansha/board/view.py:552 kansha/board/view.py:568
 msgid "Members"
 msgstr ""
 
-#: kansha/board/view.py:558
+#: kansha/board/view.py:560
 msgid "Votes"
 msgstr ""
 
-#: kansha/board/view.py:559
+#: kansha/board/view.py:561
 msgid "Allow votes"
 msgstr ""
 
-#: kansha/board/view.py:575
+#: kansha/board/view.py:577
 msgid "View archive column"
 msgstr ""
 
-#: kansha/board/view.py:583
+#: kansha/board/view.py:585
 msgid "Show"
 msgstr ""
 
-#: kansha/board/view.py:585
+#: kansha/board/view.py:587
 msgid "Hide"
 msgstr ""
 
-#: kansha/board/view.py:587
+#: kansha/board/view.py:589
 msgid "Notifications"
 msgstr ""
 
-#: kansha/board/view.py:588
+#: kansha/board/view.py:590
 msgid "You will be notified by email of changes made in this board to cards"
 msgstr ""
 
-#: kansha/board/view.py:592 kansha/toolbox/calendar_widget.py:192
+#: kansha/board/view.py:594 kansha/toolbox/calendar_widget.py:201
 msgid "None"
 msgstr ""
 
-#: kansha/board/view.py:594
+#: kansha/board/view.py:596
 msgid "Affected to me"
 msgstr ""
 
-#: kansha/board/view.py:596
+#: kansha/board/view.py:598
 msgid "All"
 msgstr ""
 
-#: kansha/board/view.py:624 kansha/board/view.py:632
+#: kansha/board/view.py:626 kansha/board/view.py:634
 msgid "Background image"
 msgstr ""
 
-#: kansha/board/view.py:642
+#: kansha/board/view.py:644
 msgid "Choose an image"
 msgstr ""
 
-#: kansha/board/view.py:658 kansha/gallery/view.py:77
+#: kansha/board/view.py:660 kansha/gallery/view.py:77
 msgid "Max file size exceeded"
 msgstr ""
 
-#: kansha/board/view.py:667 kansha/board/view.py:681
+#: kansha/board/view.py:669 kansha/board/view.py:683
 msgid "or"
 msgstr ""
 
-#: kansha/board/view.py:668
+#: kansha/board/view.py:670
 msgid "Reset background"
 msgstr ""
 
-#: kansha/board/view.py:673
+#: kansha/board/view.py:675
 msgid "Board title color"
 msgstr ""
 
-#: kansha/board/view.py:682
+#: kansha/board/view.py:684
 msgid "Reset to default color"
 msgstr ""
 
-#: kansha/board/view.py:695
+#: kansha/board/view.py:697
 msgid "No background selected"
 msgstr ""
 
-#: kansha/board/view.py:713 kansha/label/view.py:55
+#: kansha/board/view.py:715 kansha/label/view.py:55
 msgid "Change color"
 msgstr ""
 
@@ -1017,7 +1021,7 @@ msgid "card"
 msgstr ""
 
 #: kansha/card/view.py:111 kansha/comment/view.py:37 kansha/gallery/view.py:144
-#: kansha/user/user_profile.py:481
+#: kansha/user/user_profile.py:500
 msgid "Delete"
 msgstr ""
 
@@ -1073,13 +1077,13 @@ msgstr ""
 msgid "List actions"
 msgstr ""
 
-#: kansha/column/comp.py:233
+#: kansha/column/comp.py:234
 msgid "Limit of cards reached fo this list"
 msgstr ""
 
 #: kansha/column/comp.py:397
 #, python-format
-msgid "Must be be bigger than %s"
+msgid "Must be bigger than %s"
 msgstr ""
 
 #: kansha/column/view.py:56
@@ -1137,7 +1141,7 @@ msgstr ""
 msgid "This %s has a description"
 msgstr ""
 
-#: kansha/gallery/comp.py:69 kansha/user/user_profile.py:296
+#: kansha/gallery/comp.py:69 kansha/user/user_profile.py:309
 #, python-format
 msgid "File must be less than %d KB"
 msgstr ""
@@ -1176,18 +1180,18 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: kansha/googleuser/view.py:28 kansha/user/user_profile.py:135
-#: kansha/user/user_profile.py:328
+#: kansha/googleuser/view.py:28 kansha/user/user_profile.py:136
+#: kansha/user/user_profile.py:341
 msgid "Email"
 msgstr ""
 
-#: kansha/googleuser/view.py:31 kansha/user/user_profile.py:138
-#: kansha/user/user_profile.py:333
+#: kansha/googleuser/view.py:31 kansha/user/user_profile.py:139
+#: kansha/user/user_profile.py:346
 msgid "Language"
 msgstr ""
 
-#: kansha/googleuser/view.py:40 kansha/user/user_profile.py:147
-#: kansha/user/user_profile.py:342
+#: kansha/googleuser/view.py:40 kansha/user/user_profile.py:148
+#: kansha/user/user_profile.py:355
 msgid "Picture"
 msgstr ""
 
@@ -1196,19 +1200,27 @@ msgstr ""
 msgid "Unsupported field_type %r"
 msgstr ""
 
-#: kansha/toolbox/calendar_widget.py:33
+#: kansha/toolbox/calendar_widget.py:34
 msgid "Invalid date format !"
 msgstr ""
 
-#: kansha/toolbox/calendar_widget.py:135 kansha/toolbox/calendar_widget.py:136
+#: kansha/toolbox/calendar_widget.py:137 kansha/toolbox/calendar_widget.py:138
 msgid "Previous"
 msgstr ""
 
-#: kansha/toolbox/calendar_widget.py:147 kansha/toolbox/calendar_widget.py:148
+#: kansha/toolbox/calendar_widget.py:149 kansha/toolbox/calendar_widget.py:150
 msgid "Next"
 msgstr ""
 
-#: kansha/toolbox/calendar_widget.py:190
+#: kansha/toolbox/calendar_widget.py:170
+msgid "Wk"
+msgstr ""
+
+#: kansha/toolbox/calendar_widget.py:170
+msgid "Week number"
+msgstr ""
+
+#: kansha/toolbox/calendar_widget.py:199
 msgid "Today"
 msgstr ""
 
@@ -1220,51 +1232,55 @@ msgstr ""
 msgid "n.c."
 msgstr ""
 
-#: kansha/user/user_profile.py:27
+#: kansha/user/user_profile.py:28
 msgid "english"
 msgstr ""
 
-#: kansha/user/user_profile.py:28
+#: kansha/user/user_profile.py:29
 msgid "french"
 msgstr ""
 
-#: kansha/user/user_profile.py:40
+#: kansha/user/user_profile.py:41
 msgid "Boards"
 msgstr ""
 
-#: kansha/user/user_profile.py:41
+#: kansha/user/user_profile.py:42
 msgid "My cards"
 msgstr ""
 
-#: kansha/user/user_profile.py:237
+#: kansha/user/user_profile.py:153 kansha/user/user_profile.py:381
+msgid "Display week numbers in calendars"
+msgstr ""
+
+#: kansha/user/user_profile.py:250
 msgid "This password doesn't match the old one."
 msgstr ""
 
-#: kansha/user/user_profile.py:273
+#: kansha/user/user_profile.py:286
 msgid "A confirmation email has been sent."
 msgstr ""
 
-#: kansha/user/user_profile.py:282
+#: kansha/user/user_profile.py:295
 msgid "The password has been changed"
 msgstr ""
 
-#: kansha/user/user_profile.py:300
+#: kansha/user/user_profile.py:313
 msgid "Invalid image file"
 msgstr ""
 
-#: kansha/user/user_profile.py:359
+#: kansha/user/user_profile.py:372
 msgid "New password"
 msgstr ""
 
-#: kansha/user/user_profile.py:362
+#: kansha/user/user_profile.py:375
 msgid "Repeat new password"
 msgstr ""
 
-#: kansha/user/user_profile.py:473
+#: kansha/user/user_profile.py:492
 msgid "Archived Boards"
 msgstr ""
 
-#: kansha/user/user_profile.py:479
+#: kansha/user/user_profile.py:498
 msgid "These boards will be destroyed. Are you sure?"
 msgstr ""
 

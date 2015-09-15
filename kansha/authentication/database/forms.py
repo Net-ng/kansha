@@ -488,6 +488,9 @@ class PasswordResetForm(editor.Editor):
         if not user:
             raise ValueError(
                 _("This username is not registered on our database"))
+        if user.source != 'application':
+            raise ValueError(
+                _("You can not change your password since you log in by an external service."))
         return value
 
     def validate_email_match_user_email(self):

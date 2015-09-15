@@ -129,7 +129,7 @@ class DataUser(Entity):
 
     def get_picture(self):
         if self.picture is None:
-            return "/static/kansha/img/member.png"
+            return "img/member.png"
         else:
             return self.picture
 

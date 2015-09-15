@@ -122,7 +122,10 @@ class SimpleAssetsManager(AssetsManager):
         Return:
             - image significant URL
         """
-        url = ['', self.app_name, 'assets', file_id, size or 'large']
+        if self.app_name:
+            url = ['', self.app_name, 'assets', file_id, size or 'large']
+        else:
+            url = ['', 'assets', file_id, size or 'large']
         if include_filename:
             url.append(self.get_metadata(file_id)['filename'])
         return '/'.join(url)

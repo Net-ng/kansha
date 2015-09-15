@@ -892,7 +892,7 @@ class RegistrationTask(component.Task):
                 log.debug(_("Registration failure for user %s") % username)
                 comp.call(RegistrationConfirmation(self.app_title, self.custom_css), model='failure')
 
-            redirect_to('/kansha')
+            redirect_to(self.confirmation_base_url)
 
 # ----------------------------------------------------------
 
@@ -990,7 +990,7 @@ class PasswordResetTask(component.Task):
                 log.debug(_("Password reset failure for user %s") % username)
                 comp.call(confirmation, model='failure')
 
-            redirect_to('/kansha')
+            redirect_to(self.confirmation_base_url)
 
 
 @presentation.init_for(PasswordResetTask, "len(url) == 2")

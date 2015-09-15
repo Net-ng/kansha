@@ -970,7 +970,7 @@ class PasswordResetTask(component.Task):
                     username)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation, model='email')
-                redirect_to('/kansha')
+                redirect_to(self.confirmation_base_url)
         else:
             # step 2: the user clicked on the confirmation link on his email
             # - check the token (to avoid cheating)

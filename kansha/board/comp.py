@@ -31,6 +31,7 @@ from ..user import usermanager
 from ..authentication.database import forms
 from .. import exceptions, notifications
 from ..card import fts_schema
+from .. import validator
 # Board visibility
 BOARD_PRIVATE = 0
 BOARD_PUBLIC = 1
@@ -896,9 +897,13 @@ class BoardDescription(description.Description):
         Return:
             - part of JS to execute to hide the overlay
         """
-        if text is not None:
-            self.text = text
-            self.parent.data.description = text
+        if text is None:
+            return
+        text = text.strip()
+
+        if text:
+            self.text = validator.clean_text(text)
+        self.parent.data.description = text
         return 'YAHOO.kansha.app.hideOverlay();'
 
 

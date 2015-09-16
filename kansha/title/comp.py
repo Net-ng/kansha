@@ -38,9 +38,11 @@ class Title(object):
             - the new title
 
         """
+        if text is None:
+            return
+        text = text.strip()
         if text:
             text = validator.clean_text(text)
-        if text.strip():
             self.text = text
             self.parent.set_title(text)
             return text

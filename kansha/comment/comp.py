@@ -43,6 +43,10 @@ class Comment(flow.FlowElement):
         return self.author().username == user.username
 
     def set_comment(self, text):
+        if text is None:
+            return
+        text = text.strip()
+
         if text:
             self.data.comment = validator.clean_text(text)
 
@@ -77,7 +81,10 @@ class Commentlabel(object):
             - the new comment
 
         """
-        if text.strip():
+        if text is None:
+            return
+        text = text.strip()
+        if text:
             text = validator.clean_text(text)
             self.text = text
             self.parent.set_comment(text)
@@ -116,6 +123,9 @@ class Comments(flow.FlowSource):
             - ``v`` -- the comment content
         """
         security.check_permissions('comment', self.parent)
+        if v is None:
+            return
+        v = v.strip()
         if v:
             v = validator.clean_text(v)
             user = security.get_user()

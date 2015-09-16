@@ -26,6 +26,7 @@ from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
 from .comp import (Board, Icon, NewBoard, BoardTitle,
                    BoardDescription, BoardMember)
 from nagare import i18n
+from nagare.ajax import py2js
 
 
 @presentation.render_for(Board, model="menu")
@@ -302,7 +303,8 @@ def render_Board_columns(self, h, comp, *args):
     with h.div(id='viewport-wrapper'):
         with h.div(class_='clearfix', id='viewport'):
             h << h.div(id='calendar')
-            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'))""")
+            display_week_numbers = security.get_user().display_week_numbers
+            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % py2js(display_week_numbers))
     for column in self.columns:
         h << column.render(h, 'calendar')
     return h.root

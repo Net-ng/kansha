@@ -23,6 +23,7 @@ from usermanager import UserManager
 from kansha.user.usermanager import get_app_user
 
 from .user_cards import UserCards
+from kansha import validator
 
 LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
@@ -84,7 +85,7 @@ class BasicUserForm(editor.Editor):
     View all fields but you can modify language only
     """
 
-    fields = {'username', 'email', 'fullname', 'language', 'picture'}
+    fields = {'username', 'email', 'fullname', 'language', 'picture', 'display_week_numbers'}
 
     def __init__(self, target, *args):
         """
@@ -148,6 +149,10 @@ def render(self, h, comp, *args):
                         h << h.div(
                             h.img(src=self.target.picture, class_="avatar big"))
 
+                with h.li:
+                    h << h.label(_('Display week numbers in calendars'))
+                    h << h.input(type='checkbox', disabled=True).selected(self.display_week_numbers.value)
+
             with h.div:
                 h << h.input(value=_("Save"), class_="btn btn-primary btn-small",
                              type='submit').action(self.commit)
@@ -181,6 +186,7 @@ class UserForm(BasicUserForm):
 
         self.username.validate(self.validate_username)
         self.fullname.validate(validators.validate_non_empty_string)
+        self.display_week_numbers.validate(validator.BoolValidator)
 
         # Add other properties (email to confirm, passwords...)
         self.email_to_confirm = editor.Property(
@@ -191,6 +197,13 @@ class UserForm(BasicUserForm):
         self.password_repeat = editor.Property(
             '').validate(self.validate_passwords_match)
         self.user_manager = UserManager()
+
+    def pre_action(self):
+        """Actions done before form submit
+
+         - Reset display_week_numbers to False
+        """
+        self.display_week_numbers(False)
 
     def validate_username(self, value):
         """Check username
@@ -316,7 +329,7 @@ class UserForm(BasicUserForm):
 @presentation.render_for(UserForm, "edit")
 def render(self, h, comp, *args):
     with h.div(class_='row-fluid span8'):
-        with h.form:
+        with h.form.pre_action(self.pre_action):
             with h.ul(class_='unstyled'):
                 with h.li:
                     h << (_('Username'), ' ',
@@ -362,6 +375,12 @@ def render(self, h, comp, *args):
                     h << (_('Repeat new password'), ' ',
                           h.input(type='password').action(self.password_repeat)
                           .error(self.password_repeat.error))
+
+                with h.li:
+                    week_numbers_id = h.generate_id('week_numbers_')
+                    h << h.label(_('Display week numbers in calendars'), for_=week_numbers_id)
+                    h << h.input(type='checkbox', id=week_numbers_id).selected(self.display_week_numbers.value).action(self.display_week_numbers)
+
             with h.div(class_=''):
                 h << h.input(_("Save"),
                              class_="btn btn-primary btn-small",

@@ -291,6 +291,7 @@ input[type="password"]:focus {
     position: relative;
     top: -14px;
     font-size: 12px;
+    max-width: 240px;
 }
 
 .fields .nagare-error-field {

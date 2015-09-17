@@ -8,5 +8,6 @@
 #--
 
 from .app import app
+from .app import run
 from . import urls
 import view

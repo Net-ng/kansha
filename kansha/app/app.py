@@ -16,6 +16,7 @@ import pkg_resources
 import webob
 
 from nagare import component, wsgi, security, config, log, i18n
+from nagare.admin import command
 from nagare.i18n import _
 from nagare.namespaces import xhtml5
 
@@ -35,6 +36,10 @@ from ..security import SecurityManager, Unauthorized
 from ..services.simpleassetsmanager.simpleassetsmanager import SimpleAssetsManager
 from ..services.search import SearchEngine
 from ..services import mail
+
+
+def run():
+    return command.run('kansha.commands')
 
 
 class Kansha(object):

@@ -1,4 +1,4 @@
-graft alembic
+graft kansha/alembic
 graft static
 graft conf
 graft data/locale

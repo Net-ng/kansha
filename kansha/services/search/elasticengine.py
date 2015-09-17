@@ -13,8 +13,13 @@ Depends on a running ElasticSearch cluster, somewhere.
 For usage, look at the unit tests.
 """
 
-from elasticsearch import Elasticsearch, helpers
-from elasticsearch.client import IndicesClient
+try:
+    from elasticsearch import Elasticsearch, helpers
+    from elasticsearch.client import IndicesClient
+except ImportError:
+    es_installed = False
+else:
+    es_installed = True
 
 from . import schema
 
@@ -109,6 +114,9 @@ class ElasticSearchEngine(object):
 
     def __init__(self, index, host=None, port=None):
         '''Only one host for now.'''
+        if not es_installed:
+            raise ValueError('elasticsearch not installed')
+
         assert(index.isalpha())
         self.init_state(index, host, port)
 

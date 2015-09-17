@@ -26,7 +26,7 @@ services:
 - elasticsearch
 install:
 - pip install --upgrade pip
-- pip install lxml Pillow pycrypto
+- pip install Babel configobj dateutils docutils flup lxml Pillow pycrypto python-memcached pytz oauth2 requests webob xlwt
 - easy_install .
 - pip install elasticsearch
 - pip install sphinx

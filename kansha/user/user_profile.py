@@ -93,6 +93,7 @@ class BasicUserForm(editor.Editor):
          - ``target`` -- DataUser instance
         """
         super(BasicUserForm, self).__init__(target, self.fields)
+        self.display_week_numbers.validate(validator.BoolValidator)
 
     def commit(self):
         super(BasicUserForm, self).commit(self.fields)
@@ -114,6 +115,13 @@ class BasicUserForm(editor.Editor):
         state['_target'] = None
         return state
 
+    def pre_action(self):
+        """Actions done before form submit
+
+         - Reset display_week_numbers to False
+        """
+        self.display_week_numbers(False)
+
 
 @presentation.render_for(BasicUserForm)
 def render(self, h, comp, *args):
@@ -124,7 +132,7 @@ def render(self, h, comp, *args):
 @presentation.render_for(BasicUserForm, model="edit")
 def render(self, h, comp, *args):
     with h.div(class_='row-fluid span8'):
-        with h.form:
+        with h.form.pre_action(self.pre_action):
             with h.ul(class_='unstyled'):
                 with h.li:
                     h << _('Username')
@@ -151,7 +159,7 @@ def render(self, h, comp, *args):
 
                 with h.li:
                     h << h.label(_('Display week numbers in calendars'))
-                    h << h.input(type='checkbox', disabled=True).selected(self.display_week_numbers.value)
+                    h << h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers)
 
             with h.div:
                 h << h.input(value=_("Save"), class_="btn btn-primary btn-small",
@@ -186,7 +194,6 @@ class UserForm(BasicUserForm):
 
         self.username.validate(self.validate_username)
         self.fullname.validate(validators.validate_non_empty_string)
-        self.display_week_numbers.validate(validator.BoolValidator)
 
         # Add other properties (email to confirm, passwords...)
         self.email_to_confirm = editor.Property(
@@ -197,13 +204,6 @@ class UserForm(BasicUserForm):
         self.password_repeat = editor.Property(
             '').validate(self.validate_passwords_match)
         self.user_manager = UserManager()
-
-    def pre_action(self):
-        """Actions done before form submit
-
-         - Reset display_week_numbers to False
-        """
-        self.display_week_numbers(False)
 
     def validate_username(self, value):
         """Check username

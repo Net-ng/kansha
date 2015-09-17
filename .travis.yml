@@ -25,6 +25,8 @@ cache:
 services:
 - elasticsearch
 install:
+- pip install --upgrade pip
+- pip install lxml Pillow pycrypto
 - easy_install .
 - pip install elasticsearch
 - pip install sphinx

@@ -47,16 +47,16 @@ def render_Header(self, h, comp, *args):
 
 class Login(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, cfg, assets_manager):
         """Login components
 
         """
         logins = []
         auth_cfg = cfg['auth_cfg']
         if auth_cfg['dbauth']['activated']:
-            logins.append(database_form.Login(app_title, custom_css, mail_sender, auth_cfg['dbauth']))
+            logins.append(database_form.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['dbauth']))
         if auth_cfg['oauth']['activated']:
-            logins.append(oauth.Login(app_title, custom_css, mail_sender, auth_cfg['oauth']))
+            logins.append(oauth.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['oauth']))
         if auth_cfg['ldapauth']['activated']:
             logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
 

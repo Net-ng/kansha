@@ -31,7 +31,7 @@ def answer_on_menu(app, comp, user, v):
     if v is None:
         comp.answer(None)
     else:
-        u = user_profile.UserProfile(app.app_title, app.custom_css, user.data,
+        u = user_profile.UserProfile(app.app_title, app.app_banner, app.custom_css, user.data,
                                      app.mail_sender, app.assets_manager, app.search_engine)
         app.content.becomes(u, 'edit')
 

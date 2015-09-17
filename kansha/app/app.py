@@ -46,10 +46,11 @@ class Kansha(object):
 
     """The Kansha root component"""
 
-    def __init__(self, app_title, custom_css, mail_sender, assets_manager, search):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, assets_manager, search):
         """Initialization
         """
         self.app_title = app_title
+        self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.title = component.Component(self, 'tab')
@@ -87,7 +88,7 @@ class Kansha(object):
         if not id_:
             return
         if self.boards_manager.get_by_id(id_):
-            b = board.Board(id_, self.app_title, self.custom_css, self.mail_sender,
+            b = board.Board(id_, self.app_title, self.app_banner, self.custom_css, self.mail_sender,
                             self.assets_manager, self.search_engine,
                             on_board_archive=self.select_last_board,
                             on_board_leave=self.select_last_board)
@@ -119,20 +120,21 @@ class Kansha(object):
             self.select_board(data_board.id)
         else:
             self.content.becomes(
-                user_profile.UserProfile(self.app_title, self.custom_css, user.data, self.mail_sender,
+                user_profile.UserProfile(self.app_title, self.app_banner, self.custom_css, user.data, self.mail_sender,
                                          self.assets_manager, self.search_engine), 'edit')
 
 
 class MainTask(component.Task):
 
-    def __init__(self, app_title, custom_css, main_app, mail_sender, cfg, assets_manager, search):
+    def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender, cfg, assets_manager, search):
         self.app_title = app_title
+        self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.auth_cfg = cfg['auth_cfg']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = Kansha(
-            self.app_title, self.custom_css, mail_sender, assets_manager, search)
+            self.app_title, self.app_banner, self.custom_css, mail_sender, assets_manager, search)
         self.main_app = main_app
         self.assets_manager = assets_manager
         self.search_engine = search
@@ -142,7 +144,7 @@ class MainTask(component.Task):
         user = security.get_user()
         while user is None:
             # not logged ? Call login component
-            comp.call(login.Login(self.app_title, self.custom_css,
+            comp.call(login.Login(self.app_title, self.app_banner, self.custom_css,
                                   self.mail_sender, self.cfg, self.assets_manager))
             user = security.get_user()
             if user.last_login is None:
@@ -164,12 +166,13 @@ class App(object):
 
     def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager, search):
         self.app_title = app_title
-        self.banner = cfg['pub_cfg']['banner']
+        self.app_banner = cfg['pub_cfg']['banner']
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.assets_manager = assets_manager
         self.search_engine = search
         self.task = component.Component(MainTask(self.app_title,
+                                                 self.app_banner,
                                                  self.custom_css,
                                                  self, mail_sender,
                                                  cfg,

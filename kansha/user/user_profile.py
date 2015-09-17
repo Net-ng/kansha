@@ -31,14 +31,14 @@ LANGUAGES = {'en': _L('english'),
 
 class UserProfile(object):
 
-    def __init__(self, app_title, custom_css, user, mail_sender, assets_manager, search_engine):
+    def __init__(self, app_title, app_banner, custom_css, user, mail_sender, assets_manager, search_engine):
         """
         In:
          - ``user`` -- user (DataUser instance)
          - ``mail_sender`` -- MailSender instance
         """
         self.app_title = app_title
-        self.menu = ((_L(u'Boards'), UserBoards(app_title, custom_css, [dbm.board for dbm in user.board_members], mail_sender, assets_manager)),
+        self.menu = ((_L(u'Boards'), UserBoards(app_title, app_banner, custom_css, [dbm.board for dbm in user.board_members], mail_sender, assets_manager)),
                      (_L(u'My cards'), UserCards(
                          user, assets_manager, search_engine)),
                      (_L(u'Profile'), get_userform(app_title, custom_css, user.source)(
@@ -266,7 +266,7 @@ class UserForm(BasicUserForm):
         """Create email confirmation"""
         confirmation_url = '/'.join(
             (self.application_url, 'new_mail', self.username()))
-        return registation_forms.EmailConfirmation(self.app_title, self.custom_css, lambda: security.get_user().data, confirmation_url)
+        return registation_forms.EmailConfirmation(self.app_title, self.app_banner, self.custom_css, lambda: security.get_user().data, confirmation_url)
 
     def commit(self):
         """ Commit method
@@ -397,7 +397,7 @@ def get_userform(app_title, custom_css, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, custom_css, boards, mail_sender, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, boards, mail_sender, assets_manager):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -410,7 +410,7 @@ class UserBoards(object):
         self.archived_boards = []
 
         for b in boards:
-            _b = board.Board(b.id, app_title, custom_css, mail_sender, assets_manager, None,
+            _b = board.Board(b.id, app_title, app_banner, custom_css, mail_sender, assets_manager, None,
                              on_board_delete=lambda id_=b.id: self.delete_board(
                                  id_),
                              on_board_archive=lambda id_=b.id: self.archive_board(

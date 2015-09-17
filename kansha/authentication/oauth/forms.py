@@ -56,10 +56,11 @@ SCOPES = {
 
 class Login(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, oauth_cfg):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, oauth_cfg):
         self.oauth_modules = {}
         self._error_message = u''
         self.app_title = app_title
+        self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.oauth_cfg = oauth_cfg
@@ -114,6 +115,7 @@ class Login(object):
             self.content.call(
                 RegistrationTask(
                     self.app_title,
+                    self.app_banner,
                     self.custom_css,
                     self.mail_sender,
                     '',
@@ -133,7 +135,7 @@ class Login(object):
 
 
 @presentation.render_for(Login)
-def render(self, h, comp, *args):
+def render_login(self, h, comp, *args):
 
     if self.content() is not None:
         return self.content

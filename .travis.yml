@@ -19,6 +19,9 @@ addons:
     - libpcre3-dev
     - libtiff4-dev
     - libpq-dev
+cache:
+  directories:
+  - $HOME/.cache/pip
 services:
 - elasticsearch
 install:

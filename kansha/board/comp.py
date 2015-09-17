@@ -897,13 +897,13 @@ class BoardDescription(description.Description):
         Return:
             - part of JS to execute to hide the overlay
         """
-        if text is None:
-            return
-        text = text.strip()
+        if text is not None:
+            text = text.strip()
 
-        if text:
-            self.text = validator.clean_text(text)
-        self.parent.data.description = text
+            if text:
+                text = validator.clean_text(text)
+
+            self.text = self.parent.data.description = text
         return 'YAHOO.kansha.app.hideOverlay();'
 
 

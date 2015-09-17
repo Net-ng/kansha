@@ -864,7 +864,7 @@ class NewBoard(object):
         In:
           - ``title`` -- the new board title
         """
-        if title:
+        if title and title.strip():
             b = BoardsManager().create_board(title, user)
             comp.answer(b.id)
         comp.answer()

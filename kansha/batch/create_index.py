@@ -50,21 +50,25 @@ class ReIndex(command.Command):
     @staticmethod
     def run(parser, options, args):
 
-        for cfg in args:
-            (cfgfile, app, dist, conf) = util.read_application(cfg,
-                                                               parser.error)
-            requirement = (
-                None if not dist
-                else pkg_resources.Requirement.parse(dist.project_name)
-            )
-            data_path = (
-                None if not requirement
-                else pkg_resources.resource_filename(requirement, '/data')
-            )
+        try:
+            application = args[0]
+        except IndexError:
+            application = 'kansha'
 
-            (active_app, databases) = util.activate_WSGIApp(
-                app, cfgfile, conf, parser.error, data_path=data_path)
-            for (database_settings, populate) in databases:
-                database.set_metadata(*database_settings)
-            if active_app:
-                rebuild_index(active_app)
+        (cfgfile, app, dist, conf) = util.read_application(application,
+                                                           parser.error)
+        requirement = (
+            None if not dist
+            else pkg_resources.Requirement.parse(dist.project_name)
+        )
+        data_path = (
+            None if not requirement
+            else pkg_resources.resource_filename(requirement, '/data')
+        )
+
+        (active_app, databases) = util.activate_WSGIApp(
+            app, cfgfile, conf, parser.error, data_path=data_path)
+        for (database_settings, populate) in databases:
+            database.set_metadata(*database_settings)
+        if active_app:
+            rebuild_index(active_app)

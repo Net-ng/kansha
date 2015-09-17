@@ -62,7 +62,7 @@ So you have Kansha data in your PostgreSQL database and you want to migrate them
 
 8. Recreate the search index::
 
-    nagare-admin create-index kansha
+    kansha-admin create-index kansha
 
 9. Copy ``assets`` to new location if necessary.
 

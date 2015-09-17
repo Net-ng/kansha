@@ -83,13 +83,18 @@ For developing, let's use the built-in web server, database and search engine wi
 
 Place yourself at the root of the project (<KANSHA_DIR>). The virtual environment is still activated in your shell (look at the prompt); if not, activate it.
 
-1. First, initialize the database (first run only)::
+0. First, initialize the database (first run only)::
 
     $ nagare-admin create-db conf/kansha.local.cfg
+    $ kansha-admin alembic-stamp head conf/kansha.local.cfg
+
+1. If you later need to migrate your database after a schema change in the model::
+
+    $ kansha-admin alembic-upgrade head conf/kansha.local.cfg
 
 2. Build the search indexes (can be safely repeated anytime, only needed at firt run actually)::
 
-    $ nagare-admin create-index conf/kansha.local.cfg
+    $ kansha-admin create-index conf/kansha.local.cfg
 
 3. Launch::
 

@@ -40,7 +40,7 @@ In any case, you always need to::
 
     $ <VENV_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
     $ <VENV_DIR>/bin/kansha-admin alembic-stamp head </path/to/your/kansha.cfg>
-    $ <VENV_DIR>/bin/nagare-admin create-index </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/kansha-admin create-index </path/to/your/kansha.cfg>
 
 When you **first** deploy.
 
@@ -194,7 +194,7 @@ Just type::
 
     $ <VENV_DIR>/bin/easy_install --upgrade kansha
     $ <VENV_DIR>/bin/kansha-admin alembic-upgrade head </path/to/your/kansha.cfg>
-    $ <VENV_DIR>/bin/nagare-admin create-index </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/kansha-admin create-index </path/to/your/kansha.cfg>
 
 Or, if you want a specific version instead of the latest release (replace X, Y and Z with the actual numbers)::
 

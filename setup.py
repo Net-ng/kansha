@@ -60,12 +60,11 @@ setup(
       alembic-revision = kansha.alembic.admin:AlembicRevisionCommand
       alembic-stamp = kansha.alembic.admin:AlembicStampCommand
       alembic-upgrade = kansha.alembic.admin:AlembicUpgradeCommand
+      create-index = kansha.batch.create_index:ReIndex
+      save-config = kansha.batch.save_config:SaveConfig
 
       [nagare.applications]
       kansha = kansha.app:app
-      [nagare.commands]
-      create-index = kansha.batch.create_index:ReIndex
-      save-config = kansha.batch.save_config:SaveConfig
       [search.engines]
       dummy = kansha.services.search.dummyengine:DummySearchEngine
       sqlite = kansha.services.search.sqliteengine:SQLiteFTSEngine

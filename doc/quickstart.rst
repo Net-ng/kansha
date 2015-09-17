@@ -108,7 +108,7 @@ To get quickly up and running, let's use the built-in web server, database and s
 
 2. Build the search indexes (can be safely repeated anytime)::
 
-    $ nagare-admin create-index kansha
+    $ kansha-admin create-index
 
 3. Launch::
 
@@ -125,5 +125,6 @@ Upgrading Kansha without loosing data is very easy::
 
     $ easy_install --upgrade kansha
     $ kansha-admin alembic-upgrade head
+    $ kansha-admin create-index
 
 And then restart.

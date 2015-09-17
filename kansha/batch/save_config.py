@@ -10,6 +10,7 @@
 
 from nagare.admin import util, command
 
+
 class SaveConfig(command.Command):
 
     desc = 'Create a configuration template for kansha, from the default config into the current folder as kansha.cfg.'
@@ -17,15 +18,16 @@ class SaveConfig(command.Command):
     @staticmethod
     def run(parser, options, args):
 
-        for cfg in args:
-            (cfgfile, app, dist, conf) = util.read_application(cfg,
-                                                               parser.error)
+        application = 'kansha'
 
-            infile = open(cfgfile)
-            outfile = open('%s.cfg' % conf['application']['name'], 'w')
-            outfile.write('datadir = "/path/to/folder"\n\n')
-            for line in infile:
-                oline = line.replace('$root/data', '$datadir')
-                outfile.write(oline)
-            infile.close()
-            outfile.close()
+        (cfgfile, app, dist, conf) = util.read_application(application,
+                                                           parser.error)
+
+        infile = open(cfgfile)
+        outfile = open('kansha.cfg', 'w')
+        outfile.write('datadir = "/path/to/folder"\n\n')
+        for line in infile:
+            oline = line.replace('$root/data', '$datadir')
+            outfile.write(oline)
+        infile.close()
+        outfile.close()

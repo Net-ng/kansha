@@ -203,6 +203,8 @@ All UI messages and labels should be in UTF8 and marked for localization.
 
 Write unit tests for internal functions, classes and API (we use :program:`nose`).
 
+If you need to update the data schema, use the integrated alembic commands: :command:`kansha-admin alembic-revision [application]`, :command:`kansha-admin alembic-upgrade [application]`…
+
 Frontend
 """"""""
 

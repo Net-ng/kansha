@@ -101,14 +101,15 @@ Just replace the <<PLACEHOLDERS>> with your actual values.
 
 For your convenience, you can generate a configuration template into your current directory::
 
-    $ <VENV_DIR>/bin/nagare-admin save-config kansha
+    $ <VENV_DIR>/bin/kansha-admin save-config
 
 The template is ``kansha.cfg``. Edit it as you need. Ensure the folders you set for logs, assets… do exist.
 
 To manage and run Kansha with your own custom configuration::
 
     $ <VENV_DIR>/bin/nagare-admin create-db /path/to/your/kansha.cfg
-    $ <VENV_DIR>/bin/nagare-admin create-index /path/to/your/kansha.cfg
+    $ <VENV_DIR>/bin/kansha-admin alembic-stamp head /path/to/your/kansha.cfg
+    $ <VENV_DIR>/bin/kansha-admin create-index /path/to/your/kansha.cfg
     $ <VENV_DIR>/bin/nagare-admin serve /path/to/your/kansha.cfg
 
 

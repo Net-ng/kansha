@@ -31,8 +31,6 @@ install:
 - pip install elasticsearch
 - pip install sphinx
 - pip install coveralls
-before_script:
-- sleep 10
 script:
 - cd doc && make html && cd ../
 - python setup.py compile_catalog

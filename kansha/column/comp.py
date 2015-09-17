@@ -394,4 +394,4 @@ class CardsCounter(object):
         elif nb >= count:
             comp.answer(self.change_nb_cards(nb))
         else:
-            self.error = _('Must be bigger than %s' % count)
+            self.error = _('Must be bigger than %s') % count

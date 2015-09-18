@@ -988,7 +988,7 @@ class PasswordResetTask(component.Task):
             confirmation = self._create_password_reset_confirmation(username)
             if confirmation.confirm_password_reset(token):
                 log.debug(_("Resetting the password for user %s") % username)
-                ret = comp.call(PasswordEditor(self.app_title, self.custom_css,
+                ret = comp.call(PasswordEditor(self.app_title, self.app_banner, self.custom_css,
                                          lambda username=username: self._get_user(username),
                                          check_old_password=False))
                 if ret:

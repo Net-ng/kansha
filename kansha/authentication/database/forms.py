@@ -48,7 +48,6 @@ def render_Header(self, h, comp, *args):
     with h.div(class_='header'):
         with h.a(href=h.request.application_url):
             h << h.div(class_='logo')
-        # h << h.div(class_='logo')
         h << h.h1(self.app_banner)
     return h.root
 

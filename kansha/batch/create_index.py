@@ -48,6 +48,10 @@ class ReIndex(command.Command):
     desc = '(Re-)Create index for the application.'
 
     @staticmethod
+    def set_options(optparser):
+        optparser.usage += ' [application]'
+
+    @staticmethod
     def run(parser, options, args):
 
         try:

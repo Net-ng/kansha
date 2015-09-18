@@ -285,8 +285,8 @@ def render_RegistrationForm(self, h, comp, *args):
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
         # autocomplete="off": do not store the password
+        h << h.p(_(u'Your profile is missing an email address. You have to enter a valid email address to open an account on %s') % self.app_title)
         with h.form(autocomplete="off").post_action(self.validate_emails_match):
-            h << h.p(_(u'Your profile is missing an email address. You have to enter a valid email address to open an account on %s') % self.app_title)
             with h.div(class_='fields'):
                 fields = (
                     (_('Email address'), 'email', 'text', self.email),

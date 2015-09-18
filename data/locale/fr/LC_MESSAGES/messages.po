@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kansha 0.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-16 18:27+0200\n"
+"POT-Creation-Date: 2015-09-18 13:58+0200\n"
 "PO-Revision-Date: 2015-09-15 16:29+0100\n"
 "Last-Translator: Marc Légier <marc.legier@net-ng.com>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -171,7 +171,7 @@ msgstr ""
 " et modifiez les paramètres de notification le menu \"Préférences\" de "
 "l'onglet \"Board\""
 
-#: kansha/notifications.py:242 kansha/board/comp.py:121
+#: kansha/notifications.py:242 kansha/board/comp.py:122
 msgid "Action log"
 msgstr "Historique"
 
@@ -187,23 +187,23 @@ msgstr "toutes cartes"
 msgid "Must be a boolean"
 msgstr "Doit être un booléen"
 
-#: kansha/app/app.py:309
+#: kansha/app/app.py:318
 msgid "Go back"
 msgstr "Retour"
 
-#: kansha/app/app.py:314
+#: kansha/app/app.py:323
 msgid "You are not authorized to access this board"
 msgstr "Vous n'avez pas l'autorisation d'accéder à ce board"
 
-#: kansha/app/app.py:317
+#: kansha/app/app.py:326
 msgid "This board doesn't exists"
 msgstr "Ce board n'existe pas"
 
-#: kansha/app/app.py:320
+#: kansha/app/app.py:329
 msgid "Page not found"
 msgstr "Page non trouvée"
 
-#: kansha/app/app.py:326
+#: kansha/app/app.py:335
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
@@ -237,140 +237,148 @@ msgstr "Opération en cours"
 msgid "Please wait until operation completes."
 msgstr "Veuillez attendre que l'opération soit terminée, s'il vous plaît."
 
-#: kansha/authentication/login.py:79
-#: kansha/authentication/database/forms.py:116
+#: kansha/authentication/login.py:80
+#: kansha/authentication/database/forms.py:118
 msgid "Sign in"
 msgstr "Se connecter"
 
-#: kansha/authentication/database/forms.py:93
+#: kansha/authentication/database/forms.py:95
 #: kansha/authentication/ldap/forms.py:49
 msgid "Login failed"
 msgstr "Identifiant ou mot de passe erroné"
 
-#: kansha/authentication/database/forms.py:111
+#: kansha/authentication/database/forms.py:113
 #: kansha/authentication/ldap/forms.py:60
 msgid "Enter username"
 msgstr "Taper identifiant"
 
-#: kansha/authentication/database/forms.py:113
+#: kansha/authentication/database/forms.py:115
 #: kansha/authentication/ldap/forms.py:64
 msgid "Enter password"
 msgstr "Saisissez votre mot de passe"
 
-#: kansha/authentication/database/forms.py:114
+#: kansha/authentication/database/forms.py:116
 msgid "Forgot password?"
 msgstr "Mot de passe oublié ?"
 
-#: kansha/authentication/database/forms.py:118
+#: kansha/authentication/database/forms.py:120
 msgid "No account yet? "
 msgstr "Pas encore de compte ? "
 
-#: kansha/authentication/database/forms.py:119
-#: kansha/authentication/database/forms.py:330
-#: kansha/authentication/database/forms.py:354
+#: kansha/authentication/database/forms.py:121
+#: kansha/authentication/database/forms.py:333
+#: kansha/authentication/database/forms.py:357
 msgid "Sign up"
 msgstr "S'enregistrer"
 
-#: kansha/authentication/database/forms.py:148 kansha/user/user_profile.py:220
+#: kansha/authentication/database/forms.py:150 kansha/user/user_profile.py:221
 #, python-format
 msgid "Username %s is not available. Please choose another one."
 msgstr "L'identifiant %s n'est pas disponible. Merci d'en utiliser un autre."
 
-#: kansha/authentication/database/forms.py:156
+#: kansha/authentication/database/forms.py:158
 msgid "Invalid captcha"
 msgstr "Captcha invalide"
 
-#: kansha/authentication/database/forms.py:162
+#: kansha/authentication/database/forms.py:164
 msgid "Entered too late"
 msgstr "Temp expiré, trop tard !"
 
-#: kansha/authentication/database/forms.py:167
-#: kansha/authentication/database/forms.py:394 kansha/user/user_profile.py:263
+#: kansha/authentication/database/forms.py:169
+#: kansha/authentication/database/forms.py:397 kansha/user/user_profile.py:264
 msgid "The two passwords don't match"
 msgstr "Les mots de passe ne sont pas identiques"
 
-#: kansha/authentication/database/forms.py:175
-#: kansha/authentication/database/forms.py:263
+#: kansha/authentication/database/forms.py:177
+#: kansha/authentication/database/forms.py:266
 msgid "Unable to process. Check your input below."
 msgstr "Traitement impossible. Verifiez votre saisie ci-dessous."
 
-#: kansha/authentication/database/forms.py:199
-#: kansha/authentication/database/forms.py:529 kansha/user/user_profile.py:130
-#: kansha/user/user_profile.py:335
+#: kansha/authentication/database/forms.py:197
+msgid "Create an account"
+msgstr "Créer un nouveau compte"
+
+#: kansha/authentication/database/forms.py:202
+#: kansha/authentication/database/forms.py:533 kansha/user/user_profile.py:138
+#: kansha/user/user_profile.py:336
 msgid "Username"
 msgstr "Identifiant"
 
-#: kansha/authentication/database/forms.py:200
-#: kansha/authentication/database/forms.py:289
-#: kansha/authentication/database/forms.py:530
+#: kansha/authentication/database/forms.py:203
+#: kansha/authentication/database/forms.py:292
+#: kansha/authentication/database/forms.py:534
 msgid "Email address"
 msgstr "Adresse email"
 
-#: kansha/authentication/database/forms.py:201 kansha/googleuser/view.py:25
-#: kansha/user/user_profile.py:133 kansha/user/user_profile.py:338
+#: kansha/authentication/database/forms.py:204 kansha/user/user_profile.py:141
+#: kansha/user/user_profile.py:339
 msgid "Fullname"
 msgstr "Nom complet"
 
-#: kansha/authentication/database/forms.py:202
-#: kansha/authentication/database/forms.py:440
+#: kansha/authentication/database/forms.py:205
+#: kansha/authentication/database/forms.py:443
 msgid "Password"
 msgstr "Mot de passe"
 
-#: kansha/authentication/database/forms.py:204
-#: kansha/authentication/database/forms.py:442
+#: kansha/authentication/database/forms.py:207
+#: kansha/authentication/database/forms.py:445
 msgid "Password (repeat)"
 msgstr "Mot de passe (Répéter)"
 
-#: kansha/authentication/database/forms.py:219
+#: kansha/authentication/database/forms.py:222
 msgid "Enter the captcha text"
 msgstr "Entrez le texte de la captcha"
 
-#: kansha/authentication/database/forms.py:225
-#: kansha/authentication/database/forms.py:303
+#: kansha/authentication/database/forms.py:228
+#: kansha/authentication/database/forms.py:306
 msgid "Create new account"
 msgstr "Créer un nouveau compte"
 
-#: kansha/authentication/database/forms.py:228
-#: kansha/authentication/database/forms.py:306
+#: kansha/authentication/database/forms.py:231
+#: kansha/authentication/database/forms.py:309
 msgid "Already have an account? "
 msgstr "Vous avez déjà un compte ? "
 
-#: kansha/authentication/database/forms.py:229
-#: kansha/authentication/database/forms.py:307
-#: kansha/authentication/database/forms.py:546
+#: kansha/authentication/database/forms.py:232
+#: kansha/authentication/database/forms.py:310
+#: kansha/authentication/database/forms.py:550
 msgid "Log in"
 msgstr "Se connecter"
 
-#: kansha/authentication/database/forms.py:238
+#: kansha/authentication/database/forms.py:241
 msgid "refresh captcha"
 msgstr "regenerer captcha"
 
-#: kansha/authentication/database/forms.py:257
+#: kansha/authentication/database/forms.py:260
 msgid "The two emails don't match"
 msgstr "Les adresses ne sont pas identiques"
 
-#: kansha/authentication/database/forms.py:271
+#: kansha/authentication/database/forms.py:274
 msgid ""
 "Something went wrong: user does not exist! Please contact the "
 "administrator of this site."
-msgstr "Impossible : l'utilisateur n'existe pas ! Veuillez contacter l'administrateur de ce site."
+msgstr ""
+"Impossible : l'utilisateur n'existe pas ! Veuillez contacter "
+"l'administrateur de ce site."
 
-#: kansha/authentication/database/forms.py:286
+#: kansha/authentication/database/forms.py:289
 #, python-format
 msgid ""
 "Your profile is missing an email address. You have to enter a valid email"
 " address to open an account on %s"
-msgstr "Votre profil ne fournit pas d'adresse email. Vous devez entrer une adresse email valide pour ouvrir un compte sur %s."
+msgstr ""
+"Votre profil ne fournit pas d'adresse email. Vous devez entrer une "
+"adresse email valide pour ouvrir un compte sur %s."
 
-#: kansha/authentication/database/forms.py:290
+#: kansha/authentication/database/forms.py:293
 msgid "Email address (repeat)"
 msgstr "Adresse email (bis)"
 
-#: kansha/authentication/database/forms.py:334
+#: kansha/authentication/database/forms.py:337
 msgid "Registration successful!"
 msgstr "Enregistrement réussi !"
 
-#: kansha/authentication/database/forms.py:337
+#: kansha/authentication/database/forms.py:340
 #, python-format
 msgid ""
 "You are now a registered user of %s. You can login\n"
@@ -379,47 +387,47 @@ msgstr ""
 "Vous êtes maintenant enregistré sur %s. Vous pouvez vous logguer sur la "
 "page d'accueil de l'application."
 
-#: kansha/authentication/database/forms.py:344
-#: kansha/authentication/database/forms.py:363
-#: kansha/authentication/database/forms.py:619
-#: kansha/authentication/database/forms.py:638
-#: kansha/authentication/database/forms.py:657
-#: kansha/authentication/database/forms.py:774
-#: kansha/authentication/database/forms.py:1040
+#: kansha/authentication/database/forms.py:347
+#: kansha/authentication/database/forms.py:366
+#: kansha/authentication/database/forms.py:623
+#: kansha/authentication/database/forms.py:642
+#: kansha/authentication/database/forms.py:661
+#: kansha/authentication/database/forms.py:778
+#: kansha/authentication/database/forms.py:1048
 msgid "Ok"
 msgstr "Ok"
 
-#: kansha/authentication/database/forms.py:355
+#: kansha/authentication/database/forms.py:358
 msgid "Registration failure!"
 msgstr "Échec de l'enregistrement !"
 
-#: kansha/authentication/database/forms.py:358
+#: kansha/authentication/database/forms.py:361
 msgid ""
 "Registration failure! The token received is either expired or invalid. "
 "Please register again."
 msgstr "Échec de l'enregistrement ! Veuillez vous enregistrer à nouveau."
 
-#: kansha/authentication/database/forms.py:389
+#: kansha/authentication/database/forms.py:392
 msgid "Invalid password"
 msgstr "Mot de passe invalide"
 
-#: kansha/authentication/database/forms.py:406
-#: kansha/authentication/database/forms.py:508
+#: kansha/authentication/database/forms.py:409
+#: kansha/authentication/database/forms.py:511
 msgid "Invalid input!"
 msgstr "Saisie invalide !"
 
-#: kansha/authentication/database/forms.py:429
-#: kansha/authentication/database/forms.py:461
-#: kansha/authentication/database/forms.py:606
-#: kansha/authentication/database/forms.py:647
+#: kansha/authentication/database/forms.py:432
+#: kansha/authentication/database/forms.py:464
+#: kansha/authentication/database/forms.py:610
+#: kansha/authentication/database/forms.py:651
 msgid "Change password"
 msgstr "Changer de mot de passe"
 
-#: kansha/authentication/database/forms.py:445 kansha/user/user_profile.py:363
+#: kansha/authentication/database/forms.py:448 kansha/user/user_profile.py:364
 msgid "Old Password"
 msgstr "Ancien mot de passe"
 
-#: kansha/authentication/database/forms.py:465 kansha/board/view.py:289
+#: kansha/authentication/database/forms.py:468 kansha/board/view.py:289
 #: kansha/board/view.py:394 kansha/board/view.py:741 kansha/card/view.py:336
 #: kansha/column/view.py:157 kansha/column/view.py:206
 #: kansha/comment/view.py:71 kansha/comment/view.py:96
@@ -428,19 +436,26 @@ msgstr "Ancien mot de passe"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: kansha/authentication/database/forms.py:490
+#: kansha/authentication/database/forms.py:493
 msgid "This username is not registered on our database"
 msgstr "Ce nom d'utilisateur n'existe pas."
 
-#: kansha/authentication/database/forms.py:493
+#: kansha/authentication/database/forms.py:496
 msgid "You can not change your password since you log in by an external service."
-msgstr "Vous ne pouvez pas changer votre mot de passe car vous vous connectez à partir d'un service externe."
+msgstr ""
+"Vous ne pouvez pas changer votre mot de passe car vous vous connectez à "
+"partir d'un service externe."
 
-#: kansha/authentication/database/forms.py:502
+#: kansha/authentication/database/forms.py:505
 msgid "This email address does not match the user's email address"
 msgstr "L'adresse email ne correspond à cet utilisateur"
 
-#: kansha/authentication/database/forms.py:524
+#: kansha/authentication/database/forms.py:525
+#: kansha/authentication/database/forms.py:547
+msgid "Reset password"
+msgstr "Réinitialiser votre mot de passe"
+
+#: kansha/authentication/database/forms.py:528
 msgid ""
 "Please enter your username and your email address and you'll receive an "
 "email that contains a link to reset your password."
@@ -448,15 +463,11 @@ msgstr ""
 "Entrez votre nom d'utilisateur et votre email et vous recevrez un lien "
 "par email afin de changer votre mot de passe."
 
-#: kansha/authentication/database/forms.py:543
-msgid "Reset password"
-msgstr "Modifiez votre mot de passe"
-
-#: kansha/authentication/database/forms.py:546
+#: kansha/authentication/database/forms.py:550
 msgid "Remember your password?"
 msgstr "Vous vous souvenez de votre mot de passe?"
 
-#: kansha/authentication/database/forms.py:585
+#: kansha/authentication/database/forms.py:589
 #, python-format
 msgid ""
 "\n"
@@ -482,36 +493,36 @@ msgstr ""
 "        A bientôt sur %(app_title)s.\n"
 "        "
 
-#: kansha/authentication/database/forms.py:595
+#: kansha/authentication/database/forms.py:599
 #, python-format
 msgid "%(app_title)s: Password Reset"
 msgstr "%(app_title)s: changement de mot de passe"
 
-#: kansha/authentication/database/forms.py:610
+#: kansha/authentication/database/forms.py:614
 msgid "Password change successful!"
 msgstr "Changement de mot de passe réussi !"
 
-#: kansha/authentication/database/forms.py:613
+#: kansha/authentication/database/forms.py:617
 msgid "Your password have been changed successfully."
 msgstr "Votre mot de passe a été modifié avec succès."
 
-#: kansha/authentication/database/forms.py:629
+#: kansha/authentication/database/forms.py:633
 msgid "Email sent!"
 msgstr "Email envoyé !"
 
-#: kansha/authentication/database/forms.py:632
+#: kansha/authentication/database/forms.py:636
 msgid "An email has been sent!"
 msgstr "Un email a été envoyé !"
 
-#: kansha/authentication/database/forms.py:648
+#: kansha/authentication/database/forms.py:652
 msgid "Password reset failure!"
 msgstr "Le changement de mot de passe a échoué !"
 
-#: kansha/authentication/database/forms.py:651
+#: kansha/authentication/database/forms.py:655
 msgid "Password reset failure! Please try again."
 msgstr "Le changement de mot de passe a échoué ! Veuillez réessayer."
 
-#: kansha/authentication/database/forms.py:714
+#: kansha/authentication/database/forms.py:718
 #, python-format
 msgid ""
 "\n"
@@ -560,12 +571,12 @@ msgstr ""
 "%(login)s et le mot de passe qu'elle (il) a saisi.\n"
 "            "
 
-#: kansha/authentication/database/forms.py:731
+#: kansha/authentication/database/forms.py:735
 #, python-format
 msgid "%(app_title)s: Confirm user registration"
 msgstr "%(app_title)s: Confirmer l'enregistrement d'un utilisateur"
 
-#: kansha/authentication/database/forms.py:733
+#: kansha/authentication/database/forms.py:737
 #, python-format
 msgid ""
 "\n"
@@ -606,20 +617,20 @@ msgstr ""
 "        A bientôt sur %(app_title)s.\n"
 "        "
 
-#: kansha/authentication/database/forms.py:747
+#: kansha/authentication/database/forms.py:751
 #, python-format
 msgid "%(app_title)s: Confirm your email address"
 msgstr "%(app_title)s: Confirmer votre adresse email"
 
-#: kansha/authentication/database/forms.py:759
+#: kansha/authentication/database/forms.py:763
 msgid "Registration request sent"
 msgstr "Demande d'inscription envoyée."
 
-#: kansha/authentication/database/forms.py:759
+#: kansha/authentication/database/forms.py:763
 msgid "Confirm your email address!"
 msgstr "Confirmez votre adresse email !"
 
-#: kansha/authentication/database/forms.py:763
+#: kansha/authentication/database/forms.py:767
 msgid ""
 "An email has been sent to the moderator. You will be contacted when\n"
 "                your account is activated."
@@ -627,7 +638,7 @@ msgstr ""
 "Un email a été envoyé au modérateur. Vous serez contacté lorsque votre "
 "compte sera activé."
 
-#: kansha/authentication/database/forms.py:766
+#: kansha/authentication/database/forms.py:770
 msgid ""
 "An email has been sent to your email address. You have to click on the\n"
 "                confirmation link in this email in order to confirm your "
@@ -638,7 +649,7 @@ msgstr ""
 "Vous devez cliquer sur le lien de confirmation afin de valider\n"
 "votre nouvelle adresse email dans l'application."
 
-#: kansha/authentication/database/forms.py:821
+#: kansha/authentication/database/forms.py:825
 #, python-format
 msgid ""
 "\n"
@@ -669,48 +680,48 @@ msgstr ""
 "\n"
 "        A bientôt sur %(app_title)s."
 
-#: kansha/authentication/database/forms.py:833
+#: kansha/authentication/database/forms.py:837
 #, python-format
 msgid "%(app_title)s: Invitation to the board \"%(board_title)s\""
 msgstr "%(app_title)s: Invitation à rejoindre le board \"%(board_title)s\""
 
-#: kansha/authentication/database/forms.py:892
+#: kansha/authentication/database/forms.py:898
 #, python-format
 msgid "Registration successful for user %s"
 msgstr "L'utilisateur %s a été enregistré avec succès"
 
-#: kansha/authentication/database/forms.py:895
+#: kansha/authentication/database/forms.py:901
 #, python-format
 msgid "Registration failure for user %s"
 msgstr "Echec de l'enregistrement de l'utilisateur %s"
 
-#: kansha/authentication/database/forms.py:985
+#: kansha/authentication/database/forms.py:993
 #, python-format
 msgid "Resetting the password for user %s"
 msgstr "Changement de mot de passe pour l'utilisateur %s"
 
-#: kansha/authentication/database/forms.py:994
+#: kansha/authentication/database/forms.py:1002
 #, python-format
 msgid "Password reset failure for user %s"
 msgstr "Échec du changement de mot de passe pour l'utilisateur %s"
 
-#: kansha/authentication/database/forms.py:1021
+#: kansha/authentication/database/forms.py:1029
 msgid "Change email"
 msgstr "Changer son adresse email"
 
-#: kansha/authentication/database/forms.py:1026
+#: kansha/authentication/database/forms.py:1034
 msgid "Email change successful!"
 msgstr "Changement d'email effectué !"
 
-#: kansha/authentication/database/forms.py:1028
+#: kansha/authentication/database/forms.py:1036
 msgid "Email change failure!"
 msgstr "Le changement d'adresse email a échoué !"
 
-#: kansha/authentication/database/forms.py:1032
+#: kansha/authentication/database/forms.py:1040
 msgid "Your email have been changed successfully."
 msgstr "Votre email a été changé avec succès."
 
-#: kansha/authentication/database/forms.py:1034
+#: kansha/authentication/database/forms.py:1042
 msgid "Email change failure! Please retry."
 msgstr "Le changement d'adresse email a échoué ! Veuillez recommencer."
 
@@ -757,7 +768,7 @@ msgid "Invalid email address"
 msgstr "Adresse email invalide"
 
 #: kansha/authentication/database/validators.py:104
-#: kansha/user/user_profile.py:236
+#: kansha/user/user_profile.py:237
 #, python-format
 msgid "Password too short: should have at least %d characters"
 msgstr "Le mot de passe est trop court : au moins %d caractères sont démandés"
@@ -771,11 +782,11 @@ msgstr "S'identifier avec LDAP"
 msgid "Sign in with %s"
 msgstr "S'identifier avec %s"
 
-#: kansha/authentication/oauth/forms.py:97
+#: kansha/authentication/oauth/forms.py:98
 msgid "Authentication failed"
 msgstr "Échec de l'authentification !"
 
-#: kansha/authentication/oauth/forms.py:102
+#: kansha/authentication/oauth/forms.py:103
 #, python-format
 msgid "Please provide a full name in %s"
 msgstr "Veuillez renseigner votre nom dans %s"
@@ -800,72 +811,72 @@ msgstr "Image de fond"
 msgid "Must be composed of integers"
 msgstr "Doit être composé d'entiers"
 
-#: kansha/board/comp.py:105 kansha/board/comp.py:108
+#: kansha/board/comp.py:106 kansha/board/comp.py:109
 #, python-format
 msgid "%s more..."
 msgstr "%s de plus"
 
-#: kansha/board/comp.py:115 kansha/board/comp.py:133
+#: kansha/board/comp.py:116 kansha/board/comp.py:134
 msgid "Add list"
 msgstr "Ajouter une liste"
 
-#: kansha/board/comp.py:116 kansha/board/comp.py:143
+#: kansha/board/comp.py:117 kansha/board/comp.py:144
 msgid "Edit board description"
 msgstr "Editer la description du board"
 
-#: kansha/board/comp.py:117
+#: kansha/board/comp.py:118
 msgid "Preferences"
 msgstr "Préférences"
 
-#: kansha/board/comp.py:118
+#: kansha/board/comp.py:119
 msgid "Export board"
 msgstr "Exporter le board"
 
-#: kansha/board/comp.py:119
+#: kansha/board/comp.py:120
 msgid "Archive board"
 msgstr "Archiver"
 
-#: kansha/board/comp.py:120 kansha/board/view.py:189
+#: kansha/board/comp.py:121 kansha/board/view.py:189
 msgid "Leave this board"
 msgstr "Quitter ce board"
 
-#: kansha/board/comp.py:163 kansha/board/view.py:576
+#: kansha/board/comp.py:164 kansha/board/view.py:576
 msgid "Archive"
 msgstr "Archive"
 
-#: kansha/board/comp.py:483
+#: kansha/board/comp.py:484
 msgid "Column"
 msgstr "Colonne"
 
-#: kansha/board/comp.py:483
+#: kansha/board/comp.py:484
 msgid "Title"
 msgstr "Titre"
 
-#: kansha/board/comp.py:483 kansha/board/view.py:383
+#: kansha/board/comp.py:484 kansha/board/view.py:383
 msgid "Description"
 msgstr "Description"
 
-#: kansha/board/comp.py:483 kansha/due_date/view.py:68
+#: kansha/board/comp.py:484 kansha/due_date/view.py:68
 msgid "Due date"
 msgstr "Echéance"
 
-#: kansha/board/comp.py:486
+#: kansha/board/comp.py:487
 msgid "Weight"
 msgstr "Pondération"
 
-#: kansha/board/comp.py:487 kansha/board/view.py:544
+#: kansha/board/comp.py:488 kansha/board/view.py:544
 msgid "Comments"
 msgstr "Commentaires"
 
-#: kansha/board/comp.py:497 kansha/column/comp.py:93
+#: kansha/board/comp.py:498 kansha/column/comp.py:93
 msgid "Archived cards"
 msgstr "Cartes archivées"
 
-#: kansha/board/comp.py:640 kansha/board/comp.py:661
+#: kansha/board/comp.py:641 kansha/board/comp.py:662
 msgid "Can't remove last manager"
 msgstr "Impossible de supprimer le dernier administrateur"
 
-#: kansha/board/comp.py:887
+#: kansha/board/comp.py:888
 msgid "board"
 msgstr "board"
 
@@ -944,9 +955,9 @@ msgstr "Ajouter"
 #: kansha/board/view.py:390 kansha/board/view.py:524 kansha/board/view.py:738
 #: kansha/card/view.py:153 kansha/card/view.py:161 kansha/column/view.py:203
 #: kansha/comment/view.py:68 kansha/comment/view.py:93
-#: kansha/description/view.py:50 kansha/googleuser/view.py:45
-#: kansha/label/view.py:68 kansha/title/view.py:53
-#: kansha/user/user_profile.py:157 kansha/user/user_profile.py:385
+#: kansha/description/view.py:50 kansha/label/view.py:68
+#: kansha/title/view.py:53 kansha/user/user_profile.py:165
+#: kansha/user/user_profile.py:386
 msgid "Save"
 msgstr "Sauvegarder"
 
@@ -1126,7 +1137,7 @@ msgid "card"
 msgstr "carte"
 
 #: kansha/card/view.py:111 kansha/comment/view.py:37 kansha/gallery/view.py:144
-#: kansha/user/user_profile.py:500
+#: kansha/user/user_profile.py:501
 msgid "Delete"
 msgstr "Effacer"
 
@@ -1246,7 +1257,7 @@ msgstr "Ajouter une description"
 msgid "This %s has a description"
 msgstr "Cette %s a une description"
 
-#: kansha/gallery/comp.py:69 kansha/user/user_profile.py:309
+#: kansha/gallery/comp.py:69 kansha/user/user_profile.py:310
 #, python-format
 msgid "File must be less than %d KB"
 msgstr "La taille doit être inférieure à %d Ko."
@@ -1284,21 +1295,6 @@ msgstr "Choisisez quelle partie de l'image fera la couverture de la carte"
 #: kansha/gallery/view.py:188
 msgid "Done"
 msgstr "Choisir"
-
-#: kansha/googleuser/view.py:28 kansha/user/user_profile.py:136
-#: kansha/user/user_profile.py:341
-msgid "Email"
-msgstr "Email"
-
-#: kansha/googleuser/view.py:31 kansha/user/user_profile.py:139
-#: kansha/user/user_profile.py:346
-msgid "Language"
-msgstr "Langue"
-
-#: kansha/googleuser/view.py:40 kansha/user/user_profile.py:148
-#: kansha/user/user_profile.py:355
-msgid "Picture"
-msgstr "Image"
 
 #: kansha/title/view.py:52
 #, python-format
@@ -1353,39 +1349,51 @@ msgstr "Boards"
 msgid "My cards"
 msgstr "Mes cartes"
 
-#: kansha/user/user_profile.py:153 kansha/user/user_profile.py:381
+#: kansha/user/user_profile.py:144 kansha/user/user_profile.py:342
+msgid "Email"
+msgstr "Email"
+
+#: kansha/user/user_profile.py:147 kansha/user/user_profile.py:347
+msgid "Language"
+msgstr "Langue"
+
+#: kansha/user/user_profile.py:156 kansha/user/user_profile.py:356
+msgid "Picture"
+msgstr "Image"
+
+#: kansha/user/user_profile.py:161 kansha/user/user_profile.py:382
 msgid "Display week numbers in calendars"
 msgstr "Afficher les numéros de semaine sur les calendriers"
 
-#: kansha/user/user_profile.py:250
+#: kansha/user/user_profile.py:251
 msgid "This password doesn't match the old one."
 msgstr "Ce mot de passe ne correspond pas à l'ancien"
 
-#: kansha/user/user_profile.py:286
+#: kansha/user/user_profile.py:287
 msgid "A confirmation email has been sent."
 msgstr "Un email de confirmation a été envoyé"
 
-#: kansha/user/user_profile.py:295
+#: kansha/user/user_profile.py:296
 msgid "The password has been changed"
 msgstr "Le mot de passe a été changé"
 
-#: kansha/user/user_profile.py:313
+#: kansha/user/user_profile.py:314
 msgid "Invalid image file"
 msgstr "Fichier image invalide"
 
-#: kansha/user/user_profile.py:372
+#: kansha/user/user_profile.py:373
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: kansha/user/user_profile.py:375
+#: kansha/user/user_profile.py:376
 msgid "Repeat new password"
 msgstr "Répéter nouveau mot de passe"
 
-#: kansha/user/user_profile.py:492
+#: kansha/user/user_profile.py:493
 msgid "Archived Boards"
 msgstr "Boards archivés"
 
-#: kansha/user/user_profile.py:498
+#: kansha/user/user_profile.py:499
 msgid "These boards will be destroyed. Are you sure?"
 msgstr "Ces boards vont être supprimés. Voulez-vous continuer ?"
 

@@ -194,6 +194,7 @@ class RegistrationForm(editor.Editor):
 def render_RegistrationForm(self, h, comp, *args):
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
+        h << h.h3(_('Create an account'))
         # autocomplete="off": do not store the password
         with h.form(autocomplete="off").post_action(self.validate_passwords_match):
             with h.div(class_='fields'):
@@ -521,6 +522,7 @@ def render_password_reset_form(self, h, comp, *args):
             comp.answer(user.username)
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
+        h << h.h3(_('Reset password'))
 
         with h.p:
             h << _("""Please enter your username and your email address and you'll receive an email that contains a link to reset your password.""")
@@ -758,7 +760,7 @@ def render_registration_confirmation(self, h, comp, *args):
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
         with h.h3:
-            h << _("Registration request sent") if self.moderator else _("Confirm your email address!")
+            h << (_("Registration request sent") if self.moderator else _("Confirm your email address!"))
 
         with h.p:
             if self.moderator:

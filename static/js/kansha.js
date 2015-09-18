@@ -609,15 +609,15 @@
 
         countCards: function (col) {
             var column = Dom.get(col);
-            var counter = Dom.get(col.id + '_counter');
+            var counter = Dom.get(column.id + '_counter');
             if (counter) {
-                var limit = parseInt(localStorage[col.id]);
-                var header = Dom.get(col.id + '_header');
-                var footer = Dom.get(col.id + '_footer');
+                var limit = parseInt(localStorage[column.id]);
+                var header = Dom.get(column.id + '_header');
+                var footer = Dom.get(column.id + '_footer');
                 var cards = ECN('card', null, column);
                 var numCards = cards.length;
                 var textCount = limit > 0 ? numCards + '/' + limit : numCards;
-                var counter = Dom.get(col.id + '_counter');
+                var counter = Dom.get(column.id + '_counter');
                 var content = counter.childNodes[0];
                 content.innerHTML = textCount;
                 if (limit > 0 && numCards >= limit) {

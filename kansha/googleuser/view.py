@@ -17,7 +17,7 @@ from comp import GoogleUser, GoogleUserForm
 
 
 @peak.rules.when(user_profile.get_userform, """source != 'application'""")
-def get_userform(app_title, custom_css, source):
+def get_userform(app_title, app_banner, custom_css, source):
     """ User form for application user
     """
     return GoogleUserForm

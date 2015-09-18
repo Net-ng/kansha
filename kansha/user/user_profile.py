@@ -41,7 +41,7 @@ class UserProfile(object):
         self.menu = ((_L(u'Boards'), UserBoards(app_title, app_banner, custom_css, [dbm.board for dbm in user.board_members], mail_sender, assets_manager)),
                      (_L(u'My cards'), UserCards(
                          user, assets_manager, search_engine)),
-                     (_L(u'Profile'), get_userform(app_title, custom_css, user.source)(
+                     (_L(u'Profile'), get_userform(app_title, app_banner, custom_css, user.source)(
                          user, mail_sender, assets_manager)),
                      )
         self.content = component.Component(None)
@@ -167,7 +167,7 @@ def render(self, h, comp, *args):
     return h.root
 
 
-def get_userform(app_title, custom_css, source):
+def get_userform(app_title, app_banner, custom_css, source):
     """ Default method to get UserForm Class
 
     In:
@@ -178,7 +178,7 @@ def get_userform(app_title, custom_css, source):
 
 class UserForm(BasicUserForm):
 
-    def __init__(self, app_title, custom_css, target, mail_sender, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, target, mail_sender, assets_manager):
         """
         In:
          - ``target`` -- DataUser instance
@@ -187,6 +187,7 @@ class UserForm(BasicUserForm):
         super(UserForm, self).__init__(target, self.fields)
 
         self.app_title = app_title
+        self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.assets_manager = assets_manager
@@ -389,10 +390,10 @@ def render(self, h, comp, *args):
 
 
 @peak.rules.when(get_userform, """source == 'application'""")
-def get_userform(app_title, custom_css, source):
+def get_userform(app_title, app_banner, custom_css, source):
     """ User form for application user
     """
-    return functools.partial(UserForm, app_title, custom_css)
+    return functools.partial(UserForm, app_title, app_banner, custom_css)
 
 
 class UserBoards(object):

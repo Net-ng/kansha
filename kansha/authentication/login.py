@@ -79,7 +79,6 @@ def render_Login(self, h, comp, *args):
         with h.div(class_='title'):
             title = _(u'Sign in')
             for login in self.logins:
-                print "test title"
                 if login().alt_title:
                     title = login().alt_title
                     break

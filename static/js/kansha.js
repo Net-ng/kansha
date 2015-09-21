@@ -246,7 +246,8 @@
         onClick: function (ev) {
             var target = Event.getTarget(ev),
                 inOverlay = ACN(target, 'overlay') || Dom.hasClass(target, 'overlay'),
-                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel');
+                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel'),
+                InCkeditor = ACN(target, 'cke') || ACN(target, 'cke_dialog') || Dom.hasClass(target, 'cke') || Dom.hasClass(target, 'cke_dialog');
             /* do nothing if modal active */
             if (NS.app.modal) {
                 return;
@@ -254,7 +255,7 @@
             if (NS.app.overlay && !inOverlay) {
                 NS.app.hideOverlay();
             }
-            if (NS.app.popin && !inPanel && !inOverlay) {
+            if (NS.app.popin && !inPanel && !inOverlay && !InCkeditor) {
                 NS.app.closePopin();
             }
         },
@@ -720,6 +721,30 @@
             myEvent.clicked_cb = clicked_cb;
             myEvent.dropped_cb = dropped_cb;
             calendar.fullCalendar('renderEvent', myEvent, true);
+        },
+
+        init_ckeditor: function(id, language) {
+            var editor,
+                element = Dom.get(id);
+            editor = CKEDITOR.replace(id, {
+                title: '',
+                contentsCss: ['/static/kansha/css/bootstrap.min.css',
+                              '/static/kansha/css/fonts.css',
+                              '/static/kansha/css/ckeditor.css'],
+                language: language,
+                enterMode: CKEDITOR.ENTER_BR,
+                shiftEnterMode: CKEDITOR.ENTER_BR,
+                resize_enabled: false,
+                forcePasteAsPlainText: true,
+                removePlugins: 'stylescombo,magicline,elementspath,',
+                toolbarGroups: [{"name": "basicstyles", "groups": ["basicstyles"]},
+                    {"name": "links", "groups": ["links"]},
+                    {"name": "paragraph", "groups": ["list"]}],
+                removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+            });
+            editor.on('change', function(ev){
+               element.innerHTML = editor.getData();
+            });
         }
 
     };

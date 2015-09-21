@@ -8,7 +8,7 @@
 # this distribution.
 #--
 
-from nagare import presentation, var, security
+from nagare import presentation, var, security, ajax
 from nagare.i18n import _
 
 from .comp import Description
@@ -27,7 +27,7 @@ def render(self, h, comp, *args):
             lambda: self.change_text(comp.call(model='edit'))).get('onclick')
     with h.div(**kw):
         if self.text:
-            h << [h.p(part) if part else h.br for part in self.text.split('\n')]
+            h << h.parse_htmlstring(self.text, fragment=True)
         elif security.has_permissions('edit', self.parent):
             h << h.textarea(placeholder=_("Add description."))
 
@@ -41,26 +41,14 @@ def render(self, h, comp, *args):
     text = var.Var(self.text)
     with h.div(class_="description"):
         with h.form(class_='description-form'):
-            txt_id, btn_id, buttons_id = h.generate_id(
-            ), h.generate_id(), h.generate_id()
-            h << h.textarea(text(), id_=txt_id, placeholder=_("Add description."),
-                            onfocus="YAHOO.kansha.app.show('%s', true);" % buttons_id,
-                            class_="expanded", style="resize:none").action(text)
-            with h.div(id=buttons_id, class_="hidden"):
-                h << h.button(_('Save'), class_='btn btn-primary btn-small',
-                              id=btn_id).action(lambda: comp.answer(text()))
+            txt_id = h.generate_id()
+            h << h.textarea(text(), id_=txt_id).action(text)
+
+            with h.div(class_='buttons'):
+                h << h.button(_('Save'), class_='btn btn-primary btn-small').action(lambda: comp.answer(text()))
                 h << ' '
-                h << h.button(
-                    _('Cancel'), class_='btn btn-small').action(comp.answer)
-
-            h.head.javascript(h.generate_id(), 'YAHOO.kansha.app.addCtrlEnterHandler(%r, %r)' % (txt_id, btn_id))
-            h.head.javascript(
-                h.generate_id(), 'YAHOO.kansha.app.autoHeight(%r)' % (txt_id))
-
-        # Put the focus on the text area
-        h << h.script("""document.getElementById('%s').focus()""" %
-                      txt_id, type="text/javascript", language="javascript")
-
+                h << h.button( _('Cancel'), class_='btn btn-small').action(comp.answer)
+                h << h.script('YAHOO.kansha.app.init_ckeditor(%s, %s)' % (ajax.py2js(txt_id), ajax.py2js(security.get_user().get_locale().language)))
     return h.root
 
 

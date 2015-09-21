@@ -1572,7 +1572,7 @@ ul.board-labels .label-title input {
     margin-top: -10px
 }
 
-.card-edit-form ul {
+.card-edit-form .cardactions ul {
     list-style-type: none;
     margin-left: 0;
     width: 100%
@@ -1644,6 +1644,10 @@ ul.board-labels .label-title input {
 .card-edit-form .description p {
     font: normal 14px OpenSansLight;
     margin: 0;
+}
+
+.card-edit-form .description .buttons {
+    margin-top: 5px;
 }
 
 .card-edit-form textarea {

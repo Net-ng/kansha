@@ -73,6 +73,11 @@ class Login(object):
         self.content = component.Component()
 
     @property
+    def alt_title(self):
+        'Return a unicode to overwrite default login page title, or None.'
+        return None or getattr(self.content(), 'alt_title', None)
+
+    @property
     def error_message(self):
         return self._error_message or getattr(self.content(), 'error_message', u'')
 
@@ -137,6 +142,7 @@ class RegistrationForm(editor.Editor):
         self.header = component.Component(Header(app_title, app_banner, custom_css))
         self.user_manager = usermanager.UserManager()
         self.error_message = u''
+        self.alt_title = _(u'Sign up')
 
     def init_captcha_image(self):
         self.captcha_image = component.Component(captcha.Captcha())
@@ -563,6 +569,7 @@ class PasswordResetConfirmation(object):
         self.confirmation_base_url = confirmation_base_url
         self.token_generator = TokenGenerator(self._get_user().username, u'reset_password')
         self.header = component.Component(Header(self.app_title, app_banner, custom_css))
+        self.alt_title = _(u'Reset password')
 
     @property
     def user(self):
@@ -674,6 +681,7 @@ class EmailConfirmation(object):
         self.confirmation_base_url = confirmation_base_url
         self.token_generator = TokenGenerator(self._get_user().username, 'email_confirmation')
         self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.alt_title = _('Sign up')
 
     @property
     def user(self):
@@ -858,6 +866,7 @@ class RegistrationTask(component.Task):
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.username = username
+        self.alt_title = _(u'Sign up')
 
     def _create_email_confirmation(self, username):
         confirmation_url = '/'.join((self.confirmation_base_url, 'register', username))
@@ -956,6 +965,7 @@ class PasswordResetTask(component.Task):
         self.confirmation_base_url = mail_sender.application_url
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
+        self.alt_title = _(u'Reset password')
 
     def _get_user(self, username):
         return usermanager.UserManager.get_by_username(username)

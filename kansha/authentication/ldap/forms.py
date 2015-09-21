@@ -17,6 +17,8 @@ from . import ldap_auth
 
 class Login(object):
 
+    alt_title = None
+
     def __init__(self, ldap_cfg, assetsmanager):
         cls = ldap_auth.get_class(ldap_cfg['cls'])
         self.ldap_engine = cls(ldap_cfg)

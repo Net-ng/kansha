@@ -56,6 +56,8 @@ SCOPES = {
 
 class Login(object):
 
+    alt_title = None
+
     def __init__(self, app_title, app_banner, custom_css, mail_sender, oauth_cfg):
         self.oauth_modules = {}
         self._error_message = u''

@@ -77,9 +77,15 @@ def render_Login(self, h, comp, *args):
     with h.body(class_='body-login slots%s' % len(self.logins)):
         h << self.header
         with h.div(class_='title'):
-            h << h.h2(_(u'Sign in'))
+            title = _(u'Sign in')
             for login in self.logins:
-                if getattr(login(), 'error_message', u''):
+                print "test title"
+                if login().alt_title:
+                    title = login().alt_title
+                    break
+            h << h.h2(title)
+            for login in self.logins:
+                if login().error_message:
                     h << h.small(login().error_message, class_='error')
                     login().error_message = u''
         with h.div(class_='container'):

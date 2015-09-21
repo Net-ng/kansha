@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kansha 1.0.4b1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-21 11:23+0200\n"
+"POT-Creation-Date: 2015-09-21 11:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -402,7 +402,7 @@ msgstr ""
 
 #: kansha/authentication/database/forms.py:473 kansha/board/view.py:289
 #: kansha/board/view.py:394 kansha/board/view.py:741 kansha/card/view.py:336
-#: kansha/column/view.py:157 kansha/column/view.py:206
+#: kansha/column/view.py:160 kansha/column/view.py:209
 #: kansha/comment/view.py:71 kansha/comment/view.py:96
 #: kansha/description/view.py:54 kansha/label/view.py:71
 #: kansha/title/view.py:56
@@ -848,13 +848,13 @@ msgstr ""
 msgid "Create a new board"
 msgstr ""
 
-#: kansha/board/view.py:285 kansha/card/view.py:334 kansha/column/view.py:154
+#: kansha/board/view.py:285 kansha/card/view.py:334 kansha/column/view.py:157
 #: kansha/user/view.py:176
 msgid "Add"
 msgstr ""
 
 #: kansha/board/view.py:390 kansha/board/view.py:524 kansha/board/view.py:738
-#: kansha/card/view.py:153 kansha/card/view.py:161 kansha/column/view.py:203
+#: kansha/card/view.py:153 kansha/card/view.py:161 kansha/column/view.py:206
 #: kansha/comment/view.py:68 kansha/comment/view.py:93
 #: kansha/description/view.py:50 kansha/label/view.py:68
 #: kansha/title/view.py:53 kansha/user/user_profile.py:165
@@ -1095,35 +1095,39 @@ msgstr ""
 msgid "Must be bigger than %s"
 msgstr ""
 
-#: kansha/column/view.py:56
+#: kansha/column/view.py:57
+msgid "The list will be deleted. Are you sure ?"
+msgstr ""
+
+#: kansha/column/view.py:59
 msgid "Delete this list"
 msgstr ""
 
-#: kansha/column/view.py:58
+#: kansha/column/view.py:61
 msgid "Set cards limit"
 msgstr ""
 
-#: kansha/column/view.py:64
+#: kansha/column/view.py:67
 msgid "All cards will be deleted. Are you sure ?"
 msgstr ""
 
-#: kansha/column/view.py:65
+#: kansha/column/view.py:68
 msgid "Purge the cards"
 msgstr ""
 
-#: kansha/column/view.py:145
+#: kansha/column/view.py:148
 msgid "Name"
 msgstr ""
 
-#: kansha/column/view.py:146
+#: kansha/column/view.py:149
 msgid "List title"
 msgstr ""
 
-#: kansha/column/view.py:148
+#: kansha/column/view.py:151
 msgid "Position"
 msgstr ""
 
-#: kansha/column/view.py:166
+#: kansha/column/view.py:169
 msgid "Number max of cards"
 msgstr ""
 

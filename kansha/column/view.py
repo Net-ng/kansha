@@ -52,8 +52,11 @@ def render_column_overlay(self, h, comp, *args):
     """Render the column menu"""
     with h.ul(class_='nav nav-list'):
         if not self.is_archive:
-            h << h.li(h.a(
-                _('Delete this list')).action(lambda: comp.answer(('delete', self.data.id))))
+            with h.li:
+                onclick = "if (confirm(%(message)s)){%(callback)s;}" % {
+                    'message': ajax.py2js(_(u'The list will be deleted. Are you sure ?')),
+                    'callback': h.a.action(lambda: comp.answer(('delete', self.data.id))).get('onclick')}
+                h << h.a(_('Delete this list'), onclick=onclick)
             h << h.li(h.a(
                 _('Set cards limit')).action(lambda: comp.answer(('set_limit', self.data.id))),
                       id=self.id + '_counter_option')

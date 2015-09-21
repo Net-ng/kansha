@@ -56,7 +56,6 @@ def render_column_overlay(self, h, comp, *args):
                 onclick = u"if (confirm('%(message)s')){%(callback)s;}" % {
                     'message': _(u'The list will be deleted. Are you sure?'),
                     'callback': h.a.action(lambda: comp.answer(('delete', self.data.id))).get('onclick')}
-                print _(u'Delete this list'), _(u'The list will be deleted. Are you sure?')
                 h << h.a(_(u'Delete this list'), onclick=onclick)
             h << h.li(h.a(
                 _('Set cards limit')).action(lambda: comp.answer(('set_limit', self.data.id))),

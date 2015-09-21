@@ -114,7 +114,7 @@ def render_card_actions(self, h, comp, *args):
                                                " { YAHOO.kansha.app.archiveCard(%(close_func)s, '%(id)s', '%(col_id)s', '%(archive_col_id)s'); }return false;" %
                                                dict(close_func=close_func, id=self.id, col_id=self.column.id,
                                                     archive_col_id=self.column.board.archive_column.id,
-                                                    confirm_msg=_(u'This card will be deleted. Are you sure ?'))))
+                                                    confirm_msg=_(u'This card will be deleted. Are you sure?'))))
                 if self.board.weighting_cards:
                     with h.li(class_="actionWeight"):
                         h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))

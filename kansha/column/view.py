@@ -54,7 +54,7 @@ def render_column_overlay(self, h, comp, *args):
         if not self.is_archive:
             with h.li:
                 onclick = "if (confirm(%(message)s)){%(callback)s;}" % {
-                    'message': ajax.py2js(_(u'The list will be deleted. Are you sure ?')),
+                    'message': ajax.py2js(_(u'The list will be deleted. Are you sure?')),
                     'callback': h.a.action(lambda: comp.answer(('delete', self.data.id))).get('onclick')}
                 h << h.a(_('Delete this list'), onclick=onclick)
             h << h.li(h.a(
@@ -64,7 +64,7 @@ def render_column_overlay(self, h, comp, *args):
             with h.li:
                 action = h.a.action(lambda: comp.answer(('purge', self.data.id))).get('onclick')
                 onclick = "if (confirm(\"%(confirm_msg)s\")){%(purge_func)s;}"
-                onclick = onclick % dict(purge_func=action, confirm_msg=_(u'All cards will be deleted. Are you sure ?'))
+                onclick = onclick % dict(purge_func=action, confirm_msg=_(u'All cards will be deleted. Are you sure?'))
                 h << h.a(_('Purge the cards'), onclick=onclick)
 
     return h.root

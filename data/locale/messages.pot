@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kansha 1.0.4b1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-21 11:31+0200\n"
+"POT-Creation-Date: 2015-09-21 11:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -887,7 +887,7 @@ msgid "Activate cards weights"
 msgstr ""
 
 #: kansha/board/view.py:476 kansha/board/view.py:482 kansha/board/view.py:489
-msgid "All affected weights will be reseted. Are you sure ?"
+msgid "All affected weights will be reseted. Are you sure?"
 msgstr ""
 
 #: kansha/board/view.py:478 kansha/board/view.py:549 kansha/board/view.py:565
@@ -1035,7 +1035,7 @@ msgid "Delete"
 msgstr ""
 
 #: kansha/card/view.py:117
-msgid "This card will be deleted. Are you sure ?"
+msgid "This card will be deleted. Are you sure?"
 msgstr ""
 
 #: kansha/card/view.py:243
@@ -1096,7 +1096,7 @@ msgid "Must be bigger than %s"
 msgstr ""
 
 #: kansha/column/view.py:57
-msgid "The list will be deleted. Are you sure ?"
+msgid "The list will be deleted. Are you sure?"
 msgstr ""
 
 #: kansha/column/view.py:59
@@ -1108,7 +1108,7 @@ msgid "Set cards limit"
 msgstr ""
 
 #: kansha/column/view.py:67
-msgid "All cards will be deleted. Are you sure ?"
+msgid "All cards will be deleted. Are you sure?"
 msgstr ""
 
 #: kansha/column/view.py:68

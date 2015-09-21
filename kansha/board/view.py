@@ -473,20 +473,20 @@ def render_boardweights_edit(self, h, comp, *args):
 
             action = h.a.action(self.deactivate_weighting).get('onclick')
             onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure ?'))
+            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
 
             h << h.a(_('Disabled'), class_='btn %s' % active, onclick=onclick)
 
             action = h.a.action(lambda: self.activate_weighting(WEIGHTING_FREE)).get('onclick')
             onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure ?'))
+            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
 
             active = 'active btn-primary' if self.board.weighting_cards == WEIGHTING_FREE else ''
             h << h.button(_('Free integer'), title=i18n._('Card weights can be any integer'), class_='btn %s' % active, onclick=onclick)
 
             action = h.a.action(lambda: self.activate_weighting(WEIGHTING_LIST)).get('onclick')
             onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure ?'))
+            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
 
             active = 'active btn-primary' if self.board.weighting_cards == WEIGHTING_LIST else ''
             h << h.button(_('Integer sequence'), title=i18n._('Choosen within a sequence of integers'), class_='btn %s' % active, onclick=onclick)

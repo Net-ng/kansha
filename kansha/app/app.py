@@ -189,7 +189,9 @@ class WSGIApp(wsgi.WSGIApp):
                         'title': 'string(default="")',
                         'banner': 'string(default="")',
                         'custom_css': 'string(default="")',
-                        'disclaimer': 'string(default="")'},
+                        'disclaimer': 'string(default="")',
+                        'activity_monitor': "string(default='')",
+                        'templates': "string(default='')"},
         'dbauth': {'activated': 'boolean(default=True)',
                    'moderator': 'string(default=""),',
                    'default_username': 'string(default="")',
@@ -264,7 +266,7 @@ class WSGIApp(wsgi.WSGIApp):
             'tpl_cfg': tpl_cfg,
             'pub_cfg': pub_cfg
         }
-        self.activity_monitor = conf['application'].get('activity_monitor', '')
+        self.activity_monitor = conf['application']['activity_monitor']
 
     def set_publisher(self, publisher):
         if self.as_root:

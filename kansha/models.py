@@ -8,9 +8,21 @@
 # this distribution.
 #--
 
+from __future__ import absolute_import
+
 from elixir import using_options
-from elixir import Entity, ManyToOne
-from elixir import Field, Unicode, DateTime
+from elixir import DateTime
+from elixir import EntityBase
+from elixir import EntityMeta
+from elixir import ManyToOne
+from elixir import Field
+from elixir import Unicode
+
+from kansha import pickle
+
+
+class Entity(EntityBase, pickle.UnpicklableMixin):
+    __metaclass__ = EntityMeta
 
 
 class DataToken(Entity):

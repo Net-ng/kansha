@@ -8,13 +8,14 @@
 # this distribution.
 # --
 
+from __future__ import absolute_import
+
 from datetime import datetime, timedelta
-import itertools
 import json
 import urlparse
 
 from elixir import using_options
-from elixir import Entity, ManyToOne
+from elixir import ManyToOne
 from elixir import Field, Unicode, UnicodeText, DateTime
 from nagare import database, log, presentation, var, ajax
 from nagare.i18n import _, _L, format_datetime
@@ -22,7 +23,8 @@ from nagare.namespaces import xhtml
 from sqlalchemy.types import TypeDecorator
 import sqlalchemy as sa
 
-from user.models import DataBoardMember
+from kansha.models import Entity
+from kansha.user.models import DataBoardMember
 
 
 # Levels

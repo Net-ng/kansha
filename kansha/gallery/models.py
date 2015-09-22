@@ -9,8 +9,10 @@
 #--
 
 import datetime
-from elixir import Entity, ManyToOne, Field, Unicode, DateTime, using_options
+from elixir import ManyToOne, Field, Unicode, DateTime, using_options
 from nagare import security
+
+from kansha.models import Entity
 
 
 class DataGallery(object):

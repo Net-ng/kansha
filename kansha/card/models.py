@@ -9,11 +9,13 @@
 #--
 
 from elixir import using_options
-from elixir import Entity, ManyToMany, ManyToOne, OneToMany, OneToOne
+from elixir import ManyToMany, ManyToOne, OneToMany, OneToOne
 from elixir import Field, Unicode, Integer, DateTime, Date, UnicodeText
 from sqlalchemy.orm import subqueryload
 from nagare.database import session
 import datetime
+
+from kansha.models import Entity
 
 
 class DataCard(Entity):

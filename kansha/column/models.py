@@ -9,11 +9,12 @@
 #--
 
 from elixir import using_options
-from elixir import Entity, ManyToOne, OneToMany
+from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean
 from nagare.database import session
 
 from ..card.models import DataCard
+from kansha.models import Entity
 
 
 class DataColumn(Entity):

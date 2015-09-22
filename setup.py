@@ -37,10 +37,18 @@ setup(
     zip_safe=False,
     install_requires=(
         'alembic',
-        'PEAK-Rules==0.5a1.dev-r2713',
-        'nagare[database,i18n]==0.4.1.post467', 'docutils', 'Pillow', 'pycrypto', 'Babel',
-        'requests', 'oauth2', 'SQLAlchemy==0.9.8', 'dateutils', 'xlwt',
-        'Paste==1.7.5.1'
+        'PEAK-Rules',
+        'nagare[database,i18n]==0.4.1.post473',
+        'docutils',
+        'Pillow',
+        'pycrypto',
+        'Babel',
+        'requests',
+        'oauth2',
+        'SQLAlchemy',
+        'dateutils',
+        'xlwt',
+        'Paste'
     ),
     extras_require={'test': ('nose',),
                     'htmldocs': ('sphinx',),

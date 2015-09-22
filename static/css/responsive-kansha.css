@@ -2524,6 +2524,214 @@ textarea.expanded {
     background: #BD2828;
 }
 
+.credits {
+    width: 100%;
+    clear: both;
+    height: 24px;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #E7E7E7;
+    box-shadow: 0 0 1px rgb(151, 151, 151);
+}
+
+.wrap {
+    height: auto;
+    min-height: 100%;
+    margin: 0 auto -44px;
+}
+
+.credits a {
+    color: rgb(51, 51, 51)
+}
+
+.credits-content {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 auto;
+    width: 890px;
+    padding-top: 15px;
+    position: relative;
+    top: -72px;
+}
+
+.credits-content p {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.container {
+    width: 100%;
+}
+
+.board-title-color {
+    border-radius: 3px;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    width: 150px;
+    background-color: #5C5C5C;
+    border: 1px solid #7D7D7D;
+}
+
+.overlay-body .yui-crop {
+    width: auto !important;
+    height: auto !important;
+}
+
+.weights-form {
+    margin-top: 10px;
+}
+
+.weights-form input {
+    width: 50%;
+    margin-bottom: 0;
+}
+
+.actionWeight .btn.select {
+    overflow-x: hidden;
+    background: transparent url(../img/down.png) no-repeat 100px 8px;
+}
+
+.actionWeight select {
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    height: auto;
+    outline: none;
+    background-color: transparent;
+}
+
+.checklists .checklist {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #eee;
+    border-radius: 5px;
+    border: 1px solid #ccc
+}
+
+.checklists .checklist .nagare-generated,
+.checklists .checklist form {
+    display: inline-block
+}
+
+.checklists .checklist a {
+    color: #333333;
+    text-decoration: none
+}
+
+.ui-state-highlight {
+    height: 3em;
+    line-height: 3em;
+    background: #eee;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    opacity: 0.6;
+}
+
+.checklists .checklist a.delete {
+    display: none
+}
+
+.checklists .checklist .title:hover a.delete,
+.checklists .checklist li:hover a.delete {
+    display: inline-block
+}
+
+.checklists .checklist .title i.icon-th-list {
+    margin-right: 10px;
+    cursor: move;
+}
+
+.checklists .checklist .title .show_onhover {
+    display: none;
+}
+
+.checklists .checklist .title:hover .show_onhover {
+    display: inline;
+    color: #AAA;
+}
+
+.checklists .checklist .btn {
+    min-width: 0;
+    height: 30px
+}
+
+.checklists .checklist .new-item-form .btn,
+.checklists .checklist li .btn {
+    top: -5px
+}
+
+.checklists .checklist .btn [class^="icon-"] {
+    left: 0
+}
+
+.checklists .checklist .progress {
+    position: relative
+}
+
+.checklists .checklist .progress span {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    color: black;
+    text-align: center;
+    width: 100%
+}
+
+.checklists .checklist .progress .bar {
+    z-index: 1;
+    position: absolute
+}
+
+.checklists .checklist li {
+    line-height: 20px
+}
+
+.checklists .checklist .check {
+    font-size: 20px;
+    margin-right: 5px
+}
+
+.checklists .checklist .done {
+    text-decoration: line-through
+}
+
+.checklists .checklist .title {
+    font-weight: bold
+}
+
+.checklists .checklist .title input {
+    width: 305px
+}
+
+.checklists .checklist li input {
+    width: 308px
+}
+
+.checklists .checklist .new-item-form input {
+    width: 330px
+}
+
+.checklists .checklist .content {
+    padding-top: 10px
+}
+
+div.history {
+    font-size: 12px;
+    overflow: auto;
+    max-height: 600px;
+}
+
+div.history th {
+    font-size: 12px;
+    width: 9em;
+}
+
+input:disabled {
+    margin-bottom: 10px;
+}
+
 
 @media all and (min-width:1200px) {
     #home-user .span8 {
@@ -2813,6 +3021,28 @@ textarea.expanded {
         top: 165px;
     }
 
+    #home-user .span4 li{
+        padding: 10px 20px;
+    }
+
+    #home-user .span4 li.boards,
+    #home-user .span4 li.my.cards,
+    #home-user .span4 li.profile{
+        background-image: none;
+    }
+
+    .checklists .checklist .new-item-form input {
+        width: calc(100% - 87px);
+    }
+
+    .checklists .checklist .title input {
+        width: calc(100% - 110px);
+    }
+
+    .checklists .checklist form {
+        display: block;
+    }
+
 }
 
 @media all and (max-width:640px) {
@@ -2859,212 +3089,4 @@ textarea.expanded {
         display: inline;
     }
 
-}
-
-.credits {
-    width: 100%;
-    clear: both;
-    height: 24px;
-    text-align: center;
-    padding: 10px 0;
-    background-color: #E7E7E7;
-    box-shadow: 0 0 1px rgb(151, 151, 151);
-}
-
-.wrap {
-    height: auto;
-    min-height: 100%;
-    margin: 0 auto -44px;
-}
-
-.credits a {
-    color: rgb(51, 51, 51)
-}
-
-.credits-content {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0 auto;
-    width: 890px;
-    padding-top: 15px;
-    position: relative;
-    top: -72px;
-}
-
-.credits-content p {
-    font-size: 12px;
-    font-weight: normal;
-}
-
-.container {
-    width: 100%;
-}
-
-.board-title-color {
-    border-radius: 3px;
-    display: inline-block;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    width: 150px;
-    background-color: #5C5C5C;
-    border: 1px solid #7D7D7D;
-}
-
-.overlay-body .yui-crop {
-    width: auto !important;
-    height: auto !important;
-}
-
-.weights-form {
-    margin-top: 10px;
-}
-
-.weights-form input {
-    width: 50%;
-    margin-bottom: 0;
-}
-
-.actionWeight .btn.select {
-    overflow-x: hidden;
-    background: transparent url(../img/down.png) no-repeat 100px 8px;
-}
-
-.actionWeight select {
-    overflow: hidden;
-    border: none;
-    margin: 0;
-    height: auto;
-    outline: none;
-    background-color: transparent;
-}
-
-.checklists .checklist {
-    margin: 15px 0;
-    padding: 10px;
-    background-color: #eee;
-    border-radius: 5px;
-    border: 1px solid #ccc
-}
-
-.checklists .checklist .nagare-generated,
-.checklists .checklist form {
-    display: inline-block
-}
-
-.checklists .checklist a {
-    color: #333333;
-    text-decoration: none
-}
-
-.ui-state-highlight {
-    height: 3em;
-    line-height: 3em;
-    background: #eee;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    opacity: 0.6;
-}
-
-.checklists .checklist a.delete {
-    display: none
-}
-
-.checklists .checklist .title:hover a.delete,
-.checklists .checklist li:hover a.delete {
-    display: inline-block
-}
-
-.checklists .checklist .title i.icon-th-list {
-    margin-right: 10px;
-    cursor: move;
-}
-
-.checklists .checklist .title .show_onhover {
-    display: none;
-}
-
-.checklists .checklist .title:hover .show_onhover {
-    display: inline;
-    color: #AAA;
-}
-
-.checklists .checklist .btn {
-    min-width: 0;
-    height: 30px
-}
-
-.checklists .checklist .new-item-form .btn,
-.checklists .checklist li .btn {
-    top: -5px
-}
-
-.checklists .checklist .btn [class^="icon-"] {
-    left: 0
-}
-
-.checklists .checklist .progress {
-    position: relative
-}
-
-.checklists .checklist .progress span {
-    position: absolute;
-    top: 0;
-    z-index: 2;
-    color: black;
-    text-align: center;
-    width: 100%
-}
-
-.checklists .checklist .progress .bar {
-    z-index: 1;
-    position: absolute
-}
-
-.checklists .checklist li {
-    line-height: 20px
-}
-
-.checklists .checklist .check {
-    font-size: 20px;
-    margin-right: 5px
-}
-
-.checklists .checklist .done {
-    text-decoration: line-through
-}
-
-.checklists .checklist .title {
-    font-weight: bold
-}
-
-.checklists .checklist .title input {
-    width: 305px
-}
-
-.checklists .checklist li input {
-    width: 308px
-}
-
-.checklists .checklist .new-item-form input {
-    width: 330px
-}
-
-.checklists .checklist .content {
-    padding-top: 10px
-}
-
-div.history {
-    font-size: 12px;
-    overflow: auto;
-    max-height: 600px;
-}
-
-div.history th {
-    font-size: 12px;
-    width: 9em;
-}
-
-input:disabled {
-    margin-bottom: 10px;
 }

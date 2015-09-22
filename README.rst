@@ -27,8 +27,8 @@ Quickstart
 
    docker run -p 8080:8080 netng/kansha
 
-* Install and run a stable release from Pypi: see the `documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
-* Or run from source: see the `documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
+* Install and run a stable release from Pypi: see the `installation documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
+* Or run from the latest source: see the `developper documentation <http://kansha.readthedocs.org/en/latest/devsetup.html>`_
 
 Issues
 ------

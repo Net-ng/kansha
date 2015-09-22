@@ -7,7 +7,7 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-
+from .. import validator
 
 class Description(object):
     """Description component,
@@ -46,6 +46,8 @@ class Description(object):
         if text is None:
             return
         text = text.strip()
+        if text:
+            text = validator.clean_html(text)
         self.text = text
         self.parent.data.description = text
 

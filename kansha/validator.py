@@ -9,12 +9,17 @@
 #--
 
 from lxml import html
+from lxml.html.clean import Cleaner
 from nagare import i18n
 from nagare import validator
 
 
 def clean_text(text):
     return html.fromstring(text).text_content()
+
+def clean_html(text):
+    cleaner = Cleaner(style=False)
+    return cleaner.clean_html(text)
 
 
 class BoolValidator(validator.Validator):

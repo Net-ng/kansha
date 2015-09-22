@@ -2049,25 +2049,29 @@ textarea.expanded {
 }
 
 #home-user .span4 li {
+    padding: 0;
+}
+
+#home-user .span4 a {
     padding: 8px 0 8px 91px;
     margin-bottom: 3px
 }
 
-#home-user .span4 li.boards {
+#home-user .span4 a.boards {
     background-image: url(../img/sprites.png);
     background-position: -561px -539px
 }
 
-#home-user .span4 li.profile {
+#home-user .span4 a.profile {
     background-image: url(../img/sprites.png);
     background-position: -561px -588px
 }
 
-#home-user .span4 li.active {
+#home-user .span4 a.active {
     background-color: #ebebeb
 }
 
-#home-user .span4 li:hover {
+#home-user .span4 a:hover {
     background-color: #ebebeb
 }
 
@@ -2981,26 +2985,25 @@ div.history th {
 
     #home-user .span4 li {
         display: inline-block;
+    }
+
+    #home-user .span4 a {
         padding: 10px 40px;
         margin: 0;
         border-radius: 10px 10px 0 0;
     }
 
-    #home-user .span4 li.boards {
+    #home-user .span4 a.boards {
         background-position: -610px -537px;
     }
 
-    #home-user .span4 li.profile {
+    #home-user .span4 a.profile {
         background-position: -608px -585px;
     }
 
-    #home-user .span4 li.active {
+    #home-user .span4 a.active {
         border: 1px solid #ccc;
         border-bottom: 0;
-    }
-
-    #home-user .span4 li a {
-        display: inline;
     }
 
     #home-user .span8 {

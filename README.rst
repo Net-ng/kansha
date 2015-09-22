@@ -44,7 +44,7 @@ Join us!
 * Bitbucket: https://bitbucket.org/net-ng/kansha
 * Mailing list: http://groups.google.com/group/kansha-users
 
-.. |docs| image:: https://readthedocs.org/projects/kansha/badge
+.. |docs| image:: https://readthedocs.org/projects/kansha/badge/?version=stable
     :alt: Documentation Status
     :scale: 100%
     :target: http://kansha.readthedocs.org

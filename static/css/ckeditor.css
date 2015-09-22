@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+    padding: 5px;
+    font: normal 14px OpenSansLight;
+    clear: both;
+    cursor: pointer;
+    color: #333333;
+}
+
+a {
+    color: #009fed;
+}

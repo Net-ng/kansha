@@ -8,11 +8,11 @@
 # this distribution.
 #--
 
-import datetime
-
 from elixir import using_options
-from elixir import Entity, ManyToOne, ManyToMany
+from elixir import ManyToOne, ManyToMany
 from elixir import Field, Unicode, Integer
+
+from kansha.models import Entity
 
 
 class DataLabel(Entity):

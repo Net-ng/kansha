@@ -12,9 +12,10 @@ import uuid
 import urllib
 
 from elixir import using_options
-from elixir import Entity, ManyToMany, ManyToOne, OneToMany
+from elixir import ManyToMany, ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
+from kansha.models import Entity
 from kansha.user.models import DataUser, DataBoardMember
 from nagare.database import session
 from sqlalchemy.ext.associationproxy import AssociationProxy

@@ -9,7 +9,9 @@
 #--
 
 from elixir import using_options
-from elixir import Entity, ManyToOne
+from elixir import ManyToOne
+
+from kansha.models import Entity
 
 
 class DataVote(Entity):

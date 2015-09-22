@@ -35,7 +35,7 @@ def get_app_user(username, data=None):
     if not data:
         data = UserManager().get_by_username(username)
     klass = get_user_class(data.source)
-    return klass(username, data)
+    return klass(username, data=data)
 
 
 class UserManager(object):

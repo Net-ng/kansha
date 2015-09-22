@@ -14,13 +14,15 @@ import random
 import hashlib
 
 from elixir import using_options
-from elixir import Entity, ManyToOne, ManyToMany, OneToOne, OneToMany
+from elixir import ManyToOne, ManyToMany, OneToOne, OneToMany
 from elixir import Unicode, Integer, Field, DateTime, Boolean
 from sqlalchemy.dialects.mysql import VARCHAR
 from nagare import database
 from sqlalchemy import and_, func
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.associationproxy import AssociationProxy
+
+from kansha.models import Entity
 
 
 class DataBoardMember(Entity):

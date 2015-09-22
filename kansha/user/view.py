@@ -89,16 +89,16 @@ def render_User_manager(self, h, comp, model):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(
-                        value=_("Manager"),
-                        type="submit",
-                        class_=("btn btn-primary btn-small toggle" if model == 'manager'
-                                else "btn btn-primary btn-small")
-                     ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
+                    value=_("Manager"),
+                    type="submit",
+                    class_=("btn btn-primary btn-small toggle" if model == 'manager'
+                            else "btn btn-primary btn-small")
+                ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
                 h << h.input(
-                        value=_("Remove"),
-                        type="submit",
-                        class_="btn btn-primary btn-small remove"
-                    ).action(ajax.Update(action=lambda: comp.answer('remove')))
+                    value=_("Remove"),
+                    type="submit",
+                    class_="btn btn-primary btn-small remove"
+                ).action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
 
@@ -145,12 +145,20 @@ def render_AddMembers(self, h, comp, *args):
         h << h.input(type='text', id=self.text_id)
         h << h.input(type='hidden', id=hidden_id).action(value)
         h << self.autocomplete
-        h << h.script(u'''%(ac_id)s.itemSelectEvent.subscribe(function(sType, aArgs) {
-    var value = aArgs[2][0];
-    YAHOO.util.Dom.setAttribute('%(hidden_id)s', 'value', value);
-    YAHOO.util.Dom.get('%(submit_id)s').click();
-});''' % {'ac_id': self.autocomplete().var, 'hidden_id': hidden_id, 'submit_id': submit_id})
-        h << h.script('''document.getElementById('%s').focus()''' % self.text_id, type='text/javascript', language='javascript')
+        h << h.script(
+            u"%(ac_id)s.itemSelectEvent.subscribe(function(sType, aArgs) {"
+            u"var value = aArgs[2][0];"
+            u"YAHOO.util.Dom.setAttribute(%(hidden_id)s, 'value', value);"
+            u"YAHOO.util.Dom.get(%(submit_id)s).click();"
+            u"});" % {
+                'ac_id': self.autocomplete().var,
+                'hidden_id': ajax.py2js(hidden_id),
+                'submit_id': ajax.py2js(submit_id)
+            }
+        )
+        h << h.script(
+            "document.getElementById(%s).focus()" % ajax.py2js(self.text_id)
+        )
         h << h.button(id=submit_id, style='display:none').action(remote.Action(lambda: comp.answer([] if not value() else [value()])))
     return h.root
 
@@ -177,8 +185,9 @@ def render_NewMember(self, h, comp, *args):
                      class_="btn btn-primary btn-small"
                      ).action(remote.Action(lambda: comp.answer(get_emails())))
         h << self.autocomplete
-    h << h.script("""document.getElementById('%s').focus()""" % self.text_id,
-                  type="text/javascript", language="javascript")
+    h << h.script(
+        "document.getElementById(%s).focus()" % ajax.py2js(self.text_id)
+    )
     return h.root
 
 # Pending User

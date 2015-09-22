@@ -14,6 +14,7 @@ import imghdr
 import urllib
 import peak.rules
 
+from nagare import ajax
 from nagare import presentation, security, editor, component, database
 from nagare.i18n import _, _L
 
@@ -525,8 +526,12 @@ def render_userboards(self, h, comp, *args):
                 h << [b.render(h, "archived_item")
                       for b in self.archived_boards]
 
-            onclick = 'return confirm("%s")' % _(
-                "These boards will be destroyed. Are you sure?")
-            h << h.a(_("Delete"), class_="btn btn-primary btn-small",
-                     type='submit', onclick=onclick).action(self.purge_archived_boards)
+            h << h.a(
+                _("Delete"),
+                class_="btn btn-primary btn-small",
+                onclick='return confirm(%s)' % ajax.py2js(
+                    _("These boards will be destroyed. Are you sure?")
+                ).decode('UTF-8'),
+                type='submit'
+            ).action(self.purge_archived_boards)
     return h.root

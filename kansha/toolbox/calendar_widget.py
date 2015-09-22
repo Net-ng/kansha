@@ -200,10 +200,15 @@ def render_async(self, h, comp, *args):
                 if self.allow_none:
                     h << h.a(h.i(class_='icon-remove icon-grey'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
 
-            h << h.script('''YAHOO.util.Event.onDOMReady(function() {
-    var region = YAHOO.util.Dom.getRegion('%(input_id)s');
-    YAHOO.util.Dom.setXY('%(calendar_id)s', [region.left, region.bottom + 3]);
-    });''' % dict(input_id=input_id, calendar_id=calendar_id), type='text/javascript')
+            h << h.script(
+                "YAHOO.util.Event.onDOMReady(function() {"
+                "var region = YAHOO.util.Dom.getRegion(%(input_id)s);"
+                "YAHOO.util.Dom.setXY(%(calendar_id)s, [region.left, region.bottom + 3]);"
+                "});" % {
+                    'input_id': ajax.py2js(input_id),
+                    'calendar_id': ajax.py2js(calendar_id)
+                }
+            )
 
             h << h.div(class_='clear')
     return h.root

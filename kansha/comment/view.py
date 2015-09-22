@@ -9,7 +9,7 @@
 #--
 
 from .comp import Comments, Comment, Commentlabel
-from nagare import presentation, security, var
+from nagare import ajax, presentation, security, var
 from nagare.i18n import _, _N
 
 
@@ -52,7 +52,7 @@ def render_for_comment_label(self, h, comp, *args):
             with a:
                 h << {'onclick': h.a.action(comp.answer).get('onclick')}
         h << a
-    h << h.script("""YAHOO.kansha.app.urlify($('#%s'))""" % id_)
+    h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
     return h.root
 
 
@@ -88,7 +88,12 @@ def render_comments_form(self, h, comp, *args):
                 "onfocus": "YAHOO.kansha.app.show('%s', true);YAHOO.util.Dom.addClass(this, 'expanded'); " % buttons_id,
             }
             h << h.textarea(**kw).action(text)
-            h.head.javascript(h.generate_id(), 'YAHOO.kansha.app.addCtrlEnterHandler(%r, %r)' % (txt_id, sub_id))
+            h.head.javascript(
+                h.generate_id(),
+                'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
+                    ajax.py2js(txt_id), ajax.py2js(sub_id)
+                )
+            )
             with h.div(id=buttons_id, class_="hidden"):
                 h << h.input(value=_("Save"), id=sub_id, type='submit',
                              class_="btn btn-primary btn-small").action(lambda: comp.answer(text()))

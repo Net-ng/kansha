@@ -13,6 +13,7 @@ import re
 import unicodedata
 from cStringIO import StringIO
 
+from nagare import ajax
 from nagare import security, component, log
 from nagare.database import session
 from nagare.i18n import _, _L, format_date
@@ -32,6 +33,7 @@ from ..authentication.database import forms
 from .. import exceptions, notifications
 from ..card import fts_schema
 from .. import validator
+
 # Board visibility
 BOARD_PRIVATE = 0
 BOARD_PUBLIC = 1
@@ -92,7 +94,6 @@ class Board(object):
         self.archive_column = None
         if load_data:
             self.load_data()
-
 
         # Member part
         self.overlay_add_members = component.Component(
@@ -692,7 +693,10 @@ class Board(object):
             invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
             invitation.send_email(self.mail_sender)
 
-        return "YAHOO.kansha.reload_boarditems['%s']();YAHOO.kansha.app.hideOverlay();" % self.id
+        return (
+            "YAHOO.kansha.reload_boarditems[%s]();"
+            "YAHOO.kansha.app.hideOverlay();" % ajax.py2js(self.id)
+        )
 
     def resend_invitation(self, pending_member):
         """Resend an invitation,

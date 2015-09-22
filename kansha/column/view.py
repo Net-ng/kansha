@@ -53,7 +53,7 @@ def render_column_overlay(self, h, comp, *args):
     with h.ul(class_='nav nav-list'):
         if not self.is_archive:
             with h.li:
-                onclick = u"if (confirm('%(message)s')){%(callback)s;}" % {
+                onclick = u"if (confirm('%(message)s')){YAHOO.kansha.app.hideOverlay();%(callback)s;}" % {
                     'message': _(u'The list will be deleted. Are you sure?'),
                     'callback': h.a.action(lambda: comp.answer(('delete', self.data.id))).get('onclick')}
                 h << h.a(_(u'Delete this list'), onclick=onclick)

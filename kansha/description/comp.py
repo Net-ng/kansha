@@ -8,8 +8,6 @@
 # this distribution.
 #--
 
-from .. import validator
-
 
 class Description(object):
     """Description component,
@@ -48,8 +46,6 @@ class Description(object):
         if text is None:
             return
         text = text.strip()
-        if text:
-            text = validator.clean_text(text)
         self.text = text
         self.parent.data.description = text
 

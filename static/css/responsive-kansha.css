@@ -2728,7 +2728,7 @@ div.history th {
     width: 9em;
 }
 
-input:disabled {
+#home-user input:disabled {
     margin-bottom: 10px;
 }
 

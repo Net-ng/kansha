@@ -334,7 +334,7 @@ class WSGIApp(wsgi.WSGIApp):
             text = _(unicode(e.message))
         else:
             status = 500
-            text = _(u"Unknown error")
+            text = _(u"Unable to proceed. Please contact us.")
         # Raise exception if debug
         if self.debug:
             raise

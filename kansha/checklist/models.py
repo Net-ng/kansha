@@ -8,7 +8,9 @@
 # this distribution.
 #--
 
-from elixir import using_options, Entity, Field, OneToMany, ManyToOne, Integer, Unicode, Boolean
+from elixir import using_options, Field, OneToMany, ManyToOne, Integer, Unicode, Boolean
+
+from kansha.models import Entity
 
 
 class DataChecklist(Entity):

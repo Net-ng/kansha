@@ -130,7 +130,7 @@ def render(self, h, comp, *args):
     h.head.javascript_url('js/kansha.js')
     h.head.javascript_url('js/autocomplete.js')
 
-    h.head.javascript_url('//cdn.ckeditor.com/4.5.3/standard/ckeditor.js')
+    h.head.javascript_url('js/ckeditor-4.5.3/ckeditor.js')
 
     if isinstance(self.content(), user_profile.UserProfile):
         with h.body(class_='yui-skin-sam'):

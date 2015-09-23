@@ -6,3 +6,4 @@ languages:
 exclude_paths:
   - "static/js/moment.js"
   - "static/js/fullcalendar-2.2.6/fullcalendar.js"
+  - "static/js/ckeditor-4.5.3/*"

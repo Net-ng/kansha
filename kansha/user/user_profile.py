@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+import collections
 import functools
 import imghdr
 import urllib
@@ -29,6 +30,9 @@ LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
 
 
+MenuEntry = collections.namedtuple('MenuEntry', 'label content')
+
+
 class UserProfile(object):
 
     def __init__(self, app_title, app_banner, custom_css, user, mail_sender, assets_manager, search_engine):
@@ -38,44 +42,69 @@ class UserProfile(object):
          - ``mail_sender`` -- MailSender instance
         """
         self.app_title = app_title
-        self.menu = ((_L(u'Boards'), UserBoards(app_title, app_banner, custom_css, [dbm.board for dbm in user.board_members], mail_sender, assets_manager)),
-                     (_L(u'My cards'), UserCards(
-                         user, assets_manager, search_engine)),
-                     (_L(u'Profile'), get_userform(app_title, app_banner, custom_css, user.source)(
-                         user, mail_sender, assets_manager)),
-                     )
-        self.content = component.Component(None)
-        self.select(self.menu[0][0])
+        self.menu = collections.OrderedDict()
+        self.menu['boards'] = MenuEntry(
+            _L(u'Boards'),
+            UserBoards(
+                app_title,
+                app_banner,
+                custom_css,
+                [dbm.board for dbm in user.board_members],
+                mail_sender,
+                assets_manager
+            )
+        )
+        self.menu['my-cards'] = MenuEntry(
+            _L(u'My cards'),
+            UserCards(user, assets_manager, search_engine)
+        )
+        self.menu['profile'] = MenuEntry(
+            _L(u'Profile'),
+            get_userform(
+                app_title, app_banner, custom_css, user.source
+            )(user, mail_sender, assets_manager)
+        )
 
-    def select(self, v):
-        """Select a configuration menu item
+        self.content = component.Component(None)
+        self._on_menu_entry(next(iter(self.menu)))
+
+    def _on_menu_entry(self, id_):
+        """Select a configuration menu entry
 
         In:
-            - ``v`` -- the label of the menu item we want to show
+            - ``id_`` -- the id of the selected menu entry
         """
-        for label, o in self.menu:
-            if label == v:
-                self.content.becomes(o)
-                self.selected = v
+        self.content.becomes(self.menu[id_].content)
+        self.selected = id_
 
 
 @presentation.render_for(UserProfile, 'edit')
-def render(self, h, comp, *args):
+def render_user_profile__edit(self, h, comp, *args):
     h.head << h.head.title(self.app_title)
 
-    with h.div(id='home-user'):
-        with h.div(class_='row-fluid'):
-            with h.div(class_='span4'):
-                with h.ul():
-                    for titleL, _ignore in self.menu:
-                        title = _(titleL) # the user may have changed the language
-                        with h.li(class_='active %s' % title.lower()
-                                  if title == self.selected else title.lower()):
-                            h << h.a(title).action(
-                                lambda title=title: self.select(title))
-            with h.div(class_='span8'):
-                h << self.content.on_answer(comp.answer)
+    with h.div(id='home-user'), h.div(class_='row-fluid'):
+        with h.div(class_='span4'):
+            h << comp.render(h, 'menu')
+        with h.div(class_='span8'):
+            h << self.content.on_answer(comp.answer)
     return h.root
+
+
+@presentation.render_for(UserProfile, 'menu')
+def render_user_profile__menu(self, h, comp, *args):
+    return h.ul(
+        h.li(
+            h.a(
+                entry.label,
+                class_=(
+                    'active {}'.format(id_)
+                    if id_ == self.selected
+                    else id_
+                )
+            ).action(self._on_menu_entry, id_)
+        )
+        for id_, entry in self.menu.iteritems()
+    )
 
 
 class BasicUserForm(editor.Editor):

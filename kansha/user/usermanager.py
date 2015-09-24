@@ -151,7 +151,7 @@ class NewMember(object):
             autocomplete.Autocomplete(self.text_id, self.autocompletion, delimiter=','))
         self.autocomplete_method = autocomplete_method
 
-    def autocompletion(self, value):
+    def autocompletion(self, value, static_url):
         """Return users with email which match with value.
 
         Method called by autocomplete. This method returns a list of tuples.
@@ -163,7 +163,7 @@ class NewMember(object):
         Return:
          - list of tuple (email, HTML string)
         """
-        h = xhtml.Renderer()
+        h = xhtml.Renderer(static_url=static_url)
         return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
                 for u in self.autocomplete_method(value)]
 
@@ -176,6 +176,6 @@ class AddMembers(object):
             autocomplete.Autocomplete(self.text_id, self.autocompletion, delimiter=','))
         self.autocomplete_method = autocomplete_method
 
-    def autocompletion(self, value):
-        h = xhtml.Renderer()
+    def autocompletion(self, value, static_url):
+        h = xhtml.Renderer(static_url=static_url)
         return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]

@@ -41,14 +41,14 @@ class Autocomplete(object):
         self.max_results_displayed = int(max_results_displayed)
         self.var = 'autocomplete' + str(random.randint(10000000, 99999999))
 
-    def _completion_results(self, query):
+    def _completion_results(self, query, static_url):
         def make_pair(item):
             if hasattr(item, '__iter__'):
                 return item
             else:
                 return item, item
 
-        results = self.completion_func(query)
+        results = self.completion_func(query, static_url)
         return [make_pair(item) for item in results]
 
 
@@ -77,8 +77,10 @@ def render_static_dependencies(self, h, comp, *args):
 @presentation.render_for(Autocomplete)
 def render_autocomplete(self, h, comp, *args):
 
+    static_url = h.head.static_url
+
     def get_results(query):
-        raise json_response(self._completion_results(query))
+        raise json_response(self._completion_results(query, static_url))
 
     callback_id = h.register_callback(1, get_results, False)
     completion_url = h.add_sessionid_in_url(params=('_a', '%s=' % callback_id))

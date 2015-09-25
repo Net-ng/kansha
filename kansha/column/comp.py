@@ -60,7 +60,7 @@ class Column(object):
             self.card_counter.call(model='edit')
         elif data[0] == 'purge':
             for card in self.cards:
-                card().delete()
+                self.delete_card(card())
             self.reload()
 
     @property
@@ -244,7 +244,7 @@ class Column(object):
         notifications.add_history(self.board.data, c.data,
                                   security.get_user().data,
                                   u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, c.db_id)
+        self.search_engine.delete_document(fts_schema.Card, c.id)
         self.search_engine.commit()
         c.delete()
 

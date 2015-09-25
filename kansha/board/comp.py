@@ -185,6 +185,7 @@ class Board(object):
         else:
             self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns if not c.archive]
 
+
     @property
     def all_members(self):
         return self.managers + self.members + self.pending
@@ -323,6 +324,10 @@ class Board(object):
             notifications.add_history(self.data, card().data,
                                       security.get_user().data,
                                       u'card_move', values)
+            # reindex it in case it has been moved to the archive column
+            scard = fts_schema.Card.from_model(card().data)
+            self.search_engine.update_document(scard)
+            self.search_engine.commit()
         else:  # Reorder only
             orig.move_card(data['card'], data['index'])
         session.flush()
@@ -382,6 +387,7 @@ class Board(object):
     def set_archive(self, value):
         self.data.archive = value
         self.refresh()
+        self.search(self.last_search)
 
     def archive_card(self, c):
         """Archive card
@@ -825,11 +831,11 @@ class Board(object):
     def search(self, query):
         self.last_search = query
         if query:
-            self.card_matches = set(
-                doc._id for (_, doc) in
-                self.search_engine.search(
-                    fts_schema.Card.match(query) &
-                    (fts_schema.Card.board_id == self.id)))
+            condition = fts_schema.Card.match(query) & (fts_schema.Card.board_id == self.id)
+            # do not query archived cards if archive column is hidden
+            if not self.archive:
+                condition &= (fts_schema.Card.archive == False)
+            self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
             # make the difference between empty search and no results
             if not self.card_matches:
                 self.card_matches.add(None)

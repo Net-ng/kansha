@@ -132,6 +132,11 @@ def render_Board_num_matches(self, h, comp, *args):
 
 @presentation.render_for(Board, 'switch')
 def render_Board_item(self, h, comp, *args):
+    search_cb = ajax.Update(
+        component_to_update='show_results',
+        render=lambda renderer: comp.render(renderer, 'search_results')
+    ).generate_action(1, h)
+    h << h.head.javascript('reload_search', u'function reload_search() { %s; }' % search_cb)
     with h.div(id='switch_zone'):
         if self.model == 'columns':
             search_cb = ajax.Update(
@@ -578,7 +583,7 @@ def render_BoardProfile(self, h, comp, *args):
         with h.form:
             with h.div(class_='btn-group'):
                 if self._changed():
-                    h << h.script('reload_columns()')
+                    h << h.script('reload_columns(); reload_search();')
                     self._changed(False)
 
                 active = 'active btn-primary' if self.board.archive else ''

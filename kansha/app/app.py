@@ -157,7 +157,7 @@ class MainTask(component.Task):
         self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
-        self.auth_cfg = cfg['auth_cfg']
+        self.auth_cfg = cfg['authentication']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = services_service(
             Kansha,
@@ -185,7 +185,7 @@ class MainTask(component.Task):
                     self.custom_css,
                     self.mail_sender,
                     self.cfg,
-                    self.assets_manager
+                    self.assets_manager,
                 )
             )
             user = security.get_user()
@@ -243,21 +243,6 @@ class WSGIApp(wsgi.WSGIApp):
                         'activity_monitor': "string(default='')",
                         'templates': "string(default='')",
                         'services': 'string(default="kansha.services")'},
-        'dbauth': {'activated': 'boolean(default=True)',
-                   'moderator': 'string(default=""),',
-                   'default_username': 'string(default="")',
-                   'default_password': 'string(default="")'},
-        'oauth': {
-            'activated': 'boolean(default=False)',
-            'google': {'activated': 'boolean(default=True)',
-                       'key': 'string', 'secret': 'string'},
-            'facebook': {'activated': 'boolean(default=True)',
-                         'key': 'string', 'secret': 'string'},
-        },
-        'ldapauth': {
-            'activated': 'boolean(default=False)',
-            'server': 'string',
-            'users_base_dn': 'string', },
         'mail': {
             'activated': 'boolean(default=True)',
             'smtp_host': 'string(default="127.0.0.1")',
@@ -284,6 +269,7 @@ class WSGIApp(wsgi.WSGIApp):
         self._services = services.ServicesRepository(
             'services', config_filename, conf, error
         )
+
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
@@ -306,18 +292,13 @@ class WSGIApp(wsgi.WSGIApp):
         self.debug = conf['application']['debug']
         self.default_locale = i18n.Locale(
             conf['locale']['major'], conf['locale']['minor'])
-        auth_cfg = {
-            'dbauth': conf['dbauth'],
-            'oauth': conf['oauth'],
-            'ldapauth': conf['ldapauth']
-        }
         tpl_cfg = conf['application']['templates']
         pub_cfg = {
             'disclaimer': conf['application']['disclaimer'].decode('utf-8'),
             'banner': conf['application']['banner'].decode('utf-8')
         }
         self.app_cfg = {
-            'auth_cfg': auth_cfg,
+            'authentication': conf['authentication'],
             'tpl_cfg': tpl_cfg,
             'pub_cfg': pub_cfg
         }

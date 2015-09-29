@@ -12,6 +12,7 @@ import hashlib
 import textwrap
 import time
 import webob
+import configobj
 from datetime import datetime, timedelta
 
 from nagare import (presentation, editor, component, security, log, database)
@@ -20,6 +21,7 @@ from nagare.i18n import _
 from . import validators, captcha
 from kansha.user import usermanager
 from kansha.models import DataToken
+from kansha.services.authentication_repository import Authentication
 
 UserConfirmationTimeout = timedelta(hours=12)
 
@@ -54,7 +56,7 @@ def render_Header(self, h, comp, *args):
 
 @presentation.render_for(Header, 'hide')
 def render_Header_hide(self, h, comp, *args):
-    h.head.css('hide_logins', u'''.body-login .oauthLogin, .body-login .LDAPLogin,  .body-login .databaseLogin {display:none;}''')
+    h.head.css('hide_logins', u'''.login {display:none;}''')
     return h.root
 
 
@@ -62,13 +64,21 @@ def redirect_to(url):
     raise webob.exc.HTTPSeeOther(location=url)
 
 
-class Login(object):
+class Login(Authentication):
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, config):
+    config_spec = {
+        'activated': 'boolean(default=True)',
+        'moderator': 'string(default="")',
+        'default_username': 'string(default="")',
+        'default_password': 'string(default="")'
+    }
+
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
         self._error_message = ''
-        self.registration_task = RegistrationTask(app_title, app_banner, custom_css, mail_sender, config['moderator'])
-        self.default_username = config['default_username']
-        self.default_password = config['default_password']
+        self.registration_task = RegistrationTask(app_title, app_banner, custom_css, mail_sender,
+                                                  self.config['moderator'])
+        self.default_username = self.config['default_username']
+        self.default_password = self.config['default_password']
         self.pwd_reset = PasswordResetTask(app_title, app_banner, custom_css, mail_sender)
         self.content = component.Component()
 
@@ -110,17 +120,17 @@ def render_Login(self, h, comp, *args):
 
 @presentation.render_for(Login, 'form')
 def render_Login_form(self, h, comp, *args):
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='login databaseLogin'):
         with h.form:
             # if self.error_message:
             #     h << h.br << h.div(self.error_message, class_="error")
-            h << h.input(type='text', name='__ac_name', id="username",
-                         value=self.default_username, placeholder=_("Enter username"))
+            h << h.input(type='text', name='__ac_name', id='username',
+                         value=self.default_username, placeholder=_('Enter username'))
             h << h.input(type='password', name='__ac_password', id="password",
-                         value=self.default_password, placeholder=_("Enter password"))
+                         value=self.default_password, placeholder=_('Enter password'))
             h << h.a(_('Forgot password?')).action(self.content.call, self.pwd_reset)
             with h.div(class_='actions'):
-                h << h.input(type='submit', value=_(u'Sign in'), class_="btn btn-primary btn-small").action(self.log_in, comp)
+                h << h.input(type='submit', value=_(u'Sign in'), class_='btn btn-primary btn-small').action(self.log_in, comp)
                 with h.div:
                     h << _('No account yet? ')
                     h << h.a(_('Sign up')).action(self.content.call, self.registration_task)

@@ -44,7 +44,7 @@ setup(
         'pycrypto',
         'Babel',
         'requests',
-        'oauth2',
+        'oauth2==1.5.211',
         'SQLAlchemy',
         'dateutils',
         'xlwt',

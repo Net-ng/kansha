@@ -21,6 +21,8 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
+*Latest stable release is version 1.0.4*
+
 `Try Kansha online <http://demo.kansha.org>`_ or install it on a computer:
 
 * Run the latest stable release with Docker::

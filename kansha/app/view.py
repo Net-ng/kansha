@@ -20,10 +20,10 @@ from .app import Kansha, App
 from ..services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
 
 
-def answer_on_menu(app, comp, user, v):
+def answer_on_menu(self, comp, user, v):
     """
     In:
-        - ``app`` -- Kansha application
+        - ``self`` -- Kansha application
         - ``comp`` -- Component wrapped application
         - ``user`` -- current user
         - ``v`` -- value returned
@@ -31,9 +31,17 @@ def answer_on_menu(app, comp, user, v):
     if v is None:
         comp.answer(None)
     else:
-        u = user_profile.UserProfile(app.app_title, app.app_banner, app.custom_css, user.data,
-                                     app.mail_sender, app.assets_manager, app.search_engine)
-        app.content.becomes(u, 'edit')
+        u = self._services(
+            user_profile.UserProfile,
+            self.app_title,
+            self.app_banner,
+            self.custom_css,
+            user.data,
+            self.mail_sender, 
+            self.assets_manager,
+            self.search_engine
+        )
+        self.content.becomes(u, 'edit')
 
 
 @presentation.render_for(Kansha, model='menu')

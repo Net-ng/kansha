@@ -94,26 +94,25 @@ class Login(object):
         if self.content():
             setattr(self.content(), 'error_message', u'')
 
-
     def connect(self, comp, oauth_user, source):
         if oauth_user is None:
             self._error_message = i18n._(u'Authentication failed')
             return
+
         profile = oauth_user.get_profile()[0]
-        data_user = usermanager.UserManager.get_by_username(profile['id'])
+
+        profile_id = profile['id']
         # if user exists update data
         name = profile['name'] or (i18n._(u'Please provide a full name in %s') % source)
-        if not data_user:
-            data_user = usermanager.UserManager().create_user(profile['id'], None,
-                                                              name,
-                                                              profile['email'],
-                                                              source=source,
-                                                              picture=profile.get('picture'))
+        if not usermanager.UserManager.get_by_username(profile_id):
+            usermanager.UserManager().create_user(profile['id'], None, name, profile['email'], source=source,
+                                                  picture=profile.get('picture'))
+
         # update takes care of not overwriting the existing email with an empty one
-        data_user.update(name, profile['email'],
-                         picture=profile.get('picture'))
+        usermanager.UserManager.get_by_username(profile_id).update(name, profile['email'],
+                                                                   picture=profile.get('picture'))
         # thus if data_user.email is empty, that means it has always been so.
-        if not data_user.email:
+        if not usermanager.UserManager.get_by_username(profile_id).email:
             self.content.call(
                 RegistrationTask(
                     self.app_title,
@@ -121,12 +120,12 @@ class Login(object):
                     self.custom_css,
                     self.mail_sender,
                     '',
-                    data_user.username
+                    profile_id
                 )
             )
             return
         database.session.flush()
-        u = usermanager.get_app_user(profile['id'], data=data_user)
+        u = usermanager.get_app_user(profile['id'], data=usermanager.UserManager.get_by_username(profile_id))
         security.set_user(u)
 
         # After a successful OAuth authentication, we need to manually switch to the user's locale
@@ -134,7 +133,6 @@ class Login(object):
         i18n.set_locale(u.get_locale())
 
         comp.answer(u)
-
 
 @presentation.render_for(Login)
 def render_login(self, h, comp, *args):

@@ -25,13 +25,13 @@ def logout():
 
 
 @presentation.init_for(App, "len(url) == 2")
-def init_static(self, url, comp, http_method, request):
+def init_app__board(self, url, comp, http_method, request):
     kansha = self.task().app
     kansha.select_board_by_uri(url[1])
 
 
 @presentation.init_for(App, "url[0] == 'logout'")
-def init_static(self, url, comp, http_method, request):
+def init_app__logout(self, url, comp, http_method, request):
     logout()
 
 
@@ -46,33 +46,68 @@ def init_app(self, url, comp, http_method, request):
 
 
 @presentation.init_for(App, "len(url) == 3 and url[0] == 'register'")
-def init_static(self, url, comp, http_method, request):
-    register = forms.RegistrationTask(self.app_title, self.app_banner, self.custom_css, comp().mail_sender)
+def init_app__register(self, url, comp, http_method, request):
+    register = self._services(
+        forms.RegistrationTask,
+        self.app_title,
+        self.app_banner,
+        self.custom_css,
+        self.mail_sender
+    )
     register.state = (url[1], url[2])
     comp.becomes(register).on_answer(lambda v: logout())
 
 
 @presentation.init_for(App, "len(url) == 3 and url[0] == 'new_mail'")
-def init_static(self, url, comp, http_method, request):
+def init_app__new_mail(self, url, comp, http_method, request):
     username, token = (url[1], url[2])
     get_user = lambda: UserManager.get_by_username(username)
-    confirmation = forms.EmailConfirmation(self.app_title, self.app_banner, self.custom_css, get_user)
+    confirmation = self._services(
+        forms.EmailConfirmation,
+        self.app_title,
+        self.app_banner,
+        self.custom_css,
+        get_user
+    )
     if confirmation.confirm_email_address(token):
         log.debug(_('Change email success for user %s') % get_user().username)
-        comp.becomes(forms.ChangeEmailConfirmation(self.app_title, self.app_banner, self.custom_css, request. application_url), model='success')
+        comp.becomes(self._services(
+            forms.ChangeEmailConfirmation,
+            self.app_title,
+            self.app_banner,
+            self.custom_css,
+            request.application_url
+        ),
+            model='success'
+        )
         confirmation.reset_token(token)
     else:
         log.debug(_('Change email failure for user %s') % get_user().username)
-        comp.becomes(forms.ChangeEmailConfirmation(self.app_title, self.app_banner, self.custom_css, request.application_url), model='failure')
+        comp.becomes(
+            self._services(
+                forms.ChangeEmailConfirmation,
+                self.app_title,
+                self.app_banner,
+                self.custom_css,
+                request.application_url
+            ),
+            model='failure'
+        )
 
 
 @presentation.init_for(App, "len(url) == 3 and url[0] == 'reset'")
-def init_static(self, url, comp, http_method, request):
-    reset = forms.PasswordResetTask(self.app_title, self.app_banner, self.custom_css, comp().mail_sender)
+def init_app__reset(self, url, comp, http_method, request):
+    reset = self._services(
+        forms.PasswordResetTask,
+        self.app_title,
+        self.app_banner,
+        self.custom_css,
+        self.mail_sender
+    )
     reset.state = (url[1], url[2])
     comp.becomes(reset).on_answer(lambda v: logout())
 
 
 @presentation.init_for(App, "len(url) >= 2 and url[0] == 'assets'")
-def init_assets(self, url, comp, http_method, request):
+def init_app__assets(self, url, comp, http_method, request):
     component.Component(self.assets_manager).init(url[1:], http_method, request)

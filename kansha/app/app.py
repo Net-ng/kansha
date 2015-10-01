@@ -29,13 +29,14 @@ from ..board.boardsmanager import BoardsManager
 
 from ..user.usermanager import UserManager
 from ..user import user_profile
-from ..googleuser import comp as google # for side effects only
+from ..googleuser import comp as google  # for side effects only
 
 from ..security import SecurityManager, Unauthorized
 
 from ..services.simpleassetsmanager.simpleassetsmanager import SimpleAssetsManager
 from ..services.search import SearchEngine
 from ..services import mail
+from kansha import services
 
 
 def run():
@@ -46,9 +47,12 @@ class Kansha(object):
 
     """The Kansha root component"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, assets_manager, search):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender,
+                 assets_manager, search, services_service):
         """Initialization
         """
+        self._services = services_service
+
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
@@ -88,11 +92,20 @@ class Kansha(object):
         if not id_:
             return
         if self.boards_manager.get_by_id(id_):
-            b = board.Board(id_, self.app_title, self.app_banner, self.custom_css, self.mail_sender,
-                            self.assets_manager, self.search_engine,
-                            on_board_archive=self.select_last_board,
-                            on_board_leave=self.select_last_board)
-            self.content.becomes(b)
+            self.content.becomes(
+                self._services(
+                    board.Board,
+                    id_,
+                    self.app_title,
+                    self.app_banner,
+                    self.custom_css,
+                    self.mail_sender,
+                    self.assets_manager,
+                    self.search_engine,
+                    on_board_archive=self.select_last_board,
+                    on_board_leave=self.select_last_board
+                )
+            )
             # if user is logged, update is last board
             user = security.get_user()
             if user:
@@ -120,21 +133,41 @@ class Kansha(object):
             self.select_board(data_board.id)
         else:
             self.content.becomes(
-                user_profile.UserProfile(self.app_title, self.app_banner, self.custom_css, user.data, self.mail_sender,
-                                         self.assets_manager, self.search_engine), 'edit')
+                self._services(
+                    user_profile.UserProfile,
+                    self.app_title,
+                    self.app_banner,
+                    self.custom_css,
+                    user.data,
+                    self.mail_sender,
+                    self.assets_manager,
+                    self.search_engine
+                ),
+                'edit'
+            )
 
 
 class MainTask(component.Task):
 
-    def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender, cfg, assets_manager, search):
+    def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender,
+                 cfg, assets_manager, search, services_service):
+        self._services = services_service
+
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.auth_cfg = cfg['auth_cfg']
         self.tpl_cfg = cfg['tpl_cfg']
-        self.app = Kansha(
-            self.app_title, self.app_banner, self.custom_css, mail_sender, assets_manager, search)
+        self.app = services_service(
+            Kansha,
+            self.app_title,
+            self.app_banner,
+            self.custom_css,
+            mail_sender,
+            assets_manager,
+            search
+        )
         self.main_app = main_app
         self.assets_manager = assets_manager
         self.search_engine = search
@@ -144,8 +177,17 @@ class MainTask(component.Task):
         user = security.get_user()
         while user is None:
             # not logged ? Call login component
-            comp.call(login.Login(self.app_title, self.app_banner, self.custom_css,
-                                  self.mail_sender, self.cfg, self.assets_manager))
+            comp.call(
+                self._services(
+                    login.Login,
+                    self.app_title,
+                    self.app_banner,
+                    self.custom_css,
+                    self.mail_sender,
+                    self.cfg,
+                    self.assets_manager
+                )
+            )
             user = security.get_user()
             if user.last_login is None:
                 # first connection.
@@ -164,19 +206,27 @@ class MainTask(component.Task):
 
 class App(object):
 
-    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager, search):
+    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager,
+                 search, services_service):
+        self._services = services_service
+
         self.app_title = app_title
         self.app_banner = cfg['pub_cfg']['banner']
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.assets_manager = assets_manager
         self.search_engine = search
-        self.task = component.Component(MainTask(self.app_title,
-                                                 self.app_banner,
-                                                 self.custom_css,
-                                                 self, mail_sender,
-                                                 cfg,
-                                                 self.assets_manager, search))
+        self.task = component.Component(
+            services_service(
+                MainTask,
+                self.app_title,
+                self.app_banner,
+                self.custom_css,
+                self, mail_sender,
+                cfg,
+                self.assets_manager, search
+            )
+        )
 
 
 class WSGIApp(wsgi.WSGIApp):
@@ -191,7 +241,8 @@ class WSGIApp(wsgi.WSGIApp):
                         'custom_css': 'string(default="")',
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
-                        'templates': "string(default='')"},
+                        'templates': "string(default='')",
+                        'services': 'string(default="kansha.services")'},
         'dbauth': {'activated': 'boolean(default=True)',
                    'moderator': 'string(default=""),',
                    'default_username': 'string(default="")',
@@ -229,6 +280,10 @@ class WSGIApp(wsgi.WSGIApp):
             conf, configspec=configobj.ConfigObj(self.ConfigSpec), interpolation='Template')
         config.validate(config_filename, conf, error)
 
+        services.set_entry_point(conf['application']['services'])
+        self._services = services.ServicesRepository(
+            'services', config_filename, conf, error
+        )
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
@@ -274,12 +329,15 @@ class WSGIApp(wsgi.WSGIApp):
                                            self)
 
     def create_root(self):
-        return super(WSGIApp, self).create_root(self.app_title,
-                                                self.custom_css,
-                                                self.mail_sender,
-                                                self.app_cfg,
-                                                self.assets_manager,
-                                                self.search_engine)
+        return super(WSGIApp, self).create_root(
+            self.app_title,
+            self.custom_css,
+            self.mail_sender,
+            self.app_cfg,
+            self.assets_manager,
+            self.search_engine,
+            self._services
+        )
 
     def _create_mail_sender(self, mail_config):
         activated = mail_config['activated']

@@ -425,6 +425,17 @@ def get_userform(app_title, app_banner, custom_css, source):
     return functools.partial(UserForm, app_title, app_banner, custom_css)
 
 
+class ExternalUserForm(BasicUserForm):
+    pass
+
+
+@peak.rules.when(get_userform, """source != 'application'""")
+def get_userform(app_title, app_banner, custom_css, source):
+    """ User form for application user
+    """
+    return ExternalUserForm
+
+
 class UserBoards(object):
 
     def __init__(self, app_title, app_banner, custom_css, boards, mail_sender, assets_manager):

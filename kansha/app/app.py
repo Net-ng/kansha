@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
+# --
 
 import cgi
 import json
@@ -29,7 +29,6 @@ from ..board.boardsmanager import BoardsManager
 
 from ..user.usermanager import UserManager
 from ..user import user_profile
-from ..googleuser import comp as google  # for side effects only
 
 from ..security import SecurityManager, Unauthorized
 
@@ -44,7 +43,6 @@ def run():
 
 
 class Kansha(object):
-
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, custom_css, mail_sender,
@@ -148,7 +146,6 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-
     def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender,
                  cfg, assets_manager, search, services_service):
         self._services = services_service
@@ -193,7 +190,7 @@ class MainTask(component.Task):
                 # first connection.
                 # Load template boards if any,
                 self.app.boards_manager.create_boards_from_templates(user.data, self.cfg['tpl_cfg'])
-                # then index cards
+                #  then index cards
                 self.app.boards_manager.index_user_cards(user.data,
                                                          self.search_engine)
             user.update_last_login()
@@ -205,7 +202,6 @@ class MainTask(component.Task):
 
 
 class App(object):
-
     def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager,
                  search, services_service):
         self._services = services_service
@@ -230,7 +226,6 @@ class App(object):
 
 
 class WSGIApp(wsgi.WSGIApp):
-
     """This application uses a HTML5 renderer"""
     renderer_factory = xhtml5.Renderer
 
@@ -394,7 +389,7 @@ class WSGIApp(wsgi.WSGIApp):
           - ``response`` -- the web response object
           - ``async`` -- is an XHR request ?
         """
-        #log.exception("\n%s" % request)
+        # log.exception("\n%s" % request)
         if self.debug:
             raise
 
@@ -410,4 +405,4 @@ def create_pipe(app, *args, **kw):
     return app
 
 
-app = WSGIApp(lambda * args: component.Component(App(*args)))
+app = WSGIApp(lambda *args: component.Component(App(*args)))

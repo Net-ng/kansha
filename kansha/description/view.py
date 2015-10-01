@@ -31,7 +31,7 @@ def render(self, h, comp, *args):
         elif security.has_permissions('edit', self.parent):
             h << h.textarea(placeholder=_("Add description."))
 
-    h << h.script("""YAHOO.kansha.app.urlify($('#%s'))""" % id_)
+    h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
     return h.root
 
 
@@ -47,8 +47,13 @@ def render(self, h, comp, *args):
             with h.div(class_='buttons'):
                 h << h.button(_('Save'), class_='btn btn-primary btn-small').action(lambda: comp.answer(text()))
                 h << ' '
-                h << h.button( _('Cancel'), class_='btn btn-small').action(comp.answer)
-                h << h.script('YAHOO.kansha.app.init_ckeditor(%s, %s)' % (ajax.py2js(txt_id), ajax.py2js(security.get_user().get_locale().language)))
+                h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
+                h << h.script(
+                    "YAHOO.kansha.app.init_ckeditor(%s, %s)" % (
+                        ajax.py2js(txt_id),
+                        ajax.py2js(security.get_user().get_locale().language)
+                    )
+                )
     return h.root
 
 

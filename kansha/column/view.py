@@ -33,7 +33,12 @@ def render(self, h, comp, *args):
                     h << self.actions_overlay
         h << comp.render(h.AsyncRenderer(), 'body')
     h << h.script(
-        "YAHOO.kansha.app.saveLimit('%(list_id)s', %(limit)i);" % dict(list_id=self.id, limit=self.nb_max_cards or 0))
+        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
+        {
+            'list_id': ajax.py2js(self.id),
+            'limit': ajax.py2js(self.nb_max_cards or 0)
+        }
+    )
     return h.root
 
 
@@ -53,18 +58,37 @@ def render_column_overlay(self, h, comp, *args):
     with h.ul(class_='nav nav-list'):
         if not self.is_archive:
             with h.li:
-                onclick = u"if (confirm('%(message)s')){YAHOO.kansha.app.hideOverlay();%(callback)s;}" % {
-                    'message': _(u'The list will be deleted. Are you sure?'),
-                    'callback': h.a.action(lambda: comp.answer(('delete', self.data.id))).get('onclick')}
+                onclick = (
+                    u"if (confirm(%(message)s)){"
+                    u" YAHOO.kansha.app.hideOverlay();"
+                    u" %(callback)s"
+                    u"}" %
+                    {
+                        'message': ajax.py2js(
+                            _(u'The list will be deleted. Are you sure?')
+                        ).decode('UTF-8'),
+                        'callback': h.a.action(
+                            lambda: comp.answer(('delete', self.data.id))
+                        ).get('onclick')
+                    }
+                )
                 h << h.a(_(u'Delete this list'), onclick=onclick)
-            h << h.li(h.a(
-                _('Set cards limit')).action(lambda: comp.answer(('set_limit', self.data.id))),
-                      id=self.id + '_counter_option')
+            h << h.li(
+                h.a(_('Set cards limit')).action(
+                    lambda: comp.answer(('set_limit', self.data.id))
+                ),
+                id=self.id + '_counter_option'
+            )
         else:
             with h.li:
-                action = h.a.action(lambda: comp.answer(('purge', self.data.id))).get('onclick')
-                onclick = "if (confirm(\"%(confirm_msg)s\")){%(purge_func)s;}"
-                onclick = onclick % dict(purge_func=action, confirm_msg=_(u'All cards will be deleted. Are you sure?'))
+                onclick = "if (confirm(%(message)s)){%(purge_func)s;}" % {
+                    'message': ajax.py2js(
+                        _(u'All cards will be deleted. Are you sure?')
+                    ).decode('UTF-8'),
+                    'purge_func': h.a.action(
+                        lambda: comp.answer(('purge', self.data.id))
+                    ).get('onclick')
+                }
                 h << h.a(_('Purge the cards'), onclick=onclick)
 
     return h.root
@@ -89,11 +113,13 @@ def render_column_title(self, h, comp, *args):
 def render_column_dnd(self, h, comp, *args):
     """DnD wrapper for column"""
     h << comp.render(h, None)
-    h << h.script('''YAHOO.util.Event.onDOMReady(function() {
-      YAHOO.kansha.app.initList(%(list_id)r);
-      YAHOO.kansha.dnd.initList(%(list_id)r);
-      YAHOO.kansha.app.hideOverlay();
-    });''' % {'list_id': self.id})
+    h << h.script(
+        "YAHOO.util.Event.onDOMReady(function() {"
+        "  YAHOO.kansha.app.initList(%(list_id)s);"
+        "  YAHOO.kansha.dnd.initList(%(list_id)s);"
+        "  YAHOO.kansha.app.hideOverlay();"
+        "})" % {'list_id': ajax.py2js(self.id)}
+    )
     return h.root
 
 
@@ -103,7 +129,7 @@ def render_column_body(self, h, comp, *args):
     id_ = h.generate_id()
     with h.div(class_='list-body', id=id_):
         h << [card.on_answer(self.edit_card).render(h, model=model) for card in self.cards]
-        h << h.script("YAHOO.kansha.dnd.initTargetCard('%s')" % id_)
+        h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
     kw = {}
     if not security.has_permissions('edit', self):
         kw['style'] = 'width: 0px'
@@ -112,7 +138,7 @@ def render_column_body(self, h, comp, *args):
             if security.has_permissions('edit', self):
                 h << h.div(self.new_card)
 
-    h << h.script("YAHOO.kansha.app.countCards(%(list_id)s);" % dict(list_id=self.id))
+    h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
     return h.root
 
 
@@ -130,7 +156,9 @@ def render_ColumnTitle(self, h, comp, *args):
         if security.has_permissions('edit', self):
             a.action(comp.answer)
         h << a
-    h << h.script('YAHOO.kansha.app.showCardsLimitEdit(%s)' % self.parent.id)
+    h << h.script(
+        'YAHOO.kansha.app.showCardsLimitEdit(%s)' % ajax.py2js(self.parent.id)
+    )
     return h.root
 
 
@@ -155,7 +183,7 @@ def render_newcolumn(self, h, comp, *args):
         h << self.nb_cards_comp
         with h.div:
             h << h.button(_('Add'), class_=('btn btn-primary btn-small'),
-            ).action(remote.Action(lambda: self.create_column(comp)))
+                          ).action(remote.Action(lambda: self.create_column(comp)))
             h << ' '
             h << h.button(_('Cancel'), class_='btn btn-small').action(
                 remote.Action(lambda: """YAHOO.kansha.app.hideOverlay()"""))
@@ -168,12 +196,14 @@ def render_newcolumn_nbcards(self, h, comp, *args):
     with h.form:
         h << h.label(_('Number max of cards'))
         h << h.input(id=id_, type='text').action(self.nb_cards)
-        h << h.script("""YAHOO.util.Event.on("%s", 'keyup', function (e) {
-                                var result =this.value.replace(/[^0-9]/g, '')
-                                if (this.value !=result) {
-                                       this.value = result;
-                                    }
-                         });""" % id_)
+        h << h.script(
+            """YAHOO.util.Event.on(%s, 'keyup', function (e) {
+                    var result =this.value.replace(/[^0-9]/g, '')
+                    if (this.value !=result) {
+                           this.value = result;
+                        }
+             })""" % ajax.py2js(id_)
+        )
     return h.root
 
 
@@ -185,8 +215,13 @@ def render_CardsCounter(self, h, comp, *args):
             h << {'style': 'cursor: default'}
             h << h.span(self.text)
     h << h.script(
-        "YAHOO.kansha.app.saveLimit('%(list_id)s', %(limit)i);YAHOO.kansha.app.countCards(%(list_id)s);" % dict(
-            list_id=self.column.id, limit=self.column.nb_max_cards or 0))
+        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
+        "YAHOO.kansha.app.countCards(%(list_id)s);" %
+        {
+            'list_id': ajax.py2js(self.column.id),
+            'limit': ajax.py2js(self.column.nb_max_cards or 0)
+        }
+    )
     return h.root
 
 
@@ -197,12 +232,14 @@ def render_CardsCounter_edit(self, h, comp, *args):
     with h.form(class_='title-form'):
         id_ = h.generate_id()
         h << h.input(id=id_, type='text', value=self.column.nb_max_cards or '').action(text)
-        h << h.script("""YAHOO.util.Event.on("%s", 'keyup', function (e) {
-                                var result =this.value.replace(/[^0-9]/g, '')
-                                if (this.value !=result) {
-                                       this.value = result;
-                                    }
-                         });""" % id_)
+        h << h.script(
+            """YAHOO.util.Event.on(%s, 'keyup', function (e) {
+                    var result =this.value.replace(/[^0-9]/g, '')
+                    if (this.value !=result) {
+                           this.value = result;
+                        }
+             });""" % ajax.py2js(id_)
+        )
         h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
             lambda: self.validate(text(), comp))
         h << ' '
@@ -210,5 +247,8 @@ def render_CardsCounter_edit(self, h, comp, *args):
         if self.error is not None:
             with h.div(class_='nagare-error-message'):
                 h << self.error
-        h << h.script('YAHOO.kansha.app.selectElement(%r);YAHOO.kansha.app.hideOverlay()' % id_)
+        h << h.script(
+            "YAHOO.kansha.app.selectElement(%s);"
+            "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
+        )
     return h.root

@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from nagare import ajax
 from nagare import presentation, component
 from nagare.i18n import _
 
@@ -57,7 +58,9 @@ def render(self, h, comp, *args):
             self.comp.on_answer(comp.answer)
             h << self.comp.render(h.AsyncRenderer(), model=self.model)
 
-    h << h.script('''YAHOO.kansha.app.showPopin(%r, %s);''' % (self.id, close_func))
+    h << h.script(
+        "YAHOO.kansha.app.showPopin(%s, %s)" % (ajax.py2js(self.id), close_func)
+    )
 
     return h.root
 

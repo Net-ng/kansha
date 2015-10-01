@@ -26,7 +26,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
             h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
 
     if self.focus:
-        h << h.script('''YAHOO.util.Dom.get("%(id)s").focus();''' % {'id': id_})
+        h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
         self.focus = False
     return h.root
 
@@ -56,7 +56,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-grey icon-ok'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
             h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
-    h << h.script('''YAHOO.util.Dom.get("%(id)s").focus();''' % {'id': id_})
+    h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
 
@@ -76,7 +76,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-grey icon-ok'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
             h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
-    h << h.script('''YAHOO.util.Dom.get("%(id)s").focus();''' % {'id': id_})
+    h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
 
@@ -97,22 +97,22 @@ def render_Checklists(self, h, comp, model):
         action = ajax.Update(action=self.reorder)
         action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
         h.head.javascript(h.generate_id(), '''function reorder_checklists(data) {
-            nagare_getAndEval('%s' + YAHOO.lang.JSON.stringify(data));
-        }''' % action)
+            nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
+        }''' % ajax.py2js(action))
 
         id_ = h.generate_id()
         with h.div(class_='checklists', id=id_):
             for index, clist in enumerate(self.checklists):
                 h << clist.on_answer(lambda v, index=index: self.delete_checklist(index))
         h << h.script("""$(function() {
-        $( "#%(id)s" ).sortable({
+        $( "#" + %s ).sortable({
           placeholder: "ui-state-highlight",
           axis: "y",
           handle: ".icon-th-list.icon-grey",
           cursor: "move",
           stop: function( event, ui ) { reorder_checklists($('.checklist').map(function() { return this.id }).get()) }
         });
-      });""" % {'id': id_})
+      })""" % ajax.py2js(id_))
     return h.root
 
 

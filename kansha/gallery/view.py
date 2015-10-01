@@ -61,20 +61,29 @@ def render_download(self, h, comp, *args):
         h << h.label((h.i(class_='icon-file icon-grey'),
                       _("Add file")), class_='btn btn-small', for_=input_id)
         with h.form:
-            h << h.script(u'''
+            h << h.script(
+                u'''
     function valueChanged(e) {
         if (YAHOO.kansha.app.checkFileSize(this, %(max_size)s)) {
-            YAHOO.util.Dom.get('%(submit_id)s').click();
+            YAHOO.util.Dom.get(%(submit_id)s).click();
             YAHOO.kansha.app.showModal('oip');
         } else {
-            alert('%(error)s');
+            alert(%(error)s);
         }
     }
 
     YAHOO.util.Event.onDOMReady(function() {
-        YAHOO.util.Event.on('%(input_id)s', 'change', valueChanged);
-    });
-''' % {'max_size': self.assets_manager.max_size, 'input_id': input_id, 'submit_id': submit_id, 'error': _(u'Max file size exceeded')})
+        YAHOO.util.Event.on(%(input_id)s, 'change', valueChanged);
+    });''' %
+                {
+                    'max_size': ajax.py2js(self.assets_manager.max_size),
+                    'input_id': ajax.py2js(input_id),
+                    'submit_id': ajax.py2js(submit_id),
+                    'error': ajax.py2js(
+                        _(u'Max file size exceeded')
+                    ).decode('UTF-8')
+                }
+            )
             h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
             h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
     return h.root
@@ -91,8 +100,13 @@ def render_gallery_badge(self, h, *args):
 
 @presentation.render_for(Asset, model="anonymous")
 def render_asset_anonymous(self, h, comp, model, *args):
-    return h.a(comp.render(h, model="thumb"), target='_blank',
-               onclick="window.open('%s');YAHOO.kansha.app.hideOverlay()" % self.assets_manager.get_image_url(self.filename))
+    return h.a(
+        comp.render(h, model="thumb"),
+        onclick="window.open(%s);YAHOO.kansha.app.hideOverlay()" % ajax.py2js(
+            self.assets_manager.get_image_url(self.filename)
+        ),
+        target='_blank'
+    )
 
 
 @presentation.render_for(Asset)
@@ -139,8 +153,16 @@ def render_overlay_menu(self, h, comp, *args):
     with h.div(id=id_):
 
         with h.ul:
-            h << h.li(h.a(_('Open'), target='_blank',
-                          onclick="window.open('%s');YAHOO.kansha.app.hideOverlay()" % self.assets_manager.get_image_url(self.filename)))
+            h << h.li(h.a(
+                _('Open'),
+                target='_blank',
+                onclick=(
+                    "window.open(%s);"
+                    "YAHOO.kansha.app.hideOverlay()" %
+                    ajax.py2js(self.assets_manager.get_image_url(self.filename))
+                )
+            )
+            )
             h << h.li(h.a(_('Delete')).action(lambda: comp.answer(('delete', self))))
             if self.is_image():
                 if self.is_cover:
@@ -152,7 +174,7 @@ def render_overlay_menu(self, h, comp, *args):
                             render=lambda h: comp.render(h),
                             action=lambda: self.crop(comp, card_cmp, card_id, card_model),
                             component_to_update=id_)
-                        )
+                    )
                     )
     return h.root
 
@@ -177,13 +199,16 @@ def render_gallery_cropper(self, h, comp, *args):
         for crop_name in 'crop_left', 'crop_top', 'crop_width', 'crop_height':
             h << h.input(type='hidden', id=form_id + '_' + crop_name).action(getattr(self, crop_name))
         h << h.p(render_image(self.asset, h, comp, 'medium', id=img_id))
-        h << h.script("""YAHOO.util.Event.onContentReady('%s',
-                            function(){YAHOO.kansha.app.initCrop('%s', '%s', %s, %s)});""" % (img_id,
-                                                                                             img_id,
-                                                                                             form_id,
-                                                                                             crop_width,
-                                                                                             crop_height),
-                      type="text/javascript")
+        h << h.script(
+            "YAHOO.util.Event.onContentReady(%s,"
+            "function(){YAHOO.kansha.app.initCrop(%s, %s, %s, %s)})" % (
+                ajax.py2js(img_id),
+                ajax.py2js(img_id),
+                ajax.py2js(form_id),
+                ajax.py2js(crop_width),
+                ajax.py2js(crop_height)
+            )
+        )
         h << h.input(type='submit',
                      value=_('Done'),
                      class_='btn btn-primary btn-small').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),

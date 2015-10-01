@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from nagare import ajax
 from nagare import presentation, var, security
 from nagare.i18n import _
 
@@ -54,5 +55,9 @@ def render(self, h, comp, *args):
             lambda: comp.answer(self.change_text(text())))
         h << ' '
         h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
-        h << h.script('YAHOO.kansha.app.selectElement(%r);YAHOO.kansha.app.hideCardsLimitEdit(%s)' % (id_, self.parent.id))
+        h << h.script(
+            'YAHOO.kansha.app.selectElement(%s);'
+            'YAHOO.kansha.app.hideCardsLimitEdit(%s)' %
+            (ajax.py2js(id_), ajax.py2js(self.parent.id))
+        )
     return h.root

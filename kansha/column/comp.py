@@ -53,6 +53,9 @@ class Column(object):
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 
+    def set_reload_search(self):
+        self.board.set_reload_search()
+
     def actions(self, data, comp):
         if data[0] == 'delete':
             comp.answer(data[1])
@@ -62,6 +65,7 @@ class Column(object):
             for card in self.cards:
                 self.delete_card(card())
             self.reload()
+        self.set_reload_search()
 
     @property
     def data(self):
@@ -230,6 +234,7 @@ class Column(object):
                 scard = fts_schema.Card.from_model(new_card)
                 self.search_engine.add_document(scard)
                 self.search_engine.commit()
+                self.set_reload_search()
             else:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
 
@@ -279,6 +284,7 @@ class Column(object):
             self.search_engine.update_document(scard)
             self.search_engine.commit()
             c().reload()
+            self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):
 

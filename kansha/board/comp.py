@@ -143,6 +143,8 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
+        self.must_reload_search = False
+
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
@@ -387,7 +389,7 @@ class Board(object):
     def set_archive(self, value):
         self.data.archive = value
         self.refresh()
-        self.search(self.last_search)
+        self.set_reload_search()
 
     def archive_card(self, c):
         """Archive card
@@ -841,6 +843,13 @@ class Board(object):
                 self.card_matches.add(None)
         else:
             self.card_matches = set()
+
+    def set_reload_search(self):
+        self.must_reload_search = True
+
+    def reload_search(self):
+        self.must_reload_search = False
+        return self.search(self.last_search)
 
 ################
 

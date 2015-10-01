@@ -206,6 +206,11 @@ def render(self, h, comp, *args):
 
     reload_card = h.a.action(ajax.Update()).get('onclick')
     h << h.script("""YAHOO.kansha.reload_cards['%s']=function() {%s}""" % (self.id, reload_card))
+
+    if self.must_reload_search:
+        self.reload_search()
+        h << h.script('''$(window).trigger('reload_search');''')
+
     return h.root
 
 

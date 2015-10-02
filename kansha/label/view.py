@@ -69,7 +69,7 @@ def render(self, h, comp, *args):
             ajax.Update(action=lambda v=v: self.set_color(v())))
         h << ' '
         h << h.button(_('Cancel'), class_='btn btn-small').action(lambda: None)
-    h << h.script("YAHOO.kansha.app.addColorPicker(%r)" % i)
+    h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
     return h.root
 
 

@@ -162,7 +162,7 @@ def render(self, h, comp, *args):
                 h << comp.render(h, model='menu')
                 h << self.content
 
-    h << h.script(src=h.head.static_url + 'js/nagare.js', type='text/javascript')
+    h.head.javascript_url('js/nagare.js')
 
     return h.root
 

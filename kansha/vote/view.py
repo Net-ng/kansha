@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from nagare import ajax
 from nagare import presentation, security
 from nagare.i18n import _, _N
 
@@ -43,6 +44,9 @@ def render_Votes_badge(self, h, *args):
         if security.has_permissions('vote', self.parent):
             link.action(self.vote)
         h << link
-        h << h.script("YAHOO.util.Event.addListener('%s', 'click', YAHOO.util.Event.stopPropagation); " % id_)
+        h << h.script(
+            "YAHOO.util.Event.addListener(%s, 'click', YAHOO.util.Event.stopPropagation)" %
+            ajax.py2js(id_)
+        )
 
     return h.root

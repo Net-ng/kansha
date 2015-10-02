@@ -62,11 +62,25 @@ def render_Board_menu(self, h, comp, *args):
             )
 
             if security.has_permissions('manage', self):
-                onclick = 'return confirm("%s")' % _("This board will be archived. Are you sure?")
-                h << h.a(self.icons['archive'], onclick=onclick).action(self.archive_board)
+                h << h.a(
+                    self.icons['archive'],
+                    onclick=(
+                        'return confirm(%s)' %
+                        ajax.py2js(
+                            _("This board will be archived. Are you sure?")
+                        ).decode('UTF-8')
+                    )
+                ).action(self.archive_board)
             else:
-                h << h.a(self.icons['leave'], onclick='return confirm("%s")' %
-                         _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")).action(self.leave)
+                h << h.a(
+                    self.icons['leave'],
+                    onclick=(
+                        "return confirm(%s)" %
+                        ajax.py2js(
+                            _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
+                        ).decode('UTF-8')
+                    )
+                ).action(self.leave)
 
         kw = {'onclick': "YAHOO.kansha.app.toggleMenu('boardNavbar')"}
         with h.div(class_="tab collapse", **kw):
@@ -139,10 +153,10 @@ def render_Board_item(self, h, comp, *args):
     with h.div(id='switch_zone'):
         if self.model == 'columns':
             search_cb = ajax.Update(
-                            action=self.search,
-                            component_to_update='show_results',
-                            render=lambda renderer: comp.render(renderer, 'search_results')
-                        ).generate_action(1, h).replace('this', 'elt')
+                action=self.search,
+                component_to_update='show_results',
+                render=lambda renderer: comp.render(renderer, 'search_results')
+            ).generate_action(1, h).replace('this', 'elt')
             oninput = 'debounce(this, function(elt) { %s; }, 500)' % search_cb
             with h.div(id_='show_results'):
                 h << comp.render(h, 'num_matches')
@@ -222,7 +236,11 @@ def render_Board_members(self, h, comp, *args):
     And at the end member icons
     """
     reload_board = h.a.action(ajax.Update(render='members', action=self.update_members)).get('onclick')
-    h << h.script("""YAHOO.kansha.app.hideOverlay();YAHOO.kansha.reload_boarditems['%s']=function() {%s}""" % (self.id, reload_board))
+    h << h.script(
+        "YAHOO.kansha.app.hideOverlay();"
+        "YAHOO.kansha.reload_boarditems[%s]=function() {%s}" %
+        (ajax.py2js(self.id), reload_board)
+    )
 
     with h.div(class_='members'):
         if security.has_permissions('Add Users', self):
@@ -326,15 +344,15 @@ def render_Board_columns(self, h, comp, *args):
             action = ajax.Update(action=self.update_card_position, render=update_if_version_mismatch)
             action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
             h.head.javascript(h.generate_id(), '''function _send_card_position(data) {
-                nagare_getAndEval('%s' + YAHOO.lang.JSON.stringify(data));
-            }''' % action)
+                nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
+            }''' % ajax.py2js(action))
 
             # On columns drag and drop
             action = ajax.Update(action=self.update_column_position, render=update_if_version_mismatch)
             action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
             h.head.javascript(h.generate_id(), '''function _send_column_position(data) {
-                nagare_getAndEval('%s' + YAHOO.lang.JSON.stringify(data));
-            }''' % action)
+                nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
+            }''' % ajax.py2js(action))
 
             # Create the reload_columns function used when we need to reload
             # the columns from javascript
@@ -397,9 +415,12 @@ def render_BoardDescription(self, h, comp, *args):
                 h << h.button(
                     _('Cancel'), class_='btn btn-small').action(remote.Action(lambda: self.change_text(None)))
 
-        h.head.javascript(h.generate_id(),
-                          'YAHOO.kansha.app.addCtrlEnterHandler'
-                          '(%r, %r)' % (txt_id, btn_id))
+        h.head.javascript(
+            h.generate_id(),
+            'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
+                ajax.py2js(txt_id), ajax.py2js(btn_id)
+            )
+        )
 
     return h.root
 
@@ -473,27 +494,67 @@ def render_boardweights_edit(self, h, comp, *args):
                 h << h.script('reload_columns()')
                 self._changed(False)
 
-            active = 'active btn-primary' if self.board.weighting_cards == WEIGHTING_OFF else ''
+            h << h.a(
+                _('Disabled'),
+                class_='btn %s' % (
+                    'active btn-primary'
+                    if self.board.weighting_cards == WEIGHTING_OFF
+                    else ''
+                ),
+                onclick=(
+                    "if (confirm(%(message)s)){%(action)s;}return false" %
+                    {
+                        'action': h.a.action(
+                            self.deactivate_weighting
+                        ).get('onclick'),
+                        'message': ajax.py2js(
+                            _(u'All affected weights will be reseted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                )
+            )
 
-            action = h.a.action(self.deactivate_weighting).get('onclick')
-            onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
+            h << h.button(
+                _('Free integer'),
+                class_='btn %s' % (
+                    'active btn-primary'
+                    if self.board.weighting_cards == WEIGHTING_FREE
+                    else ''
+                ),
+                onclick=(
+                    "if (confirm(%(message)s)){%(action)s;}return false" %
+                    {
+                        'action': h.a.action(
+                            lambda: self.activate_weighting(WEIGHTING_FREE)
+                        ).get('onclick'),
+                        'message': ajax.py2js(
+                            _(u'All affected weights will be reseted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                ),
+                title=i18n._('Card weights can be any integer')
+            )
 
-            h << h.a(_('Disabled'), class_='btn %s' % active, onclick=onclick)
-
-            action = h.a.action(lambda: self.activate_weighting(WEIGHTING_FREE)).get('onclick')
-            onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
-
-            active = 'active btn-primary' if self.board.weighting_cards == WEIGHTING_FREE else ''
-            h << h.button(_('Free integer'), title=i18n._('Card weights can be any integer'), class_='btn %s' % active, onclick=onclick)
-
-            action = h.a.action(lambda: self.activate_weighting(WEIGHTING_LIST)).get('onclick')
-            onclick = "if (confirm(\"%(confirm_msg)s\")){%(action)s;}return false;"
-            onclick = onclick % dict(action=action, confirm_msg=_(u'All affected weights will be reseted. Are you sure?'))
-
-            active = 'active btn-primary' if self.board.weighting_cards == WEIGHTING_LIST else ''
-            h << h.button(_('Integer sequence'), title=i18n._('Choosen within a sequence of integers'), class_='btn %s' % active, onclick=onclick)
+            h << h.button(
+                _('Integer sequence'),
+                class_='btn %s' % (
+                    'active btn-primary'
+                    if self.board.weighting_cards == WEIGHTING_LIST
+                    else ''
+                ),
+                onclick=(
+                    "if (confirm(%(message)s)){%(action)s;}return false" %
+                    {
+                        'action': h.a.action(
+                            lambda: self.activate_weighting(WEIGHTING_LIST)
+                        ).get('onclick'),
+                        'message': ajax.py2js(
+                            _(u'All affected weights will be reseted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                ),
+                title=i18n._('Choosen within a sequence of integers')
+            )
 
     if self.board.weighting_cards == WEIGHTING_LIST:
         h << h.p(i18n._('Enter a sequence of integers'))
@@ -647,21 +708,27 @@ def render_board_background_edit(self, h, comp, *args):
             h << h.label((h.i(class_='icon-file icon-grey'),
                           _("Choose an image")), class_='btn btn-small', for_=input_id)
             with h.form:
-                h << h.script(u'''
+                h << h.script(
+                    u'''
             function valueChanged(e) {
                 if (YAHOO.kansha.app.checkFileSize(this, %(max_size)s)) {
-                    YAHOO.util.Dom.get('%(submit_id)s').click();
+                    YAHOO.util.Dom.get(%(submit_id)s).click();
                 } else {
-                    alert('%(error)s');
+                    alert(%(error)s);
                 }
             }
 
             YAHOO.util.Event.onDOMReady(function() {
-                YAHOO.util.Event.on('%(input_id)s', 'change', valueChanged);
-            });''' % {'max_size': self.board.background_max_size,
-                      'input_id': input_id,
-                      'submit_id': submit_id,
-                      'error': _(u'Max file size exceeded')})
+                YAHOO.util.Event.on(%(input_id)s, 'change', valueChanged);
+            });''' % {
+                        'max_size': ajax.py2js(self.board.background_max_size),
+                        'input_id': ajax.py2js(input_id),
+                        'submit_id': ajax.py2js(submit_id),
+                        'error': ajax.py2js(
+                            _(u'Max file size exceeded')
+                        ).decode('UTF-8')
+                    }
+                )
                 h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file",
                              multiple="multiple", maxlength="100",).action(v_file)
                 h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(
@@ -706,11 +773,19 @@ def render_board_background_title_color_edit(self, h, comp, *args):
     """Edit the label color"""
     # If label changed reload columns
     if self._changed():
-        h.head.javascript(h.generate_id(), "YAHOO.kansha.app.set_title_color('%s')" % self.board.title_color or u'')
+        h.head.javascript(
+            h.generate_id(),
+            "YAHOO.kansha.app.set_title_color(%s)" %
+            ajax.py2js(self.board.title_color or u'')
+        )
         image_url = self.board.background_image_url or ''
         image_position = self.board.background_image_position
-        h.head.javascript(h.generate_id(), "YAHOO.kansha.app.set_board_background_image('%s', '%s')" % (image_url,
-                                                                                                       image_position))
+        h.head.javascript(
+            h.generate_id(),
+            "YAHOO.kansha.app.set_board_background_image(%s, %s)" % (
+                ajax.py2js(image_url), ajax.py2js(image_position)
+            )
+        )
         self._changed(False)
     h << component.Component(overlay.Overlay(lambda r: comp.render(r, model='title-color'),
                                              lambda r: comp.render(r,
@@ -743,5 +818,5 @@ def render_board_background_title_color_overlay(self, h, comp, *args):
             ajax.Update(action=lambda v=v: set_color(v())))
         h << ' '
         h << h.button(_('Cancel'), class_='btn btn-small').action(lambda: None)
-    h << h.script("YAHOO.kansha.app.addColorPicker(%r)" % i)
+    h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
     return h.root

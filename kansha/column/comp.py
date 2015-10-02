@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from nagare import ajax
 from nagare import component, var, security, i18n
 from nagare.i18n import _
 
@@ -344,7 +345,13 @@ class NewColumn(object):
         id = self.board.create_column(self.index(), self.title(), nb_cards or None)
         col_id = 'list_' + str(id)
 
-        return "YAHOO.kansha.app.toggleMenu('boardNavbar');reload_columns();YAHOO.kansha.app.saveLimit('%s',%s)" % (col_id, nb_cards or 0)
+        return (
+            "YAHOO.kansha.app.toggleMenu('boardNavbar');"
+            "reload_columns();"
+            "YAHOO.kansha.app.saveLimit(%s,%s)" % (
+                ajax.py2js(col_id), ajax.py2js(nb_cards or 0)
+            )
+        )
 
 
 class ColumnTitle(title.Title):

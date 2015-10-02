@@ -612,8 +612,8 @@
             return true;
         },
 
-        countCards: function (col) {
-            var column = Dom.get(col);
+        countCards: function (column) {
+            column = Dom.get(column);
             var counter = Dom.get(column.id + '_counter');
             if (counter) {
                 var limit = parseInt(localStorage[column.id]);
@@ -642,37 +642,41 @@
             Dom.batch(Selector.query('#lists .list'), this.countCards);
         },
 
-        saveLimit: function (col, limit) {
-            localStorage[col] = limit;
+        saveLimit: function (column, limit) {
+            localStorage[Dom.get(column).id] = limit;
         },
 
-        hideCardsLimitEdit: function (col) {
-            var counter = Dom.get(col.id + '_counter');
-            var option = Dom.get(col.id + '_counter_option');
+        hideCardsLimitEdit: function (column) {
+            column = Dom.get(column);
+            var counter = Dom.get(column.id + '_counter');
+            var option = Dom.get(column.id + '_counter_option');
             if (counter) {
                 Dom.addClass(counter, 'hidden');
             }
         },
 
-        showCardsLimitEdit: function (col) {
-            var counter = Dom.get(col.id + '_counter');
-            var option = Dom.get(col.id + '_counter_option');
-            var limit = parseInt(localStorage[col.id], 10);
+        showCardsLimitEdit: function (column) {
+            column = Dom.get(column);
+            var counter = Dom.get(column.id + '_counter');
+            var option = Dom.get(column.id + '_counter_option');
+            var limit = parseInt(localStorage[column.id], 10);
             if (counter && limit > 0) {
                 Dom.removeClass(counter, 'hidden');
             }
-            NS.app.showTitleForm(col);
+            NS.app.showTitleForm(column.id);
         },
 
-        hideTitleForm: function (col) {
-            var title = Dom.get(col.id + '_title');
+        hideTitleForm: function (column) {
+            column = Dom.get(column);
+            var title = Dom.get(column.id + '_title');
             var form_ = ECN('title-form', null, title)[0];
             var from_div = Dom.get(form_);
             from_div.addClass('hidden');
         },
 
-        showTitleForm: function (col) {
-            var title = Dom.get(col.id + '_title');
+        showTitleForm: function (column) {
+            column = Dom.get(column);
+            var title = Dom.get(column.id + '_title');
             var form = ECN('title-form', null, title)[0];
             if (form) {
                 form.removeClass('hidden');

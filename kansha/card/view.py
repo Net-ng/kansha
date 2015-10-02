@@ -76,10 +76,10 @@ def render(self, h, comp, *args):
         h << h.script(u"""YAHOO.kansha.app.add_event($('#calendar'), %(card)s,
                          function() { %(clicked_cb)s},
                          function(start) { %(dropped_cb)s&start="+start);} )""" % {
-                            'card': card,
-                            'clicked_cb': clicked_cb,
-                            'dropped_cb': dropped_cb
-                         })
+            'card': card,
+            'clicked_cb': clicked_cb,
+            'dropped_cb': dropped_cb
+        })
     return h.root
 
 
@@ -105,16 +105,31 @@ def render_card_actions(self, h, comp, *args):
                     h << self.due_date.render(h.AsyncRenderer(), 'button')
                 with h.li(class_="buttonDeleteCard"):
                     if security.has_permissions('edit', self) and not self.column.is_archive:
-                        action = h.a.action(lambda: comp.answer('delete')).get('onclick')
-                        close_func = 'function (){%s;}' % (action)
-                        h << h.button(h.i(class_='icon-remove icon-grey'),
-                                      _('Delete'),
-                                      class_='btn btn-small',
-                                      onclick=("if (confirm(\"%(confirm_msg)s\"))"
-                                               " { YAHOO.kansha.app.archiveCard(%(close_func)s, '%(id)s', '%(col_id)s', '%(archive_col_id)s'); }return false;" %
-                                               dict(close_func=close_func, id=self.id, col_id=self.column.id,
-                                                    archive_col_id=self.column.board.archive_column.id,
-                                                    confirm_msg=_(u'This card will be deleted. Are you sure?'))))
+                        close_func = ajax.js(
+                            'function (){%s;}' %
+                            h.a.action(comp.answer, 'delete').get('onclick')
+                        )
+                        h << h.button(
+                            h.i(class_='icon-remove icon-grey'),
+                            _('Delete'),
+                            class_='btn btn-small',
+                            onclick=(
+                                "if (confirm(%(confirm_msg)s))"
+                                " { YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s); }"
+                                "return false" %
+                                {
+                                    'close_func': ajax.py2js(close_func),
+                                    'id': ajax.py2js(self.id),
+                                    'col_id': ajax.py2js(self.column.id),
+                                    'archive_col_id': ajax.py2js(
+                                        self.column.board.archive_column.id
+                                    ),
+                                    'confirm_msg': ajax.py2js(
+                                        _(u'This card will be deleted. Are you sure?')
+                                    ).decode('UTF-8')
+                                }
+                            )
+                        )
                 if self.board.weighting_cards:
                     with h.li(class_="actionWeight"):
                         h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))
@@ -130,7 +145,7 @@ def render_card_dnd(self, h, comp, *args):
         id_ = h.generate_id('dnd')
         with h.div(id=id_):
             h << comp.render(h.AsyncRenderer())
-            h << h.script('YAHOO.kansha.dnd.initCard("%s")' % id_)
+            h << h.script('YAHOO.kansha.dnd.initCard(%s)' % ajax.py2js(id_))
     return h.root
 
 
@@ -173,9 +188,12 @@ def render_card_no_dnd(self, h, comp, *args):
 @presentation.render_for(Card, 'new')
 def render_card_new(self, h, comp, *args):
     h << comp.becomes(self, None)
-    h << h.script('''card = YAHOO.util.Dom.get('%s');
-    list = YAHOO.util.Dom.getAncestorByClassName(card, 'list-body');
-    list.scrollTop = card.offsetTop - list.offsetTop;''' % self.id)
+    h << h.script(
+        "card = YAHOO.util.Dom.get(%s);"
+        "list = YAHOO.util.Dom.getAncestorByClassName(card, 'list-body');"
+        "list.scrollTop = card.offsetTop - list.offsetTop;" %
+        ajax.py2js(self.id)
+    )
     return h.root
 
 
@@ -189,7 +207,7 @@ def render(self, h, comp, *args):
         c_class = 'card highlight' if self.id in self.column.board.card_matches else 'card hidden'
     else:
         c_class = 'card'
-    with h.div(id=self.id, class_= c_class):
+    with h.div(id=self.id, class_=c_class):
         h << {
             'onmouseover': "YAHOO.kansha.app.highlight(this, 'badges', false);YAHOO.kansha.app.highlight(this, 'members', false);",
             'onmouseout': "YAHOO.kansha.app.highlight(this, 'badges', true);YAHOO.kansha.app.highlight(this, 'members', true);"}
@@ -204,26 +222,33 @@ def render(self, h, comp, *args):
             else:
                 h << comp.render(h, 'members_read_only')
 
-    reload_card = h.a.action(ajax.Update()).get('onclick')
-    h << h.script("""YAHOO.kansha.reload_cards['%s']=function() {%s}""" % (self.id, reload_card))
-
+    h << h.script(
+        "YAHOO.kansha.reload_cards[%s]=function() {%s}""" % (
+            ajax.py2js(self.id),
+            h.a.action(ajax.Update()).get('onclick')
+        )
+    )
     if self.must_reload_search:
         self.reload_search()
         h << h.script('''$(window).trigger('reload_search');''')
-
+    
     return h.root
 
 
 @presentation.render_for(Card, model='readonly')
 def render(self, h, comp, *args):
     """Render the card read-only"""
-    card_id = h.generate_id()
-    onclick = '%s#id_%s' % (self.data.column.board.url, self.id)
     with h.div(id=self.id, class_='card'):
         h << {
             'onmouseover': "YAHOO.kansha.app.highlight(this, 'badges', false);YAHOO.kansha.app.highlight(this, 'members', false);",
-            'onmouseout': "YAHOO.kansha.app.highlight(this, 'badges', true);YAHOO.kansha.app.highlight(this, 'members', true);"}
-        with h.div(id=card_id, onclick="window.location.href='%s'" % onclick):
+            'onmouseout': "YAHOO.kansha.app.highlight(this, 'badges', true);YAHOO.kansha.app.highlight(this, 'members', true);"
+        }
+        with h.div:
+            h << {
+                'onclick': "window.location.href=%s" % ajax.py2js(
+                    '%s#id_%s' % (self.data.column.board.url, self.id)
+                )
+            }
             h << self.labels
             h << self.title.render(h, 'card-title')
             if self.has_cover():
@@ -340,8 +365,7 @@ def render_new_card_add(self, h, comp, *args):
         h << ' '
         h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
 
-    h << h.script("""document.getElementById('%s').focus(); """ % id_,
-                  type="text/javascript", language="javascript")
+    h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 
     return h.root
 

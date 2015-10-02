@@ -836,7 +836,7 @@ class Board(object):
             condition = fts_schema.Card.match(query) & (fts_schema.Card.board_id == self.id)
             # do not query archived cards if archive column is hidden
             if not self.archive:
-                condition &= (fts_schema.Card.archive == False)
+                condition &= (fts_schema.Card.archived == False)
             self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
             # make the difference between empty search and no results
             if not self.card_matches:

@@ -27,7 +27,7 @@ Kansha features can be activated and customized with a configuration file like t
     title = <<APP_TITLE>> # should be short!
     banner = <<LONG_TITLE>> # or motto/slogan or empty
     custom_css = <<CUSTOM_CSS>>  # path or empty
-    custom_favicon = <<CUSTOM_FAVICON>>  # path or empty
+    favicon = # path (optional)
     templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
     activity_monitor = <<MONITOR_EMAIL>> # optional
     crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
@@ -145,7 +145,7 @@ banner
 custom_css
     Path to a CSS file that will be applied to every page, after the default styles, so you can amend and personalize the look of your site.
 
-custom_favicon
+favicon
     Path to a favicon file that will be applied to your site.
 
 templates

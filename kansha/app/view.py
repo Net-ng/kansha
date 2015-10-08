@@ -12,6 +12,7 @@ import datetime
 
 from nagare import ajax, component, presentation, security
 from nagare.i18n import _
+from nagare.namespaces.xhtml import absolute_url
 
 from kansha import VERSION
 
@@ -179,7 +180,7 @@ def render_app_debug(self, h, comp, *args):
 
 @presentation.render_for(App)
 def render_app(self, h, comp, *args):
-    favicon_url = self.favicon if self.favicon else h.head.static_url + "img/favicon.ico"
+    favicon_url = absolute_url(self.favicon, h.head.static_url)
     h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
     h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
 

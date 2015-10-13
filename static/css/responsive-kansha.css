@@ -549,7 +549,7 @@ span.nomatches {
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.13);
 }
 
-.overlay:before {
+.overlay_arrow:before {
     border-bottom: 7px solid rgba(0, 0, 0, 0.1);
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
@@ -560,7 +560,7 @@ span.nomatches {
     top: -7px;
 }
 
-.overlay:after {
+.overlay_arrow:after {
     border-bottom: 6px solid #FFFFFF;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;

@@ -291,7 +291,7 @@
             Event.stopEvent(ev);
         },
 
-        showOverlay: function (overlay_id, link_id) {
+        showOverlay: function (overlay_id, link_id, centered) {
             var ev = Event.getEvent();
             Event.stopEvent(ev);
             NS.app.hideOverlay();
@@ -307,6 +307,9 @@
                     visible: true,
                     constraintoviewport: true});
             NS.app.overlay.render(document.body);
+            if (centered){
+            	NS.app.overlay.center();
+            }
             NS.app.overlay.show();
         },
 

@@ -169,13 +169,19 @@ def render_overlay_menu(self, h, comp, *args):
                     h << h.li(h.a(_('Remove cover')).action(
                         lambda: comp.answer(('remove_cover', self))))
                 else:
-                    h << h.li(h.a(_('Make cover')).action(
-                        ajax.Update(
-                            render=lambda h: comp.render(h),
-                            action=lambda: self.crop(comp, card_cmp, card_id, card_model),
-                            component_to_update=id_)
-                    )
-                    )
+                    # Open asset cropper
+                    card_cmp = h.get_async_root().component
+                    card_id = h.get_async_root().id
+                    card_model = h.get_async_root().model
+
+                    self.create_cropper_component(comp, card_cmp, card_id, card_model)
+                    h << h.li(self.overlay_cropper)
+    return h.root
+
+
+@presentation.render_for(Asset, 'cropper_menu')
+def render_asset_cropper_menu(self, h, comp, *args):
+    h << h.span(_('Make cover'))
     return h.root
 
 

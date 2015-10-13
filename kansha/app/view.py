@@ -9,15 +9,16 @@
 # --
 
 import datetime
+
 from nagare import ajax, component, presentation, security
 from nagare.i18n import _
+from nagare.namespaces.xhtml import absolute_url
 
 from kansha import VERSION
-from ..user.usermanager import get_app_user
-from ..user import user_profile
-from .app import Kansha, App
 
-from ..services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
+from ..user import user_profile
+from ..user.usermanager import get_app_user
+from .app import Kansha, App
 
 
 def answer_on_menu(self, comp, user, v):
@@ -37,7 +38,7 @@ def answer_on_menu(self, comp, user, v):
             self.app_banner,
             self.custom_css,
             user.data,
-            self.mail_sender, 
+            self.mail_sender,
             self.assets_manager,
             self.search_engine
         )
@@ -45,7 +46,7 @@ def answer_on_menu(self, comp, user, v):
 
 
 @presentation.render_for(Kansha, model='menu')
-def render(self, h, comp, *args):
+def render_kansha_menu(self, h, comp, *args):
     """Main menu part"""
     kw = {'onclick': "YAHOO.kansha.app.toggleMenu('mainNavbar')"}
     with h.div(class_='navbar', id='mainNavbar'):
@@ -67,7 +68,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(Kansha, model='tab')
-def render(self, h, comp, *args):
+def render_kansha_tab(self, h, comp, *args):
     user = security.get_user()
     if user is None:
         h << h.a(self.app_title, class_="collapse", id="mainTab")
@@ -78,7 +79,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(Kansha, model='yui-deps')
-def render(self, h, comp, *args):
+def render_kansha_yui_deps(self, h, comp, *args):
     """YUI CSS and JS dependencies"""
     for e in ('container', 'colorpicker', 'autocomplete', 'resize', 'imagecropper'):
         h.head.css_url(ajax.YUI_INTERNAL_PREFIX +
@@ -116,7 +117,7 @@ def render_Kansha_oip(self, h, comp, model):
 
 
 @presentation.render_for(Kansha)
-def render(self, h, comp, *args):
+def render_kansha(self, h, comp, *args):
     """Main renderer"""
     h << comp.render(h, model='yui-deps')
 
@@ -168,7 +169,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(App, model="debug")
-def render(self, h, comp, *args):
+def render_app_debug(self, h, comp, *args):
     h.head.css_url(
         ajax.YUI_INTERNAL_PREFIX + '/logger/assets/skins/sam/logger.css')
     h.head.javascript_url(ajax.YUI_INTERNAL_PREFIX + '/logger/logger-min.js')
@@ -178,8 +179,8 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(App)
-def render(self, h, comp, *args):
-    favicon_url = h.head.static_url + "img/favicon.ico"
+def render_app(self, h, comp, *args):
+    favicon_url = absolute_url(self.favicon, h.head.static_url)
     h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
     h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
 

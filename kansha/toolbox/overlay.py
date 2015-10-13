@@ -17,7 +17,7 @@ class Overlay(object):
     """Overlay component
     """
 
-    def __init__(self, text_factory, content_factory, title=None, dynamic=True, cls=None):
+    def __init__(self, text_factory, content_factory, title=None, dynamic=True, cls=None, centered=False):
         """Initialization
 
         In:
@@ -32,6 +32,7 @@ class Overlay(object):
         self.title = title
         self.dynamic = dynamic
         self.cls = cls
+        self.centered = centered
 
     def render_a(self, h, link_id):
         h << h.a(self.text(h), href='#', id_=link_id, title=self.title or '')
@@ -65,11 +66,12 @@ def render(self, h, comp, *args):
 
     js = ajax.js(
         "%(load)s;"
-        "YAHOO.kansha.app.showOverlay(%(overlay_id)s, %(link_id)s)" %
+        "YAHOO.kansha.app.showOverlay(%(overlay_id)s, %(link_id)s, %(centered)s)" %
         {
             'load': ajax.py2js(load),
             'link_id': ajax.py2js(link_id),
-            'overlay_id': ajax.py2js(overlay_id)
+            'overlay_id': ajax.py2js(overlay_id),
+            'centered': ajax.py2js(self.centered, h)
         }
     )
 
@@ -81,6 +83,8 @@ def render(self, h, comp, *args):
     )
 
     cls = [u'overlay']
+    if not self.centered:
+        cls.append(u'overlay_arrow')
     if self.cls:
         cls.append(self.cls)
     with h.div(class_=u' '.join(cls), id=overlay_id, onclick="YAHOO.kansha.app.stopEvent()"):

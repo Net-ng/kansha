@@ -170,6 +170,7 @@ class Asset(flow.FlowElement):
         self.assets_manager = assets_manager
         self.is_cover = data_asset.cover is not None
         self.cropper = None
+        self.overlay_cropper = None
 
     def is_image(self):
         return self.assets_manager.get_metadata(self.filename)['content-type'] in IMAGE_CONTENT_TYPES
@@ -187,12 +188,18 @@ class Asset(flow.FlowElement):
     def data(self):
         return DataAsset.get_by_filename(self.filename)
 
-    def crop(self, comp, card_component, card_component_id, card_component_model):
+    def create_cropper_component(self, comp, card_component, card_component_id, card_component_model):
         self.cropper = component.Component(AssetCropper(self, card_component, card_component_id, card_component_model))
-        comp.becomes(self, model='crop')
+        asset_cropper_menu = component.Component(self, 'cropper_menu')
+        self.asset_cropper = asset_cropper = component.Component(self, 'crop').on_answer(comp.answer)
+        self.overlay_cropper = component.Component(overlay.Overlay(lambda h, asset_cropper_menu=asset_cropper_menu: asset_cropper_menu.render(h),
+                                                                   lambda h, asset_cropper=asset_cropper: asset_cropper.render(h),
+                                                                   dynamic=False,
+                                                                   cls='card-edit-form-overlay',
+                                                                   centered=True))
+
 
     def end_crop(self, comp, answ):
-        comp.becomes(self, model='menu')
         comp.answer(('make cover', self, answ))
 
 

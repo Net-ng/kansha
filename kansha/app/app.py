@@ -212,6 +212,7 @@ class App(object):
 
         self.app_title = app_title
         self.app_banner = cfg['pub_cfg']['banner']
+        self.favicon = cfg['pub_cfg']['favicon']
         self.custom_css = custom_css
         self.mail_sender = mail_sender
         self.assets_manager = assets_manager
@@ -239,6 +240,7 @@ class WSGIApp(wsgi.WSGIApp):
                         'title': 'string(default="")',
                         'banner': 'string(default="")',
                         'custom_css': 'string(default="")',
+                        'favicon': 'string(default="img/favicon.ico")',
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
                         'templates': "string(default='')",
@@ -314,7 +316,8 @@ class WSGIApp(wsgi.WSGIApp):
         tpl_cfg = conf['application']['templates']
         pub_cfg = {
             'disclaimer': conf['application']['disclaimer'].decode('utf-8'),
-            'banner': conf['application']['banner'].decode('utf-8')
+            'banner': conf['application']['banner'].decode('utf-8'),
+            'favicon': conf['application']['favicon'].decode('utf-8')
         }
         self.app_cfg = {
             'auth_cfg': auth_cfg,

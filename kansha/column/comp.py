@@ -278,14 +278,11 @@ class Column(object):
         """
         if c.call(popin.Popin(c, 'edit')) == 'delete':
             self.archive_card(c())
-        else:
-            # the card has just been edited
-            # as we don't know how, reindex everything
-            scard = fts_schema.Card.from_model(c().data)
-            self.search_engine.update_document(scard)
-            self.search_engine.commit()
-            c().reload()
-            self.set_reload_search()
+        scard = fts_schema.Card.from_model(c().data)
+        self.search_engine.update_document(scard)
+        self.search_engine.commit()
+        c().reload()
+        self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):
 

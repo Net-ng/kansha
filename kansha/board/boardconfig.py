@@ -178,6 +178,7 @@ class BoardProfile(object):
 
     def set_archive(self, value):
         self.board.set_archive(value)
+        self.board.set_reload_search()
         self._changed(True)
 
 

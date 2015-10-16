@@ -114,8 +114,10 @@ def render_card_actions(self, h, comp, *args):
                             _('Delete'),
                             class_='btn btn-small',
                             onclick=(
-                                "if (confirm(%(confirm_msg)s))"
-                                " { YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s); }"
+                                "if (confirm(%(confirm_msg)s)) {"
+                                "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
+                                "   reload_columns();"
+                                "}"
                                 "return false" %
                                 {
                                     'close_func': ajax.py2js(close_func),
@@ -228,6 +230,10 @@ def render(self, h, comp, *args):
             h.a.action(ajax.Update()).get('onclick')
         )
     )
+    if self.must_reload_search:
+        self.reload_search()
+        h << h.script('''$(window).trigger('reload_search');''')
+    
     return h.root
 
 

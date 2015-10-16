@@ -1,13 +1,14 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
+# --
 from nagare import log
+
 try:
     import ldap
 except ImportError:
@@ -130,7 +131,8 @@ class ADLDAPAuth(LDAPAuth):
     def get_profile(self, uid, password):
         c = self.connect()
         c.simple_bind_s(uid, password)
-        ldap_result = c.search_s(self.users_base_dn, ldap.SCOPE_SUBTREE, '(userPrincipalName=%s)' % ldap.dn.escape_dn_chars(toUTF8(uid)))[0][1]
+        ldap_result = c.search_s(self.users_base_dn, ldap.SCOPE_SUBTREE,
+                                 '(userPrincipalName=%s)' % ldap.dn.escape_dn_chars(toUTF8(uid)))[0][1]
         profile = {}
         profile['uid'] = ldap_result['sAMAccountName'][0]
         profile['name'] = ldap_result['displayName'][0].decode('utf-8')

@@ -11,17 +11,25 @@
 from nagare import presentation, var, database, security
 from nagare.i18n import _
 
-from ...user import comp as user, usermanager
+from ...user import usermanager
 from . import ldap_auth
+from kansha.services.authentication_repository import Authentication
 
 
-class Login(object):
+class Login(Authentication):
 
     alt_title = None
 
-    def __init__(self, ldap_cfg, assetsmanager):
-        cls = ldap_auth.get_class(ldap_cfg['cls'])
-        self.ldap_engine = cls(ldap_cfg)
+    config_spec = {
+        'activated': 'boolean(default=False)',
+        'server': 'string(default="")',
+        'user_base_dn': 'string(default="")',
+        'cls': 'string(default="")'
+    }
+
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
+        cls = ldap_auth.get_class(self.config['cls'])
+        self.ldap_engine = cls(self.config)
         self.error_message = ''
         self.assetsmanager = assetsmanager
 
@@ -53,20 +61,20 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render(self, h, comp, *args):
-    with h.div(class_="LDAPLogin"):
+    with h.div(class_='login LDAPLogin'):
         with h.form:
             # if self.error_message:
             #     h << h.br << h.div(self.error_message, class_="error")
             uid = var.Var()
             h << h.input(type='text', name='__ac_name',
-                         id="ldap_username", placeholder=_("Enter username")).action(uid)
+                         id='ldap_username', placeholder=_('Enter username')).action(uid)
             passwd = var.Var()
             h << h.input(
                 type='password', name='__ac_password',
-                id="ldap_password", placeholder=_("Enter password")).action(passwd)
+                id='ldap_password', placeholder=_('Enter password')).action(passwd)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in with LDAP'),
-                             class_="btn btn-primary btn-small"
+                             class_='btn btn-primary btn-small'
                              ).action(lambda: self.connect(uid(), passwd(), comp))
 
     return h.root

@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
+# --
 
 import cgi
 import json
@@ -29,7 +29,6 @@ from ..board.boardsmanager import BoardsManager
 
 from ..user.usermanager import UserManager
 from ..user import user_profile
-from ..googleuser import comp as google  # for side effects only
 
 from ..security import SecurityManager, Unauthorized
 
@@ -44,7 +43,6 @@ def run():
 
 
 class Kansha(object):
-
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, custom_css, mail_sender,
@@ -148,7 +146,6 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-
     def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender,
                  cfg, assets_manager, search, services_service):
         self._services = services_service
@@ -157,7 +154,7 @@ class MainTask(component.Task):
         self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
-        self.auth_cfg = cfg['auth_cfg']
+        self.auth_cfg = cfg['authentication']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = services_service(
             Kansha,
@@ -185,7 +182,7 @@ class MainTask(component.Task):
                     self.custom_css,
                     self.mail_sender,
                     self.cfg,
-                    self.assets_manager
+                    self.assets_manager,
                 )
             )
             user = security.get_user()
@@ -193,7 +190,7 @@ class MainTask(component.Task):
                 # first connection.
                 # Load template boards if any,
                 self.app.boards_manager.create_boards_from_templates(user.data, self.cfg['tpl_cfg'])
-                # then index cards
+                #  then index cards
                 self.app.boards_manager.index_user_cards(user.data,
                                                          self.search_engine)
             user.update_last_login()
@@ -205,7 +202,6 @@ class MainTask(component.Task):
 
 
 class App(object):
-
     def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager,
                  search, services_service):
         self._services = services_service
@@ -231,7 +227,6 @@ class App(object):
 
 
 class WSGIApp(wsgi.WSGIApp):
-
     """This application uses a HTML5 renderer"""
     renderer_factory = xhtml5.Renderer
 
@@ -245,21 +240,6 @@ class WSGIApp(wsgi.WSGIApp):
                         'activity_monitor': "string(default='')",
                         'templates': "string(default='')",
                         'services': 'string(default="kansha.services")'},
-        'dbauth': {'activated': 'boolean(default=True)',
-                   'moderator': 'string(default=""),',
-                   'default_username': 'string(default="")',
-                   'default_password': 'string(default="")'},
-        'oauth': {
-            'activated': 'boolean(default=False)',
-            'google': {'activated': 'boolean(default=True)',
-                       'key': 'string', 'secret': 'string'},
-            'facebook': {'activated': 'boolean(default=True)',
-                         'key': 'string', 'secret': 'string'},
-        },
-        'ldapauth': {
-            'activated': 'boolean(default=False)',
-            'server': 'string',
-            'users_base_dn': 'string', },
         'mail': {
             'activated': 'boolean(default=True)',
             'smtp_host': 'string(default="127.0.0.1")',
@@ -286,6 +266,7 @@ class WSGIApp(wsgi.WSGIApp):
         self._services = services.ServicesRepository(
             'services', config_filename, conf, error
         )
+
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
@@ -308,11 +289,6 @@ class WSGIApp(wsgi.WSGIApp):
         self.debug = conf['application']['debug']
         self.default_locale = i18n.Locale(
             conf['locale']['major'], conf['locale']['minor'])
-        auth_cfg = {
-            'dbauth': conf['dbauth'],
-            'oauth': conf['oauth'],
-            'ldapauth': conf['ldapauth']
-        }
         tpl_cfg = conf['application']['templates']
         pub_cfg = {
             'disclaimer': conf['application']['disclaimer'].decode('utf-8'),
@@ -320,7 +296,7 @@ class WSGIApp(wsgi.WSGIApp):
             'favicon': conf['application']['favicon'].decode('utf-8')
         }
         self.app_cfg = {
-            'auth_cfg': auth_cfg,
+            'authentication': conf['authentication'],
             'tpl_cfg': tpl_cfg,
             'pub_cfg': pub_cfg
         }
@@ -416,7 +392,7 @@ class WSGIApp(wsgi.WSGIApp):
           - ``response`` -- the web response object
           - ``async`` -- is an XHR request ?
         """
-        #log.exception("\n%s" % request)
+        # log.exception("\n%s" % request)
         if self.debug:
             raise
 
@@ -432,4 +408,4 @@ def create_pipe(app, *args, **kw):
     return app
 
 
-app = WSGIApp(lambda * args: component.Component(App(*args)))
+app = WSGIApp(lambda *args: component.Component(App(*args)))

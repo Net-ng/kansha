@@ -1,23 +1,21 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
-
+# --
 from nagare import presentation, component, database, security, i18n
 from ...user import usermanager
 from ..database.forms import RegistrationTask
 from . import oauth_providers
+from kansha.services.authentication_repository import Authentication
 
 
 class OAuthConnection(object):
-
     def __init__(self, provider):
-
         self.provider = provider
         self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
 
@@ -37,6 +35,7 @@ def render_connect(self, h, comp, *args):
     else:
         return comp.render(h, 'button')
 
+
 @presentation.render_for(OAuthConnection, 'button')
 def render_button(self, h, comp, *args):
     h << h.a(
@@ -48,29 +47,35 @@ def render_button(self, h, comp, *args):
 
 SCOPES = {
     'google': ('profile', 'email'),
-    'facebook':  ('public_profile', 'email'),
+    'facebook': ('public_profile', 'email'),
     'twitter': ('profile', 'email'),
     'github': ('user:email',)
 }
 
 
-class Login(object):
-
+class Login(Authentication):
     alt_title = None
+    config_spec = {
+        'activated': 'boolean(default=False)',
+    }
+    oauth_config_spec = {
+        'activated': 'boolean',
+        'key': 'string(default="")',
+        'secret': 'string(default="")'
+    }
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, oauth_cfg):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
         self.oauth_modules = {}
         self._error_message = u''
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender
-        self.oauth_cfg = oauth_cfg
         self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
 
-        for source, cfg in oauth_cfg.iteritems():
+        for source, cfg in self.config.iteritems():
             try:
-                if cfg['activated']:
+                if cfg['activated'] == 'on':
                     self.oauth_modules[source] = component.Component(
                         OAuthConnection(
                             oauth_providers.providers[source](
@@ -136,7 +141,6 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render_login(self, h, comp, *args):
-
     if self.content() is not None:
         return self.content
     else:
@@ -145,7 +149,7 @@ def render_login(self, h, comp, *args):
 
 @presentation.render_for(Login, 'buttons')
 def render_buttons(self, h, comp, *args):
-    with h.div(class_="oauthLogin"):
+    with h.div(class_='login oauthLogin'):
         for (source, oauth) in self.oauth_modules.items():
             h << oauth.on_answer(lambda u, source=source: self.connect(comp, u, source))
     return h.root

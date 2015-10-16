@@ -14,13 +14,9 @@ from nagare import presentation, component
 from nagare.i18n import _
 
 from kansha import VERSION
-from .database import forms as database_form
-from .oauth import forms as oauth
-from .ldap import forms as ldap
 
 
 class Header(object):
-
     def __init__(self, banner, custom_css):
         self.banner = banner
         self.custom_css = custom_css
@@ -47,19 +43,13 @@ def render_Header(self, h, comp, *args):
 
 
 class Login(object):
-
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, cfg, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender, cfg, assets_manager, authentication_service):
         """Login components
 
         """
         logins = []
-        auth_cfg = cfg['auth_cfg']
-        if auth_cfg['dbauth']['activated']:
-            logins.append(database_form.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['dbauth']))
-        if auth_cfg['oauth']['activated']:
-            logins.append(oauth.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['oauth']))
-        if auth_cfg['ldapauth']['activated']:
-            logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
+        for each in authentication_service:
+            logins.append(authentication_service[each](app_title, app_banner, custom_css, mail_sender, assets_manager))
 
         self.app_title = app_title
         self.logins = [component.Component(login) for login in logins]

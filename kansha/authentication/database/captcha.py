@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
+# --
 
 import pkg_resources
 import random
@@ -35,7 +35,6 @@ def random_text(length=5):
 
 
 class Captcha(object):
-
     """Render a captcha image for the given text"""
 
     def __init__(self, text='', background_name='captcha-bg.png', font_name='ashcanbb_bold.ttf', font_size=30):

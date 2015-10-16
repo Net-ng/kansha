@@ -858,20 +858,20 @@ class Board(object):
         else:
             self.card_matches = set()
             
-    @classmethod
-    def get_recent_boards_for(cls, user_username, user_source):
+    @staticmethod
+    def get_recent_boards_for(user_username, user_source):
         return DataBoard.get_recent_boards_for(user_username, user_source)
 
-    @classmethod
-    def get_user_boards_for(cls, user_username, user_source):
+    @staticmethod
+    def get_user_boards_for(user_username, user_source):
         return DataBoard.get_user_boards_for(user_username, user_source)
 
-    @classmethod
-    def get_guest_boards(cls, user_username, user_source):
+    @staticmethod
+    def get_guest_boards(user_username, user_source):
         return DataBoard.get_guest_boards(user_username, user_source)
 
-    @classmethod
-    def get_archived_boards(cls, user_username, user_source):
+    @staticmethod
+    def get_archived_boards(user_username, user_source):
         return DataBoard.get_archived_boards(user_username, user_source)
 
     def set_reload_search(self):

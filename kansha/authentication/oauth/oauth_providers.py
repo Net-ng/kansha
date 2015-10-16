@@ -65,7 +65,8 @@ class OAuth1(object):
 
 @presentation.render_for(OAuth1)
 def render(self, h, comp, *args):
-    action = lambda request, response: comp.answer(self.get_token(request.params.get('oauth_token'), request.params.get('oauth_verifier')))
+    action = lambda request, response: comp.answer(self.get_token(request.params.get('oauth_token'),
+                                                                  request.params.get('oauth_verifier')))
     callback = h.a.action(action, with_request=True).get('href')
 
     h.response.status = 301
@@ -143,7 +144,6 @@ def render(self, h, comp, *args):
     action = lambda request, response: comp.answer(self.extract_token(request.params.get('code')))
     callback = h.a.action(action, with_request=True).get('href')
     callback, state = callback.split('/?')
-    print state
     h.response.status = 301
     h.response.headers['location'] = self.get_auth_url(h.request.relative_url(callback), state=state)
     return ''
@@ -582,7 +582,6 @@ class Middleware(object):
 
     def __call__(self, environ, start_response):
         params = dict(urlparse.parse_qsl(environ['QUERY_STRING']))
-        print params
         if ('state' in params):
             environ['QUERY_STRING'] += ('&' + params['state'])
 

@@ -540,6 +540,10 @@
          * UTC to local time conversion
          */
         utcToLocal: function (id, utcSeconds, atTranslation, onTranslation) {
+            var parent = YAHOO.util.Dom.get(id);
+            if (!parent) {
+                return;
+            }
             var d = new Date(utcSeconds * 1000);
             var dToTest = new Date(utcSeconds * 1000);
             dToTest.setHours(0, 0, 0, 0);
@@ -550,7 +554,7 @@
             if (dToTest.getTime() === dNow.getTime()) {
                 toDisplay = atTranslation + ' ' + d.toLocaleTimeString();
             }
-            YAHOO.util.Dom.get(id).innerHTML = toDisplay;
+            parent.innerHTML = toDisplay;
         },
 
         /**

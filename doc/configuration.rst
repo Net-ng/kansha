@@ -47,8 +47,9 @@ Kansha features can be activated and customized with a configuration file like t
     collection = kansha
     index_folder = <<DATA_DIR>>
 
+    [authentication]
     # built in authentication system
-    [dbauth]
+    [[dblogin]]
     activated = <<AUTH_DB>>
     # moderator email if needed
     moderator = <<MOD_EMAIL>> # or empty
@@ -57,18 +58,18 @@ Kansha features can be activated and customized with a configuration file like t
     default_password = <<DEFAULT_PASSWORD>>
 
     # authenticate with LDAP
-    [ldapauth]
+    [[ldaplogin]]
     activated = <<AUTH_LDAP>>
     server = <<AUTH_LDAP_SERVER>>
     users_base_dn = <<AUTH_LDAP_USERS_BASE_DN>>
     cls = <<AUTH_LDAP_CLASS>>
 
     # authenticate with third party apps
-    [oauth]
+    [[oauthlogin]]
     activated = <<AUTH_OAUTH>>
 
     # as many oauth providers as you wish
-    [[<<PROVIDER>>]]
+    [[[<<PROVIDER>>]]]
     activated = <<AUTH_OAUTH>>
     key = <<AUTH_OAUTH_KEY>>
     secret = <<AUTH_OAUTH_SECRET>>
@@ -327,15 +328,15 @@ Example:
 
 .. code-block:: INI
 
-    [oauth]
+    [[oauthlogin]]
     activated = on
 
-    [[google]]
+    [[[google]]]
     activated = on
     key = xxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
     secret = XXXXXXXXXXXXXXXXXXXXXXXX
 
-    [[facebook]]
+    [[[facebook]]]
     activated = on
     key = 0000000000000000000
     secret = XXXXXXXXXXXXXXXXXXXXXXXX

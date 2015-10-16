@@ -21,6 +21,7 @@ class Card(schema.Document):
     tags = schema.TEXT
     lists = schema.TEXT
     board_id = schema.INT
+    archived = schema.BOOLEAN
 
     @classmethod
     def from_model(cls, card):
@@ -33,4 +34,5 @@ class Card(schema.Document):
                    comments='\n'.join(c.comment for c in card.comments),
                    lists='\n'.join(unicode(cl) for cl in card.checklists),
                    tags=' '.join(t.title for t in card.labels),
-                   board_id=card.column.board.id)
+                   board_id=card.column.board.id,
+                   archived=card.column.archive)

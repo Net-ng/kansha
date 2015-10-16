@@ -54,6 +54,9 @@ class Column(object):
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 
+    def set_reload_search(self):
+        self.board.set_reload_search()
+
     def actions(self, data, comp):
         if data[0] == 'delete':
             comp.answer(data[1])
@@ -61,8 +64,9 @@ class Column(object):
             self.card_counter.call(model='edit')
         elif data[0] == 'purge':
             for card in self.cards:
-                card().delete()
+                self.delete_card(card())
             self.reload()
+        self.set_reload_search()
 
     @property
     def data(self):
@@ -231,6 +235,7 @@ class Column(object):
                 scard = fts_schema.Card.from_model(new_card)
                 self.search_engine.add_document(scard)
                 self.search_engine.commit()
+                self.set_reload_search()
             else:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
 
@@ -245,7 +250,7 @@ class Column(object):
         notifications.add_history(self.board.data, c.data,
                                   security.get_user().data,
                                   u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, c.db_id)
+        self.search_engine.delete_document(fts_schema.Card, c.id)
         self.search_engine.commit()
         c.delete()
 
@@ -273,13 +278,11 @@ class Column(object):
         """
         if c.call(popin.Popin(c, 'edit')) == 'delete':
             self.archive_card(c())
-        else:
-            # the card has just been edited
-            # as we don't know how, reindex everything
-            scard = fts_schema.Card.from_model(c().data)
-            self.search_engine.update_document(scard)
-            self.search_engine.commit()
-            c().reload()
+        scard = fts_schema.Card.from_model(c().data)
+        self.search_engine.update_document(scard)
+        self.search_engine.commit()
+        c().reload()
+        self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):
 

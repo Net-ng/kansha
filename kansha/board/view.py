@@ -95,7 +95,7 @@ def render_Board(self, h, comp, *args):
     h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')
     h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
-    h.head.javascript('searchinput', "jQuery(document).ready(function ($) {$('#search').searchInput();});")
+    h.head.javascript('searchinput', '''jQuery(document).ready(function ($) { $('#search').searchInput(); });''')
     h << self.title.render(h, 'tabname')
     security.check_permissions('view', self)
     if security.has_permissions('edit', self):
@@ -146,6 +146,10 @@ def render_Board_num_matches(self, h, comp, *args):
 
 @presentation.render_for(Board, 'switch')
 def render_Board_item(self, h, comp, *args):
+    reload_search = ajax.Update(component_to_update='show_results',
+                                render=lambda renderer: comp.render(renderer, 'search_results'))
+    h << h.script(u'''$(window).on('reload_search', function() { %s; })''' % reload_search.generate_action(41, h))
+
     with h.div(id='switch_zone'):
         if self.model == 'columns':
             search_cb = ajax.Update(
@@ -633,7 +637,7 @@ def render_BoardProfile(self, h, comp, *args):
         with h.form:
             with h.div(class_='btn-group'):
                 if self._changed():
-                    h << h.script('reload_columns()')
+                    h << h.script('reload_columns();')
                     self._changed(False)
 
                 active = 'active btn-primary' if self.board.archive else ''

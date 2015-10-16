@@ -70,6 +70,13 @@ class Card(object):
         self.reload(data if data else self.data)
 
     @property
+    def must_reload_search(self):
+        return self.board.must_reload_search
+
+    def reload_search(self):
+        return self.board.reload_search()
+
+    @property
     def board(self):
         return self.column.board
 

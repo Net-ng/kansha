@@ -71,8 +71,17 @@ setup(
       create-index = kansha.batch.create_index:ReIndex
       save-config = kansha.batch.save_config:SaveConfig
 
+      [kansha.services]
+      authentication = kansha.services.authentication_repository:AuthenticationsRepository
+
+      [kansha.authentication]
+      dblogin = kansha.authentication.database.forms:Login
+      oauthlogin = kansha.authentication.oauth.forms:Login
+      ldaplogin = kansha.authentication.ldap.forms:Login
+
       [nagare.applications]
       kansha = kansha.app:app
+
       [search.engines]
       dummy = kansha.services.search.dummyengine:DummySearchEngine
       sqlite = kansha.services.search.sqliteengine:SQLiteFTSEngine

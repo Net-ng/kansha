@@ -1558,7 +1558,7 @@ a.card-label:hover {
 .inline-labels.detailed .card-label {
     height: auto;
     width: auto;
-    line-height: normal;
+    line-height: 1em;
     display: inline-block;
     padding: 5px 8px;
     margin-right: 6px;

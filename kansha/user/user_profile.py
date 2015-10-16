@@ -445,7 +445,12 @@ class UserBoards(object):
         List of user's boards, and form to add new one board
 
         In:
-         - ``boards`` -- list of user boards (BoardData instances)
+         - ``app_title`` -- Application title
+         - ``app_banner`` -- Application banner
+         - ``custom_css`` -- Custom CSS file
+         - ``user`` -- User whose boards will be listed
+         - ``mail_sender`` -- Mail sender
+         - ``assets_manager`` -- Assets manager service
         """
         self.app_title = app_title
 

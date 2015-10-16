@@ -28,6 +28,11 @@ class DataChecklist(Entity):
             titles.insert(0, self.title)
         return u'\n'.join(titles)
 
+    def reorder_items(self):
+        for i, item in enumerate(self.items):
+            item.index = i
+
+
 
 class DataChecklistItem(Entity):
     using_options(tablename='checklist_items')

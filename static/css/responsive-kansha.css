@@ -2721,6 +2721,15 @@ textarea.expanded {
     padding-top: 10px
 }
 
+.checklists .ui-state-highlight {
+    line-height: 1.5em;
+    height: 1.5em;
+}
+
+.checklists .checklist ul {
+    min-height: 1.5em;
+}
+
 div.history {
     font-size: 12px;
     overflow: auto;

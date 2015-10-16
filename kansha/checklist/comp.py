@@ -192,3 +192,16 @@ class Checklists(object):
                     i += 1
                     new_order.append(cl)
         self.checklists = new_order
+
+    def reorder_items(self, data):
+        data = json.loads(data)
+        item_id = int(data['id'].split('_')[-1])
+        checklist_id = int(data['target'].split('_')[-1])
+        item = DataChecklistItem.get(item_id)
+        checklist = DataChecklist.get(checklist_id)
+        source = item.checklist
+        item.checklist = None
+        checklist.items.insert(data['index'], item)
+        source.reorder_items()
+        checklist.reorder_items()
+        self.parent.reload()

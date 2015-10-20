@@ -12,7 +12,7 @@ from nagare import presentation, security, log, component
 from nagare.i18n import _
 
 from .. import models
-from .app import App, WSGIApp
+from .comp import App, WSGIApp
 from ..exceptions import NotFound
 from ..authentication.database import forms
 from ..user.usermanager import UserManager

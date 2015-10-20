@@ -238,8 +238,7 @@ class WSGIApp(wsgi.WSGIApp):
                         'favicon': 'string(default="img/favicon.ico")',
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
-                        'templates': "string(default='')",
-                        'services': 'string(default="kansha.services")'},
+                        'templates': "string(default='')"},
         'mail': {
             'activated': 'boolean(default=True)',
             'smtp_host': 'string(default="127.0.0.1")',
@@ -262,9 +261,8 @@ class WSGIApp(wsgi.WSGIApp):
             conf, configspec=configobj.ConfigObj(self.ConfigSpec), interpolation='Template')
         config.validate(config_filename, conf, error)
 
-        services.set_entry_point(conf['application']['services'])
         self._services = services.ServicesRepository(
-            'services', config_filename, conf, error
+            config_filename, conf, error
         )
 
         self.as_root = conf['application']['as_root']

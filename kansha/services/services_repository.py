@@ -11,58 +11,42 @@ from __future__ import absolute_import, unicode_literals
 
 import inspect
 
-from nagare import log
-
 from . import components_repository
 
 
-def set_entry_point(entry_point):
-    if not ServicesRepository.entry_point:
-        ServicesRepository.entry_point = entry_point
+class ServiceMissing(Exception):
+    pass
+
+
+class Service(components_repository.Loadable):
+    component_category = 'service'
 
 
 class ServicesRepository(components_repository.ComponentsRepository):
+    entry_point = 'kansha.services'
+    conf_section = 'services'
 
-    def __init__(self, conf_section, conf_filename=None, conf=None, error=None,
-                 instantiate=True, services=None):
-        self.conf_section = conf_section
-        self.update(services or {})
-        self['services'] = self
-        super(ServicesRepository, self).__init__(
-            conf_filename, conf, error, instantiate
-        )
+    def __init__(self, conf_filename=None, conf=None, error=None):
+        self.metadata = set()
+        super(ServicesRepository, self).__init__(conf_filename, conf, error)
 
-    def _instantiate(self, comp, conf_filename, component_conf, error):
-        return self(comp, conf_filename, component_conf, error)
+    def create(self, cls, conf_filename, component_conf, error):
+        return cls(conf_filename, component_conf, error)
 
-    def __call__(self, f, *args, **kw):
-        services = _check_services_injection(f, self)
-        services.update(kw)
+    def check_services_injection(self, f):
+        args = inspect.getargspec(f.__init__ if isinstance(f, type) else f)
+
+        services = dict(zip(reversed(args.args), reversed(args.defaults or ())))
+        services.update({name + '_service': service for name, service in self.items()})
+        services['services_service'] = self
 
         try:
-            return f(*args, **services)
-        except:
-            log.get_logger(
-                '.{}.ServicesRepository.__call__'.format(__name__)
-            ).error('%s %s %s', f, args, services)
-            raise
+            return {name: services[name] for name in args.args if name.endswith('_service')}
+        except KeyError as e:
+            raise ServiceMissing(e.args[0][:-8])
 
+    def __call__(self, f, *args, **kw):
+        services = self.check_services_injection(f)
+        services.update(kw)
 
-def _check_services_injection(f, services_repository):
-    try:
-        args = inspect.getargspec(f.__init__ if isinstance(f, type) else f)
-    except TypeError:
-        # could not inspect the function
-        return {}
-
-    services = dict(zip(reversed(args.args),
-                        reversed(args.defaults or ())))
-    services.update({name + '_service': service
-                     for name, service in services_repository.iteritems()})
-
-    try:
-        return {name: services[name]
-                for name in args.args
-                if name.endswith('_service')}
-    except KeyError as e:
-        raise ValueError('service {} missing'.format(e.message[:-8]))
+        return f(*args, **services)

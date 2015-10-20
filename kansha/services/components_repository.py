@@ -45,9 +45,6 @@ class Loadable(object):
         return cls.project
 
 
-class Service(Loadable):
-    component_category = 'service'
-
 # -----------------------------------------------------------------------------
 
 
@@ -56,21 +53,22 @@ class ComponentsRepository(dict):
     entry_point = None
     load_priority = 0
 
-    def __init__(self, conf_filename=None, conf=None, error=None, instantiate=False):
+    def __init__(self, conf_filename=None, conf=None, error=None):
         if conf is not None:
-            self.load(conf_filename, conf, error, instantiate)
+            self.load(conf_filename, conf, error)
 
-    def discover(self):
+    @classmethod
+    def discover(cls):
         components = []
 
-        for entry in pkg_resources.iter_entry_points(self.entry_point):
+        for entry in pkg_resources.iter_entry_points(cls.entry_point):
             comp = entry.load()
             comp.set_id(entry.name)
             comp.set_project(entry.dist.project_name)
 
             components.append(comp)
 
-        return sorted(components, key=lambda comp: comp.load_priority, reverse=True)
+        return sorted(components, key=lambda comp: comp.load_priority)
 
     def read_config(self, components, conf_filename, conf, error):
         spec = {comp.get_id(): comp.config_spec for comp in components}
@@ -82,43 +80,34 @@ class ComponentsRepository(dict):
 
         return components_conf[self.conf_section]
 
-    def load(self, conf_filename, conf, error, instantiate):
+    def create(self, factory, conf_filename, component_conf, error):
+        return factory
+
+    def load(self, conf_filename, conf, error):
         components = self.discover()
 
         components_conf = self.read_config(components, conf_filename, conf, error)
 
         for comp in components:
             component_conf = components_conf.get(comp.get_id(), {})
-            try:
-                component_conf.update({'root': conf['root']})
-            except KeyError:
-                pass
-            try:
-                component_conf.update({'here': conf['here']})
-            except KeyError:
-                pass
+            component_conf.update({'root': conf['root'], 'here': conf['here']})
 
             if comp.get_uid() in self:
                 print 'Name conflict: %s <%s> already defined' % (comp.component_category, comp.get_uid())
                 raise NameError(comp.get_id())
 
             try:
-                if instantiate:
-                    comp = self._instantiate(comp, conf_filename, component_conf, error)
-
-                self[comp.get_uid()] = comp
+                component = self.create(comp, conf_filename, component_conf, error)
+                if component is not None:
+                    self[comp.get_uid()] = component
             except:
                 print "%s <%s> can't be loaded" % (comp.component_category.capitalize(), comp.get_id())
                 raise
 
         return components
 
-    def _instantiate(self, comp, conf_filename, component_conf, error):
-        return comp(conf_filename, component_conf, error)
-
     def items(self):
-        return sorted(super(ComponentsRepository, self).items(),
-                      key=lambda (_, v): getattr(v, 'load_priority', None))
+        return sorted(super(ComponentsRepository, self).items(), key=lambda (_, v): v.load_priority)
 
     def keys(self):
         return [k for k, _ in self.items()]

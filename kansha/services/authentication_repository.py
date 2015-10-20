@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
-from .components_repository import Loadable, Service, ComponentsRepository
+from .components_repository import Loadable, ComponentsRepository
+from .services_repository import Service
 
 
 class Authentication(Loadable):
@@ -20,7 +21,7 @@ class AuthenticationsRepository(Service, ComponentsRepository):
         comp.config = component_conf
         return comp
 
-    def load(self, conf_filename, conf, error, instantiate):
+    def load(self, conf_filename, conf, error):
         components = self.discover()
 
         components_conf = self.read_config(components, conf_filename, conf, error)

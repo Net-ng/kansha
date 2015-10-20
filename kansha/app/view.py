@@ -18,7 +18,7 @@ from kansha import VERSION
 
 from ..user import user_profile
 from ..user.usermanager import get_app_user
-from .app import Kansha, App
+from .comp import Kansha, App
 
 
 def answer_on_menu(self, comp, user, v):

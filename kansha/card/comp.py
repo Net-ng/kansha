@@ -55,7 +55,7 @@ class Card(object):
 
     max_shown_members = 3
 
-    def __init__(self, id_, column, assets_manager, data=None):
+    def __init__(self, id_, column, services_service, data=None):
         """Initialization
 
         In:
@@ -65,7 +65,7 @@ class Card(object):
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
         self.column = column
-        self.assets_manager = assets_manager
+        self._services = services_service
         self._data = data
         self.reload(data if data else self.data)
 
@@ -88,7 +88,7 @@ class Card(object):
         self.checklists = component.Component(checklist.Checklists(self))
         self.description = component.Component(CardDescription(self))
         self.due_date = component.Component(due_date.DueDate(self))
-        self.gallery = component.Component(gallery.Gallery(self, self.assets_manager))
+        self.gallery = component.Component(self._services(gallery.Gallery, self))
         self.comments = component.Component(comment.Comments(self, data.comments))
         self.flow = component.Component(CardFlow(self, self.comments, self.gallery))
         self.labels = component.Component(label.CardLabels(self))
@@ -292,7 +292,7 @@ class Card(object):
         return self.data.cover is not None
 
     def get_cover(self):
-        return gallery.Asset(self.data.cover, self.assets_manager)
+        return self._services(gallery.Asset, self.data.cover)
 
     def remove_cover(self):
         self.data.remove_cover()

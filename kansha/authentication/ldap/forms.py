@@ -27,11 +27,11 @@ class Login(Authentication):
         'cls': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, assetsmanager):
+    def __init__(self, app_title, app_banner, custom_css, assets_manager_service):
         cls = ldap_auth.get_class(self.config['cls'])
         self.ldap_engine = cls(self.config)
         self.error_message = ''
-        self.assetsmanager = assetsmanager
+        self.assetsmanager = assets_manager_service
 
     def connect(self, uid, passwd, comp):
         if (uid != '' and passwd != '' and

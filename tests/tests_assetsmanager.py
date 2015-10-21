@@ -48,7 +48,7 @@ class SimpleAssetsManagerTest(unittest.TestCase):
 
     def setUp(self):
         self.dam = simpleassetsmanager.SimpleAssetsManager(
-            '/tmp', 'kansha', max_size=2048)
+            '', dict(basedir='/tmp', baseurl='kansha', max_size=2048),'')
 
     def test_save_and_load(self):
         """SimpleAssetsManagerTest - Test save and load #1, save and load an image with metadata"""

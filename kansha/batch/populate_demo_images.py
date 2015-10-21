@@ -34,8 +34,9 @@ def main():
 
     user1 = user.User('user1')
     local.request.user = user1
-    card1 = card.Card(user1.data.boards[0].columns[1].cards[2].id, None, app.assets_manager)
-    gal = gallery.Gallery(card1, app.assets_manager)
+    assets_manager = app._services['assets_manager']
+    card1 = card.Card(user1.data.boards[0].columns[1].cards[2].id, None, assets_manager)
+    gal = gallery.Gallery(card1, assets_manager)
 
     package = pkg_resources.Requirement.parse('kansha')
     for i, (fname, ftype) in enumerate((('tie.jpg', 'image/jpeg'),

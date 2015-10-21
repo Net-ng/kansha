@@ -32,7 +32,7 @@ MenuEntry = collections.namedtuple('MenuEntry', 'label content')
 
 class UserProfile(object):
 
-    def __init__(self, app_title, app_banner, custom_css, user, assets_manager, search_engine, services_service):
+    def __init__(self, app_title, app_banner, custom_css, user, search_engine, services_service):
         """
         In:
          - ``user`` -- user (DataUser instance)
@@ -47,12 +47,11 @@ class UserProfile(object):
                 app_banner,
                 custom_css,
                 [dbm.board for dbm in user.board_members],
-                assets_manager
             )
         )
         self.menu['my-cards'] = MenuEntry(
             _L(u'My cards'),
-            UserCards(user, assets_manager, search_engine)
+            services_service(UserCards, user, search_engine)
         )
         self.menu['profile'] = MenuEntry(
             _L(u'Profile'),
@@ -61,7 +60,6 @@ class UserProfile(object):
                     app_title, app_banner, custom_css, user.source
                 ),
                 user,
-                assets_manager
             )
         )
 
@@ -207,7 +205,7 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserForm(BasicUserForm):
 
-    def __init__(self, app_title, app_banner, custom_css, target, assets_manager, mail_sender_service):
+    def __init__(self, app_title, app_banner, custom_css, target, assets_manager_service, mail_sender_service):
         """
         In:
          - ``target`` -- DataUser instance
@@ -219,7 +217,7 @@ class UserForm(BasicUserForm):
         self.app_banner = app_banner
         self.custom_css = custom_css
         self.mail_sender = mail_sender_service
-        self.assets_manager = assets_manager
+        self.assets_manager = assets_manager_service
         self.username.validate(self.validate_username)
         self.fullname.validate(validators.validate_non_empty_string)
 
@@ -420,8 +418,8 @@ def render(self, h, comp, *args):
 def get_userform(app_title, app_banner, custom_css, source):
     """ User form for application user
     """
-    def factory_compatible_with_services(target, assets_manager, mail_sender_service):
-        return UserForm(app_title, app_banner, custom_css, target, assets_manager, mail_sender_service)
+    def factory_compatible_with_services(target, services_service):
+        return services_service(UserForm, app_title, app_banner, custom_css, target)
 
     return factory_compatible_with_services
 
@@ -438,7 +436,7 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, custom_css, boards, assets_manager, services_service):
+    def __init__(self, app_title, app_banner, custom_css, boards, services_service):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -452,7 +450,7 @@ class UserBoards(object):
 
         for b in boards:
             _b = services_service(
-                             board.Board, b.id, app_title, app_banner, custom_css, assets_manager,
+                             board.Board, b.id, app_title, app_banner, custom_css,
                              None,
                              on_board_delete=lambda id_=b.id: self.delete_board(
                                  id_),

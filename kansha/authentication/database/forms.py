@@ -73,7 +73,7 @@ class Login(Authentication):
         'default_password': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, assetsmanager, services_service):
+    def __init__(self, app_title, app_banner, custom_css, services_service):
         self._error_message = ''
         self.registration_task = services_service(RegistrationTask, app_title, app_banner,
                                                   custom_css,

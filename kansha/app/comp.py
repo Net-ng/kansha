@@ -46,7 +46,7 @@ class Kansha(object):
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, custom_css,
-                 assets_manager, search, services_service):
+                 search, services_service):
         """Initialization
         """
         self._services = services_service
@@ -59,7 +59,6 @@ class Kansha(object):
         self.content = component.Component(None).on_answer(self.select_board)
         self.user_manager = UserManager()
         self.boards_manager = BoardsManager()
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.default_board_id = None
 
@@ -96,7 +95,6 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.assets_manager,
                     self.search_engine,
                     on_board_archive=self.select_last_board,
                     on_board_leave=self.select_last_board
@@ -135,7 +133,6 @@ class Kansha(object):
                     self.app_banner,
                     self.custom_css,
                     user.data,
-                    self.assets_manager,
                     self.search_engine
                 ),
                 'edit'
@@ -144,7 +141,7 @@ class Kansha(object):
 
 class MainTask(component.Task):
     def __init__(self, app_title, app_banner, custom_css, main_app,
-                 cfg, assets_manager, search, services_service):
+                 cfg, search, services_service):
         self._services = services_service
 
         self.app_title = app_title
@@ -157,11 +154,9 @@ class MainTask(component.Task):
             self.app_title,
             self.app_banner,
             self.custom_css,
-            assets_manager,
             search
         )
         self.main_app = main_app
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.cfg = cfg
 
@@ -176,7 +171,6 @@ class MainTask(component.Task):
                     self.app_banner,
                     self.custom_css,
                     self.cfg,
-                    self.assets_manager,
                 )
             )
             user = security.get_user()
@@ -196,7 +190,7 @@ class MainTask(component.Task):
 
 
 class App(object):
-    def __init__(self, app_title, custom_css, cfg, assets_manager,
+    def __init__(self, app_title, custom_css, cfg,
                  search, services_service):
         self._services = services_service
 
@@ -204,7 +198,6 @@ class App(object):
         self.app_banner = cfg['pub_cfg']['banner']
         self.favicon = cfg['pub_cfg']['favicon']
         self.custom_css = custom_css
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.task = component.Component(
             services_service(
@@ -213,7 +206,7 @@ class App(object):
                 self.app_banner,
                 self.custom_css,
                 self, cfg,
-                self.assets_manager, search
+                search
             )
         )
 
@@ -231,10 +224,6 @@ class WSGIApp(wsgi.WSGIApp):
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
                         'templates': "string(default='')"},
-        'assetsmanager': {
-            'basedir': 'string',
-            'max_size': 'integer(default=2048)'  # Max file size in kilobytes
-        },
         'locale': {
             'major': 'string(default="en")',
             'minor': 'string(default="US")'
@@ -255,10 +244,6 @@ class WSGIApp(wsgi.WSGIApp):
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
         self.application_path = conf['application']['path']
-
-        # assets manager configuration
-        self.assets_manager = SimpleAssetsManager(
-            conf['assetsmanager']['basedir'], self.name, **conf['assetsmanager'])
 
         # search_engine engine configuration
         self.search_engine = SearchEngine(**conf['search'])
@@ -291,7 +276,6 @@ class WSGIApp(wsgi.WSGIApp):
             self.app_title,
             self.custom_css,
             self.app_cfg,
-            self.assets_manager,
             self.search_engine,
             self._services
         )

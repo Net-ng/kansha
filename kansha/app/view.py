@@ -38,7 +38,6 @@ def answer_on_menu(self, comp, user, v):
             self.app_banner,
             self.custom_css,
             user.data,
-            self.assets_manager,
             self.search_engine
         )
         self.content.becomes(u, 'edit')

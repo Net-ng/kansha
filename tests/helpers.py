@@ -24,6 +24,8 @@ from kansha.board import comp as board
 from kansha.user import usermanager
 from kansha.security import SecurityManager
 from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
+from kansha.services.services_repository import ServicesRepository
+from kansha.services.mail import DummyMailSender
 
 
 def setup_db(metadata):
@@ -106,6 +108,14 @@ def create_user(suffixe=''):
     return usermanager.get_app_user(u'usertest_%s' % suffixe)
 
 
+def create_services():
+    'Service mockups for testing components'
+    _services = ServicesRepository()
+    _services['assets_manager'] = DummyAssetsManager()
+    _services['mail_sender'] = DummyMailSender()
+    return _services
+
+
 def create_board():
     """Create boards with default columns and default cards
     """
@@ -114,5 +124,5 @@ def create_board():
                                                             True)
     session.add(data_board)
     session.flush()
-    assets_manager = DummyAssetsManager()
-    return board.Board(data_board.id, 'boards', '', '', assets_manager, None, None)
+    _services = create_services()
+    return _services(board.Board, data_board.id, 'boards', '', '', None)

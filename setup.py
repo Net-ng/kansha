@@ -74,6 +74,7 @@ setup(
       [kansha.services]
       authentication = kansha.services.authentication_repository:AuthenticationsRepository
       mail_sender = kansha.services.mail:MailSender
+      assets_manager = kansha.services.simpleassetsmanager.simpleassetsmanager:SimpleAssetsManager
 
       [kansha.authentication]
       dblogin = kansha.authentication.database.forms:Login

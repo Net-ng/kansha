@@ -31,13 +31,13 @@ class UserCards(object):
         'due': (lambda: desc(DataCard.due_date), lambda c: c().data.due_date)
     }
 
-    def __init__(self, user, assets_manager, search_engine):
+    def __init__(self, user, search_engine, services_service):
         """
         In:
          - ``user`` -- DataUser instance
         """
         self.user = user
-        self.assets_manager = assets_manager
+        self._services = services_service
         self.search_engine = search_engine
         self.order_by = ('board', 'column')
 
@@ -73,7 +73,7 @@ class UserCards(object):
             order = [self.KEYS[feat][0]() for feat in self.order_by]
             self._cards = [
                 component.Component(
-                    card.Card(c.id, None, self.assets_manager, c)
+                    self._services(card.Card, c.id, None, data=c)
                 )
                 for c in (self.user.cards.join(DataCard.column).
                           join(DataColumn.board).

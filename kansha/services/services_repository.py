@@ -27,7 +27,7 @@ class ServicesRepository(components_repository.ComponentsRepository):
     conf_section = 'services'
 
     def __init__(self, conf_filename=None, conf=None, error=None):
-        self.metadata = set()
+        # self.metadata = set()
         super(ServicesRepository, self).__init__(conf_filename, conf, error)
 
     def create(self, cls, conf_filename, component_conf, error):

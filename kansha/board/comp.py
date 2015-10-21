@@ -62,8 +62,9 @@ class Board(object):
     max_shown_members = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, custom_css, assets_manager,
-                 search_engine, mail_sender_service, on_board_delete=None, on_board_archive=None,
+    def __init__(self, id_, app_title, app_banner, custom_css, search_engine,
+                 assets_manager_service, mail_sender_service, services_service,
+                 on_board_delete=None, on_board_archive=None,
                  on_board_restore=None, on_board_leave=None, load_data=True):
         """Initialization
 
@@ -82,8 +83,9 @@ class Board(object):
         self.on_board_archive = on_board_archive
         self.on_board_restore = on_board_restore
         self.on_board_leave = on_board_leave
-        self.assets_manager = assets_manager
+        self.assets_manager = assets_manager_service
         self.search_engine = search_engine
+        self._services = services_service
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())
@@ -153,7 +155,7 @@ class Board(object):
         columns = []
         archive = None
         for c in self.data.columns:
-            col = column.Column(c.id, self, self.assets_manager, self.search_engine, c)
+            col = self._services(column.Column, c.id, self, self.search_engine, data=c)
             if c.archive:
                 archive = col
             else:
@@ -165,7 +167,7 @@ class Board(object):
             # Create the unique archive column
             last_idx = max(c.index for c in self.data.columns)
             col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
-            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
+            self.archive_column = self._services(column.Column, col_id, self, self.search_engine)
 
         if self.archive and security.has_permissions('manage', self):
             columns.append(component.Component(self.archive_column))
@@ -184,9 +186,9 @@ class Board(object):
 
     def refresh(self):
         if self.archive:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns]
+            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns]
         else:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns if not c.archive]
+            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns if not c.archive]
 
 
     @property
@@ -259,7 +261,7 @@ class Board(object):
             return False
         col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
         if not archive or (archive and self.archive):
-            self.columns.insert(index, component.Component(column.Column(col.id, self, self.assets_manager, self.search_engine), 'new'))
+            self.columns.insert(index, component.Component(self._services(column.Column, col.id, self, self.search_engine), 'new'))
         self.increase_version()
         return col.id
 

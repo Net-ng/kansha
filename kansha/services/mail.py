@@ -93,3 +93,16 @@ class MailSender(Service):
         # post the email to the SMTP server
         if self.activated:
             self._smtp_send(from_, to + cc + bcc, msg.as_string())
+
+
+class DummyMailSender(MailSender):
+    '''For use in unit tests.'''
+
+    def __init__(self):
+        config = dict(
+            smtp_host='localhost',
+            smtp_port=25,
+            activated=False,
+            default_sender='noreply@test.test'
+        )
+        super(DummyMailSender, self).__init__('', config, '')

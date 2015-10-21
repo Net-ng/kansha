@@ -24,14 +24,14 @@ IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 class Gallery(flow.FlowSource):
 
-    def __init__(self, card, assets_manager):
+    def __init__(self, card, assets_manager_service):
         """Init method
 
         In:
             - ``card`` -- card component
         """
         self.card = card
-        self.assets_manager = assets_manager
+        self.assets_manager = assets_manager_service
         self.data = DataGallery(self.card)
 
         self.assets = []
@@ -163,11 +163,11 @@ class Gallery(flow.FlowSource):
 
 class Asset(flow.FlowElement):
 
-    def __init__(self, data_asset, assets_manager):
+    def __init__(self, data_asset, assets_manager_service):
         self.filename = data_asset.filename
         self.creation_date = data_asset.creation_date
         self.author = component.Component(usermanager.get_app_user(data_asset.author.username, data=data_asset.author))
-        self.assets_manager = assets_manager
+        self.assets_manager = assets_manager_service
         self.is_cover = data_asset.cover is not None
         self.cropper = None
         self.overlay_cropper = None

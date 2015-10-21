@@ -7,6 +7,4 @@
 # this distribution.
 #--
 
-import url
-
 from .services_repository import ServicesRepository

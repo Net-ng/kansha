@@ -64,7 +64,7 @@ class Login(Authentication):
         'secret': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, assetsmanager, services_service):
+    def __init__(self, app_title, app_banner, custom_css, services_service):
         self.oauth_modules = {}
         self._error_message = u''
         self.services_service = services_service

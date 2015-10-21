@@ -8,13 +8,23 @@
 # this distribution.
 #--
 
+from nagare import presentation
+from paste import fileapp
+from webob.exc import WSGIHTTPException
 
-class AssetsManager(object):
+from .services_repository import Service
 
-    def __init__(self):
-        """Init method
-        """
-        pass
+
+class AssetsManager(Service):
+    load_priority = 10
+    config_spec = {
+            'basedir': 'string',
+            'max_size': 'integer(default=2048)',   # Max file size in kilobytes
+            'baseurl': 'string'
+        }
+
+    def __init__(self, config_filename, config, error):
+        super(AssetsManager, self).__init__(config_filename, config, error)
 
     def save(self, data, file_id=None, metadata={}):
         """Save data, metadata and return an id
@@ -47,7 +57,7 @@ class AssetsManager(object):
 
         In:
             - ``file_id`` -- file identifier
-            - ``metadata`` -- new metadata 
+            - ``metadata`` -- new metadata
         """
         pass
 
@@ -69,3 +79,31 @@ class AssetsManager(object):
         """
         data, metadata = self.load(file_id, True)
         return "data:image/gif;base64,%s" % data.encode('base64')
+
+
+@presentation.init_for(AssetsManager, "len(url) >= 2")
+def init_assets(self, url, comp, http_method, request):
+    headers = {}
+    metadata = self.get_metadata(url[0])
+    try:
+        headers['content_type'] = metadata['content-type']
+    except KeyError:
+        pass
+
+    raise FileResponse(self._get_filename(url[0],
+                                          url[1] if len(url) > 1 else None),
+                       **headers)
+
+
+class FileResponse(WSGIHTTPException):
+
+    def __init__(self, file_path, **headers):
+        self._file_path = file_path
+        self._headers = headers
+
+    def __call__(self, environ, start_response):
+        app = fileapp.FileApp(self._file_path,
+                              allowed_methods=('GET', ),
+                              cache_control='private, must-revalidate',
+                              **self._headers)
+        return app(environ, start_response)

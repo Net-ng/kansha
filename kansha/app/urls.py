@@ -106,6 +106,6 @@ def init_app__reset(self, url, comp, http_method, request):
     comp.becomes(reset).on_answer(lambda v: logout())
 
 
-@presentation.init_for(App, "len(url) >= 2 and url[0] == 'assets'")
+@presentation.init_for(App, "len(url) >= 3 and url[0] == 'services'")
 def init_app__assets(self, url, comp, http_method, request):
-    component.Component(self.assets_manager).init(url[1:], http_method, request)
+    component.Component(self._services[url[1]]).init(url[2:], http_method, request)

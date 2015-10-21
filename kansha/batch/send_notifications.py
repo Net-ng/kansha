@@ -21,7 +21,7 @@ def main(hours, url):
     global apps
     app = apps[APP]
 
-
+    mail_sender = app._services['mail_sender']
     # Group users by board
     boards = {}
     for subscriber in notifications.get_subscribers():
@@ -39,7 +39,7 @@ def main(hours, url):
                 app.set_locale(locale)
                 subject, content, content_html = notifications.generate_email(app.app_title, board['board'],
                                                                               subscriber.member, hours, url, data)
-                app.mail_sender.send(subject, [subscriber.member.email], content, content_html)
+                mail_sender.send(subject, [subscriber.member.email], content, content_html)
     if app.activity_monitor:
         events = notifications.get_events(None, hours)
         new_users = usermanager.UserManager.get_all_users(hours)
@@ -79,7 +79,7 @@ def main(hours, url):
                         h << h.td(usr.email)
                         h << h.td(usr.registration_date.isoformat())
 
-        app.mail_sender.send('Activity report for '+url, [app.activity_monitor], u'', h.root.write_htmlstring())
+        mail_sender.send('Activity report for '+url, [app.activity_monitor], u'', h.root.write_htmlstring())
 
 
 

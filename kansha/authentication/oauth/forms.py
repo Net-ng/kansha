@@ -64,13 +64,13 @@ class Login(Authentication):
         'secret': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
+    def __init__(self, app_title, app_banner, custom_css, assetsmanager, services_service):
         self.oauth_modules = {}
         self._error_message = u''
+        self.services_service = services_service
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
 
         for source, cfg in self.config.iteritems():
@@ -119,13 +119,12 @@ class Login(Authentication):
         # thus if data_user.email is empty, that means it has always been so.
         if not usermanager.UserManager.get_by_username(profile_id).email:
             self.content.call(
-                RegistrationTask(
+                self.services_service(
+                    RegistrationTask,
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.mail_sender,
-                    '',
-                    profile_id
+                    username=profile_id
                 )
             )
             return

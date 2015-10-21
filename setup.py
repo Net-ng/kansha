@@ -73,6 +73,7 @@ setup(
 
       [kansha.services]
       authentication = kansha.services.authentication_repository:AuthenticationsRepository
+      mail_sender = kansha.services.mail:MailSender
 
       [kansha.authentication]
       dblogin = kansha.authentication.database.forms:Login

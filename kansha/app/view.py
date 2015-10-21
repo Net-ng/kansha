@@ -38,7 +38,6 @@ def answer_on_menu(self, comp, user, v):
             self.app_banner,
             self.custom_css,
             user.data,
-            self.mail_sender,
             self.assets_manager,
             self.search_engine
         )

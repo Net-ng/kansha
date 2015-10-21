@@ -27,7 +27,7 @@ class Login(Authentication):
         'cls': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
+    def __init__(self, app_title, app_banner, custom_css, assetsmanager):
         cls = ldap_auth.get_class(self.config['cls'])
         self.ldap_engine = cls(self.config)
         self.error_message = ''

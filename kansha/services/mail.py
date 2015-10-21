@@ -15,18 +15,31 @@ from email.Utils import COMMASPACE, formatdate
 
 from nagare import log
 
+from .services_repository import Service
 
-class MailSender(object):
 
-    def __init__(self, host, port, default_sender):
-        self.host = host
-        self.port = port
-        self.default_sender = default_sender
-        log.debug(
-            'The mail sender will connect to %s on port %s' % (host, port))
+class MailSender(Service):
+    load_priority = 10
+    config_spec = {
+        'activated': 'boolean(default=True)',
+        'smtp_host': 'string(default="127.0.0.1")',
+        'smtp_port': 'integer(default=25)',
+        'default_sender': 'string(default="noreply@email.com")'
+    }
 
-    def set_application_url(self, application_url):
-        self.application_url = application_url
+    def __init__(self, config_filename, config, error):
+        super(MailSender, self).__init__(config_filename, config, error)
+        self.host = config['smtp_host']
+        self.port = config['smtp_port']
+        self.default_sender = config['default_sender']
+        self.activated = config['activated']
+        if self.activated:
+            log.debug(
+                'The mail service will connect to %s on port %s' %
+                (self.host, self.port)
+            )
+        else:
+            log.warning('The mail service will drop all messages!')
 
     def _smtp_send(self, from_, to, contents):
         smtp = smtplib.SMTP(self.host, self.port)
@@ -73,17 +86,10 @@ class MailSender(object):
             msg.attach(MIMEText(html_content, 'html', charset))
 
         # log
-        log.info('Sending mail:\n  subject=%s\n  from=%s\n  to=%s\n  cc=%s\n  bcc=%s',
-                 subject, from_, to, cc, bcc)
+        log.info('%s mail:\n  subject=%s\n  from=%s\n  to=%s\n  cc=%s\n  bcc=%s',
+                 'sending' if self.activated else 'ignoring', subject, from_, to, cc, bcc)
         log.debug('Mail content:\n' + content)
 
         # post the email to the SMTP server
-        self._smtp_send(from_, to + cc + bcc, msg.as_string())
-
-
-class NullMailSender(MailSender):
-
-    """Mail sender that does not send any email"""
-
-    def _smtp_send(self, from_, to, contents):
-        pass  # do nothing
+        if self.activated:
+            self._smtp_send(from_, to + cc + bcc, msg.as_string())

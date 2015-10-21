@@ -45,7 +45,7 @@ def run():
 class Kansha(object):
     """The Kansha root component"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender,
+    def __init__(self, app_title, app_banner, custom_css,
                  assets_manager, search, services_service):
         """Initialization
         """
@@ -54,7 +54,6 @@ class Kansha(object):
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.title = component.Component(self, 'tab')
         self.user_menu = component.Component(None)
         self.content = component.Component(None).on_answer(self.select_board)
@@ -97,7 +96,6 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.mail_sender,
                     self.assets_manager,
                     self.search_engine,
                     on_board_archive=self.select_last_board,
@@ -137,7 +135,6 @@ class Kansha(object):
                     self.app_banner,
                     self.custom_css,
                     user.data,
-                    self.mail_sender,
                     self.assets_manager,
                     self.search_engine
                 ),
@@ -146,14 +143,13 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender,
+    def __init__(self, app_title, app_banner, custom_css, main_app,
                  cfg, assets_manager, search, services_service):
         self._services = services_service
 
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.auth_cfg = cfg['authentication']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = services_service(
@@ -161,7 +157,6 @@ class MainTask(component.Task):
             self.app_title,
             self.app_banner,
             self.custom_css,
-            mail_sender,
             assets_manager,
             search
         )
@@ -180,7 +175,6 @@ class MainTask(component.Task):
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.mail_sender,
                     self.cfg,
                     self.assets_manager,
                 )
@@ -202,7 +196,7 @@ class MainTask(component.Task):
 
 
 class App(object):
-    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager,
+    def __init__(self, app_title, custom_css, cfg, assets_manager,
                  search, services_service):
         self._services = services_service
 
@@ -210,7 +204,6 @@ class App(object):
         self.app_banner = cfg['pub_cfg']['banner']
         self.favicon = cfg['pub_cfg']['favicon']
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.assets_manager = assets_manager
         self.search_engine = search
         self.task = component.Component(
@@ -219,8 +212,7 @@ class App(object):
                 self.app_title,
                 self.app_banner,
                 self.custom_css,
-                self, mail_sender,
-                cfg,
+                self, cfg,
                 self.assets_manager, search
             )
         )
@@ -239,12 +231,6 @@ class WSGIApp(wsgi.WSGIApp):
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
                         'templates': "string(default='')"},
-        'mail': {
-            'activated': 'boolean(default=True)',
-            'smtp_host': 'string(default="127.0.0.1")',
-            'smtp_port': 'integer(default=25)',
-            'default_sender': 'string(default="noreply@email.com")'
-        },
         'assetsmanager': {
             'basedir': 'string',
             'max_size': 'integer(default=2048)'  # Max file size in kilobytes
@@ -269,11 +255,6 @@ class WSGIApp(wsgi.WSGIApp):
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
         self.application_path = conf['application']['path']
-
-        # mail configuration
-        mail_config = conf['mail']
-        self.mail_sender = self._create_mail_sender(mail_config)
-        self.default_sender_email = mail_config['default_sender']
 
         # assets manager configuration
         self.assets_manager = SimpleAssetsManager(
@@ -309,25 +290,14 @@ class WSGIApp(wsgi.WSGIApp):
         return super(WSGIApp, self).create_root(
             self.app_title,
             self.custom_css,
-            self.mail_sender,
             self.app_cfg,
             self.assets_manager,
             self.search_engine,
             self._services
         )
 
-    def _create_mail_sender(self, mail_config):
-        activated = mail_config['activated']
-        host = mail_config['smtp_host']
-        port = mail_config['smtp_port']
-        default_sender = mail_config['default_sender']
-
-        factory = mail.MailSender if activated else mail.NullMailSender
-        return factory(host, port, default_sender)
-
     def start_request(self, root, request, response):
         super(WSGIApp, self).start_request(root, request, response)
-        self.mail_sender.set_application_url(request.application_url)
         if security.get_user():
             self.set_locale(security.get_user().get_locale())
 

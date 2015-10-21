@@ -115,4 +115,4 @@ def create_board():
     session.add(data_board)
     session.flush()
     assets_manager = DummyAssetsManager()
-    return board.Board(data_board.id, 'boards', '', '', '', assets_manager, None)
+    return board.Board(data_board.id, 'boards', '', '', assets_manager, None, None)

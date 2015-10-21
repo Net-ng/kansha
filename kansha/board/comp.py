@@ -62,21 +62,21 @@ class Board(object):
     max_shown_members = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, custom_css, mail_sender, assets_manager,
-                 search_engine, on_board_delete=None, on_board_archive=None,
+    def __init__(self, id_, app_title, app_banner, custom_css, assets_manager,
+                 search_engine, mail_sender_service, on_board_delete=None, on_board_archive=None,
                  on_board_restore=None, on_board_leave=None, load_data=True):
         """Initialization
 
         In:
           -- ``id_`` -- the id of the board in the database
-          -- ``mail_sender`` -- Mail object, use to send mail
+          -- ``mail_sender_service`` -- Mail service, used to send mail
           -- ``on_board_delete`` -- function to call when the board is deleted
         """
         self.model = 'columns'
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
+        self.mail_sender = mail_sender_service
         self.id = id_
         self.on_board_delete = on_board_delete
         self.on_board_archive = on_board_archive
@@ -685,7 +685,7 @@ class Board(object):
                 session.flush()
                 break
 
-    def invite_members(self, emails):
+    def invite_members(self, emails, application_url):
         """Invite somebody to this board,
 
         Create token used in invitation email.
@@ -698,7 +698,7 @@ class Board(object):
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
-            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
 
         return (
@@ -706,7 +706,7 @@ class Board(object):
             "YAHOO.kansha.app.hideOverlay();" % ajax.py2js(self.id)
         )
 
-    def resend_invitation(self, pending_member):
+    def resend_invitation(self, pending_member, application_url):
         """Resend an invitation,
 
         Resend invitation to the pending member
@@ -715,7 +715,7 @@ class Board(object):
             - ``pending_member`` -- Send invitation to this user (PendingMember instance)
         """
         email = pending_member.username
-        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
         invitation.send_email(self.mail_sender)
         # re-calculate pending
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, "pending"))
@@ -953,13 +953,13 @@ class BoardMember(object):
     def email(self):
         return self.user().email
 
-    def dispatch(self, action):
+    def dispatch(self, action, application_url):
         if action == 'remove':
             self.board.remove_board_member(self)
         elif action == 'toggle_role':
             self.board.change_role(self, 'manager' if self.role == 'member' else 'member')
         elif action == 'resend':
-            self.board.resend_invitation(self)
+            self.board.resend_invitation(self, application_url)
 
     def get_user_data(self):
         return self.user().data

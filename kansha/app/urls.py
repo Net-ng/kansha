@@ -51,8 +51,7 @@ def init_app__register(self, url, comp, http_method, request):
         forms.RegistrationTask,
         self.app_title,
         self.app_banner,
-        self.custom_css,
-        self.mail_sender
+        self.custom_css
     )
     register.state = (url[1], url[2])
     comp.becomes(register).on_answer(lambda v: logout())
@@ -102,9 +101,8 @@ def init_app__reset(self, url, comp, http_method, request):
         self.app_title,
         self.app_banner,
         self.custom_css,
-        self.mail_sender
     )
-    reset.state = (url[1], url[2])
+    reset.state = (url[1], url[2], request.application_url)
     comp.becomes(reset).on_answer(lambda v: logout())
 
 

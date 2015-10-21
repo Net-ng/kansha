@@ -74,13 +74,6 @@ Kansha features can be activated and customized with a configuration file like t
     key = <<AUTH_OAUTH_KEY>>
     secret = <<AUTH_OAUTH_SECRET>>
 
-
-    [mail]
-    activated = on
-    smtp_host = <<MAIL_HOST>>
-    smtp_port = <<MAIL_PORT>>
-    default_sender = <<MAIL_SENDER>>
-
     [assetsmanager]
     basedir = <<DATA_DIR>>/assets/
     max_size = 2048
@@ -88,6 +81,13 @@ Kansha features can be activated and customized with a configuration file like t
     [locale]
     major = fr
     minor = FR
+
+    [services]
+    [[mail]]
+    activated = on
+    smtp_host = <<MAIL_HOST>>
+    smtp_port = <<MAIL_PORT>>
+    default_sender = <<MAIL_SENDER>>
 
     [logging]
 

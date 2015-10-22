@@ -18,17 +18,17 @@ from .models import DataUser
 from .comp import User
 
 
-def get_app_user(username, data=None):
-    """Return User instance"""
-    if not data:
-        data = UserManager.get_by_username(username)
-    if data.source != 'application':
-        # we need to set a passwd for nagare auth
-        return User(username, 'passwd', data=data)
-    return User(username, data=data)
-
-
 class UserManager(object):
+
+    @classmethod
+    def get_app_user(cls, username, data=None):
+        """Return User instance"""
+        if not data:
+            data = cls.get_by_username(username)
+        if data.source != 'application':
+            # we need to set a passwd for nagare auth
+            return User(username, 'passwd', data=data)
+        return User(username, data=data)
 
     @staticmethod
     def search(value):
@@ -156,7 +156,7 @@ class NewMember(object):
          - list of tuple (email, HTML string)
         """
         h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
+        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
                 for u in self.autocomplete_method(value)]
 
 
@@ -170,4 +170,4 @@ class AddMembers(object):
 
     def autocompletion(self, value, static_url):
         h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]
+        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]

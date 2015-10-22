@@ -129,7 +129,7 @@ class Login(Authentication):
             )
             return
         database.session.flush()
-        u = usermanager.get_app_user(profile['id'], data=usermanager.UserManager.get_by_username(profile_id))
+        u = usermanager.UserManager.get_app_user(profile['id'], data=usermanager.UserManager.get_by_username(profile_id))
         security.set_user(u)
 
         # After a successful OAuth authentication, we need to manually switch to the user's locale

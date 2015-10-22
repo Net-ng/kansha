@@ -105,7 +105,7 @@ def create_user(suffixe=''):
     """Create Test user
     """
     user_test = get_or_create_data_user(suffixe)
-    return usermanager.get_app_user(u'usertest_%s' % suffixe)
+    return usermanager.UserManager.get_app_user(u'usertest_%s' % suffixe)
 
 
 def create_services():

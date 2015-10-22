@@ -52,7 +52,7 @@ class Login(Authentication):
             data_user.update(profile['name'], profile['email'],
                              picture=picture)
             database.session.flush()
-            u = usermanager.get_app_user(uid, data=data_user)
+            u = usermanager.UserManager.get_app_user(uid, data=data_user)
             security.set_user(u)
             comp.answer(u)
         else:

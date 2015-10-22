@@ -17,7 +17,7 @@ from peak.rules import when
 from nagare.security import form_auth, common
 from nagare import security
 
-from .user.usermanager import get_app_user
+from .user.usermanager import UserManager
 from .board.comp import Board, BoardTitle, BoardDescription
 from .card.comp import Card, CardTitle
 from .column.comp import Column, ColumnTitle, CardsCounter
@@ -41,7 +41,7 @@ class Authentication(form_auth.Authentication):
 
     def _create_user(self, username):
         if username is not None:
-            return get_app_user(username)
+            return UserManager.get_app_user(username)
 
     def check_password(self, username, _, password):
         user = UserManager.get_by_username(username)

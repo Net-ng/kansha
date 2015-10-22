@@ -35,7 +35,7 @@ def main(hours, url):
                 data = notifications.filter_events(events, subscriber)
                 if not data:
                     continue
-                locale = usermanager.get_app_user(subscriber.member.username).get_locale()
+                locale = usermanager.UserManager.get_app_user(subscriber.member.username).get_locale()
                 app.set_locale(locale)
                 subject, content, content_html = notifications.generate_email(app.app_title, board['board'],
                                                                               subscriber.member, hours, url, data)

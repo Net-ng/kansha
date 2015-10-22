@@ -93,7 +93,7 @@ class Card(object):
         self.flow = component.Component(CardFlow(self, self.comments, self.gallery))
         self.labels = component.Component(label.CardLabels(self))
         self.votes = component.Component(vote.Votes(self))
-        self.author = component.Component(usermanager.get_app_user(data.author.username, data=data.author))
+        self.author = component.Component(usermanager.UserManager.get_app_user(data.author.username, data=data.author))
 
         self._weight = component.Component(CardWeightEditor(self))
 
@@ -102,7 +102,7 @@ class Card(object):
             overlay.Overlay(lambda r: '+',
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.AddMembers(self.autocomplete_method)).on_answer(self.add_members)
-        self.members = [component.Component(usermanager.get_app_user(member.username, data=member))
+        self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in data.members]
         self.see_all_members = component.Component(overlay.Overlay(lambda r: "%s more..." % (len(self.members) - self.max_shown_members),
                                                                    lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
@@ -118,7 +118,7 @@ class Card(object):
         Return:
             - list of favorites (User instances) wrappend on component
         """
-        self._favorites = [component.Component(usermanager.get_app_user(username), "friend").on_answer(self.add_members)
+        self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend").on_answer(self.add_members)
                            for (username, _) in sorted(self.column.favorites.items(), key=lambda e:-e[1])[:5]
                            if username not in [member().username for member in self.members]]
         return self._favorites
@@ -248,7 +248,7 @@ class Card(object):
             log.debug('Adding %s to members' % (new_data_member.username,))
 
             data.members.append(new_data_member)
-            self.members.append(component.Component(usermanager.get_app_user(new_data_member.username, data=new_data_member)))
+            self.members.append(component.Component(usermanager.UserManager.get_app_user(new_data_member.username, data=new_data_member)))
             return new_data_member
 
     def remove_member(self, username):
@@ -276,7 +276,7 @@ class Card(object):
             - ``member`` -- Board Member instance to remove
         """
         self.data.remove_board_member(member)
-        self.members = [component.Component(usermanager.get_app_user(m.username, data=m))
+        self.members = [component.Component(usermanager.UserManager.get_app_user(m.username, data=m))
                         for m in self.data.members]
 
     # Cover methods

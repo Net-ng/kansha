@@ -204,9 +204,9 @@ class Board(object):
         members = [dbm.member for dbm in self.data.board_members]
         members = [member for member in set(members) - set(self.data.managers)]
         members.sort(key=lambda m: (m.fullname, m.email))
-        self.members = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'member'))
+        self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'member'))
                         for member in members]
-        self.managers = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'manager' if len(self.data.managers) != 1 else 'last_manager'))
+        self.managers = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'manager' if len(self.data.managers) != 1 else 'last_manager'))
                          for member in self.data.managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
                         for token in self.data.pending]
@@ -619,7 +619,7 @@ class Board(object):
 
         user = usermanager.UserManager.get_by_email(member.username)
         if user:
-            user = usermanager.get_app_user(user.username, data=user)
+            user = usermanager.UserManager.get_app_user(user.username, data=user)
             for column in self.columns:
                 column().remove_board_member(user)
 
@@ -753,7 +753,7 @@ class Board(object):
         """
         already_in = set([m().email for m in self.all_members])
         best_friends = user.best_friends(already_in, 5)
-        self._best_friends = [component.Component(usermanager.get_app_user(u.username), "friend") for u in best_friends]
+        self._best_friends = [component.Component(usermanager.UserManager.get_app_user(u.username), "friend") for u in best_friends]
         return self._best_friends
 
     @property

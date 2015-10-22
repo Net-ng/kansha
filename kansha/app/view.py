@@ -17,7 +17,7 @@ from nagare.namespaces.xhtml import absolute_url
 from kansha import VERSION
 
 from ..user import user_profile
-from ..user.usermanager import get_app_user
+from ..user.usermanager import UserManager
 from .comp import Kansha, App
 
 
@@ -71,7 +71,7 @@ def render_kansha_tab(self, h, comp, *args):
     if user is None:
         h << h.a(self.app_title, class_="collapse", id="mainTab")
     else:
-        app_user = get_app_user(user.username)
+        app_user = UserManager.get_app_user(user.username)
         h << h.a(component.Component(app_user, "avatar"), self.app_title, id="mainTab")
     return h.root
 

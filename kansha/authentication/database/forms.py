@@ -20,7 +20,7 @@ from nagare.i18n import _
 
 from . import validators, captcha
 from kansha.user import usermanager
-from kansha.models import DataToken
+from kansha.user.models import DataToken
 from kansha.services.authentication_repository import Authentication
 
 UserConfirmationTimeout = timedelta(hours=12)

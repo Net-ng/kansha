@@ -36,7 +36,7 @@ class User(security_common.User):
         """Return the user object from database
         """
         if not self._data:
-            self._data = usermanager.UserManager().get_by_username(self.username)
+            self._data = usermanager.UserManager.get_by_username(self.username)
         return self._data
 
     def __getstate__(self):

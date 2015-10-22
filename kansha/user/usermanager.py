@@ -33,7 +33,7 @@ def get_user_class(source):
 def get_app_user(username, data=None):
     """Return User instance"""
     if not data:
-        data = UserManager().get_by_username(username)
+        data = UserManager.get_by_username(username)
     klass = get_user_class(data.source)
     return klass(username, data=data)
 

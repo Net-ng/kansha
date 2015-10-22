@@ -89,7 +89,7 @@ def set_context(user=None):
 
 def get_or_create_data_user(suffixe=''):
     '''Get test user for suffixe, or create if not exists'''
-    user_test = usermanager.UserManager().get_by_username(
+    user_test = usermanager.UserManager.get_by_username(
         u'usertest_%s' % suffixe)
     if not user_test:
         user_test = usermanager.UserManager().create_user(

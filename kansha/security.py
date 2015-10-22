@@ -44,7 +44,7 @@ class Authentication(form_auth.Authentication):
             return get_app_user(username)
 
     def check_password(self, username, _, password):
-        user = UserManager().get_by_username(username)
+        user = UserManager.get_by_username(username)
         if not user or not user.email:
             return False
         return user.check_password(password)

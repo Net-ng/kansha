@@ -253,7 +253,7 @@ class Card(object):
 
     def remove_member(self, username):
         """Remove member username from card member"""
-        data_member = usermanager.UserManager().get_by_username(username)
+        data_member = usermanager.UserManager.get_by_username(username)
         if data_member:
             log.debug('Removing %s from card %s' % (username, self.id))
             data = self.data

@@ -19,6 +19,26 @@ from .services_repository import Service
 
 
 class MailSender(Service):
+    '''
+    Mail sender service.
+
+    API.
+    A mail sender service must provide the following method:
+
+        def send(self, subject, to, content, html_content=None, from_='', cc=[], bcc=[],
+                 type='plain', mpart_type='alternative'):
+
+        where:
+         - ``subject`` -- email subject
+         - ``to`` -- list of recipients' emails
+         - ``content`` --  email content
+         - ``from_`` -- email sender adress
+         - ``cc`` --  list of CC emails
+         - ``bcc`` -- list of BCC emails
+         - ``type`` --  email type ('plain' or 'html')
+         - ``mpart_type`` -- email part type
+    '''
+
     load_priority = 10
     config_spec = {
         'activated': 'boolean(default=True)',
@@ -55,13 +75,13 @@ class MailSender(Service):
         """Sends an email
 
         In:
-         - ``subject`` -- email object
-         - ``to`` -- To email's list
+         - ``subject`` -- email subject
+         - ``to`` -- list of recipients' emails
          - ``content`` --  email content
-         - ``from_`` -- email sender
-         - ``cc`` --  CC email's list
-         - ``bcc`` -- BCC email's list
-         - ``type`` --  email type
+         - ``from_`` -- email sender adress
+         - ``cc`` --  list of CC emails
+         - ``bcc`` -- list of BCC emails
+         - ``type`` --  email type ('plain' or 'html')
          - ``mpart_type`` -- email part type
 
         """

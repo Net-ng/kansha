@@ -119,10 +119,11 @@ class DummyMailSender(MailSender):
     '''For use in unit tests.'''
 
     def __init__(self):
-        config = dict(
+        super(DummyMailSender, self).__init__(
+            '',
+            None,
             smtp_host='localhost',
             smtp_port=25,
             activated=False,
             default_sender='noreply@test.test'
         )
-        super(DummyMailSender, self).__init__('', config, '')

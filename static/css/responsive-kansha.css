@@ -1513,9 +1513,6 @@ span.nomatches {
     line-height: 30px;
     padding: 0 5px;
     width: 150px;
-    color: white;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.4), 0 0 3px #000000;
-    text-overflow: ellipsis;
 }
 
 .card-label > span {
@@ -1546,37 +1543,16 @@ a.card-label:hover {
     margin: -14px 0 0
 }
 
-.inline-labels.minimized .card-label {
-    width: 35px;
-    height: 9px;
+.inline-labels .card-label {
+    width: 10px;
+    height: 10px;
     padding: 0;
     margin-right: 6px;
-    border: 0 solid white;
-    border-radius: 0 0 4px 4px;
-}
-
-.inline-labels.detailed .card-label {
-    height: auto;
-    width: auto;
-    line-height: 1em;
-    display: inline-block;
-    padding: 5px 8px;
-    margin-right: 6px;
-    border-radius: 5px;
-    border: none;
-    color: white;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.4), 0 0 3px #000000;
-    text-overflow: ellipsis;
-}
-
-.inline-labels.detailed .card-label.add{
-    background-color: #dedede;
-    text-shadow: none;
-    font-size: 24px;
-    padding: 0 8px;
-    color: black;
-    line-height: 29px;
-    font-weight: bold;
+    border-radius: 12px;
+    border: 2px solid white;
+    -webkit-box-shadow: #d6d6d6 3px 1px 1px;
+    -moz-box-shadow: #d6d6d6 3px 1px 1px;
+    box-shadow: #d6d6d6 3px 1px 1px;
 }
 
 /*ul.board-labels li:nth-child(odd) {
@@ -1732,6 +1708,22 @@ ul.board-labels .label-title input {
     padding-left: 10px;
     background-position: -1114px 5px !important;
     padding-bottom: 1px
+}
+
+.overlay.card-edit-form-overlay .card-label-choose.active .card-label {
+    opacity: 1;
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .card-label {
+    opacity: 0.3;
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .card-label {
+    margin-right: 7px
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .icon-ok {
+    display: none
 }
 
 .label-color-picker {
@@ -2727,15 +2719,6 @@ textarea.expanded {
 
 .checklists .checklist .content {
     padding-top: 10px
-}
-
-.checklists .ui-state-highlight {
-    line-height: 1.5em;
-    height: 1.5em;
-}
-
-.checklists .checklist ul {
-    min-height: 1.5em;
 }
 
 div.history {

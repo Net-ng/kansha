@@ -237,7 +237,7 @@ class WSGIApp(wsgi.WSGIApp):
         config.validate(config_filename, conf, error)
 
         self._services = services.ServicesRepository(
-            config_filename, conf, error
+            config_filename, error, conf
         )
 
         self.as_root = conf['application']['as_root']

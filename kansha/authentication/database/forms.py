@@ -66,7 +66,7 @@ def redirect_to(url):
 
 class Login(Authentication):
 
-    config_spec = {
+    CONFIG_SPEC = {
         'activated': 'boolean(default=True)',
         'moderator': 'string(default="")',
         'default_username': 'string(default="")',

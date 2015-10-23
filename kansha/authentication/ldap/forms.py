@@ -20,7 +20,7 @@ class Login(Authentication):
 
     alt_title = None
 
-    config_spec = {
+    CONFIG_SPEC = {
         'activated': 'boolean(default=False)',
         'server': 'string(default="")',
         'user_base_dn': 'string(default="")',

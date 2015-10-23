@@ -23,11 +23,11 @@ class SimpleAssetsManager(AssetsManager):
     medium_width = 425
     cover_size = (medium_width, 250)
 
-    def __init__(self, config_filename, config, error):
-        super(SimpleAssetsManager, self).__init__(config_filename, config, error)
-        self.basedirectory = config['basedir']
-        self.base_url = config['baseurl']
-        self.max_size = config['max_size']
+    def __init__(self, config_filename,  error, basedir, baseurl, max_size):
+        super(SimpleAssetsManager, self).__init__(config_filename, error)
+        self.basedirectory = basedir
+        self.base_url = baseurl
+        self.max_size = max_size
 
     def _get_filename(self, file_id, size=None):
         filename = os.path.join(self.basedirectory, file_id)
@@ -123,9 +123,9 @@ class SimpleAssetsManager(AssetsManager):
             - image significant URL
         """
         if self.base_url:
-            url = [self.base_url, self.get_id(), file_id, size or 'large']
+            url = [self.base_url, self.get_entry_name(), file_id, size or 'large']
         else:
-            url = ['', self.get_id(), file_id, size or 'large']
+            url = ['', self.get_entry_name(), file_id, size or 'large']
         if include_filename:
             url.append(self.get_metadata(file_id)['filename'])
         return '/'.join(url)

@@ -16,15 +16,15 @@ from .services_repository import Service
 
 
 class AssetsManager(Service):
-    load_priority = 10
-    config_spec = {
+    LOAD_PRIORITY = 10
+    CONFIG_SPEC = {
             'basedir': 'string',
             'max_size': 'integer(default=2048)',   # Max file size in kilobytes
             'baseurl': 'string'
         }
 
-    def __init__(self, config_filename, config, error):
-        super(AssetsManager, self).__init__(config_filename, config, error)
+    def __init__(self, config_filename, error):
+        super(AssetsManager, self).__init__(config_filename, error)
 
     def save(self, data, file_id=None, metadata={}):
         """Save data, metadata and return an id

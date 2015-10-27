@@ -39,6 +39,7 @@ setup(
         'alembic',
         'PEAK-Rules',
         'nagare[database,i18n]==0.4.1.post473',
+        'nagare-services',
         'docutils',
         'Pillow',
         'pycrypto',

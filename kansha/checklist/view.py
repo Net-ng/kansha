@@ -100,19 +100,40 @@ def render_Checklists(self, h, comp, model):
             nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
         }''' % ajax.py2js(action))
 
+        # On items drag and drop
+        action = ajax.Update(action=self.reorder_items)
+        action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
+        h.head.javascript(h.generate_id(), '''function reorder_checklists_items(data) {
+                nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
+            }''' % ajax.py2js(action))
+
         id_ = h.generate_id()
         with h.div(class_='checklists', id=id_):
             for index, clist in enumerate(self.checklists):
                 h << clist.on_answer(lambda v, index=index: self.delete_checklist(index))
         h << h.script("""$(function() {
-        $( "#" + %s ).sortable({
+        $("#" + %(id)s).sortable({
           placeholder: "ui-state-highlight",
           axis: "y",
           handle: ".icon-th-list.icon-grey",
           cursor: "move",
           stop: function( event, ui ) { reorder_checklists($('.checklist').map(function() { return this.id }).get()) }
         });
-      })""" % ajax.py2js(id_))
+        $(".checklists .checklist .content ul").sortable({
+            placeholder: "ui-state-highlight",
+            cursor: "move",
+            connectWith: ".checklists .checklist .content ul",
+            dropOnEmpty: true,
+            update: function(event, ui) {
+                var data = {
+                    target: ui.item.closest('.checklist').attr('id'),
+                    index: ui.item.index(),
+                    id: ui.item.attr('id')
+                }
+                reorder_checklists_items(data);
+            }
+        }).disableSelection();
+      })""" % {'id': ajax.py2js(id_)})
     return h.root
 
 
@@ -136,7 +157,7 @@ def render_Checklist(self, h, comp, model):
                 h << comp.render(h, 'progress')
             with h.ul:
                 for index, item in enumerate(self.items):
-                    h << h.li(item.on_answer(lambda v, index=index: self.delete_item(index)))
+                    h << h.li(item.on_answer(lambda v, index=index: self.delete_item(index)), id='checklist_item_%s' % item().id)
             h << self.new_item
     return h.root
 

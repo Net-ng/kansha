@@ -124,7 +124,7 @@ class DataBoard(Entity):
         Return:
          - True if user is member of the board
         """
-        return user.data in set(dbm.member for dbm in self.board_members)
+        return user.data in self.members
 
     def remove_member(self, board_member):
         board_member.delete()
@@ -204,7 +204,7 @@ class DataBoard(Entity):
         return q
 
     @classmethod
-    def get_guest_boards(cls, user_username, user_source):
+    def get_guest_boards_for(cls, user_username, user_source):
         q2 = session.query(DataBoardManager.board_id)
         q2 = q2.filter(DataBoardManager.user_username == user_username)
         q2 = q2.filter(DataBoardManager.user_source == user_source)
@@ -217,7 +217,7 @@ class DataBoard(Entity):
         return q
 
     @classmethod
-    def get_archived_boards(cls, user_username, user_source):
+    def get_archived_boards_for(cls, user_username, user_source):
         q = cls.query.join(DataBoardMember)
         q = q.filter(DataBoardMember.user_username == user_username)
         q = q.filter(DataBoardMember.user_source == user_source)

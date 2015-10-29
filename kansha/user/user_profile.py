@@ -482,9 +482,9 @@ class UserBoards(object):
         self.my_boards = OrderedDict((b.id, self._get_board(b))
                                      for b in board.Board.get_user_boards_for(self.user_id, self.user_source))
         self.guest_boards = OrderedDict((b.id, self._get_board(b))
-                                        for b in board.Board.get_guest_boards(self.user_id, self.user_source))
+                                        for b in board.Board.get_guest_boards_for(self.user_id, self.user_source))
         self.archived_boards = OrderedDict((b.id, self._get_board(b, 'archived_item'))
-                                           for b in board.Board.get_archived_boards(self.user_id, self.user_source))
+                                           for b in board.Board.get_archived_boards_for(self.user_id, self.user_source))
 
     def purge_archived_boards(self):
         for board in self.archived_boards.itervalues():

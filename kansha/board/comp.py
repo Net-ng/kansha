@@ -867,12 +867,12 @@ class Board(object):
         return DataBoard.get_user_boards_for(user_username, user_source)
 
     @staticmethod
-    def get_guest_boards(user_username, user_source):
-        return DataBoard.get_guest_boards(user_username, user_source)
+    def get_guest_boards_for(user_username, user_source):
+        return DataBoard.get_guest_boards_for(user_username, user_source)
 
     @staticmethod
-    def get_archived_boards(user_username, user_source):
-        return DataBoard.get_archived_boards(user_username, user_source)
+    def get_archived_boards_for(user_username, user_source):
+        return DataBoard.get_archived_boards_for(user_username, user_source)
 
     def set_reload_search(self):
         self.must_reload_search = True

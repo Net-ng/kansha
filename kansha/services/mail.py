@@ -23,20 +23,7 @@ class MailSender(Service):
     Mail sender service.
 
     API.
-    A mail sender service must provide the following method:
-
-        def send(self, subject, to, content, html_content=None, from_='', cc=[], bcc=[],
-                 type='plain', mpart_type='alternative'):
-
-        where:
-         - ``subject`` -- email subject
-         - ``to`` -- list of recipients' emails
-         - ``content`` --  email content
-         - ``from_`` -- email sender adress
-         - ``cc`` --  list of CC emails
-         - ``bcc`` -- list of BCC emails
-         - ``type`` --  email type ('plain' or 'html')
-         - ``mpart_type`` -- email part type
+    A mail sender service must provide a send method:
     '''
 
     LOAD_PRIORITY = 10
@@ -122,8 +109,8 @@ class DummyMailSender(MailSender):
         super(DummyMailSender, self).__init__(
             '',
             None,
-            smtp_host='localhost',
-            smtp_port=25,
+            host='localhost',
+            port=25,
             activated=False,
             default_sender='noreply@test.test'
         )

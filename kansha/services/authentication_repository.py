@@ -13,7 +13,6 @@ class AuthenticationsRepository(Service, plugins.Plugins):
     CONFIG_SECTION = 'authentication'
 
     def __init__(self, conf_filename=None, error=None, services_service=None):
-        self.services = services_service
         plugins.Plugins.__init__(self, conf_filename, error, self.config)
 
     def register(self, name, plugin):

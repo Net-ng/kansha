@@ -17,7 +17,7 @@ from ..assetsmanager import AssetsManager
 class DummyAssetsManager(AssetsManager):
 
     def __init__(self):
-        pass
+        super(DummyAssetsManager, self).__init__('', None)
 
     def save(self, data, file_id=None, metadata={}):
         log.debug("Save Image")

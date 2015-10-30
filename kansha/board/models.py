@@ -181,7 +181,7 @@ class DataBoard(Entity):
         self.background_image = image or u''
 
     @classmethod
-    def get_recent_boards_for(cls, user_username, user_source):
+    def get_last_modified_boards_for(cls, user_username, user_source):
         q2 = session.query(DataHistory.board_id.distinct())
         q2 = q2.filter(DataHistory.user_username == user_username)
         q2 = q2.filter(DataHistory.user_source == user_source)

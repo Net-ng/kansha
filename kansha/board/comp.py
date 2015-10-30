@@ -859,8 +859,8 @@ class Board(object):
             self.card_matches = set()
             
     @staticmethod
-    def get_recent_boards_for(user_username, user_source):
-        return DataBoard.get_recent_boards_for(user_username, user_source)
+    def get_last_modified_boards_for(user_username, user_source):
+        return DataBoard.get_last_modified_boards_for(user_username, user_source)
 
     @staticmethod
     def get_user_boards_for(user_username, user_source):

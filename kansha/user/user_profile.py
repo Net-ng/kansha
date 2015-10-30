@@ -477,8 +477,8 @@ class UserBoards(object):
 
 
     def reload_boards(self):
-        self.recent_boards = OrderedDict((b.id, self._get_board(b))
-                                         for b in board.Board.get_recent_boards_for(self.user_id, self.user_source))
+        self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
+                                                for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
         self.my_boards = OrderedDict((b.id, self._get_board(b))
                                      for b in board.Board.get_user_boards_for(self.user_id, self.user_source))
         self.guest_boards = OrderedDict((b.id, self._get_board(b))
@@ -500,10 +500,10 @@ def render_userboards(self, h, comp, *args):
     h << h.script('YAHOO.kansha.app.hideOverlay();'
                   'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_boards, render=0)).get('onclick'))
 
-    if self.recent_boards:
-        h << h.h2(_(u'Recent boards'))
+    if self.last_modified_boards:
+        h << h.h2(_(u'Last modified boards'))
         with h.ul(class_="unstyled board-labels"):
-            h << [b.on_answer(comp.answer).render(h, "item") for b in self.recent_boards.itervalues()]
+            h << [b.on_answer(comp.answer).render(h, "item") for b in self.last_modified_boards.itervalues()]
 
     h << h.h2(_(u'My boards'))
     with h.ul(class_="unstyled board-labels"):

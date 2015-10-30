@@ -296,7 +296,7 @@ class BoardTest(unittest.TestCase):
         self.assertIn(board.data, board_module.Board.get_guest_boards_for(user2.data.username, user2.data.source).all())
 
         notifications.add_history(board.data, board.data.columns[0].cards[0], user.get_user_data(), u'test', {})
-        self.assertIn(board.data, board_module.Board.get_recent_boards_for(user.data.username, user.data.source).all())
+        self.assertIn(board.data, board_module.Board.get_last_modified_boards_for(user.data.username, user.data.source).all())
 
         board.archive_board()
         self.assertIn(board.data, board_module.Board.get_archived_boards_for(user.data.username, user.data.source).all())

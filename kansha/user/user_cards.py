@@ -11,14 +11,14 @@
 Trans-board view of user's cards
 """
 
-from itertools import groupby, cycle
+from itertools import groupby
 from sqlalchemy import desc
 
 from nagare import (component, presentation, i18n)
-from ..card import comp as card
-from ..card.models import DataCard
-from ..column.models import DataColumn
-from ..board.models import DataBoard
+from kansha.card import comp as card
+from kansha.card.models import DataCard
+from kansha.column.models import DataColumn
+from kansha.board.models import DataBoard
 
 
 class UserCards(object):
@@ -70,7 +70,8 @@ class UserCards(object):
     def cards(self):
 
         if self._cards is None:
-            order = [self.KEYS[feat][0]() for feat in self.order_by]
+            order_keys = [self.KEYS[feat] for feat in self.order_by]
+            order = [prop() for prop, __ in order_keys]
             self._cards = [
                 component.Component(
                     self._services(card.Card, c.id, None, data=c)

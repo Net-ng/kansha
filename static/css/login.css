@@ -163,6 +163,10 @@ input[type="password"]:focus {
     background-color: white;
 }
 
+.login:first-child {
+    border-left: none;
+}
+
 .regForm {
     min-width: 330px;
     max-width: 700px;

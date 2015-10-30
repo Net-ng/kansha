@@ -17,12 +17,6 @@ import sys
 import types
 
 
-def get_class(fullpath):
-    mod, classname = fullpath.split(':')
-    mod = sys.modules[mod]
-    return getattr(mod, classname)
-
-
 def toUTF8(v):
     if isinstance(v, unicode):
         return v.encode('utf-8')

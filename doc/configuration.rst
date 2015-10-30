@@ -284,7 +284,7 @@ port
 users_base_dn
     The base DN your users are under.
 
-cls
+schema
     The driver to use depending on your schema:
 
     * ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` for InetOrgPerson

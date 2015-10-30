@@ -33,6 +33,13 @@ class DataBoardMember(Entity):
     notify = Field(Integer, default=lambda: 1)
 
 
+class DataBoardManager(Entity):
+    using_options(tablename='user_managed_boards__board_managers')
+    board = ManyToOne('DataBoard', primary_key=True, ondelete='CASCADE')
+    member = ManyToOne('DataUser', primary_key=True, ondelete='CASCADE', colname=[
+                       'user_username', 'user_source'])
+
+
 class DataUser(Entity):
 
     """Label mapper
@@ -59,7 +66,10 @@ class DataUser(Entity):
     boards = AssociationProxy(
         'board_members', 'board',
         creator=lambda board: DataBoardMember(board=board))
-    managed_boards = ManyToMany('DataBoard', inverse='managers')
+    board_managers = OneToMany('DataBoardManager')
+    managed_boards = AssociationProxy(
+        'board_managers', 'board',
+        creator=lambda board: DataBoardManager(board=board))
     last_board = OneToOne('DataBoard', inverse='last_users')
     cards = ManyToMany('DataCard', inverse='members', lazy='dynamic')
     my_cards = OneToMany('DataCard', inverse='author')

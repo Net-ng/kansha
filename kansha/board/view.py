@@ -188,9 +188,10 @@ def render_Board_item(self, h, comp, *args):
 
     url = self.data.url
     with h.li(class_="row-fluid"):
-        with h.a(self.data.title, href=url, class_="boardItemLabel").action(answer):
-            if self.data.description:
-                h << {'data-tooltip': self.data.description}
+        link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
+        if self.data.description:
+            link.set('data-tooltip', self.data.description)
+        h << link
         h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'members', false);
                                 YAHOO.kansha.app.highlight(this, 'archive', false);
                                 YAHOO.kansha.app.highlight(this, 'leave', false);""",
@@ -198,7 +199,7 @@ def render_Board_item(self, h, comp, *args):
                                YAHOO.kansha.app.highlight(this, 'archive', true);
                                YAHOO.kansha.app.highlight(this, 'leave', true);"""}
 
-        h << self.comp_members.render(h.AsyncRenderer(), 'members')
+        h << self.comp_members.render(h, 'members')
 
         if security.has_permissions('manage', self):
             h << h.a(class_='archive', title=_(u'Archive this board')).action(self.archive_board)
@@ -235,13 +236,6 @@ def render_Board_members(self, h, comp, *args):
     Then icon "more user" if necessary
     And at the end member icons
     """
-    reload_board = h.a.action(ajax.Update(render='members', action=self.update_members)).get('onclick')
-    h << h.script(
-        "YAHOO.kansha.app.hideOverlay();"
-        "YAHOO.kansha.reload_boarditems[%s]=function() {%s}" %
-        (ajax.py2js(self.id), reload_board)
-    )
-
     with h.div(class_='members'):
         if security.has_permissions('Add Users', self):
             h << h.div(self.overlay_add_members, class_='add')
@@ -272,7 +266,7 @@ def render_Board_add_member_overlay(self, h, comp, *args):
     if friends:
         with h.div(class_="favorites"):
             h << h.h3(_('Favorites'))
-            with h.ul():
+            with h.ul:
                 h << h.li([f.on_answer(lambda email: self.invite_members([email])) for f in friends])
     with h.div(class_="members search"):
         h << self.new_member.on_answer(self.invite_members)

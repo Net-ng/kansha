@@ -16,7 +16,8 @@ from elixir import ManyToMany, ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
 from kansha.models import Entity
-from kansha.user.models import DataUser, DataBoardMember
+from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
+from kansha.notifications import DataHistory
 from nagare.database import session
 from sqlalchemy.ext.associationproxy import AssociationProxy
 
@@ -49,9 +50,10 @@ class DataBoard(Entity):
     description = Field(UnicodeText, default=u'')
     visibility = Field(Integer, default=0)
     version = Field(Integer, default=0, server_default='0')
-    board_members = OneToMany('DataBoardMember')
+    board_members = OneToMany('DataBoardMember', cascade='delete')
+    board_managers = OneToMany('DataBoardManager', cascade='delete')
     members = AssociationProxy('board_members', 'member', creator=lambda member: DataBoardMember(member=member))
-    managers = ManyToMany('DataUser', order_by=('fullname', 'email'))
+    managers = AssociationProxy('board_managers', 'member', creator=lambda member: DataBoardManager(member=member))
     uri = Field(Unicode(255), index=True, unique=True)
     last_users = ManyToOne('DataUser', order_by=('fullname', 'email'))
     pending = OneToMany('DataToken', order_by='username')
@@ -122,7 +124,7 @@ class DataBoard(Entity):
         Return:
          - True if user is member of the board
         """
-        return user.data in set(dbm.member for dbm in self.board_members)
+        return user.data in self.members
 
     def remove_member(self, board_member):
         board_member.delete()
@@ -138,14 +140,20 @@ class DataBoard(Entity):
         return user.data in self.managers
 
     def remove_manager(self, board_member):
+        obj = DataBoardManager.query.filter_by(board=self, member=board_member.get_user_data()).first()
+        if obj is not None:
+            obj.delete()
         self.remove_member(board_member)
-        self.managers.remove(board_member.get_user_data())
 
     def change_role(self, board_member, new_role):
+        obj = DataBoardManager.query.filter_by(board=self, member=board_member.get_user_data()).first()
         if new_role == 'manager':
-            self.managers.append(board_member.get_user_data())
+            if obj is None:
+                obj = DataBoardManager(board=self, member=board_member.get_user_data())
+                session.add(obj)
         else:
-            self.managers.remove(board_member.get_user_data())
+            if obj is not None:
+                obj.delete()
 
     def last_manager(self, member):
         """Return True if member is the last manager of the board"""
@@ -171,3 +179,48 @@ class DataBoard(Entity):
 
     def set_background_image(self, image):
         self.background_image = image or u''
+
+    @classmethod
+    def get_last_modified_boards_for(cls, user_username, user_source):
+        q2 = session.query(DataHistory.board_id.distinct())
+        q2 = q2.filter(DataHistory.user_username == user_username)
+        q2 = q2.filter(DataHistory.user_source == user_source)
+        q2 = q2.order_by(DataHistory.when.desc())
+        q2 = q2.limit(5)
+        q = cls.query.distinct().join(DataBoardMember)
+        q = q.filter(DataBoardMember.user_username == user_username)
+        q = q.filter(DataBoardMember.user_source == user_source)
+        q = q.filter(DataBoard.id.in_(q2))
+        q = q.filter(cls.archived == False)
+        return q
+
+    @classmethod
+    def get_user_boards_for(cls, user_username, user_source):
+        q = cls.query.join(DataBoardManager)
+        q = q.filter(DataBoardManager.user_username == user_username)
+        q = q.filter(DataBoardManager.user_source == user_source)
+        q = q.filter(cls.archived == False)
+        q = q.order_by(DataBoard.title)
+        return q
+
+    @classmethod
+    def get_guest_boards_for(cls, user_username, user_source):
+        q2 = session.query(DataBoardManager.board_id)
+        q2 = q2.filter(DataBoardManager.user_username == user_username)
+        q2 = q2.filter(DataBoardManager.user_source == user_source)
+        q = cls.query.join(DataBoardMember)
+        q = q.filter(DataBoardMember.user_username == user_username)
+        q = q.filter(DataBoardMember.user_source == user_source)
+        q = q.filter(cls.archived == False)
+        q = q.filter(~DataBoard.id.in_(q2))
+        q = q.order_by(DataBoard.title)
+        return q
+
+    @classmethod
+    def get_archived_boards_for(cls, user_username, user_source):
+        q = cls.query.join(DataBoardMember)
+        q = q.filter(DataBoardMember.user_username == user_username)
+        q = q.filter(DataBoardMember.user_source == user_source)
+        q = q.filter(cls.archived == True)
+        q = q.order_by(DataBoard.title)
+        return q

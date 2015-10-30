@@ -64,7 +64,7 @@ class Board(object):
 
     def __init__(self, id_, app_title, app_banner, custom_css, mail_sender, assets_manager,
                  search_engine, on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, load_data=True):
+                 on_board_restore=None, on_board_leave=None, on_update_members=None, load_data=True):
         """Initialization
 
         In:
@@ -82,6 +82,7 @@ class Board(object):
         self.on_board_archive = on_board_archive
         self.on_board_restore = on_board_restore
         self.on_board_leave = on_board_leave
+        self.on_update_members = on_update_members
         self.assets_manager = assets_manager
         self.search_engine = search_engine
 
@@ -199,15 +200,16 @@ class Board(object):
         Recalculate members + managers + pending
         Recreate overlays
         """
-        members = [dbm.member for dbm in self.data.board_members]
-        members = [member for member in set(members) - set(self.data.managers)]
+        data = self.data
+        members = [dbm.member for dbm in data.board_members]
+        members = [member for member in set(members) - set(data.managers)]
         members.sort(key=lambda m: (m.fullname, m.email))
         self.members = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'member'))
                         for member in members]
-        self.managers = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'manager' if len(self.data.managers) != 1 else 'last_manager'))
-                         for member in self.data.managers]
+        self.managers = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'manager' if len(data.managers) != 1 else 'last_manager'))
+                         for member in data.managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
-                        for token in self.data.pending]
+                        for token in data.pending]
 
     def set_description(self, desc):
         """Changes board description
@@ -610,6 +612,8 @@ class Board(object):
          - ``role`` -- role's member (manager or member)
         """
         self.data.add_member(new_member, role)
+        if self.on_update_members:
+            self.on_update_members()
 
     def remove_pending(self, member):
         # remove from pending list
@@ -623,18 +627,24 @@ class Board(object):
 
         # remove invitation
         self.remove_invitation(member.username)
+        if self.on_update_members:
+            self.on_update_members()
 
     def remove_manager(self, manager):
         # remove from managers list
         self.managers = [p for p in self.managers if p() != manager]
         # remove manager from data part
         self.data.remove_manager(manager)
+        if self.on_update_members:
+            self.on_update_members()
 
     def remove_member(self, member):
         # remove from members list
         self.members = [p for p in self.members if p() != member]
         # remove member from data part
         self.data.remove_member(member)
+        if self.on_update_members:
+            self.on_update_members()
 
     def remove_board_member(self, member):
         """Remove member from board
@@ -672,6 +682,8 @@ class Board(object):
 
         self.data.change_role(member, new_role)
         self.update_members()
+        if self.on_update_members:
+            self.on_update_members()
 
     def remove_invitation(self, email):
         """ Remove invitation
@@ -684,6 +696,8 @@ class Board(object):
                 token.delete()
                 session.flush()
                 break
+        if self.on_update_members:
+            self.on_update_members()
 
     def invite_members(self, emails):
         """Invite somebody to this board,
@@ -700,11 +714,7 @@ class Board(object):
             # If user already exists add it to the board directly or invite it otherwise
             invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
             invitation.send_email(self.mail_sender)
-
-        return (
-            "YAHOO.kansha.reload_boarditems[%s]();"
-            "YAHOO.kansha.app.hideOverlay();" % ajax.py2js(self.id)
-        )
+        return 'reload_boards();'
 
     def resend_invitation(self, pending_member):
         """Resend an invitation,
@@ -847,6 +857,22 @@ class Board(object):
                 self.card_matches.add(None)
         else:
             self.card_matches = set()
+            
+    @staticmethod
+    def get_last_modified_boards_for(user_username, user_source):
+        return DataBoard.get_last_modified_boards_for(user_username, user_source)
+
+    @staticmethod
+    def get_user_boards_for(user_username, user_source):
+        return DataBoard.get_user_boards_for(user_username, user_source)
+
+    @staticmethod
+    def get_guest_boards_for(user_username, user_source):
+        return DataBoard.get_guest_boards_for(user_username, user_source)
+
+    @staticmethod
+    def get_archived_boards_for(user_username, user_source):
+        return DataBoard.get_archived_boards_for(user_username, user_source)
 
     def set_reload_search(self):
         self.must_reload_search = True

@@ -8,7 +8,7 @@
 # this distribution.
 #--
 
-import collections
+from collections import namedtuple, OrderedDict
 import functools
 import imghdr
 import urllib
@@ -31,7 +31,7 @@ LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
 
 
-MenuEntry = collections.namedtuple('MenuEntry', 'label content')
+MenuEntry = namedtuple('MenuEntry', 'label content')
 
 
 class UserProfile(object):
@@ -43,14 +43,14 @@ class UserProfile(object):
          - ``mail_sender`` -- MailSender instance
         """
         self.app_title = app_title
-        self.menu = collections.OrderedDict()
+        self.menu = OrderedDict()
         self.menu['boards'] = MenuEntry(
             _L(u'Boards'),
             UserBoards(
                 app_title,
                 app_banner,
                 custom_css,
-                [dbm.board for dbm in user.board_members],
+                user,
                 mail_sender,
                 assets_manager
             )
@@ -87,7 +87,7 @@ def render_user_profile__edit(self, h, comp, *args):
         with h.div(class_='span4'):
             h << comp.render(h, 'menu')
         with h.div(class_='span8'):
-            h << self.content.on_answer(comp.answer)
+            h << self.content.on_answer(comp.answer).render(h.AsyncRenderer())
     return h.root
 
 
@@ -439,95 +439,83 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, custom_css, boards, mail_sender, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, user, mail_sender, assets_manager):
         """ UserBoards
 
         List of user's boards, and form to add new one board
 
         In:
-         - ``boards`` -- list of user boards (BoardData instances)
+         - ``app_title`` -- Application title
+         - ``app_banner`` -- Application banner
+         - ``custom_css`` -- Custom CSS file
+         - ``user`` -- User whose boards will be listed
+         - ``mail_sender`` -- Mail sender
+         - ``assets_manager`` -- Assets manager service
         """
         self.app_title = app_title
-        self.boards = []
-        self.archived_boards = []
 
-        for b in boards:
-            _b = board.Board(b.id, app_title, app_banner, custom_css, mail_sender, assets_manager, None,
-                             on_board_delete=lambda id_=b.id: self.delete_board(
-                                 id_),
-                             on_board_archive=lambda id_=b.id: self.archive_board(
-                                 id_),
-                             on_board_restore=lambda id_=b.id: self.restore_board(
-                                 id_),
-                             on_board_leave=lambda id_=b.id: self.leave_board(
-                                 id_),
-                             load_data=False)
-            if not b.archived:
-                self.boards.append(component.Component(_b))
-            elif b.has_manager(security.get_user()):
-                self.archived_boards.append(component.Component(_b))
-
+        self.app_title = app_title
+        self.app_banner = app_banner
+        self.custom_css = custom_css
+        self.mail_sender = mail_sender
+        self.assets_manager = assets_manager
+        self.user_id = user.username
+        self.user_source = user.source
         self.new_board = component.Component(board.NewBoard())
+        self.reload_boards()
 
-    def archive_board(self, board_id):
-        """ switch board from boards list to archived boards list"""
-        board_index = None
-        for index, comp in enumerate(self.boards):
-            if comp().id == board_id:
-                board_index = index
-                break
-        if board_index is not None:
-            board = self.boards.pop(board_index)
-            self.archived_boards.append(board)
+    def _get_board(self, b, model=0):
+        b = board.Board(b.id, self.app_title, self.app_banner, self.custom_css,
+                        self.mail_sender, self.assets_manager, None,
+                        on_board_delete=self.reload_boards,
+                        on_board_archive=self.reload_boards,
+                        on_board_restore=self.reload_boards,
+                        on_board_leave=self.reload_boards,
+                        on_update_members=self.reload_boards,
+                        load_data=False)
+        return component.Component(b, model)
 
-    def restore_board(self, board_id):
-        """ switch board from archived boards list to boards list"""
-        archived_board_index = None
-        for index, comp in enumerate(self.archived_boards):
-            if comp().id == board_id:
-                archived_board_index = index
-                break
 
-        if archived_board_index is not None:
-            archived_board = self.archived_boards.pop(archived_board_index)
-            self.boards.append(archived_board)
-
-    def delete_board(self, board_id):
-        """ remove board from archived boards list"""
-        archived_board_index = None
-        for index, comp in enumerate(self.archived_boards):
-            if comp().id == board_id:
-                archived_board_index = index
-                break
-        if archived_board_index is not None:
-            self.archived_boards.pop(archived_board_index)
-
-    def leave_board(self, board_id):
-        """ remove board from list """
-        board_index = None
-        for index, comp in enumerate(self.boards):
-            if comp().id == board_id:
-                board_index = index
-                break
-        if board_index is not None:
-            self.boards.pop(board_index)
+    def reload_boards(self):
+        self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
+                                                for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
+        self.my_boards = OrderedDict((b.id, self._get_board(b))
+                                     for b in board.Board.get_user_boards_for(self.user_id, self.user_source))
+        self.guest_boards = OrderedDict((b.id, self._get_board(b))
+                                        for b in board.Board.get_guest_boards_for(self.user_id, self.user_source))
+        self.archived_boards = OrderedDict((b.id, self._get_board(b, 'archived_item'))
+                                           for b in board.Board.get_archived_boards_for(self.user_id, self.user_source))
 
     def purge_archived_boards(self):
-        for board in self.archived_boards:
+        for board in self.archived_boards.itervalues():
             board().on_board_delete = None  # don't call self.delete_board!
             board().delete()
-        self.archived_boards = []
+        self.archived_boards = OrderedDict()
 
 
 @presentation.render_for(UserBoards)
 def render_userboards(self, h, comp, *args):
     h.head << h.head.title(self.app_title)
 
+    h << h.script('YAHOO.kansha.app.hideOverlay();'
+                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_boards, render=0)).get('onclick'))
+
+    if self.last_modified_boards:
+        h << h.h2(_(u'Last modified boards'))
+        with h.ul(class_="unstyled board-labels"):
+            h << [b.on_answer(comp.answer).render(h, "item") for b in self.last_modified_boards.itervalues()]
+
+    h << h.h2(_(u'My boards'))
     with h.ul(class_="unstyled board-labels"):
-        h << [b.on_answer(comp.answer).render(h, "item") for b in self.boards]
+        h << [b.on_answer(comp.answer).render(h, "item") for b in self.my_boards.itervalues()]
+
+    if self.guest_boards:
+        h << h.h2(_(u'Guest boards'))
+        with h.ul(class_="unstyled board-labels"):
+            h << [b.on_answer(comp.answer).render(h, "item") for b in self.guest_boards.itervalues()]
 
     with h.div:
-        h << self.new_board.on_answer(comp.answer)
+        h << self.new_board.on_answer(lambda ret: self.reload_boards())
 
     if len(self.archived_boards):
         with h.div:
@@ -535,7 +523,7 @@ def render_userboards(self, h, comp, *args):
 
             with h.ul(class_="unstyled board-labels"):
                 h << [b.render(h, "archived_item")
-                      for b in self.archived_boards]
+                      for b in self.archived_boards.itervalues()]
 
             h << h.a(
                 _("Delete"),

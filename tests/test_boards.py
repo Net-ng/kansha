@@ -14,6 +14,7 @@ from sqlalchemy import MetaData
 from kansha.board.models import DataBoard
 from kansha.board import comp as board_module
 from kansha.board import boardsmanager
+from kansha import notifications
 from . import helpers
 from elixir import metadata as __metadata__
 
@@ -42,7 +43,7 @@ class BoardTest(unittest.TestCase):
         """Add a column to a board"""
         helpers.set_dummy_context()
         board = helpers.create_board()
-        assert (board.archive_column is not None)
+        self.assertIsNotNone(board.archive_column)
         self.assertEqual(board.count_columns(), 3)
         board.create_column(0, helpers.word())
         self.assertEqual(board.count_columns(), 4)
@@ -52,7 +53,7 @@ class BoardTest(unittest.TestCase):
         helpers.set_dummy_context()
         board = helpers.create_board()
         self.assertEqual(board.count_columns(), 3)
-        self.assertEqual(board.create_column(0, ''), False)
+        self.assertFalse(board.create_column(0, ''))
 
     def test_delete_column(self):
         """Delete column from a board"""
@@ -60,7 +61,7 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user()
         helpers.set_context(user)
         board = helpers.create_board()
-        assert (board.archive_column is not None)
+        self.assertIsNotNone(board.archive_column)
         self.assertEqual(board.count_columns(), 3)
         column_id = board.columns[0]().db_id
         board.delete_column(column_id)
@@ -202,7 +203,7 @@ class BoardTest(unittest.TestCase):
         data = board.data  # don't collect
         members = data.members
         members.append(user.data)
-        assert(board.has_member(user) is True)
+        self.assertTrue(board.has_member(user))
 
     def test_has_member_2(self):
         """Test has member 2"""
@@ -213,7 +214,7 @@ class BoardTest(unittest.TestCase):
         user_2 = helpers.create_user(suffixe='2')
         data = board.data  # don't collect
         data.managers.append(user_2.data)
-        assert(board.has_member(user) is False)
+        self.assertFalse(board.has_member(user))
 
     def test_has_manager_1(self):
         """Test has manager 1"""
@@ -221,10 +222,10 @@ class BoardTest(unittest.TestCase):
         board = helpers.create_board()
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        assert(board.has_manager(user) is False)
+        self.assertFalse(board.has_manager(user))
         user.data.managed_boards.append(board.data)
         user.data.boards.append(board.data)
-        assert(board.has_manager(user) is True)
+        self.assertTrue(board.has_manager(user))
 
     def test_has_manager_2(self):
         """Test has manager 2"""
@@ -233,12 +234,12 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user('bis')
         helpers.set_context(user)
         user_2 = helpers.create_user(suffixe='2')
-        assert(board.has_manager(user) is False)
+        self.assertFalse(board.has_manager(user))
         data = board.data  # don't collect
         data.managers.append(user_2.data)
         data.members.append(user_2.data)
         database.session.flush()
-        assert(board.has_manager(user) is False)
+        self.assertFalse(board.has_manager(user))
 
     def test_add_member_1(self):
         """Test add member"""
@@ -246,6 +247,57 @@ class BoardTest(unittest.TestCase):
         board = helpers.create_board()
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        assert(board.has_member(user) is False)
+        self.assertFalse(board.has_member(user))
         board.add_member(user)
-        assert(board.has_member(user) is True)
+        self.assertTrue(board.has_member(user))
+
+    def test_change_role(self):
+        '''Test change role'''
+        helpers.set_dummy_context()
+        board = helpers.create_board()
+        user = helpers.create_user('test')
+        board.add_member(user)
+        board.update_members()
+
+        def find_board_member():
+            for member in board.all_members:
+                if member().get_user_data().username == user.username:
+                    return member()
+
+        member = find_board_member()
+        self.assertEqual(len(board.members), 1)
+        self.assertEqual(len(board.managers), 1)
+
+        member.dispatch('toggle_role')
+        member = find_board_member()
+        board.update_members()
+        self.assertEqual(len(board.members), 0)
+        self.assertEqual(len(board.managers), 2)
+
+        member.dispatch('toggle_role')
+        board.update_members()
+        self.assertEqual(len(board.members), 1)
+        self.assertEqual(len(board.managers), 1)
+
+    def test_get_boards(self):
+        '''Test get boards methods'''
+        helpers.set_dummy_context()
+        board = helpers.create_board()
+        user = helpers.create_user()
+        helpers.set_context(user)
+        user2 = helpers.create_user('test')
+        board.add_member(user2)
+        self.assertTrue(board.has_manager(user))
+        self.assertIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())
+        self.assertNotIn(board.data, board_module.Board.get_guest_boards_for(user.data.username, user.data.source).all())
+
+        self.assertFalse(board.has_manager(user2))
+        self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user2.data.username, user2.data.source).all())
+        self.assertIn(board.data, board_module.Board.get_guest_boards_for(user2.data.username, user2.data.source).all())
+
+        notifications.add_history(board.data, board.data.columns[0].cards[0], user.get_user_data(), u'test', {})
+        self.assertIn(board.data, board_module.Board.get_last_modified_boards_for(user.data.username, user.data.source).all())
+
+        board.archive_board()
+        self.assertIn(board.data, board_module.Board.get_archived_boards_for(user.data.username, user.data.source).all())
+        self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())

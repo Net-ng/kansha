@@ -18,7 +18,6 @@
         NS = YAHOO.namespace('kansha');
     // methods to refresh cards
     NS.reload_cards = {};
-    NS.reload_boarditems = {};
     NS.uniqueTooltip = null;
 
     NS.app = {

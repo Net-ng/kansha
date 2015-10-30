@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from nagare.namespaces import xhtml
 from nagare import component, i18n
 
-from ..toolbox import autocomplete
+from kansha.toolbox import autocomplete
 from .models import DataUser
 from .comp import User
 
@@ -27,8 +27,10 @@ class UserManager(object):
             data = cls.get_by_username(username)
         if data.source != 'application':
             # we need to set a passwd for nagare auth
-            return User(username, 'passwd', data=data)
-        return User(username, data=data)
+            user =  User(username, 'passwd', data=data)
+        else:
+            user = User(username, data=data)
+        return user
 
     @staticmethod
     def search(value):

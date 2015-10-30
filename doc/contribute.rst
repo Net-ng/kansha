@@ -197,7 +197,7 @@ Kansha uses semantic HTML5 for the UI. Avoid presentation specific markup and in
 
 Python code should comply with PEP8. That requirement may be relaxed when it is difficult or impossible to follow, e.g. in views with many context managers (``with … :``).
 
-Since we use service injection, **all optional parameters to functions/classes must be explicitly passed as keyword arguments**, unless they are services.
+Since we use service injection, **pass optional parameters to functions/classes as explicit keyword arguments instead of positional arguments**, unless they are services.
 
 If you add new services, provide a mockup version for tests.
 

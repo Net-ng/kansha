@@ -7,11 +7,12 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-
-from nagare import presentation
 from paste import fileapp
 from webob.exc import WSGIHTTPException
 
+from nagare import presentation
+
+from kansha.exceptions import NotFound
 from .services_repository import Service
 
 
@@ -22,9 +23,6 @@ class AssetsManager(Service):
             'max_size': 'integer(default=2048)',   # Max file size in kilobytes
             'baseurl': 'string'
         }
-
-    def __init__(self, config_filename, error):
-        super(AssetsManager, self).__init__(config_filename, error)
 
     def save(self, data, file_id=None, metadata={}):
         """Save data, metadata and return an id
@@ -83,12 +81,13 @@ class AssetsManager(Service):
 
 @presentation.init_for(AssetsManager, "len(url) >= 2")
 def init_assets(self, url, comp, http_method, request):
-    headers = {}
-    metadata = self.get_metadata(url[0])
     try:
-        headers['content_type'] = metadata['content-type']
-    except KeyError:
-        pass
+        metadata = self.get_metadata(url[0])
+    except IOError:
+        raise NotFound()
+
+    content_type = metadata.get('content-type')
+    headers = {'content-type': content_type} if content_type else {}
 
     raise FileResponse(self._get_filename(url[0],
                                           url[1] if len(url) > 1 else None),

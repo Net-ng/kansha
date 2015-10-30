@@ -8,13 +8,16 @@
 # this distribution.
 #--
 
-from ..assetsmanager import AssetsManager
-from nagare import log
-from PIL import Image
-from PIL import ImageOps
 import json
 import os
 import uuid
+
+from PIL import Image
+from PIL import ImageOps
+
+from nagare import log
+
+from ..assetsmanager import AssetsManager
 
 
 class SimpleAssetsManager(AssetsManager):

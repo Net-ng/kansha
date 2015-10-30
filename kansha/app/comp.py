@@ -11,6 +11,8 @@
 import cgi
 import json
 import sys
+import urlparse
+
 import configobj
 import pkg_resources
 import webob
@@ -32,10 +34,8 @@ from ..user import user_profile
 
 from ..security import SecurityManager, Unauthorized
 
-from ..services.simpleassetsmanager.simpleassetsmanager import SimpleAssetsManager
 from ..services.search import SearchEngine
-from ..services import mail
-from kansha import services
+from kansha import services, notifications
 
 
 def run():
@@ -347,6 +347,68 @@ class WSGIApp(wsgi.WSGIApp):
         # log.exception("\n%s" % request)
         if self.debug:
             raise
+
+    def send_notifications(self, hours, url):
+
+        mail_sender = self._services['mail_sender']
+        # Group users by board
+        boards = {}
+        for subscriber in notifications.get_subscribers():
+            boards.setdefault(subscriber.board.id, {'board': subscriber.board,
+                                                    'subscribers': []})['subscribers'].append(subscriber)
+
+        for board in boards.itervalues():
+            if not board['board'].archived:
+                events = notifications.get_events(board['board'], hours)
+                for subscriber in board['subscribers']:
+                    data = notifications.filter_events(events, subscriber)
+                    if not data:
+                        continue
+                    locale = UserManager.get_app_user(subscriber.member.username).get_locale()
+                    self.set_locale(locale)
+                    subject, content, content_html = notifications.generate_email(self.app_title, board['board'],
+                                                                                  subscriber.member, hours, url, data)
+                    mail_sender.send(subject, [subscriber.member.email], content, content_html)
+        if self.activity_monitor:
+            events = notifications.get_events(None, hours)
+            new_users = UserManager.get_all_users(hours)
+            # for event in events:
+            #     print event.board.title, notifications.render_event(event)
+            # for usr in new_users:
+            #     print usr.fullname, usr.username, usr.email, usr.registration_date
+
+            if not (events or new_users):
+                return
+            h = xhtml5.Renderer()
+            with h.html:
+                h << h.h1('Boards')
+                with h.ul:
+                    for event in events:
+                        if event.card:
+                            # IDs are interpreted as anchors since HTML4. So don't use the ID of
+                            # the card as a URL fragment, because the browser
+                            # jumps to it.
+                            ev_url = urlparse.urljoin(url, event.board.url)
+                            notif = h.a(notifications.render_event(event), href='%s#id_card_%s' % (
+                                ev_url, event.card.id), style='text-decoration: none;')
+                        else:
+                            notif = notifications.render_event(event)
+                        h << h.li(u'%s : ' % (event.board.title), notif)
+                h << h.h1('New users')
+                with h.table(border=1):
+                    with h.tr:
+                        h << h.th('Login')
+                        h << h.th('Fullname')
+                        h << h.th('Email')
+                        h << h.th('Registration date')
+                    for usr in new_users:
+                        with h.tr:
+                            h << h.td(usr.username)
+                            h << h.td(usr.fullname)
+                            h << h.td(usr.email)
+                            h << h.td(usr.registration_date.isoformat())
+
+            mail_sender.send('Activity report for '+url, [self.activity_monitor], u'', h.root.write_htmlstring())
 
 
 def create_pipe(app, *args, **kw):

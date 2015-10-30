@@ -940,7 +940,7 @@ class TokenGenerator(object):
         token = unicode(
             hashlib.sha512(str(time.time()) + self.username).hexdigest())
 
-        DataToken.delete_token_by_username(self.username, self.action)
+        DataToken.delete_by_username(self.username, self.action)
         # create new one
         token_instance = DataToken(token=token,
                                    username=self.username,

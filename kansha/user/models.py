@@ -34,7 +34,7 @@ class DataToken(Entity):
     board = ManyToOne('DataBoard')
 
     @classmethod
-    def delete_token_by_username(cls, username, action):
+    def delete_by_username(cls, username, action):
         token = cls.get_by(username=username, action=action)
         if token:
             token.delete()

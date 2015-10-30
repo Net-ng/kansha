@@ -111,8 +111,8 @@ def create_user(suffixe=''):
 def create_services():
     'Service mockups for testing components'
     _services = ServicesRepository()
-    _services['assets_manager'] = DummyAssetsManager()
-    _services['mail_sender'] = DummyMailSender()
+    _services.register('assets_manager', DummyAssetsManager())
+    _services.register('mail_sender', DummyMailSender())
     return _services
 
 

@@ -79,10 +79,10 @@ Kansha features can be activated and customized with a configuration file like t
     minor = FR
 
     [services]
-    [[mail]]
+    [[mail_sender]]
     activated = on
-    smtp_host = <<MAIL_HOST>>
-    smtp_port = <<MAIL_PORT>>
+    host = <<MAIL_HOST>>
+    port = <<MAIL_PORT>>
     default_sender = <<MAIL_SENDER>>
 
     [[assets_manager]]
@@ -346,15 +346,15 @@ Example:
 
 .. _mail:
 
-Mail
-----
+Send Mail
+---------
 
 All notifications are sent by mail, so you'd better configure an outgoing SMTP server.
 
-smtp_host
+host
     SMTP server to use.
 
-smtp_port
+port
     The port the server listens on.
 
 default_sender

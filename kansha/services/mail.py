@@ -42,15 +42,15 @@ class MailSender(Service):
     LOAD_PRIORITY = 10
     CONFIG_SPEC = {
         'activated': 'boolean(default=True)',
-        'smtp_host': 'string(default="127.0.0.1")',
-        'smtp_port': 'integer(default=25)',
+        'host': 'string(default="127.0.0.1")',
+        'port': 'integer(default=25)',
         'default_sender': 'string(default="noreply@email.com")'
     }
 
-    def __init__(self, config_filename, error, smtp_host, smtp_port, default_sender, activated):
+    def __init__(self, config_filename, error, host, port, default_sender, activated):
         super(MailSender, self).__init__(config_filename, error)
-        self.host = smtp_host
-        self.port = smtp_port
+        self.host = host
+        self.port = port
         self.default_sender = default_sender
         self.activated = activated
         if self.activated:

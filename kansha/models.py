@@ -10,13 +10,8 @@
 
 from __future__ import absolute_import
 
-from elixir import using_options
-from elixir import DateTime
 from elixir import EntityBase
 from elixir import EntityMeta
-from elixir import ManyToOne
-from elixir import Field
-from elixir import Unicode
 
 from kansha import pickle
 

@@ -37,7 +37,7 @@ def toUTF8(v):
 class LDAPAuth(object):
     def __init__(self, ldap_cfg):
         ldap_cfg = toUTF8(ldap_cfg)
-        self.server = "ldap://" + ldap_cfg['server']
+        self.server = "ldap://%s:%s" % (ldap_cfg['host'], ldap_cfg['port'])
         self.users_base_dn = ldap_cfg['users_base_dn']
 
     def connect(self):

@@ -22,7 +22,8 @@ class Login(Authentication):
 
     CONFIG_SPEC = {
         'activated': 'boolean(default=False)',
-        'server': 'string(default="")',
+        'host': 'string(default="")',
+        'port': 'integer(default=389)',
         'user_base_dn': 'string(default="")',
         'cls': 'string(default="")'
     }

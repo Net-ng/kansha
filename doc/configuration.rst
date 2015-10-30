@@ -275,8 +275,11 @@ Configuration options:
 activated
     Activate only if you have some LDAP Directory.
 
-server
+host
     name or address of the LDAP server.
+
+port
+    (optional) port to connect to.
 
 users_base_dn
     The base DN your users are under.

@@ -2,49 +2,6 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700);
 @import url(http://fonts.googleapis.com/css?family=Ubuntu+Condensed);
 
-html {
-    height: 100%;
-    background: #f8f8f8 url("../img/background.jpg") repeat-x;
-}
-
-body {
-    font-family: 'Ubuntu', sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #f8f8f8 url("../img/background.jpg") repeat-x;
-    line-height: 1.5;
-}
-
-h1,
-h2 {
-    font-family: inherit
-}
-
-h3 {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    padding: 10px;
-}
-
-ul {
-    font-weight: 300
-}
-
-li {
-    font-family: 'Roboto', sans-serif;
-    font-size: 24px;
-    list-style-type: none
-}
-
-p {
-    padding: 30px;
-}
-
-a {
-    color: #333;
-}
-
 .body-login {
     min-height: 520px;
     position: relative
@@ -52,7 +9,7 @@ a {
 
 .logo {
     display: block;
-    background: url(../img/logo.png) no-repeat top center;
+    background: url(../../img/logo.png) no-repeat top center;
     width: 173px;
     height: 315px;
     position: absolute;
@@ -84,7 +41,7 @@ a {
 .title .error {
     font-size: 20px;
     font-weight: 200;
-    background: rgba(0, 0, 0, 0) url("../img/warning.png") no-repeat left center;
+    background: rgba(0, 0, 0, 0) url("../../img/warning.png") no-repeat left center;
     color: #c22e2e;
     padding-left: 25px;
     display: inline-block
@@ -206,7 +163,7 @@ input[type="password"]:focus {
 }
 
 .oauthLogin .google {
-    background: white url(../img/google.png) no-repeat center left
+    background: white url(../../img/google.png) no-repeat center left
 }
 
 .oauthLogin .google:hover {
@@ -215,7 +172,7 @@ input[type="password"]:focus {
 }
 
 .oauthLogin .facebook {
-    background: white url(../img/facebook.png) no-repeat center left
+    background: white url(../../img/facebook.png) no-repeat center left
 }
 
 .oauthLogin .facebook:hover {
@@ -224,7 +181,7 @@ input[type="password"]:focus {
 }
 
 .oauthLogin .linkedin {
-    background: white url(../img/linkedin.png) no-repeat center left
+    background: white url(../../img/linkedin.png) no-repeat center left
 }
 
 .oauthLogin .linkedin:hover {
@@ -233,7 +190,7 @@ input[type="password"]:focus {
 }
 
 .oauthLogin .twitter {
-    background: white url(../img/twitter.png) no-repeat center left
+    background: white url(../../img/twitter.png) no-repeat center left
 }
 
 .oauthLogin .twitter:hover {
@@ -242,7 +199,7 @@ input[type="password"]:focus {
 }
 
 .oauthLogin .github {
-    background: white url(../img/git.png) no-repeat center left
+    background: white url(../../img/git.png) no-repeat center left
 }
 
 .oauthLogin .github:hover {
@@ -254,16 +211,6 @@ input[type="password"]:focus {
     text-align: center;
     padding: 10px;
     margin-bottom: 50px;
-}
-
-.credits {
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 10px 0;
-    background-color: #E7E7E7;
-    box-shadow: 0 0 1px rgb(151, 151, 151);
 }
 
 .field label,
@@ -281,27 +228,13 @@ input[type="password"]:focus {
 }
 
 #captchaRefresh {
-    background: url("../img/iconmonstr-refresh-5-icon.png") no-repeat left center;
+    background: url("../../img/iconmonstr-refresh-5-icon.png") no-repeat left center;
     display: inline-block;
     height: 30px;
     width: 30px;
     margin-left: 8px;
     position: relative;
     top: 15px;
-}
-
-.nagare-error-message {
-
-    /*background: url("../img/warning.png") no-repeat left center;*/
-    color: #c22e2e;    /*padding-left: 24px;*/
-    position: relative;
-    top: -14px;
-    font-size: 12px;
-    max-width: 240px;
-}
-
-.fields .nagare-error-field {
-    display: inline-block;
 }
 
 @media (max-width:1370px) {

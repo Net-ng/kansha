@@ -38,12 +38,13 @@ class Header(object):
 def render_Header(self, h, comp, *args):
     """Head renderer"""
 
-    h.head << h.head.title(self.app_title)
+    h.head << h.head.title(self.banner)
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/login.css')
+    h.head.css_url('css/themes/kansha.css')
+    h.head.css_url('css/themes/login.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
 

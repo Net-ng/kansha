@@ -31,7 +31,8 @@ def render_Header(self, h, comp, *args):
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/login.css')
+    h.head.css_url('css/themes/kansha.css')
+    h.head.css_url('css/themes/login.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
 
@@ -64,6 +65,7 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render_Login(self, h, comp, *args):
+    h.head << h.head.title(self.app_title)
     with h.body(class_='body-login slots%s' % len(self.logins)):
         h << self.header
         with h.div(class_='title'):

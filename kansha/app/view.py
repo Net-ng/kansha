@@ -49,8 +49,8 @@ def answer_on_menu(self, comp, user, v):
 def render_kansha_menu(self, h, comp, *args):
     """Main menu part"""
     kw = {'onclick': "YAHOO.kansha.app.toggleMenu('mainNavbar')"}
-    with h.div(class_='navbar', id='mainNavbar'):
-        with h.div(class_='navActions', id='mainActions'):
+    with h.div(class_='nav-menu'):
+        with h.div(class_='actions', id='mainActions'):
             # If login, display logout button
             user = security.get_user()
             if user:
@@ -62,7 +62,7 @@ def render_kansha_menu(self, h, comp, *args):
                     h << h.a("login", href=h.request.application_url)
 
         # Tab part
-        with h.div(class_="tab collapse", **kw):
+        with h.span(class_='title', id='nello-nav-menu'):
             h << self.title.render(h.AsyncRenderer())
     return h.root
 
@@ -124,11 +124,13 @@ def render_kansha(self, h, comp, *args):
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
-    h.head.css_url('css/bootstrap.min.css')
+    h.head.css_url('css/knacss.css')
+    h.head.css_url('css/themes/fonts.css')
+    h.head.css_url('css/themes/kansha.css')
+    h.head.css_url('css/themes/kansha_flat/kansha.css')
     h.head.css_url('css/responsive-kansha.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
-    h.head.css_url('css/fonts.css')
 
     h.head.javascript_url('js/jquery-2.1.3.min.js')
     h.head.javascript_url('js/jquery-ui-1.11.2.custom/jquery-ui.js')

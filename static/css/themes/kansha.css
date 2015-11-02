@@ -1,0 +1,5 @@
+/* Knacss fix to hide script tags */
+.row > script {
+    display: none;
+}
+

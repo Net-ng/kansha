@@ -497,6 +497,9 @@ class UserBoards(object):
 def render_userboards(self, h, comp, *args):
     h.head << h.head.title(self.app_title)
 
+    h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/kansha_flat/home.css')
+
     h << h.script('YAHOO.kansha.app.hideOverlay();'
                   'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_boards, render=0)).get('onclick'))
 

@@ -8,13 +8,16 @@
 # this distribution.
 #--
 
-from ..assetsmanager import AssetsManager
-from nagare import log
-from PIL import Image
-from PIL import ImageOps
 import json
 import os
 import uuid
+
+from PIL import Image
+from PIL import ImageOps
+
+from nagare import log
+
+from ..assetsmanager import AssetsManager
 
 
 class SimpleAssetsManager(AssetsManager):
@@ -23,20 +26,20 @@ class SimpleAssetsManager(AssetsManager):
     medium_width = 425
     cover_size = (medium_width, 250)
 
-    def __init__(self, basedirectory, app_name, **config):
-        self.basedirectory = basedirectory
-        self.app_name = app_name
-        self.max_size = config['max_size']
-        super(SimpleAssetsManager, self).__init__()
+    def __init__(self, config_filename,  error, basedir, baseurl, max_size):
+        super(SimpleAssetsManager, self).__init__(config_filename, error)
+        self.basedir = basedir
+        self.baseurl = baseurl
+        self.max_size = max_size
 
     def _get_filename(self, file_id, size=None):
-        filename = os.path.join(self.basedirectory, file_id)
+        filename = os.path.join(self.basedir, file_id)
         if size and size != 'large':
             filename += '.' + size
         return filename
 
     def _get_metadata_filename(self, file_id):
-        return os.path.join(self.basedirectory, '%s.metadata' % file_id)
+        return os.path.join(self.basedir, '%s.metadata' % file_id)
 
     def save(self, data, file_id=None, metadata={}, thumb_size=()):
         if file_id is None:
@@ -122,10 +125,10 @@ class SimpleAssetsManager(AssetsManager):
         Return:
             - image significant URL
         """
-        if self.app_name:
-            url = ['', self.app_name, 'assets', file_id, size or 'large']
+        if self.baseurl:
+            url = [self.baseurl, self.get_entry_name(), file_id, size or 'large']
         else:
-            url = ['', 'assets', file_id, size or 'large']
+            url = ['', self.get_entry_name(), file_id, size or 'large']
         if include_filename:
             url.append(self.get_metadata(file_id)['filename'])
         return '/'.join(url)

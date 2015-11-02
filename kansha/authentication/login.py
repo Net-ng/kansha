@@ -43,13 +43,13 @@ def render_Header(self, h, comp, *args):
 
 
 class Login(object):
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, cfg, assets_manager, authentication_service):
+    def __init__(self, app_title, app_banner, custom_css, cfg, authentication_service, services_service):
         """Login components
 
         """
         logins = []
         for each in authentication_service:
-            logins.append(authentication_service[each](app_title, app_banner, custom_css, mail_sender, assets_manager))
+            logins.append(services_service(authentication_service[each], app_title, app_banner, custom_css))
 
         self.app_title = app_title
         self.logins = [component.Component(login) for login in logins]

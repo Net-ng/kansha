@@ -7,38 +7,30 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-
-from .models import DataUser
-from nagare.namespaces import xhtml
-from nagare import component, i18n
-from ..toolbox import autocomplete
 import random
 from datetime import datetime, timedelta
 
+from nagare.namespaces import xhtml
+from nagare import component, i18n
 
-def get_user_class(source):
-    """ Return User Class for a given source
-
-    Generic method (from peak). Authentication system implements this
-    method.
-
-    In:
-     - ``source`` -- login source (i.e application, google...)
-    Return:
-     - the user class
-    """
-    raise Exception("User class for source %s not found" % source)
-
-
-def get_app_user(username, data=None):
-    """Return User instance"""
-    if not data:
-        data = UserManager().get_by_username(username)
-    klass = get_user_class(data.source)
-    return klass(username, data=data)
+from kansha.toolbox import autocomplete
+from .models import DataUser
+from .comp import User
 
 
 class UserManager(object):
+
+    @classmethod
+    def get_app_user(cls, username, data=None):
+        """Return User instance"""
+        if not data:
+            data = cls.get_by_username(username)
+        if data.source != 'application':
+            # we need to set a passwd for nagare auth
+            user =  User(username, 'passwd', data=data)
+        else:
+            user = User(username, data=data)
+        return user
 
     @staticmethod
     def search(value):
@@ -47,7 +39,7 @@ class UserManager(object):
 
     @staticmethod
     def get_all_users(hours=0):
-        """Return all users if `hours` is 0 or just those who have registrated
+        """Return all data users if `hours` is 0 or just those who have registrated
         for the last hours."""
         q = DataUser.query
         if hours:
@@ -136,6 +128,8 @@ class UserManager(object):
                                                                           author=u2))
 
 
+###### TODO: Move the defintions below somewhere else ##########
+
 class NewMember(object):
 
     """New Member Class"""
@@ -164,7 +158,7 @@ class NewMember(object):
          - list of tuple (email, HTML string)
         """
         h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
+        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
                 for u in self.autocomplete_method(value)]
 
 
@@ -178,4 +172,4 @@ class AddMembers(object):
 
     def autocompletion(self, value, static_url):
         h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]
+        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]

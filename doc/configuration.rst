@@ -74,20 +74,21 @@ Kansha features can be activated and customized with a configuration file like t
     key = <<AUTH_OAUTH_KEY>>
     secret = <<AUTH_OAUTH_SECRET>>
 
-
-    [mail]
-    activated = on
-    smtp_host = <<MAIL_HOST>>
-    smtp_port = <<MAIL_PORT>>
-    default_sender = <<MAIL_SENDER>>
-
-    [assetsmanager]
-    basedir = <<DATA_DIR>>/assets/
-    max_size = 2048
-
     [locale]
     major = fr
     minor = FR
+
+    [services]
+    [[mail_sender]]
+    activated = on
+    host = <<MAIL_HOST>>
+    port = <<MAIL_PORT>>
+    default_sender = <<MAIL_SENDER>>
+
+    [[assets_manager]]
+    basedir = <<DATA_DIR>>/assets
+    baseurl = /kansha/services
+    max_size = 20480
 
     [logging]
 
@@ -274,13 +275,16 @@ Configuration options:
 activated
     Activate only if you have some LDAP Directory.
 
-server
+host
     name or address of the LDAP server.
+
+port
+    (optional) port to connect to.
 
 users_base_dn
     The base DN your users are under.
 
-cls
+schema
     The driver to use depending on your schema:
 
     * ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` for InetOrgPerson
@@ -345,15 +349,15 @@ Example:
 
 .. _mail:
 
-Mail
-----
+Send Mail
+---------
 
 All notifications are sent by mail, so you'd better configure an outgoing SMTP server.
 
-smtp_host
+host
     SMTP server to use.
 
-smtp_port
+port
     The port the server listens on.
 
 default_sender

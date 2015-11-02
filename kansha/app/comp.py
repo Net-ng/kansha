@@ -11,6 +11,8 @@
 import cgi
 import json
 import sys
+import urlparse
+
 import configobj
 import pkg_resources
 import webob
@@ -32,10 +34,8 @@ from ..user import user_profile
 
 from ..security import SecurityManager, Unauthorized
 
-from ..services.simpleassetsmanager.simpleassetsmanager import SimpleAssetsManager
 from ..services.search import SearchEngine
-from ..services import mail
-from kansha import services
+from kansha import services, notifications
 
 
 def run():
@@ -45,8 +45,8 @@ def run():
 class Kansha(object):
     """The Kansha root component"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender,
-                 assets_manager, search, services_service):
+    def __init__(self, app_title, app_banner, custom_css,
+                 search, services_service):
         """Initialization
         """
         self._services = services_service
@@ -54,13 +54,11 @@ class Kansha(object):
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.title = component.Component(self, 'tab')
         self.user_menu = component.Component(None)
         self.content = component.Component(None).on_answer(self.select_board)
         self.user_manager = UserManager()
         self.boards_manager = BoardsManager()
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.default_board_id = None
 
@@ -97,8 +95,6 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.mail_sender,
-                    self.assets_manager,
                     self.search_engine,
                     on_board_archive=self.select_last_board,
                     on_board_leave=self.select_last_board
@@ -137,8 +133,6 @@ class Kansha(object):
                     self.app_banner,
                     self.custom_css,
                     user.data,
-                    self.mail_sender,
-                    self.assets_manager,
                     self.search_engine
                 ),
                 'edit'
@@ -146,14 +140,13 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, app_banner, custom_css, main_app, mail_sender,
-                 cfg, assets_manager, search, services_service):
+    def __init__(self, app_title, app_banner, custom_css, main_app,
+                 cfg, search, services_service):
         self._services = services_service
 
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
         self.auth_cfg = cfg['authentication']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = services_service(
@@ -161,12 +154,9 @@ class MainTask(component.Task):
             self.app_title,
             self.app_banner,
             self.custom_css,
-            mail_sender,
-            assets_manager,
             search
         )
         self.main_app = main_app
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.cfg = cfg
 
@@ -180,9 +170,7 @@ class MainTask(component.Task):
                     self.app_title,
                     self.app_banner,
                     self.custom_css,
-                    self.mail_sender,
                     self.cfg,
-                    self.assets_manager,
                 )
             )
             user = security.get_user()
@@ -202,7 +190,7 @@ class MainTask(component.Task):
 
 
 class App(object):
-    def __init__(self, app_title, custom_css, mail_sender, cfg, assets_manager,
+    def __init__(self, app_title, custom_css, cfg,
                  search, services_service):
         self._services = services_service
 
@@ -210,8 +198,6 @@ class App(object):
         self.app_banner = cfg['pub_cfg']['banner']
         self.favicon = cfg['pub_cfg']['favicon']
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
-        self.assets_manager = assets_manager
         self.search_engine = search
         self.task = component.Component(
             services_service(
@@ -219,9 +205,8 @@ class App(object):
                 self.app_title,
                 self.app_banner,
                 self.custom_css,
-                self, mail_sender,
-                cfg,
-                self.assets_manager, search
+                self, cfg,
+                search
             )
         )
 
@@ -238,18 +223,7 @@ class WSGIApp(wsgi.WSGIApp):
                         'favicon': 'string(default="img/favicon.ico")',
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
-                        'templates': "string(default='')",
-                        'services': 'string(default="kansha.services")'},
-        'mail': {
-            'activated': 'boolean(default=True)',
-            'smtp_host': 'string(default="127.0.0.1")',
-            'smtp_port': 'integer(default=25)',
-            'default_sender': 'string(default="noreply@email.com")'
-        },
-        'assetsmanager': {
-            'basedir': 'string',
-            'max_size': 'integer(default=2048)'  # Max file size in kilobytes
-        },
+                        'templates': "string(default='')"},
         'locale': {
             'major': 'string(default="en")',
             'minor': 'string(default="US")'
@@ -262,24 +236,14 @@ class WSGIApp(wsgi.WSGIApp):
             conf, configspec=configobj.ConfigObj(self.ConfigSpec), interpolation='Template')
         config.validate(config_filename, conf, error)
 
-        services.set_entry_point(conf['application']['services'])
         self._services = services.ServicesRepository(
-            'services', config_filename, conf, error
+            config_filename, error, conf
         )
 
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
         self.custom_css = conf['application']['custom_css']
         self.application_path = conf['application']['path']
-
-        # mail configuration
-        mail_config = conf['mail']
-        self.mail_sender = self._create_mail_sender(mail_config)
-        self.default_sender_email = mail_config['default_sender']
-
-        # assets manager configuration
-        self.assets_manager = SimpleAssetsManager(
-            conf['assetsmanager']['basedir'], self.name, **conf['assetsmanager'])
 
         # search_engine engine configuration
         self.search_engine = SearchEngine(**conf['search'])
@@ -311,25 +275,13 @@ class WSGIApp(wsgi.WSGIApp):
         return super(WSGIApp, self).create_root(
             self.app_title,
             self.custom_css,
-            self.mail_sender,
             self.app_cfg,
-            self.assets_manager,
             self.search_engine,
             self._services
         )
 
-    def _create_mail_sender(self, mail_config):
-        activated = mail_config['activated']
-        host = mail_config['smtp_host']
-        port = mail_config['smtp_port']
-        default_sender = mail_config['default_sender']
-
-        factory = mail.MailSender if activated else mail.NullMailSender
-        return factory(host, port, default_sender)
-
     def start_request(self, root, request, response):
         super(WSGIApp, self).start_request(root, request, response)
-        self.mail_sender.set_application_url(request.application_url)
         if security.get_user():
             self.set_locale(security.get_user().get_locale())
 
@@ -395,6 +347,68 @@ class WSGIApp(wsgi.WSGIApp):
         # log.exception("\n%s" % request)
         if self.debug:
             raise
+
+    def send_notifications(self, hours, url):
+
+        mail_sender = self._services['mail_sender']
+        # Group users by board
+        boards = {}
+        for subscriber in notifications.get_subscribers():
+            boards.setdefault(subscriber.board.id, {'board': subscriber.board,
+                                                    'subscribers': []})['subscribers'].append(subscriber)
+
+        for board in boards.itervalues():
+            if not board['board'].archived:
+                events = notifications.get_events(board['board'], hours)
+                for subscriber in board['subscribers']:
+                    data = notifications.filter_events(events, subscriber)
+                    if not data:
+                        continue
+                    locale = UserManager.get_app_user(subscriber.member.username).get_locale()
+                    self.set_locale(locale)
+                    subject, content, content_html = notifications.generate_email(self.app_title, board['board'],
+                                                                                  subscriber.member, hours, url, data)
+                    mail_sender.send(subject, [subscriber.member.email], content, content_html)
+        if self.activity_monitor:
+            events = notifications.get_events(None, hours)
+            new_users = UserManager.get_all_users(hours)
+            # for event in events:
+            #     print event.board.title, notifications.render_event(event)
+            # for usr in new_users:
+            #     print usr.fullname, usr.username, usr.email, usr.registration_date
+
+            if not (events or new_users):
+                return
+            h = xhtml5.Renderer()
+            with h.html:
+                h << h.h1('Boards')
+                with h.ul:
+                    for event in events:
+                        if event.card:
+                            # IDs are interpreted as anchors since HTML4. So don't use the ID of
+                            # the card as a URL fragment, because the browser
+                            # jumps to it.
+                            ev_url = urlparse.urljoin(url, event.board.url)
+                            notif = h.a(notifications.render_event(event), href='%s#id_card_%s' % (
+                                ev_url, event.card.id), style='text-decoration: none;')
+                        else:
+                            notif = notifications.render_event(event)
+                        h << h.li(u'%s : ' % (event.board.title), notif)
+                h << h.h1('New users')
+                with h.table(border=1):
+                    with h.tr:
+                        h << h.th('Login')
+                        h << h.th('Fullname')
+                        h << h.th('Email')
+                        h << h.th('Registration date')
+                    for usr in new_users:
+                        with h.tr:
+                            h << h.td(usr.username)
+                            h << h.td(usr.fullname)
+                            h << h.td(usr.email)
+                            h << h.td(usr.registration_date.isoformat())
+
+            mail_sender.send('Activity report for '+url, [self.activity_monitor], u'', h.root.write_htmlstring())
 
 
 def create_pipe(app, *args, **kw):

@@ -263,13 +263,14 @@ def render_Board_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Invite members'))
     friends = self.get_friends(security.get_user())
+    application_url = h.request.application_url
     if friends:
         with h.div(class_="favorites"):
             h << h.h3(_('Favorites'))
             with h.ul:
-                h << h.li([f.on_answer(lambda email: self.invite_members([email])) for f in friends])
+                h << h.li([f.on_answer(lambda email: self.invite_members([email], application_url)) for f in friends])
     with h.div(class_="members search"):
-        h << self.new_member.on_answer(self.invite_members)
+        h << self.new_member.on_answer(lambda emails: self.invite_members(emails, application_url))
 
     return h.root
 
@@ -660,19 +661,25 @@ def render_BoardProfile(self, h, comp, *args):
 
 @presentation.render_for(BoardMember)
 def render_BoardMember(self, h, comp, *args):
+    application_url = h.request.application_url
     if security.has_permissions('manage', self.board):
-        return self.user.on_answer(self.dispatch).render(h, model='%s' % self.role)
+        return self.user.on_answer(
+            lambda action: self.dispatch(action, application_url)
+        ).render(h, model='%s' % self.role)
     else:
         def dispatch(answer):
-            self.dispatch(answer)
+            self.dispatch(answer, application_url)
             comp.answer()
         return h.div(self.user.on_answer(dispatch).render(h), class_='member')
 
 
 @presentation.render_for(BoardMember, model="overlay")
 def render_BoardMember_overlay(self, h, comp, *args):
+    application_url = h.request.application_url
     if security.has_permissions('manage', self.board):
-        return self.user.on_answer(self.dispatch).render(h, model='overlay-%s' % self.role)
+        return self.user.on_answer(
+            lambda action: self.dispatch(action, application_url)
+        ).render(h, model='overlay-%s' % self.role)
     else:
         member = self.user.render(h, "avatar")
         member.attrib.update({'class': 'miniavatar unselectable'})

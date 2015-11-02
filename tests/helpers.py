@@ -24,6 +24,8 @@ from kansha.board import comp as board
 from kansha.user import usermanager
 from kansha.security import SecurityManager
 from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
+from kansha.services.services_repository import ServicesRepository
+from kansha.services.mail import DummyMailSender
 
 
 def setup_db(metadata):
@@ -87,7 +89,7 @@ def set_context(user=None):
 
 def get_or_create_data_user(suffixe=''):
     '''Get test user for suffixe, or create if not exists'''
-    user_test = usermanager.UserManager().get_by_username(
+    user_test = usermanager.UserManager.get_by_username(
         u'usertest_%s' % suffixe)
     if not user_test:
         user_test = usermanager.UserManager().create_user(
@@ -103,7 +105,15 @@ def create_user(suffixe=''):
     """Create Test user
     """
     user_test = get_or_create_data_user(suffixe)
-    return usermanager.get_app_user(u'usertest_%s' % suffixe)
+    return usermanager.UserManager.get_app_user(u'usertest_%s' % suffixe)
+
+
+def create_services():
+    'Service mockups for testing components'
+    _services = ServicesRepository()
+    _services.register('assets_manager', DummyAssetsManager())
+    _services.register('mail_sender', DummyMailSender())
+    return _services
 
 
 def create_board():
@@ -114,5 +124,5 @@ def create_board():
                                                             True)
     session.add(data_board)
     session.flush()
-    assets_manager = DummyAssetsManager()
-    return board.Board(data_board.id, 'boards', '', '', '', assets_manager, None)
+    _services = create_services()
+    return _services(board.Board, data_board.id, 'boards', '', '', None)

@@ -9,20 +9,16 @@
 #--
 
 from collections import namedtuple, OrderedDict
-import functools
 import imghdr
-import urllib
 import peak.rules
 
 from nagare import ajax
-from nagare import presentation, security, editor, component, database
+from nagare import presentation, security, editor, component
 from nagare.i18n import _, _L
 
 from kansha.authentication.database import validators, forms as registation_forms
-from kansha import models
 from kansha.board import comp as board
 from usermanager import UserManager
-from kansha.user.usermanager import get_app_user
 
 from .user_cards import UserCards
 from kansha import validator
@@ -36,34 +32,35 @@ MenuEntry = namedtuple('MenuEntry', 'label content')
 
 class UserProfile(object):
 
-    def __init__(self, app_title, app_banner, custom_css, user, mail_sender, assets_manager, search_engine):
+    def __init__(self, app_title, app_banner, custom_css, user, search_engine, services_service):
         """
         In:
          - ``user`` -- user (DataUser instance)
-         - ``mail_sender`` -- MailSender instance
         """
         self.app_title = app_title
         self.menu = OrderedDict()
         self.menu['boards'] = MenuEntry(
             _L(u'Boards'),
-            UserBoards(
+            services_service(
+                UserBoards,
                 app_title,
                 app_banner,
                 custom_css,
                 user,
-                mail_sender,
-                assets_manager
             )
         )
         self.menu['my-cards'] = MenuEntry(
             _L(u'My cards'),
-            UserCards(user, assets_manager, search_engine)
+            services_service(UserCards, user, search_engine)
         )
         self.menu['profile'] = MenuEntry(
             _L(u'Profile'),
-            get_userform(
-                app_title, app_banner, custom_css, user.source
-            )(user, mail_sender, assets_manager)
+            services_service(
+                get_userform(
+                    app_title, app_banner, custom_css, user.source
+                ),
+                user,
+            )
         )
 
         self.content = component.Component(None)
@@ -208,21 +205,19 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserForm(BasicUserForm):
 
-    def __init__(self, app_title, app_banner, custom_css, target, mail_sender, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, target, assets_manager_service, mail_sender_service):
         """
         In:
          - ``target`` -- DataUser instance
-         - ``mail_sender`` -- MailSender instance
+         - ``mail_sender_service`` -- MailSender service
         """
         super(UserForm, self).__init__(target, self.fields)
 
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
-        self.assets_manager = assets_manager
-        self.application_url = mail_sender.application_url
-
+        self.mail_sender = mail_sender_service
+        self.assets_manager = assets_manager_service
         self.username.validate(self.validate_username)
         self.fullname.validate(validators.validate_non_empty_string)
 
@@ -293,13 +288,13 @@ class UserForm(BasicUserForm):
         else:
             raise ValueError(_("The two passwords don't match"))
 
-    def _create_email_confirmation(self):
+    def _create_email_confirmation(self, application_url):
         """Create email confirmation"""
         confirmation_url = '/'.join(
-            (self.application_url, 'new_mail', self.username()))
+            (application_url, 'new_mail', self.username()))
         return registation_forms.EmailConfirmation(self.app_title, self.app_banner, self.custom_css, lambda: security.get_user().data, confirmation_url)
 
-    def commit(self):
+    def commit(self, application_url):
         """ Commit method
 
         If email changes, send confirmation mail to user
@@ -312,7 +307,7 @@ class UserForm(BasicUserForm):
                 self.target.email != self.email_to_confirm()):
             # Change target email_to_confirm (need it to send mail)
             self.target.email_to_confirm = self.email_to_confirm()
-            confirmation = self._create_email_confirmation()
+            confirmation = self._create_email_confirmation(application_url)
             confirmation.send_email(self.mail_sender)
             self.email_to_confirm.info = _(
                 "A confirmation email has been sent.")
@@ -415,7 +410,7 @@ def render(self, h, comp, *args):
             with h.div(class_=''):
                 h << h.input(_("Save"),
                              class_="btn btn-primary btn-small",
-                             type='submit').action(self.commit)
+                             type='submit').action(self.commit, h.request.application_url)
     return h.root
 
 
@@ -423,8 +418,10 @@ def render(self, h, comp, *args):
 def get_userform(app_title, app_banner, custom_css, source):
     """ User form for application user
     """
-    return functools.partial(UserForm, app_title, app_banner, custom_css)
+    def factory_compatible_with_services(target, services_service):
+        return services_service(UserForm, app_title, app_banner, custom_css, target)
 
+    return factory_compatible_with_services
 
 class ExternalUserForm(BasicUserForm):
     pass
@@ -439,7 +436,7 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, custom_css, user, mail_sender, assets_manager):
+    def __init__(self, app_title, app_banner, custom_css, user, mail_sender_service, assets_manager_service, services_service):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -457,24 +454,24 @@ class UserBoards(object):
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
-        self.assets_manager = assets_manager
+        self.mail_sender = mail_sender_service
+        self.assets_manager = assets_manager_service
         self.user_id = user.username
         self.user_source = user.source
+        self._services = services_service
         self.new_board = component.Component(board.NewBoard())
         self.reload_boards()
 
     def _get_board(self, b, model=0):
-        b = board.Board(b.id, self.app_title, self.app_banner, self.custom_css,
-                        self.mail_sender, self.assets_manager, None,
-                        on_board_delete=self.reload_boards,
-                        on_board_archive=self.reload_boards,
-                        on_board_restore=self.reload_boards,
-                        on_board_leave=self.reload_boards,
-                        on_update_members=self.reload_boards,
-                        load_data=False)
+        b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.custom_css,
+                           None,
+                           on_board_delete=self.reload_boards,
+                           on_board_archive=self.reload_boards,
+                           on_board_restore=self.reload_boards,
+                           on_board_leave=self.reload_boards,
+                           on_update_members=self.reload_boards,
+                           load_data=False)
         return component.Component(b, model)
-
 
     def reload_boards(self):
         self.last_modified_boards = OrderedDict((b.id, self._get_board(b))

@@ -83,9 +83,9 @@ class Board(object):
         self.on_board_archive = on_board_archive
         self.on_board_restore = on_board_restore
         self.on_board_leave = on_board_leave
-	self.on_update_members = on_update_members
-        self.assets_manager = assets_manager_service        
-	self.search_engine = search_engine
+        self.on_update_members = on_update_members
+        self.assets_manager = assets_manager_service
+        self.search_engine = search_engine
         self._services = services_service
 
         self.version = self.data.version
@@ -859,7 +859,7 @@ class Board(object):
                 self.card_matches.add(None)
         else:
             self.card_matches = set()
-            
+
     @staticmethod
     def get_last_modified_boards_for(user_username, user_source):
         return DataBoard.get_last_modified_boards_for(user_username, user_source)

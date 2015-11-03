@@ -384,9 +384,6 @@ class Board(object):
     def archived(self):
         return self.data.archived
 
-    def archive_column(self):
-        return self.columns
-
     @property
     def archive(self):
         return self.data.archive

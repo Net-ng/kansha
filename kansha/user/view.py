@@ -31,7 +31,11 @@ def render_User(self, h, comp, *args):
 def render_User_avatar(self, h, comp, model, *args):
     """Render a user's avatar"""
     with h.span(class_='avatar', title='%s' % (self.data.fullname)):
-        h << h.img(src=self.get_avatar())
+        avatar = self.get_avatar()
+        if avatar:
+            h << h.img(src=avatar)
+        else:
+            h << h.i(class_='ico-btn icon-user-tie')
     return h.root
 
 
@@ -97,7 +101,7 @@ def render_User_manager(self, h, comp, model):
                 h << h.input(
                     value=_("Remove"),
                     type="submit",
-                    class_="btn btn-primary btn-small remove"
+                    class_="btn btn-primary btn-small delete"
                 ).action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
@@ -115,8 +119,8 @@ def render_User_last_manager(self, h, comp, *args):
 @presentation.render_for(User, model="menu")
 def render_User_menu(self, h, comp, *args):
     """Render user menu"""
-    h << h.a(_("Home"), id="linkHome").action(lambda: comp.answer(self))
-    h << h.a(_("Logout"), id="logout").action(comp.answer)
+    h << h.a(h.i(class_='icon-home'), _("Home"), class_="home").action(lambda: comp.answer(self))
+    h << h.a(h.i(class_='icon-switch'), _("Logout"), class_="logout").action(comp.answer)
     return h.root
 
 

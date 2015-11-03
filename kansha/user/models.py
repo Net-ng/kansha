@@ -141,10 +141,7 @@ class DataUser(Entity):
             self.managed_boards.append(board)
 
     def get_picture(self):
-        if self.picture is None:
-            return "img/member.png"
-        else:
-            return self.picture
+        return self.picture
 
     @classmethod
     def get_confirmed_users(cls):

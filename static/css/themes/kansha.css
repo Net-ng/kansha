@@ -3,3 +3,163 @@
     display: none;
 }
 
+/* General */
+html, body { height: 100%; max-height: 100% }
+body {
+    font-family: OpenSansLight;
+}
+
+form {
+    margin: 0 0 3px 0;
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 6px;
+    resize: none;
+    border: 1px solid #c0c0c0;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: auto;
+}
+
+select {
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #c0c0c0;
+}
+
+a, a:hover, a:visited, a:hover i { text-decoration: none; }
+a:focus, input:focus, textarea:focus, button:focus { outline: 0 none }
+
+ul { padding: 0; }
+li { list-style: none; padding: 3px 0; }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: OpenSansLight;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    line-height: 20px;
+}
+
+/* Buttons */
+button, .btn {
+    min-width: 62px;
+    width: auto;
+    cursor: pointer;
+    border: 1px solid #c0c0c0;
+    display: inline-block;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+button:hover,
+button:focus,
+button:active,
+button.active {
+    background-color: #e6e6e6;
+}
+
+button:disabled { cursor: inherit }
+button:disabled:hover { background-color: transparent; }
+
+.btn.btn-primary {
+    color: white;
+    background: #93B70A;
+}
+
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+.btn.btn-primary.active,
+.btn.btn-primary.disabled,
+.btn.btn-primary[disabled] {
+    background-color: #7E9C12
+}
+
+.btn.delete {
+    color: white;
+    background: #BC3607;
+    border: 1px solid #8c3110
+}
+
+.btn.delete:hover,
+.btn.delete:active,
+.btn.delete.active,
+.btn.delete.disabled,
+.btn.delete[disabled] {
+    background-color: #A01A00
+}
+
+
+/* End buttons */
+
+[data-icon]:before {
+    font-family: icons;
+    content: attr(data-icon);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    padding-right: 5px;
+}
+
+/* Remove underline from links */
+i[class^="icon-"]:before {
+	display: inline-block;
+	text-decoration: none;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.ico-btn {
+    font-size: 28px;
+    color: #737373;
+}
+
+/*Error page*/
+#errorPage {
+    color: #737373;
+    height: auto;
+    padding: 0;
+    margin: 0
+}
+
+#errorPage #status {
+    font: 36px OpenSansLight;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+#errorPage #message {
+    padding: 10px 10px;
+    background: white;
+    margin-top: 70px;
+    text-align: center;
+}
+
+#errorPage #message p {
+    font: 48px /64px OpenSansLight;
+}
+/* End error page */
+
+/* Footer */
+.credits {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #e5e5e5;
+    padding: 10px 0;
+}
+/* End footer */

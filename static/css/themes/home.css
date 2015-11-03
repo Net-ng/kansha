@@ -1,0 +1,250 @@
+/*Home page*/
+.home {
+    padding: 100px 20px 54px 0;
+}
+
+.home li a {
+    color: #737373;
+    font: 15px OpenSansLight;
+    display: block
+}
+
+.home li a:hover {
+    text-decoration: none
+}
+
+/* Menu */
+.menu {
+    width: 190px;
+    height: 100%;
+    border-right: 1px dotted #737373
+}
+
+.menu li a {
+    padding: 8px 8px 8px 50px;
+    margin-bottom: 3px
+}
+
+.menu li span {
+    line-height: 20px;
+}
+
+.menu a.boards {
+    background-image: url(../img/sprites.png);
+    background-position: -561px -539px
+}
+
+.menu a.profile {
+    background-image: url(../img/sprites.png);
+    background-position: -561px -588px
+}
+
+.menu a.active {
+    background-color: #ebebeb
+}
+
+.menu a:hover {
+    background-color: #ebebeb
+}
+
+.menu .nav-header {
+    display: none
+}
+
+.menu {
+    padding-top: 0
+}
+
+.menu .icon {
+    font-size: 20px;
+    margin-right: 7px;
+}
+*/
+
+.home .boards {
+    color: #737373;
+    font: 15px OpenSansLight;
+}
+
+.home .boards li a {
+    padding: 5px;
+}
+
+.home .boards a.archive,
+.home .boards a.restore,
+.home .boards a.delete,
+.home .boards a.leave {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.home .boards a.archive.highlight,
+.home .boards a.restore.highlight,
+.home .boards a.delete.highlight,
+.home .boards a.leave.highlight {
+    display: block
+}
+
+.home .boards a.restore {
+    right: 40px;
+}
+
+.home .boards ul.board-labels {
+    border-bottom: 1px solid #c0c0c0;
+    padding-left: 0;
+    padding-bottom: 14px;
+    margin-bottom: 17px;
+    max-width: 800px;
+}
+
+.home .boards ul.unstyled label {
+    margin-bottom: 0;
+}
+
+.home .new-board-name {
+    max-width: 800px;
+    margin-bottom: 5px;
+}
+
+.home .boards ul.board-labels li {
+    position: relative;
+}
+
+.home .boards ul.board-labels li:hover {
+    background: #ebebeb
+}
+
+.home .boards input {
+    margin-top: 5px
+}
+
+.home .boards select {
+    width: 96%;
+    margin-top: 5px
+}
+
+.home .memberPanel {
+    width: 300px;
+    height: 300px;
+    z-index: 15;
+    background: #ffffff;
+    position: absolute;
+    -webkit-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
+    padding: 15px
+}
+
+.home #lists {
+    margin-bottom: 50px;
+}
+
+.home #lists .list {
+    margin-left: 0;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    width: 48%;
+    display: block !important;
+    float: left !important;
+}
+
+.home #lists .list .title a {
+    float: none;
+}
+
+/* Board labels */
+.boards .wide {
+    display: inline;
+}
+
+.boards .compact {
+    display: none;
+}
+
+.board-labels .overlay .action-close {
+    padding: 0 !important
+}
+
+.board-labels .members {
+    width: auto;
+    float: none;
+    position: absolute;
+    right: 40px;
+    top: 4px
+}
+
+.board-labels .members a {
+    width: auto;
+    padding: 0 !important
+}
+
+.board-labels .members .add {
+    display: none;
+    overflow: hidden
+}
+
+.board-labels .members.highlight .add {
+    display: inline-block;
+}
+
+.board-labels .members .miniavatar {
+    display: inline-block;
+    overflow: hidden;
+    margin: 0 0 0 6px
+}
+
+.board-labels .members .more {
+    margin-right: -5px
+}
+
+.board-labels .members .more .badge {
+    position: relative;
+    left: -11px;
+    top: -2px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.board-labels .members .more > a {
+    display: inline-block;
+    overflow: hidden;
+}
+/* End board labels */
+
+/* Responsive medium size */
+@media (max-width:813px) {
+    .home { padding: 60px 20px 0 20px; }
+
+    .home .menu {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .home .menu li {
+        display: inline-block;
+        padding: 0;
+    }
+
+    .home .menu a {
+        padding: 10px 20px;
+        margin: 0;
+    }
+
+    .home .menu a.active {
+        border: 1px solid #ccc;
+        border-bottom: 0;
+    }
+
+    .home .menu, .home .boards { width: 100%; }
+}
+
+/* Responsive small size */
+@media all and (max-width:640px) {
+    .home .boards .wide { display: none; }
+    .home .boards .compact { display: inline-block; }
+}

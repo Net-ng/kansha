@@ -254,7 +254,7 @@ def render_history(self, h, *_args):
             for card in col.cards:
                 h << h.option(card.title, value=card.id).selected(
                     self.card_id())
-    with h.div(class_='history row-fluid'):
+    with h.div(class_='history'):
         with h.table(class_='table table-striped table-hover'):
             with h.body:
                 for event in get_history(board, cardid=self.card_id(), username=self.user_id()):

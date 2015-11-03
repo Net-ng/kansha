@@ -98,17 +98,23 @@ class Board(object):
 
         # Member part
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: '+',
+            overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'),
                             dynamic=True, cls='board-labels-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method))
 
         self.update_members()
 
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: _("%s more...") % (len(self.all_members) - self.max_shown_members),
+        def many_user_render(h, number):
+            return h.span(
+                h.i(class_='ico-btn icon-user-nb'),
+                h.span(number, class_='badge'),
+                title=_("%s more...") % number)
+
+        self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.max_shown_members),
                                                                    lambda r: component.Component(self).render(r, model='members_list_overlay'),
                                                                    dynamic=False, cls='board-labels-overlay'))
-        self.see_all_members_compact = component.Component(overlay.Overlay(lambda r: _("%s more...") % len(self.all_members),
+        self.see_all_members_compact = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members)),
                                                                            lambda r: component.Component(self).render(r, model='members_list_overlay'),
                                                                            dynamic=False, cls='board-labels-overlay'))
 

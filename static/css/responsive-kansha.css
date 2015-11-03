@@ -6,43 +6,6 @@
  * the file LICENSE.txt, which you should have received as part of
  * this distribution.
  **/
-html {
-    height: 100%;
-    max-height: 100%;
-    background: #f8f8f8 url("../img/background.jpg") repeat-x;
-}
-
-body {
-    height: 100%;
-    max-height: 100%;
-    background: transparent;
-}
-
-form {
-    margin: 0 0 3px 0;
-}
-
-textarea,
-input {
-    width: 96%;
-}
-
-a {
-    color: #009fed
-}
-
-a:hover {
-    color: #009fed;
-}
-
-a:active {
-    background-color: transparent;
-}
-
-.hidden {
-    display: none;
-    visibility: hidden;
-}
 
 #mask {
     background: none repeat scroll 0 0 #000;
@@ -56,6 +19,13 @@ a:active {
 
 #mainNavbar {
     margin-top: -70px;
+}
+
+#mainTab .avatar {
+    height: 32px;
+    min-width: 32px;
+    max-width: 36px;
+    text-align: center;
 }
 
 .navbar {
@@ -105,7 +75,6 @@ a:active {
     -moz-box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.47);
     box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.47);
     z-index: 30;
-    height: 40px;
 }
 
 .navbar #mainActions {
@@ -119,32 +88,21 @@ a:active {
 .navbar .navActions a {
     color: #434343;
     font: 15px OpenSansLight;
+    padding: 10px;
+}
+
+.navbar .navActions a:hover {
+    text-decoration: underline;
+}
+
+.navbar .navActions i {
+    font-size: 24px;
+    color: #9d9a9a;
+    padding-right: 5px;
 }
 
 .navbar .navActions a:hover i {
     text-decoration: underline;
-}
-
-.navbar .navActions #logout {
-    display: inline-block;
-    padding: 5px 0 5px 46px;
-    background: url(../img/sprites.png) no-repeat -604px -406px
-}
-
-.navbar .navActions #logout:hover {
-    text-decoration: underline;
-    background-position: -604px -437px
-}
-
-.navbar .navActions #linkHome {
-    display: inline-block;
-    padding: 10px 0 10px 46px;
-    background: url(../img/sprites.png) no-repeat -611px -466px
-}
-
-.navbar .navActions #linkHome:hover {
-    text-decoration: underline;
-    background-position: -611px -500px
 }
 
 .avatar.big {
@@ -156,8 +114,8 @@ a:active {
 
 .avatar {
     display: inline-block;
-    height: 32px;
-    width: 36px;
+    max-height: 32px;
+    max-width: 36px;
     vertical-align: middle;
 }
 
@@ -165,11 +123,6 @@ a:active {
     width: 30px;
     height: 30px;
     display: block
-}
-
-.miniavatar img {
-    width: 22px;
-    height: 22px;
 }
 
 .navbar .navActions #login {
@@ -378,7 +331,7 @@ span.nomatches {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 70%;
+    width: 68%;
 }
 
 .board .boardTitle .title-form {
@@ -885,21 +838,7 @@ span.nomatches {
     word-wrap: break-word;
     -webkit-box-shadow: #d6d6d6 3px 1px 1px;
     -moz-box-shadow: #d6d6d6 3px 1px 1px;
-    box-shadow: #d6d6d6 3px 1px 1px;    /*   z-index: 1000;*/
-}
-
-.archive {
-    background: #c6c6c6;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#d6d6d6), to(#c6c6c6));
-    background: -webkit-linear-gradient(#d6d6d6, #c6c6c6);
-    background: -moz-linear-gradient(#d6d6d6, #c6c6c6);
-    background: -ms-linear-gradient(#d6d6d6, #c6c6c6);
-    background: -o-linear-gradient(#d6d6d6, #c6c6c6);
-    background: linear-gradient(#d6d6d6, #c6c6c6);
-}
-
-.archive .list-header {
-    background: #d2d2d2;
+    box-shadow: #d6d6d6 3px 1px 1px; /*   z-index: 1000;*/
 }
 
 .card:after {
@@ -1055,8 +994,6 @@ span.nomatches {
 .card .members .miniavatar,
 .cardactions .members .miniavatar {
     display: inline-block;
-    width: 22px;
-    height: 22px;
     overflow: hidden;
     margin-right: 5px;
 }
@@ -1078,79 +1015,6 @@ span.nomatches {
     overflow: hidden;
     color: #009fed;
     font: bold 11px arial
-}
-
-.board-labels .wide {
-    display: inline;
-}
-
-.board-labels .compact {
-    display: none;
-}
-
-.board-labels .overlay .action-close {
-    padding: 0 !important
-}
-
-.board-labels .members {
-    width: auto;
-    float: none;
-    position: absolute;
-    right: 25px;
-    top: 4px
-}
-
-.board-labels .members a {
-    width: auto;
-    float: left;
-    padding: 0 !important
-}
-
-.board-labels .members .add {
-    display: none;
-    width: 28px;
-    height: 25px;
-    background: url(../img/add_member.png);
-    float: left;
-    margin-right: -6px;
-    overflow: hidden
-}
-
-.board-labels .members.highlight .add {
-    display: inline-block;
-}
-
-.board-labels .members .add a {
-    text-indent: 500px;
-    white-space: nowrap;
-}
-
-.board-labels .members .miniavatar {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    overflow: hidden;
-    margin: 0 0 0 6px
-}
-
-.board-labels .members .more {
-    float: left;
-    margin-right: -2px
-}
-
-.board-labels .members .more > a {
-    display: inline-block;
-    width: 11px;
-    height: 15px;
-    padding: 10px 0 0 16px !important;
-    background: url(../img/more_member.png);
-    overflow: hidden;
-    color: #009fed !important;
-    font: bold 11px arial !important
-}
-
-.board-labels .members .pending {
-    opacity: 1
 }
 
 .overlay.board-labels-overlay .search {
@@ -1860,47 +1724,6 @@ textarea.expanded {
     left: -4px
 }
 
-.btn-primary {
-    color: white;
-    background: #93B70A
-}
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active,
-.btn-primary.active,
-.btn-primary.disabled,
-.btn-primary[disabled] {
-    background-color: #7E9C12
-}
-
-.buttonDeleteCard .btn {
-    color: white;
-    background: #BC3607;
-    border: 1px solid #8c3110
-}
-
-.remove {
-    color: white;
-    background: #BC3607;
-    border: 1px solid #8c3110
-}
-
-.remove:hover,
-.remove:focus,
-.buttonDeleteCard .btn:hover,
-.buttonDeleteCard .btn:active,
-.buttonDeleteCard .btn.active,
-.buttonDeleteCard .btn.disabled,
-.buttonDeleteCard .btn[disabled] {
-    background-color: #A01A00
-}
-
-.buttonDeleteCard .btn [class^="icon-"] {
-    background-image: url("../img/glyphicons-halflings-white.png");
-    background-position: -456px 0;
-}
-
 #description-overlay {
     background: none repeat scroll 0 0 #EEEEEE;
     border: 1px solid;
@@ -1955,19 +1778,6 @@ textarea.expanded {
     border-bottom: 1px solid #F2F2F2
 }
 
-.row-fluid > .span4 {
-    padding-top: 37px
-}
-
-.row-fluid > .span4 li {
-    padding-bottom: 15px
-}
-
-.row-fluid .delete {
-    float: right;
-    margin-right: 5px;
-}
-
 /* YUI FIX */
 .yui-skin-sam .mask {
     background: #000
@@ -2003,235 +1813,6 @@ textarea.expanded {
     color: #008000;
     top: -10px;
     position: relative;
-}
-
-/* structure */
-.row-fluid > [class*="span"] {
-    margin-left: 5.564%
-}
-
-.row-fluid > .span4 {
-    width: 26.624%
-}
-
-.row-fluid > .span8 {
-    width: 67.812%
-}
-
-/*Home page*/
-#home-user {
-    padding: 100px 20px 54px 0;
-}
-
-#home-user .row-fluid {
-    height: 100%
-}
-
-#home-user li a {
-    color: #737373;
-    font: 15px OpenSansLight;
-    display: block
-}
-
-#home-user li a:hover {
-    text-decoration: none
-}
-
-#home-user .span4 {
-    width: 190px;
-    height: 100%;
-    border-right: 1px dotted #737373
-}
-
-#home-user .span4 ul {
-    list-style: none;
-    margin: 0
-}
-
-#home-user .span4 li {
-    padding: 0;
-}
-
-#home-user .span4 a {
-    padding: 8px 0 8px 91px;
-    margin-bottom: 3px
-}
-
-#home-user .span4 a.boards {
-    background-image: url(../img/sprites.png);
-    background-position: -561px -539px
-}
-
-#home-user .span4 a.profile {
-    background-image: url(../img/sprites.png);
-    background-position: -561px -588px
-}
-
-#home-user .span4 a.active {
-    background-color: #ebebeb
-}
-
-#home-user .span4 a:hover {
-    background-color: #ebebeb
-}
-
-#home-user .span4 .nav-header {
-    display: none
-}
-
-#home-user .span4 {
-    padding-top: 0
-}
-
-#home-user .span8 {
-    color: #737373;
-    font: 15px OpenSansLight;
-    margin-left: 25px;
-}
-
-#home-user .span8 a {
-    padding: 5px;
-    float: left
-}
-
-#home-user .span8 a.delete {
-    float: right;
-    height: 18px;
-    width: 8px;
-    display: none;
-    background-image: url(../img/sprites.png);
-    background-position: -623px -50px;
-    overflow: hidden;
-    position: relative;
-    top: -2px
-}
-
-#home-user .span8 a.archive {
-    float: right;
-    height: 13px;
-    width: 12px;
-    display: none;
-    background-image: url(../img/archive.png);
-    background-position: bottom center;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    position: relative;
-    top: 4px;
-}
-
-#home-user .span8 a.delete.highlight,
-#home-user .span8 a.archive.highlight,
-#home-user .span8 a.leave.highlight {
-    display: block
-}
-
-#home-user .span8 a.leave {
-    float: right;
-    height: 16px;
-    width: 14px;
-    display: none;
-    background-image: url(../img/logout.png);
-    background-position: 0 1px;
-    overflow: hidden;
-    position: relative;
-    top: 3px
-}
-
-#home-user .span8 a.restore {
-    float: right;
-    height: 13px;
-    width: 12px;
-    display: none;
-    background-image: url(../img/retrieve.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    position: relative;
-    top: 3px;
-}
-
-#home-user .span8 a.restore.highlight {
-    display: block
-}
-
-#home-user .span8 ul.board-labels {
-    border-bottom: 1px solid #c0c0c0;
-    padding-bottom: 14px;
-    margin-bottom: 17px;
-    max-width: 800px;
-}
-
-#home-user .span8 ul.unstyled label {
-    margin-bottom: 0;
-}
-
-#home-user .new-board-name {
-    max-width: 770px;
-}
-
-#home-user .span8 ul.board-labels li {
-    position: relative
-}
-
-#home-user .span8 ul.board-labels li:hover {
-    background: #ebebeb
-}
-
-#home-user .span8 .span8 input {
-    margin-top: 5px
-}
-
-#home-user .span8 .span8 select {
-    width: 96%;
-    margin-top: 5px
-}
-
-#home-user .span8 .span8 .btn-primary {
-    width: auto
-}
-
-#home-user .span8 .memberItem a {
-    float: right;
-    height: 18px;
-    width: 18px;
-    display: block;
-    background-image: url(../img/sprites.png);
-    background-position: -623px -167px;
-    overflow: hidden
-}
-
-#home-user .span8 .memberItem a .avatar {
-    height: 14px;
-    width: 18px
-}
-
-#home-user .memberPanel {
-    width: 300px;
-    height: 300px;
-    z-index: 15;
-    background: #ffffff;
-    position: absolute;
-    -webkit-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    padding: 15px
-}
-
-#home-user #lists {
-    margin-bottom: 50px;
-}
-
-#home-user #lists .list {
-    margin-left: 0;
-    margin-right: 10px;
-    margin-bottom: 15px;
-    width: 48%;
-    display: block !important;
-    float: left !important;
-}
-
-#home-user #lists .list .title a {
-    float: none;
 }
 
 /* Members */
@@ -2288,31 +1869,6 @@ textarea.expanded {
     margin: 0
 }
 
-/*Error page*/
-#errorPage {
-    color: #737373;
-    height: auto;
-    padding: 0;
-    margin: 0
-}
-
-#errorPage #status {
-    font: 36px OpenSansLight;
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-}
-
-#errorPage #message {
-    padding: 10px 10px;
-    background: white;
-    margin-top: 70px;
-    text-align: center;
-}
-
-#errorPage #message p {
-    font: 48px /64px OpenSansLight;
-}
 
 .yui-skin-sam .yui-ac-container {
 
@@ -2528,16 +2084,6 @@ textarea.expanded {
     background: #BD2828;
 }
 
-.credits {
-    width: 100%;
-    clear: both;
-    height: 24px;
-    text-align: center;
-    padding: 10px 0;
-    background-color: #E7E7E7;
-    box-shadow: 0 0 1px rgb(151, 151, 151);
-}
-
 .wrap {
     height: auto;
     min-height: 100%;
@@ -2732,28 +2278,28 @@ div.history th {
     width: 9em;
 }
 
-#home-user input:disabled {
+.home input:disabled {
     margin-bottom: 10px;
 }
 
 
 @media all and (min-width:1200px) {
-    #home-user .span8 {
+    .home .span8 {
         width: 80%;
     }
 
-    #home-user .span8 .span8 {
+    .home .span8 .span8 {
         width: 30%;
     }
 
 }
 
 @media all and (min-width:814px) and (max-width:1200px) {
-    #home-user .span8 {
+    .home .span8 {
         width: 70%;
     }
 
-    #home-user .span8 .span8 {
+    .home .span8 .span8 {
         width: 50%;
     }
 
@@ -2852,10 +2398,6 @@ div.history th {
         display: inline-block;
         padding: 2px 0 3px 39px;
         background: url(../img/sprites.png) no-repeat -614px -408px
-    }
-
-    .navbar #mainActions #logout a:hover {
-        background-position: -614px -439px
     }
 
     .navbar #mainActions #login {
@@ -2973,44 +2515,6 @@ div.history th {
         margin-bottom: 0
     }
 
-    #home-user {
-        padding-top: 60px;
-    }
-
-    #home-user .span4 {
-        width: 100%;
-        border-right: 0;
-        border-bottom: 1px solid #ccc;
-    }
-
-    #home-user .span4 li {
-        display: inline-block;
-    }
-
-    #home-user .span4 a {
-        padding: 10px 40px;
-        margin: 0;
-        border-radius: 10px 10px 0 0;
-    }
-
-    #home-user .span4 a.boards {
-        background-position: -610px -537px;
-    }
-
-    #home-user .span4 a.profile {
-        background-position: -608px -585px;
-    }
-
-    #home-user .span4 a.active {
-        border: 1px solid #ccc;
-        border-bottom: 0;
-    }
-
-    #home-user .span8 {
-        padding-top: 10px;
-        width: 95%;
-    }
-
     .board .boardTitle {
         margin-top: 100px;
         margin-left: 20px;
@@ -3022,16 +2526,6 @@ div.history th {
 
     .bbody {
         top: 165px;
-    }
-
-    #home-user .span4 li{
-        padding: 10px 20px;
-    }
-
-    #home-user .span4 li.boards,
-    #home-user .span4 li.my.cards,
-    #home-user .span4 li.profile{
-        background-image: none;
     }
 
     .checklists .checklist .new-item-form input {
@@ -3068,12 +2562,6 @@ div.history th {
         overflow: hidden
     }
 
-    .navbar #mainActions #logout a {
-        width: 0;
-        height: 20px;
-        overflow: hidden
-    }
-
     .navbar #mainActions #login a {
         width: 0;
         height: 20px;
@@ -3082,14 +2570,6 @@ div.history th {
 
     .board .boardTitle {
         font-size: 21px
-    }
-
-    .board-labels .wide {
-        display: none;
-    }
-
-    .board-labels .compact {
-        display: inline;
     }
 
 }

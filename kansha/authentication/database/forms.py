@@ -43,8 +43,11 @@ def render_Header(self, h, comp, *args):
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
+    h.head.css_url('css/themes/fonts.css')
     h.head.css_url('css/themes/kansha.css')
     h.head.css_url('css/themes/login.css')
+    h.head.css_url('css/themes/kansha_flat/kansha.css')
+    h.head.css_url('css/themes/kansha_flat/login.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
 

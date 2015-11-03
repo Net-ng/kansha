@@ -187,7 +187,7 @@ def render_Board_item(self, h, comp, *args):
         comp.answer(self.data.id)
 
     url = self.data.url
-    with h.li(class_="row-fluid"):
+    with h.li:
         link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
         if self.data.description:
             link.set('data-tooltip', self.data.description)
@@ -202,18 +202,16 @@ def render_Board_item(self, h, comp, *args):
         h << self.comp_members.render(h, 'members')
 
         if security.has_permissions('manage', self):
-            h << h.a(class_='archive', title=_(u'Archive this board')).action(self.archive_board)
+            h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
         else:
-            h << h.a(class_='leave',
-                     title=_(u'Leave this board'),
-                     onclick='return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-                     ).action(self.leave)
+            onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
+            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
     return h.root
 
 
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
-    with h.li(class_="row-fluid"):
+    with h.li:
         h << h.a(self.data.title, href='#', class_="boardItemLabel")
 
         h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'delete', false);
@@ -223,8 +221,8 @@ def render_Board_archived_item(self, h, comp, *args):
 
         if security.has_permissions('manage', self):
             onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-            h << h.a(class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
-            h << h.a(class_='restore', title=_(u'Restore this board')).action(self.restore_board)
+            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-bin'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
+            h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
     return h.root
 
 
@@ -297,12 +295,10 @@ def render_NewBoard(self, h, comp, *args):
                           ) % buttons_id, }
         h << h.input(type='text', placeholder=_(
             'Create a new board'), class_='new-board-name', **kw).action(title)
-        with h.div(id=buttons_id, class_="hidden"):
-            h << h.button(_('Add'),
-                          class_='btn btn-primary btn-small').action(lambda: self.create_board(comp, title(), user))
+        with h.div(id=buttons_id, class_="buttons hidden"):
+            h << h.button(_('Add'), class_='btn btn-primary btn-small').action(lambda: self.create_board(comp, title(), user))
             h << ' '
-            h << h.button(
-                _('Cancel'), class_='btn btn-small').action(comp.answer)
+            h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
     return h.root
 
 
@@ -428,10 +424,10 @@ def render_BoardConfig(self, h, comp, *args):
 def render_BoardConfig_edit(self, h, comp, *args):
     """Render the board configuration panel"""
     h << h.h2(_(u'Board configuration'))
-    with h.div(class_='row-fluid'):
-        with h.div(class_='span8'):
+    with h.div(class_='row'):
+        with h.div(class_='col'):
             h << self.content
-        with h.div(class_='span4'):
+        with h.div(class_='col'):
             with h.ul(class_='nav nav-pills nav-stacked'):
                 h << h.li(_('Menu'), class_='nav-header')
                 for title, _o in self.menu:
@@ -456,7 +452,7 @@ def render_BoardLabels_menu(self, h, comp, *args):
 def render_BoardLabels_edit(self, h, comp, *args):
     """Render the labels configuration panel"""
     h << h.div(h.i(class_='icon-tag'), _(u'Card labels'), class_='panel-section')
-    with h.ul(class_='unstyled board-labels clearfix'):
+    with h.ul(class_='board-labels clearfix'):
         for title, label in self.labels:
             with h.li(class_='row-fluid'):
                 with h.div(class_='span7'):
@@ -675,7 +671,7 @@ def render_BoardMember_overlay(self, h, comp, *args):
         return self.user.on_answer(self.dispatch).render(h, model='overlay-%s' % self.role)
     else:
         member = self.user.render(h, "avatar")
-        member.attrib.update({'class': 'miniavatar unselectable'})
+        member.attrib.update({'class': 'avatar unselectable'})
         return member
 
 

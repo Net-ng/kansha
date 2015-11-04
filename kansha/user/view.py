@@ -80,7 +80,7 @@ def render_User_remove(self, h, comp, *args):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=lambda: comp.answer(self.username)))
+                             class_="btn btn-primary btn-small delete").action(ajax.Update(action=lambda: comp.answer(self.username)))
     return h.root
 
 
@@ -225,5 +225,5 @@ def render_PendingUser_pending(self, h, comp, *args):
                 h << h.input(value=_("Resend invitation"), type="submit",
                              class_="btn btn-primary btn-small").action(ajax.Update(action=lambda: comp.answer('resend')))
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=(lambda: comp.answer('remove'))))
+                             class_="btn btn-primary btn-small delete").action(ajax.Update(action=(lambda: comp.answer('remove'))))
     return h.root

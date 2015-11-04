@@ -110,7 +110,7 @@ def render_card_actions(self, h, comp, *args):
                             h.a.action(comp.answer, 'delete').get('onclick')
                         )
                         h << h.button(
-                            h.i(class_='icon-remove icon-grey'),
+                            h.i(class_='icon-bin icon-grey'),
                             _('Delete'),
                             class_='btn btn-small',
                             onclick=(
@@ -333,7 +333,7 @@ def render_members_add_member_overlay(self, h, comp, *args):
     if self.favorites:
         with h.div(class_="favorites"):
             h << h.h3(_('Suggestions'))
-            with h.ul():
+            with h.ul:
                 h << h.li(self.favorites)
     with h.div(class_="members search"):
         h << self.new_member

@@ -92,6 +92,9 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
 
+    h.head.css_url('css/themes/board.css')
+    h.head.css_url('css/themes/kansha_flat/board.css')
+
     h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')
     h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
@@ -173,10 +176,10 @@ def render_Board_item(self, h, comp, *args):
                          class_=klass)
             #h << h.a(h.i(class_='icon-search', title=_('search')), class_='btn unselected')
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn unselected').action(self.switch_view)
-            h << h.SyncRenderer().a(h.i(class_='icon-th-list'), title=_('Board mode'), class_='btn disabled')
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn disabled')
         else:
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn disabled')
-            h << h.SyncRenderer().a(h.i(class_='icon-th-list'), title=_('Board mode'), class_='btn unselected').action(self.switch_view)
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn unselected').action(self.switch_view)
 
     return h.root
 
@@ -275,8 +278,8 @@ def render_Board_add_member_overlay(self, h, comp, *args):
 @presentation.render_for(Icon)
 def render_Icon(self, h, comp, *args):
     if self.title is not None:
-        h << h.i(
-            self.title, class_=self.icon, title=self.title, alt=self.title)
+        h << h.i(class_=self.icon, title=self.title)
+        h << self.title
     else:
         h << h.i(class_=self.icon)
     return h.root
@@ -353,7 +356,7 @@ def render_Board_columns(self, h, comp, *args):
             h.head.javascript(h.generate_id(), """function increase_version() {%s}""" % increase_version.get('onclick'))
 
             # Render columns
-            with h.div(id='lists', class_='row'):
+            with h.div(id='lists'):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
                     model = None if not security.has_permissions('edit', self) else column.model or 'dnd'
@@ -596,7 +599,7 @@ def render_BoardProfile(self, h, comp, *args):
                 h << h.button(_('Public'), class_='btn %s' % active).action(
                     lambda: self.board.set_visibility(BOARD_PUBLIC))
 
-        h << h.div(h.i(class_='icon-comment'), _(u'Comments'), class_='panel-section')
+        h << h.div(h.i(class_='icon-bubble'), _(u'Comments'), class_='panel-section')
         h << h.p(_('Commenting allows members to make short messages on cards. You can enable or disable this feature.'))
         with h.form:
             with h.div(class_='btn-group'):
@@ -695,7 +698,7 @@ def render_board_background_edit(self, h, comp, *args):
             v_file = var.Var()
             submit_id = h.generate_id("attach_submit")
             input_id = h.generate_id("attach_input")
-            h << h.label((h.i(class_='icon-file icon-grey'),
+            h << h.label((h.i(class_='icon-file-text2 icon-grey'),
                           _("Choose an image")), class_='btn btn-small', for_=input_id)
             with h.form:
                 h << h.script(

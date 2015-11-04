@@ -21,9 +21,9 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         id_ = h.generate_id()
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
         with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-grey icon-ok'),
+            h << h.button(h.i(class_='icon-grey icon-checkmark'),
                           class_='btn btn-small').action(lambda: comp.answer(text()))
-            h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
 
     if self.focus:
         h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
@@ -34,7 +34,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 @presentation.render_for(ChecklistTitle)
 def render_ChecklistTitle(self, h, comp, *args):
     """Render the title of the associated object"""
-    h << h.i(class_='icon-th-list icon-grey')
+    h << h.i(class_='icon-list icon-grey')
     kw = {}
     kw['style'] = 'cursor: pointer;display: inline;'
     kw['onclick'] = h.a.action(comp.answer).get('onclick').replace('return', "")
@@ -51,11 +51,11 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
     text = var.Var(self.text)
     with h.form(class_='title-form'):
         id_ = h.generate_id()
-        h << h.i(class_='icon-th-list icon-grey')
+        h << h.i(class_='icon-list icon-grey')
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-grey icon-ok'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-checkmark'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
+            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -74,8 +74,8 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         id_ = h.generate_id()
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-grey icon-ok'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-grey icon-remove'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-checkmark'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
+            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -84,7 +84,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 def render_Checklists_button(self, h, comp, model):
     if security.has_permissions('checklist', self.parent):
         with h.a(class_='btn btn-small btn-checklist').action(self.add_checklist):
-            h << h.i(class_='icon-th-list icon-grey')
+            h << h.i(class_='icon-list icon-grey')
             h << _('Checklist')
     return h.root
 
@@ -115,7 +115,7 @@ def render_Checklists(self, h, comp, model):
         $("#" + %(id)s).sortable({
           placeholder: "ui-state-highlight",
           axis: "y",
-          handle: ".icon-th-list.icon-grey",
+          handle: ".icon-list.icon-grey",
           cursor: "move",
           stop: function( event, ui ) { reorder_checklists($('.checklist').map(function() { return this.id }).get()) }
         });
@@ -140,7 +140,7 @@ def render_Checklists(self, h, comp, model):
 @presentation.render_for(Checklists, 'badge')
 def render_Checklists_badge(self, h, comp, model):
     if self.checklists:
-        h << h.span(h.i(class_='icon-th-list icon-grey'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
+        h << h.span(h.i(class_='icon-list icon-grey'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
     return h.root
 
 
@@ -150,7 +150,7 @@ def render_Checklist(self, h, comp, model):
         with h.div(class_='title'):
             h << self.title
             if self.title.model != 'edit':
-                h << h.a(h.i(class_='icon-remove icon-grey'), class_='delete').action(comp.answer, 'delete')
+                h << h.a(h.i(class_='icon-bin icon-grey'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
@@ -176,5 +176,5 @@ def render_ChecklistItem(self, h, comp, model):
     h << h.a(u'\u2611' if self.done else u'\u2610', class_='check').action(self.set_done)
     h << h.span(self.title, class_='done' if self.done else '')
     if not self.title.model == 'edit':
-        h << h.a(h.i(class_='icon-remove icon-grey'), class_='delete').action(comp.answer, 'delete')
+        h << h.a(h.i(class_='icon-bin icon-grey'), class_='delete').action(comp.answer, 'delete')
     return h.root

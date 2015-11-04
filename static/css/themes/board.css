@@ -1,0 +1,20 @@
+/* Fix incopatibility between Knacss and fullcalendar */
+#calendar .fc-day-grid {
+    flex: initial;
+    width: auto;
+}
+
+#calendar table {
+    margin-bottom: 0;
+}
+
+/* Progress bar */
+.progress {
+    height: 24px;
+    border: 1px solid #ccc;
+}
+.progress .bar {
+    height: 22px;
+    background-color: #009fed;
+}
+/* End progress bar */

@@ -121,12 +121,12 @@ class Board(object):
         self.comp_members = component.Component(self)
 
         # Icons for the toolbar
-        self.icons = {'add_list': component.Component(Icon("icon-list-alt", _("Add list"))),
+        self.icons = {'add_list': component.Component(Icon("icon-plus", _("Add list"))),
                       'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
                       'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
-                      'export': component.Component(Icon("icon-download", _("Export board"))),
-                      'archive': component.Component(Icon("icon-trash", _("Archive board"))),
-                      'leave': component.Component(Icon("icon-leave", _("Leave this board"))),
+                      'export': component.Component(Icon("icon-download3", _("Export board"))),
+                      'archive': component.Component(Icon("icon-bin", _("Archive board"))),
+                      'leave': component.Component(Icon("icon-exit", _("Leave this board"))),
                       'history': component.Component(Icon("icon-history", _("Action log"))),
                       }
 
@@ -896,7 +896,7 @@ class Icon(object):
         """Create icon object
 
         In:
-          - ``icon`` -- icon class name (use booststrap glyphicons)
+          - ``icon`` -- icon class name (use icomoon custom font)
           - ``title`` -- icon title (and alt)
         """
         self.icon = icon

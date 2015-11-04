@@ -50,7 +50,7 @@ class Column(object):
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
-            lambda r: r.i(class_='icon-white icon-edit'),
+            lambda r: r.i(class_='icon-circle-down'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 

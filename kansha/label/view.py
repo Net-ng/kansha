@@ -126,5 +126,5 @@ def render(self, h, comp, *args):
                                 style='background-color: %s' % label.color)
                     h << h.span(label.title)
                     if label.id in self.labels:
-                        h << h.i(class_='icon-ok')
+                        h << h.i(class_='icon-checkmark')
     return h.root

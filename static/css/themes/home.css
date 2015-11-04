@@ -29,16 +29,6 @@
     line-height: 20px;
 }
 
-.menu a.boards {
-    background-image: url(../img/sprites.png);
-    background-position: -561px -539px
-}
-
-.menu a.profile {
-    background-image: url(../img/sprites.png);
-    background-position: -561px -588px
-}
-
 .menu a.active {
     background-color: #ebebeb
 }
@@ -59,7 +49,6 @@
     font-size: 20px;
     margin-right: 7px;
 }
-*/
 
 .home .boards {
     color: #737373;
@@ -138,9 +127,7 @@
     padding: 15px
 }
 
-.home #lists {
-    margin-bottom: 50px;
-}
+.boards { margin-bottom: 50px; }
 
 .home #lists .list {
     margin-left: 0;
@@ -193,20 +180,10 @@
 .board-labels .members .miniavatar {
     display: inline-block;
     overflow: hidden;
-    margin: 0 0 0 6px
 }
 
 .board-labels .members .more {
     margin-right: -5px
-}
-
-.board-labels .members .more .badge {
-    position: relative;
-    left: -11px;
-    top: -2px;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
 }
 
 .board-labels .members .more > a {

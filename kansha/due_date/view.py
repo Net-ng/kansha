@@ -48,7 +48,7 @@ def render_DueDate(self, h, comp, model):
 def render_DueDate_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.value:
-        h << h.span(h.i(class_='icon-time icon-grey'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), data_tooltip=format_date(self.value, 'full'))
+        h << h.span(h.i(class_='icon-alarm icon-grey'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), data_tooltip=format_date(self.value, 'full'))
     return h.root
 
 
@@ -60,11 +60,11 @@ def render_DueDate_button(self, h, comp, *args):
             classes = ['btn', 'btn-small', 'btn-due-date', self.get_class()]
             with h.a(class_=u' '.join(classes), id_=id_).action(self.calendar().toggle):
                 classes = ['due-date', self.get_class()]
-                h << h.i(class_='icon-time icon-white duedate-icon')
+                h << h.i(class_='icon-alarm icon-white duedate-icon')
                 h << format_date(self.value, 'short')
         else:
             with h.a(class_='btn btn-small', id_=id_).action(self.calendar().toggle):
-                h << h.i(class_='icon-time icon-grey')
+                h << h.i(class_='icon-alarm icon-grey')
                 h << _('Due date')
         h << self.calendar.on_answer(self.set_value)
     return h.root

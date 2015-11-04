@@ -99,12 +99,19 @@ class Card(object):
 
         # members part of the card
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: '+',
+            overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.AddMembers(self.autocomplete_method)).on_answer(self.add_members)
         self.members = [component.Component(usermanager.get_app_user(member.username, data=member))
                         for member in data.members]
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: "%s more..." % (len(self.members) - self.max_shown_members),
+
+        def many_user_render(h, number):
+            return h.span(
+                h.i(class_='ico-btn icon-user-nb'),
+                h.span(number, class_='badge'),
+                title=_("%s more...") % number)
+
+        self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.members) - self.max_shown_members),
                                                                    lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
                                                                    dynamic=False, cls='card-overlay'))
 

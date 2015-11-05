@@ -528,9 +528,9 @@ def render_userboards(self, h, comp, *args):
             h << [b.render(h, "archived_item")
                   for b in self.archived_boards.itervalues()]
 
-        h << h.a(
+        h << h.button(
             _("Delete"),
-            class_="btn delete",
+            class_="delete",
             onclick='return confirm(%s)' % ajax.py2js(
                 _("These boards will be destroyed. Are you sure?")
             ).decode('UTF-8'),

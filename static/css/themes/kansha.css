@@ -12,6 +12,7 @@ input, select, textarea {
     box-sizing: border-box;
     width: 100%;
     padding: 4px 6px;
+    margin: 0;
     resize: none;
     border: 1px solid #c0c0c0;
 }
@@ -55,7 +56,10 @@ button, .btn {
     cursor: pointer;
     border: 1px solid #c0c0c0;
     display: inline-block;
-    border-radius: 3px;
+    margin: 0;
+    color: #737373;
+    padding: 3px 9px;
+    background-color: #f8f8f8;
 }
 
 .btn:hover,
@@ -67,6 +71,7 @@ button:focus,
 button:active,
 button.active {
     background-color: #e6e6e6;
+    color: #434343;
 }
 
 button:disabled { cursor: inherit }
@@ -86,7 +91,8 @@ button:disabled:hover { background-color: transparent; }
     background-color: #7E9C12
 }
 
-.btn.delete {
+.btn.delete,
+button.delete {
     color: white;
     background: #BC3607;
     border: 1px solid #8c3110
@@ -96,11 +102,27 @@ button:disabled:hover { background-color: transparent; }
 .btn.delete:active,
 .btn.delete.active,
 .btn.delete.disabled,
-.btn.delete[disabled] {
+.btn.delete[disabled],
+button.delete:hover,
+button.delete:active,
+button.delete.active,
+button.delete.disabled,
+button.delete[disabled]{
     background-color: #A01A00
 }
 
+/* Button groups */
+.btn-group {
+    display: inline-block;
+}
 
+.btn-group .btn {
+    border-right: 0;
+}
+
+.btn-group .btn:last-child {
+    border-right: 1px solid #c0c0c0;
+}
 /* End buttons */
 
 [data-icon]:before {
@@ -172,7 +194,7 @@ a:hover .ico-btn {
 .members .more .badge {
     position: relative;
     left: -11px;
-    top: -2px;
+    top: -1px;
     color: white;
     font-size: 11px;
     font-weight: bold;

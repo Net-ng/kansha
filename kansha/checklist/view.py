@@ -23,7 +23,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-grey icon-checkmark'),
                           class_='btn btn-small').action(lambda: comp.answer(text()))
-            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-cross'), class_='btn btn-small').action(comp.answer)
 
     if self.focus:
         h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
@@ -55,7 +55,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-grey icon-checkmark'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-cross'), class_='btn btn-small').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -75,7 +75,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-grey icon-checkmark'), class_='btn btn-small').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-grey icon-bin'), class_='btn btn-small').action(comp.answer)
+            h << h.button(h.i(class_='icon-grey icon-cross'), class_='btn btn-small').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -83,7 +83,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 @presentation.render_for(Checklists, 'button')
 def render_Checklists_button(self, h, comp, model):
     if security.has_permissions('checklist', self.parent):
-        with h.a(class_='btn btn-small btn-checklist').action(self.add_checklist):
+        with h.a(class_='btn').action(self.add_checklist):
             h << h.i(class_='icon-list icon-grey')
             h << _('Checklist')
     return h.root
@@ -150,7 +150,7 @@ def render_Checklist(self, h, comp, model):
         with h.div(class_='title'):
             h << self.title
             if self.title.model != 'edit':
-                h << h.a(h.i(class_='icon-bin icon-grey'), class_='delete').action(comp.answer, 'delete')
+                h << h.a(h.i(class_='icon-cross icon-grey'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
@@ -173,8 +173,8 @@ def render_Checklist_progress(self, h, comp, model):
 
 @presentation.render_for(ChecklistItem)
 def render_ChecklistItem(self, h, comp, model):
-    h << h.a(u'\u2611' if self.done else u'\u2610', class_='check').action(self.set_done)
+    h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
     h << h.span(self.title, class_='done' if self.done else '')
     if not self.title.model == 'edit':
-        h << h.a(h.i(class_='icon-bin icon-grey'), class_='delete').action(comp.answer, 'delete')
+        h << h.a(h.i(class_='icon-cross icon-grey'), class_='delete').action(comp.answer, 'delete')
     return h.root

@@ -41,12 +41,11 @@ def render_card_edit(self, h, comp, *args):
         return h.root
     h << h.script('''YAHOO.kansha.app.hideOverlay();''')
     with h.div(class_='card-edit-form'):
-        with h.div(class_='header row-fluid'):
-            with h.div(class_='span12'):
-                self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
-                h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
-        with h.div(class_='row-fluid'):
-            with h.div(class_='span9'):
+        with h.div(class_='header'):
+            self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
+            h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
+        with h.div(class_='grid-2'):
+            with h.div(class_='card-contents'):
                 h << self.labels.render(h.AsyncRenderer(), model='edit')
                 h << self.description.render(h.AsyncRenderer())
                 h << self.gallery
@@ -92,7 +91,7 @@ def render_Card_comments_flow(self, h, comp, model):
 
 @presentation.render_for(Card, model='actions')
 def render_card_actions(self, h, comp, *args):
-    with h.div(class_='span2 cardactions'):
+    with h.div(class_='card-actions'):
         with h.form:
             with h.ul():
                 with h.li(class_="buttonAddChecklist"):
@@ -112,7 +111,7 @@ def render_card_actions(self, h, comp, *args):
                         h << h.button(
                             h.i(class_='icon-bin icon-grey'),
                             _('Delete'),
-                            class_='btn btn-small',
+                            class_='btn btn-small delete',
                             onclick=(
                                 "if (confirm(%(confirm_msg)s)) {"
                                 "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"

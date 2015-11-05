@@ -64,7 +64,7 @@ def render_comment_label_form(self, h, comp, *args):
         txt_id, buttons_id = h.generate_id(), h.generate_id()
         sub_id = h.generate_id()
         h << h.textarea(text(), class_='expanded', id_=txt_id).action(text)
-        with h.div(id=buttons_id):
+        with h.div(class_='buttons', id=buttons_id):
             h << h.input(value=_("Save"), id=sub_id, type='submit',
                          class_="btn btn-primary btn-small").action(lambda: comp.answer(self.change_text(text())))
             h << ' '
@@ -94,7 +94,7 @@ def render_comments_form(self, h, comp, *args):
                     ajax.py2js(txt_id), ajax.py2js(sub_id)
                 )
             )
-            with h.div(id=buttons_id, class_="hidden"):
+            with h.div(id=buttons_id, class_="buttons hidden"):
                 h << h.input(value=_("Save"), id=sub_id, type='submit',
                              class_="btn btn-primary btn-small").action(lambda: comp.answer(text()))
                 h << ' '

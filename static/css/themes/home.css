@@ -4,7 +4,6 @@
 }
 
 .home li a {
-    color: #737373;
     font: 15px OpenSansLight;
     display: block
 }
@@ -159,7 +158,7 @@
     width: auto;
     float: none;
     position: absolute;
-    right: 40px;
+    right: 34px;
     top: 4px
 }
 

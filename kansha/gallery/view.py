@@ -84,8 +84,8 @@ def render_download(self, h, comp, *args):
                     ).decode('UTF-8')
                 }
             )
-            h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
-            h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
+            h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
+            h << h.input(class_='hidden', id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
     return h.root
 
 

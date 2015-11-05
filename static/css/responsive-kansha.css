@@ -66,6 +66,7 @@
     font: normal 16px OpenSansLight;
     border-radius: 0 0 10px 0;
     border: 1px solid #c0c0c0;
+    border-bottom: 0;
     z-index: 30;
 }
 
@@ -169,14 +170,17 @@
 }
 
 .board .header {
-    /*text-align: right;*/
     position: fixed;
     width: 100%;
 }
 
+.board .boardTitle .title-form {
+    font-size: 24px;
+}
 
-.board .header .nagare-generated {
-    display: inline-block;
+.board .boardTitle .title-form input {
+    width: 440px;
+    margin-right: 5px;
 }
 
 .board .boardTitle {
@@ -185,6 +189,7 @@
     font: normal 33px OpenSansLight;
     padding: 10px 10px;
     margin-left: 400px;
+    height: 50px;
 }
 
 #switch_zone {
@@ -256,24 +261,6 @@ span.nomatches {
     width: 68%;
 }
 
-.board .boardTitle .title-form {
-    float: right;
-    margin-top: -3px;
-    width: auto;
-}
-
-.board .boardTitle .title-form input {
-    float: none;
-    margin-right: 10px;
-    width: auto;
-}
-
-.board .boardTitle .title-form button {
-    float: none;
-    margin-right: 5px;
-    margin-top: -9px;
-}
-
 .board .boardTitle a,
 .board .boardTitle a:hover {
     color: #5c5c5c;
@@ -282,33 +269,6 @@ span.nomatches {
     white-space: nowrap;
     display: block;
     overflow: hidden;
-}
-
-.board-header i {
-    float: left;
-    margin: 2px 0 0 5px;
-}
-
-.board-header .title-form {
-    margin: 0;
-}
-
-.board-header .title-form button {
-    margin-bottom: 8px;
-    padding: 2px;
-}
-
-.board-header .title-form input {
-    padding: 2px;
-    margin: 0 5px 8px 0;
-    width: 200px;
-}
-
-.board-header a,
-.board-header a:hover {
-    color: #5c5c5c;
-    text-decoration: none;
-    display: inline-block;
 }
 
 .action-close {
@@ -390,7 +350,7 @@ span.nomatches {
 
 .yui-skin-sam .yui-panel {
     margin: 70px auto 30px auto;
-    max-width: 590px;
+    max-width: 680px;
     padding: 5px 30px 15px 50px;
     border-radius: 10px;
     background: white;
@@ -532,6 +492,7 @@ span.nomatches {
     height: calc(100% - 21px);
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
+    margin-right: 6px;
     vertical-align: top
 }
 
@@ -725,6 +686,8 @@ span.nomatches {
     clear: both
 }
 
+.card > div > a { color: #434343; }
+
 .overlay.card-overlay {
     color: #636363;
     padding: 0 12px 4px 12px;
@@ -806,6 +769,20 @@ span.nomatches {
     top: -2px
 }
 
+
+.board-labels i.ico-btn,
+.card i.ico-btn,
+.card-actions i.ico-btn{
+    font-size: 25px;
+}
+
+.board-labels .avatar img,
+.card .avatar img,
+.card-actions .avatar img{
+    max-height: 24px;
+    max-width: 24px;
+}
+
 .card.highlight {
     border: solid 2px #e6a323;
 }
@@ -817,13 +794,15 @@ span.nomatches {
     margin-top: 5px;
 }
 
-.cardactions .members {
-    width: 120px;
-    min-height: 25px;
+.card-actions { width: 145px;}
+.card-contents { width: calc(100% - 175px); }
+.card-actions button i[class^="icon-"],
+.card-actions .btn i[class^="icon-"] {
+    margin-right: 3px;
 }
 
 .card .members a,
-.cardactions .members a {
+.card-actions .members a {
 
     /*display: inline-block;*/
     width: auto;
@@ -833,39 +812,25 @@ span.nomatches {
 
 .card .members .add {
     visibility: hidden;
-    float: left;
-    overflow: hidden
-}
-
-.cardactions .members .add {
-    float: left;
-    overflow: hidden
 }
 
 .card .members.highlight .add,
-.cardactions .members.highlight .add {
+.card-actions .members.highlight .add {
     visibility: visible;
 }
 
 .card .members .add a,
-.cardactions .members .add a {
+.card-actions .members .add a {
     white-space: nowrap;
 }
 
 .card .members .miniavatar,
-.cardactions .members .miniavatar {
+.card-actions .members .miniavatar {
     display: inline-block;
     overflow: hidden;
     margin-right: 5px;
     max-height: 28px;
     max-width: 28px;
-}
-
-.card .members .more,
-.cardactions .members .more {
-    float: left;
-    margin-right: 2px;
-    margin-left: -4px
 }
 
 .overlay.board-labels-overlay .search {
@@ -1113,9 +1078,6 @@ a.card-label:hover {
     border: 2px solid white;
 }
 
-/*ul.board-labels li:nth-child(odd) {
- background-color: #EDEDED;
- }*/
 ul.board-labels .label-title {
     line-height: 34px;
     padding: 0 0 0 5px;
@@ -1126,26 +1088,16 @@ ul.board-labels .label-title input {
     margin: 0;
 }
 
-.card-edit-form .title-form button {
-    margin-top: -10px
-}
-
-.card-edit-form .cardactions ul {
+.card-edit-form .card-actions ul {
     list-style-type: none;
     margin-left: 0;
     width: 100%
 }
 
 .card-edit-form hr {
-    border-top: 0;
-    border-bottom: 1px solid #c3c3c3;
     clear: both;
-    margin: 9px 0 18px 0;
-    width: 103%;
-}
-
-.card-edit-form p {
-    font: normal 12px OpenSansLight
+    margin: 10px 0;
+    width: 100%;
 }
 
 .card-edit-form .header {
@@ -1204,53 +1156,29 @@ ul.board-labels .label-title input {
     margin: 0;
 }
 
-.card-edit-form .description .buttons {
-    margin-top: 5px;
+.card-edit-form .buttons {
+    margin: 5px 0;
 }
 
 .card-edit-form textarea {
-    font: normal 12px OpenSansSemibold;
-    width: 101%;
     resize: none;
-    border: 1px solid #dadada;
-    height: 19px;
-}
-
-.card-edit-form textarea::-webkit-input-placeholder {
-    color: #cfcdcd;
+    height: 29px;
+    min-height: 0;
+    padding: 4px 6px;
+    overflow: hidden;
 }
 
 .card-edit-form .badges {
     display: none
 }
 
-.card-edit-form textarea:-moz-placeholder {
-    color: #cfcdcd;
-}
-
-.card-edit-form .cardactions .btn {
+.card-edit-form .card-actions .btn {
     margin-bottom: 8px;
-    width: 120px;
+    width: 100%;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-}
-
-.card-edit-form .cardactions a.btn {
-    width: 120px;
-}
-
-.card-edit-form .description-form textarea.expanded {
-    font: 14px OpenSansLight;
-    position: relative;
-    left: -6px;
-    top: -5px;
-    overflow: hidden;
-    margin-bottom: 14px
-}
-
-.card-edit-form .description-form textarea.expanded:-moz-placeholder {
-    font: 12px OpenSansSemibold
+    text-align: center;
 }
 
 .overlay.card-edit-form-overlay {
@@ -1304,29 +1232,29 @@ a.description-edit:hover {
 
 textarea.expanded {
     height: 112px;
-    margin: 0 18px 20px 0;
-    font-family: opensanslight;
-    color: #333333
 }
 
 .nbItems {
     position: absolute;
-    left: 8px;
+    left: 12px;
     margin-top: 4px
 }
 
 .nbItems .label {
     background: none;
     color: #A5A5A5;
-    font: 12px OpenSansSemibold
+    font: 14px OpenSansSemibold
 }
 
 .comment {
     margin-bottom: 5px;
     margin-left: -45px;
     padding: 3px 0;
-    font-size: 11px;
     clear: both
+}
+
+.comment .date {
+    font-size: 11px;
 }
 
 .comment .fullname {
@@ -1376,6 +1304,7 @@ textarea.expanded {
 
 .comment .delete {
     font-size: 12px;
+    margin-left: 5px;
 }
 
 .navbar-inner {
@@ -1385,25 +1314,6 @@ textarea.expanded {
 
 .navbar-inner {
     border-radius: 0;
-}
-
-[class*="span"] {
-    margin-left: 10px;
-}
-
-.btn {
-    font: normal 14px OpenSansLight;
-    color: #5b5959;
-    padding: 2px 9px 3px 9px;
-    min-width: 62px;
-    background: #F3F3F3
-}
-
-.btn [class^="icon-"] {
-    margin: 0;
-    position: relative;
-    top: 3px;
-    left: -4px
 }
 
 #description-overlay {
@@ -1639,17 +1549,22 @@ textarea.expanded {
 
 /* Calendar */
 .calendar {
-    font-family: OpenSansLight;
     position: absolute;
     padding: 10px;
-    border-radius: 5px;
     background: white;
-    width: 224px;
+    width: 240px;
     z-index: 1;
+    border: 1px solid #a7a7a7;
 }
 
 .calendar .calendar-content table {
     width: 100%;
+}
+
+.calendar .calendar-content table td,
+.calendar .calendar-content table th {
+    padding: 0;
+    text-align: center;
 }
 
 .calendar .calendar-content table th {
@@ -1682,11 +1597,14 @@ textarea.expanded {
     border-right: solid 1px lightgrey;
 }
 
+.calendar .calendar-header {
+    margin-bottom: 10px;
+}
+
 .calendar .calendar-header select {
     font: normal 12px OpenSansSemibold;
     width: 100px;
     border: 1px solid #dadada;
-    border-radius: 5px;
     display: inline-block;
 }
 
@@ -1701,10 +1619,6 @@ textarea.expanded {
 .calendar .calendar-header .current {
     padding: 0 10px;
     width: 88%;
-}
-
-.calendar .calendar-today {
-    padding-top: 10px;
 }
 
 .calendar .calendar-today a.btn {
@@ -1791,11 +1705,6 @@ textarea.expanded {
     margin-bottom: 0;
 }
 
-.actionWeight .btn.select {
-    overflow-x: hidden;
-    background: transparent url(../img/down.png) no-repeat 100px 8px;
-}
-
 .actionWeight select {
     overflow: hidden;
     border: none;
@@ -1818,11 +1727,6 @@ textarea.expanded {
     display: inline-block
 }
 
-.checklists .checklist a {
-    color: #333333;
-    text-decoration: none
-}
-
 .ui-state-highlight {
     height: 3em;
     line-height: 3em;
@@ -1832,8 +1736,11 @@ textarea.expanded {
     opacity: 0.6;
 }
 
+/* Checklists */
 .checklists .checklist a.delete {
-    display: none
+    display: none;
+    float: right;
+    margin-right: 5px;
 }
 
 .checklists .checklist .title:hover a.delete,
@@ -1841,7 +1748,7 @@ textarea.expanded {
     display: inline-block
 }
 
-.checklists .checklist .title i.icon-th-list {
+.checklists .checklist .title i.icon-list {
     margin-right: 10px;
     cursor: move;
 }
@@ -1857,7 +1764,11 @@ textarea.expanded {
 
 .checklists .checklist .btn {
     min-width: 0;
-    height: 30px
+    height: 29px
+}
+
+.checklists .checklist .btn-group .btn:first-child {
+    border-left: 0;
 }
 
 .checklists .checklist .new-item-form .btn,
@@ -1869,30 +1780,22 @@ textarea.expanded {
     left: 0
 }
 
-.checklists .checklist .progress {
-    position: relative
+.checklist a {
+    color: #737373;
 }
 
-.checklists .checklist .progress span {
-    position: absolute;
-    top: 0;
-    z-index: 2;
-    color: black;
-    text-align: center;
-    width: 100%
-}
-
-.checklists .checklist .progress .bar {
-    z-index: 1;
-    position: absolute
+.checklist a:hover {
+    color: #434343;
 }
 
 .checklists .checklist li {
-    line-height: 20px
+    line-height: 20px;
+    list-style-type: disc;
+    list-style-position: inside;
 }
 
-.checklists .checklist .check {
-    font-size: 20px;
+.checklists .checklist i[class^="icon-checkbox-"]{
+    font-size: 16px;
     margin-right: 5px
 }
 
@@ -1905,15 +1808,15 @@ textarea.expanded {
 }
 
 .checklists .checklist .title input {
-    width: 305px
+    width: 322px
 }
 
 .checklists .checklist li input {
-    width: 308px
+    width: 310px
 }
 
 .checklists .checklist .new-item-form input {
-    width: 330px
+    width: 346px
 }
 
 .checklists .checklist .content {
@@ -2013,7 +1916,6 @@ div.history th {
 
 }
 
-
 @media (max-width:813px) {
     body {
         padding: 0;
@@ -2094,16 +1996,12 @@ div.history th {
     }
 
     .board .boardTitle {
-        margin-top: 100px;
+        margin-top: 50px;
         margin-left: 20px;
     }
 
     #switch_zone {
         top: 50px;
-    }
-
-    .bbody {
-        top: 165px;
     }
 
     .checklists .checklist .new-item-form input {

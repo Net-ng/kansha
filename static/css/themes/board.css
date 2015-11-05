@@ -15,6 +15,25 @@
 }
 .progress .bar {
     height: 22px;
-    background-color: #009fed;
+    background-color: #5eb95e;
 }
+
+.progress span {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    color: black;
+    text-align: center;
+    width: 100%
+}
+
+.progress .bar {
+    z-index: 1;
+    position: absolute
+}
+
+.progress {
+    position: relative
+}
+
 /* End progress bar */

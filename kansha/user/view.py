@@ -35,7 +35,7 @@ def render_User_avatar(self, h, comp, model, *args):
         if avatar:
             h << h.img(src=avatar)
         else:
-            h << h.i(class_='ico-btn icon-user-tie')
+            h << h.i(class_='ico-btn icon-user')
     return h.root
 
 

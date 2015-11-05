@@ -248,7 +248,6 @@
     text-align: right;
 }
 
-
 span.nomatches {
     color: red;
 }
@@ -1867,13 +1866,6 @@ div.history th {
         margin-top: -57px
     }
 
-    .navbar #boardActions a i {
-        margin-left: 2px;
-        font: normal 13px OpenSansLight;
-        width: auto;
-        padding: 3px 0 5px 39px;
-    }
-
     .navbar #mainActions {
         display: inline-block;
         background: white;
@@ -1983,6 +1975,7 @@ div.history th {
 
     .list {
         width: 100% !important;
+        margin-bottom: 10px;
     }
 
     .list-body {
@@ -2000,20 +1993,26 @@ div.history th {
         margin-left: 20px;
     }
 
-    #switch_zone {
-        top: 50px;
-    }
-
     .checklists .checklist .new-item-form input {
-        width: calc(100% - 87px);
+        width: calc(100% - 70px);
     }
 
     .checklists .checklist .title input {
-        width: calc(100% - 110px);
+        width: calc(100% - 94px);
+    }
+
+    .checklists .checklist li input {
+        width: calc(100% - 70px);
     }
 
     .checklists .checklist form {
         display: block;
+        width: 100%;
+    }
+
+    .checklists .checklist li form {
+        display: inline-block;
+        width: calc(100% - 36px);
     }
 
 }
@@ -2039,7 +2038,23 @@ div.history th {
     }
 
     .board .boardTitle {
-        font-size: 21px
+        font-size: 18px;
+        margin-left: 0;
+        width: 100%;
     }
 
+    .board .boardTitle .title-form {
+        font-size: 16px;
+    }
+
+    .navbar .tab {
+        left: 10px;
+    }
+    #boardNavbar .tab {
+        left: 195px;
+    }
+
+    .board .boardTitle .title-form input {
+        width: calc(100% - 150px);
+    }
 }

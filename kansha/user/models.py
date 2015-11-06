@@ -39,6 +39,10 @@ class DataToken(Entity):
         if token:
             token.delete()
 
+    @classmethod
+    def get_by_username(cls, username, action):
+        return cls.get_by(username=username, action=action)
+
 
 class DataBoardMember(Entity):
     using_options(tablename='user_boards__board_members')

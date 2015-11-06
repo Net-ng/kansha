@@ -92,7 +92,7 @@ class Card(object):
         self.overlay_add_members = component.Component(
             overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
-        self.new_member = component.Component(usermanager.AddMembers(self.autocomplete_method)).on_answer(self.add_members)
+        self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members').on_answer(self.add_members)
         self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in data.members]
 

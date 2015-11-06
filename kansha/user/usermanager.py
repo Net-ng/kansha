@@ -161,14 +161,6 @@ class NewMember(object):
                 for u in self.autocomplete_method(value)]
 
 
-class AddMembers(object):
+# class AddMembers(NewMember):
 
-    def __init__(self, autocomplete_method):
-        self.text_id = 'add_members_' + str(random.randint(10000000, 99999999))
-        self.autocomplete = component.Component(
-            autocomplete.Autocomplete(self.text_id, self.autocompletion, delimiter=','))
-        self.autocomplete_method = autocomplete_method
-
-    def autocompletion(self, value, static_url):
-        h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]
+#     pass

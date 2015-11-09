@@ -1,3 +1,12 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
 /* General */
 html, body { height: 100%; max-height: 100% }
 body {
@@ -48,6 +57,54 @@ label {
 .row > script {
     display: none;
 }
+
+/* YUI autocompletes */
+.yui-skin-sam .yui-ac-container {
+    top: 0 !important;
+    left: 0 !important;
+    position: relative;
+}
+
+.yui-skin-sam .yui-ac-content {
+    position: relative;
+    border: none
+}
+
+.yui-skin-sam .yui-ac-input {
+    position: relative;
+}
+/* End YUI autocompletes */
+
+.yui-tt .bd {
+    background: #4d4d4d !important;
+    border: 0 !important;
+    border-radius: 3px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 11px !important;
+}
+
+.yui-tt {
+    border: 0 !important;
+    padding: 0;
+    min-width: 50px;
+}
+
+.yui-tt .yui-tt-shadow {
+    opacity: 1;
+    display: block;
+    height: 9px;
+    width: 16px;
+    position: absolute;
+    top: -9px;
+    left: 5px;
+}
+
+/* YUI FIX */
+.yui-skin-sam .mask {
+    background: #000
+}
+
 
 /* Buttons */
 button, .btn {
@@ -153,6 +210,26 @@ a:hover .ico-btn {
     color: #434343;
 }
 
+.btn.btn-primary.btn-small.toggle {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5) inset;
+    outline: 0 none;
+    background-image: none;
+    background: #93B70A;
+}
+
+.board-labels i.ico-btn,
+.card i.ico-btn,
+.card-actions i.ico-btn {
+    font-size: 25px;
+}
+
+.board-labels .avatar img,
+.card .avatar img,
+.card-actions .avatar img {
+    max-height: 24px;
+    max-width: 24px;
+}
+
 /*Error page*/
 #errorPage {
     color: #737373;
@@ -180,6 +257,151 @@ a:hover .ico-btn {
 }
 /* End error page */
 
+/* Navigation menu */
+#mainTab .avatar {
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.navbar {
+    position: fixed;
+    margin-bottom: 0;
+    height: auto;
+    z-index: 25;
+}
+
+.navbar .tab {
+    height: 40px;
+    position: absolute;
+    left: 50px;
+    background: white;
+    border-radius: 0 0 10px 10px;
+    border: 1px solid #c0c0c0;
+    border-top: 0;
+    cursor: pointer;
+    padding: 0 10px 0 10px;
+    z-index: 25;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.navbar-inner {
+    background-color: #063354;
+    background-image: none;
+}
+
+.navbar-inner {
+    border-radius: 0;
+}
+
+.collapse:hover {
+    height: 45px;
+}
+
+.tab a {
+    color: #434343;
+    font: normal 25px OpenSansSemiBold;
+}
+
+.tab a:hover {
+    text-decoration: none;
+}
+
+.navbar .navActions {
+    position: relative;
+    padding: 18px 20px 12px 20px;
+    background: white;
+    color: #434343;
+    font: normal 16px OpenSansLight;
+    border-radius: 0 0 10px 0;
+    border: 1px solid #c0c0c0;
+    border-bottom: 0;
+    z-index: 30;
+}
+
+.navbar #mainActions {
+    min-width: 250px;
+}
+
+.navbar #boardActions {
+    min-width: 350px;
+}
+
+.navbar .navActions a {
+    color: #434343;
+    font: 15px OpenSansLight;
+    padding: 10px;
+}
+
+.navbar .navActions a:hover {
+    text-decoration: underline;
+}
+
+.navbar .navActions i {
+    font-size: 24px;
+    color: #9d9a9a;
+    padding-right: 5px;
+}
+
+.navbar .navActions a:hover i {
+    text-decoration: underline;
+}
+
+.navbar .navActions #login {
+    display: inline-block;
+    padding: 10px 0 10px 46px;
+}
+
+#mainNavbar .tab {
+    width: 175px;
+}
+
+#boardNavbar .tab {
+    left: 255px;
+}
+
+#boardNavbar .overlay-body textarea {
+    margin-top: 8px;
+    width: 260px
+}
+
+#membersNavbar .tab {
+    left: 280px;
+}
+/* End navigation menu */
+
+/* Avatars */
+.avatar.big {
+    background: none repeat scroll 0 0 transparent;
+    height: 100px;
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.avatar {
+    display: inline-block;
+    max-height: 32px;
+    max-width: 36px;
+}
+
+.avatar img {
+    max-width: 30px;
+    max-height: 28px;
+    display: block
+}
+/* End avatars */
+
+/* Boards (home + boards) */
+.boardItemLabel {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 68%;
+}
+/* End boards */
+
 /* Footer */
 .credits {
     position: fixed;
@@ -191,6 +413,281 @@ a:hover .ico-btn {
 }
 /* End footer */
 
+/* Overlays */
+.overlay {
+    background: #aaa;
+    border: 1px solid #c7c7c7;
+}
+
+.overlay_arrow:before {
+    border-bottom: 7px solid rgba(0, 0, 0, 0.1);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    content: "";
+    display: inline-block;
+    left: 9px;
+    position: absolute;
+    top: -7px;
+}
+
+.overlay_arrow:after {
+    border-bottom: 6px solid #FFFFFF;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    content: "";
+    display: inline-block;
+    left: 10px;
+    position: absolute;
+    top: -6px;
+}
+
+.overlay,
+.yui-overlay {
+    font-family: OpenSansLight;
+    visibility: hidden;
+    position: absolute;
+    left: -1000px;
+    top: 0;
+    padding: 5px 10px;
+    min-width: 200px;
+    border-radius: 5px;
+    background: white;
+}
+
+.overlay-header {
+    margin-right: 16px
+}
+
+.overlay-title {
+    display: none
+}
+
+.overlay-body {
+    color: black;
+    padding: 5px 0
+}
+
+.overlay-body ul {
+    padding-top: 10px;
+    list-style-type: none
+}
+
+.overlay-body li {
+    line-height: 27px
+}
+
+.overlay-body li a {
+    color: #7f7f7f !important;
+    cursor: pointer;
+}
+
+.overlay-body li a:hover {
+    padding-left: 11px;
+}
+
+.overlay .favorites {
+    padding-top: 5px
+}
+
+.overlay .favorites h3 {
+    float: left;
+    color: #737373;
+    font: normal 15px OpenSansLight
+}
+
+.overlay .favorites h3:after {
+    content: " :"
+}
+
+.overlay .favorites ul {
+    float: right;
+    margin: 0;
+    padding: 0
+}
+
+.overlay .members.search .yui-ac-input {
+    width: calc(100% - 80px)
+}
+
+.overlay .members.search .yui-ac-content {
+    background: none;
+    width: 100% !important
+}
+
+.overlay .members.search .yui-ac-bd ul {
+    width: 100%
+}
+
+.overlay .members.search .yui-ac-bd li.yui-ac-highlight {
+    background: #F2F2F2
+}
+
+.overlay .members.search .yui-ac-bd li {
+    clear: both;
+    overflow: hidden;
+    cursor: pointer;
+    width: 100%;
+    line-height: normal
+}
+
+.overlay .members.search .yui-ac-bd li:hover {
+    background: #F2F2F2
+}
+
+.overlay .members.search .yui-ac-bd li .avatar {
+    float: left
+}
+
+.overlay .members.search .yui-ac-bd li .name {
+    float: left
+}
+
+.overlay .favorites li a:hover {
+    background: none !important;
+    padding-left: 0
+}
+.overlay.board-labels-overlay .search {
+    position: static
+}
+
+.overlay.board-labels-overlay {
+    color: #636363;
+    padding: 0 12px 4px 12px
+}
+
+.overlay.board-labels-overlay .action-close {
+    width: 14px
+}
+
+.overlay.board-labels-overlay .avatar {
+    overflow: hidden;
+    white-space: nowrap
+}
+
+.overlay.board-labels-overlay h2 {
+    border-bottom: 1px solid #E5E5E5;
+    color: #636363;
+    font-size: 17px;
+    font-weight: normal;
+    line-height: inherit;
+    margin: 0 0 5px;
+    padding-bottom: 4px
+}
+
+.overlay.board-labels-overlay .member {
+    padding-top: 20px
+}
+
+.overlay.board-labels-overlay .members {
+    display: table;
+    width: 100%;
+    margin-top: 8px;
+    position: static;
+}
+
+.overlay.board-labels-overlay .members .member {
+    display: table-row;
+    width: 100%;
+    padding-top: 0
+}
+
+.overlay.board-labels-overlay .member span {
+    display: table-cell;
+    white-space: nowrap
+}
+
+.overlay.board-labels-overlay .member .name {
+    display: table-cell;
+    padding: 4px;
+    white-space: nowrap;
+    min-width: 92px
+}
+
+.overlay.board-labels-overlay .name .email {
+    display: block;
+    font-size: 11px;
+    font-style: italic;
+    position: relative;
+    top: -2px
+}
+
+.overlay.board-labels-overlay .member .actions .btn {
+    font-size: 12px;
+    padding: 1px 3px;
+    margin: 0 2px;
+}
+
+.overlay.board-labels-overlay .member .actions {
+    text-align: right;
+    vertical-align: middle
+}
+
+.overlay.board-labels-overlay .name {
+    font-size: 15px;
+    color: #636363;
+}
+
+.overlay.card-edit-form-overlay {
+    background: #ffffff;
+}
+
+.overlay.card-edit-form-overlay .card-label-choose {
+    display: block;
+    padding-left: 10px;
+    background-position: -1114px 5px !important;
+    padding-bottom: 1px
+}
+
+.overlay.card-edit-form-overlay .card-label-choose.active .card-label {
+    opacity: 1;
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .card-label {
+    opacity: 0.3;
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .card-label {
+    margin-right: 7px
+}
+
+.action-close {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+}
+/* End overlays */
+
+#mask {
+    background: none repeat scroll 0 0 #000;
+    height: 100%;
+    opacity: 0.55;
+    position: fixed;
+    width: 100%;
+    z-index: 25;
+    display: none;
+}
+
+/* Members */
+.members.search {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 7px;
+    overflow: auto;
+    float: none
+}
+
+.members.search #new_members {
+    width: 70%;
+    float: left;
+    margin-right: 8px
+}
+
+.members.search .btn-primary {
+    float: right;
+    width: auto !important;
+    margin: 0
+}
+
 .members .more .badge {
     position: relative;
     left: -11px;
@@ -199,3 +696,44 @@ a:hover .ico-btn {
     font-size: 11px;
     font-weight: bold;
 }
+
+.unselectable {
+    cursor: default
+}
+
+.pending {
+    opacity: 0.5
+}
+
+.last-manager {
+    font-size: 11px;
+    font-style: italic;
+    position: relative;
+}
+/* End members search */
+
+/* Errors */
+.nagare-error-message {
+    background: url("../../img/warning.png") no-repeat left center;
+    font: normal 15px OpenSansSemibold;
+    color: #c22e2e;
+    padding-left: 24px;
+    position: relative;
+    top: -10px
+}
+
+.list-title .nagare-error-message {
+    top: 0
+}
+
+.weights-form .nagare-error-message {
+    display: inline-block;
+    top: 0;
+    position: static;
+    padding: 3px 3px 3px 24px
+}
+
+.weights-form .nagare-error-input {
+    display: inline
+}
+/* End errors */

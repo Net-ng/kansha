@@ -128,7 +128,6 @@ def render_kansha(self, h, comp, *args):
     h.head.css_url('css/themes/fonts.css')
     h.head.css_url('css/themes/kansha.css')
     h.head.css_url('css/themes/kansha_flat/kansha.css')
-    h.head.css_url('css/responsive-kansha.css')
     if self.custom_css:
         h.head.css_url(self.custom_css)
 

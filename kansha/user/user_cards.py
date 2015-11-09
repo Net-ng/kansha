@@ -90,7 +90,9 @@ class UserCards(object):
 @presentation.render_for(UserCards)
 def render(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/board.css')
     h.head.css_url('css/themes/kansha_flat/home.css')
+    h.head.css_url('css/themes/kansha_flat/board.css')
 
     with h.div(class_='row', id_='lists'):
         for main_group, cards in groupby(self.cards, key=self.KEYS[self.order_by[0]][1]):

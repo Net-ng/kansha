@@ -1,3 +1,12 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
 /*Home page*/
 .home {
     padding: 100px 20px 54px 0;
@@ -49,6 +58,10 @@
     margin-right: 7px;
 }
 
+.home input:disabled {
+    margin-bottom: 10px;
+}
+
 .home .boards {
     color: #737373;
     font: 15px OpenSansLight;
@@ -88,6 +101,16 @@
     max-width: 800px;
 }
 
+.home .boards ul.board-labels .label-title {
+    line-height: 34px;
+    padding: 0 0 0 5px;
+    font-size: 110%
+}
+
+.home .boards ul.board-labels .label-title input {
+    margin: 0;
+}
+
 .home .boards ul.unstyled label {
     margin-bottom: 0;
 }
@@ -110,7 +133,6 @@
 }
 
 .home .boards select {
-    width: 96%;
     margin-top: 5px
 }
 
@@ -190,6 +212,27 @@
     overflow: hidden;
 }
 /* End board labels */
+
+/* OAuth */
+.oauth.google {
+    width: 160px;
+    height: 54px
+}
+
+.oauth.facebook {
+    width: 150px;
+    height: 44px;
+    padding-left: 6px
+}
+/* End OAuth */
+
+.info-message {
+    display: block;
+    font: normal 15px OpenSansSemibold;
+    color: #008000;
+    top: -10px;
+    position: relative;
+}
 
 /* Responsive medium size */
 @media (max-width:813px) {

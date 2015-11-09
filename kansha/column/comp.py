@@ -25,7 +25,7 @@ class Column(object):
     """Column component
     """
 
-    def __init__(self, id_, board, assets_manager, search_engine, data=None):
+    def __init__(self, id_, board, search_engine, services_service, data=None):
         """Initialization
 
         In:
@@ -37,13 +37,13 @@ class Column(object):
         self.id = 'list_' + str(self.db_id)
         self.board = board
         self.nb_card = var.Var(data.nb_max_cards)
-        self.assets_manager = assets_manager
+        self._services = services_service
         self.search_engine = search_engine
         self.body = component.Component(self, 'body')
         self.title = component.Component(ColumnTitle(self))
         self.title.on_answer(lambda v: self.title.call(model='edit'))
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
+        self.cards = [component.Component(self._services(card.Card, c.id, self, data=c))
                       for c in data.cards]
         self.new_card = component.Component(
             card.NewCard(self)).on_answer(self.create_card)
@@ -222,9 +222,9 @@ class Column(object):
         if text:
             if self.can_add_cards:
                 new_card = DataCard.create_card(self.data, text, security.get_user().data)
-                self.cards.append(component.Component(card.Card(new_card.id,
-                                                                self,
-                                                                self.assets_manager),
+                self.cards.append(component.Component(self._services(
+                                                        card.Card, new_card.id, self
+                                                       ),
                                                       'new'))
                 values = {'column_id': self.id,
                           'column': self.title().text,
@@ -255,7 +255,7 @@ class Column(object):
         c.delete()
 
     def reload(self):
-        self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
+        self.cards = [component.Component(self._services(card.Card, c.id, self, data=c))
                       for c in self.data.cards]
 
     def archive_card(self, c):

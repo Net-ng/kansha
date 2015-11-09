@@ -25,6 +25,21 @@ from sqlalchemy.ext.associationproxy import AssociationProxy
 from kansha.models import Entity
 
 
+class DataToken(Entity):
+    using_options(tablename='token')
+    token = Field(Unicode(255), unique=True, nullable=False, primary_key=True)
+    username = Field(Unicode(255), nullable=True)
+    date = Field(DateTime, nullable=False)
+    action = Field(Unicode(255), nullable=True)
+    board = ManyToOne('DataBoard')
+
+    @classmethod
+    def delete_by_username(cls, username, action):
+        token = cls.get_by(username=username, action=action)
+        if token:
+            token.delete()
+
+
 class DataBoardMember(Entity):
     using_options(tablename='user_boards__board_members')
     board = ManyToOne('DataBoard', primary_key=True, ondelete='CASCADE')
@@ -113,7 +128,6 @@ class DataUser(Entity):
     def set_email_to_confirm(self, email_to_confirm):
         if email_to_confirm:
             self.email_to_confirm = email_to_confirm
-
 
     def is_validated(self):
         return self.email_to_confirm is None

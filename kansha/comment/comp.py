@@ -32,7 +32,7 @@ class Comment(flow.FlowElement):
         self.db_id = data.id
         self.text = data.comment
         self.creation_date = data.creation_date
-        self.author = component.Component(usermanager.get_app_user(data.author.username, data=data.author))
+        self.author = component.Component(usermanager.UserManager.get_app_user(data.author.username, data=data.author))
         self.comment_label = component.Component(Commentlabel(self))
         self.comment_label.on_answer(lambda v: self.comment_label.call(model='edit'))
 

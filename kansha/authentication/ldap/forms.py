@@ -10,9 +10,9 @@
 
 from nagare import presentation, var, database, security
 from nagare.i18n import _
+from nagare.admin.reference import load_object
 
 from ...user import usermanager
-from . import ldap_auth
 from kansha.services.authentication_repository import Authentication
 
 
@@ -20,18 +20,19 @@ class Login(Authentication):
 
     alt_title = None
 
-    config_spec = {
+    CONFIG_SPEC = {
         'activated': 'boolean(default=False)',
-        'server': 'string(default="")',
-        'user_base_dn': 'string(default="")',
-        'cls': 'string(default="")'
+        'host': 'string(default="localhost")',
+        'port': 'integer(default=389)',
+        'users_base_dn': 'string(default="")',
+        'schema': 'string(default="kansha.authentication.ldap:NngLDAPAuth")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
-        cls = ldap_auth.get_class(self.config['cls'])
+    def __init__(self, app_title, app_banner, custom_css, assets_manager_service):
+        cls = load_object(self.config['schema'])[0]
         self.ldap_engine = cls(self.config)
         self.error_message = ''
-        self.assetsmanager = assetsmanager
+        self.assets_manager = assets_manager_service
 
     def connect(self, uid, passwd, comp):
         if (uid != '' and passwd != '' and
@@ -40,9 +41,9 @@ class Login(Authentication):
             profile = self.ldap_engine.get_profile(uid, passwd)
             # if user exists update data
             if profile['picture']:
-                self.assetsmanager.save(profile['picture'], uid,
+                self.assets_manager.save(profile['picture'], uid,
                                         {'filename': uid})
-                picture = self.assetsmanager.get_image_url(uid, 'thumb')
+                picture = self.assets_manager.get_image_url(uid, 'thumb')
             else:
                 picture = None
             if not data_user:
@@ -52,7 +53,7 @@ class Login(Authentication):
             data_user.update(profile['name'], profile['email'],
                              picture=picture)
             database.session.flush()
-            u = usermanager.get_app_user(uid, data=data_user)
+            u = usermanager.UserManager.get_app_user(uid, data=data_user)
             security.set_user(u)
             comp.answer(u)
         else:

@@ -62,29 +62,31 @@ class Board(object):
     max_shown_members = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, custom_css, mail_sender, assets_manager,
-                 search_engine, on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, on_update_members=None, load_data=True):
+    def __init__(self, id_, app_title, app_banner, custom_css, search_engine,
+                 assets_manager_service, mail_sender_service, services_service,
+                 on_board_delete=None, on_board_archive=None,
+                 on_board_restore=None, on_board_leave=None, on_update_members=None,load_data=True):
         """Initialization
 
         In:
           -- ``id_`` -- the id of the board in the database
-          -- ``mail_sender`` -- Mail object, use to send mail
+          -- ``mail_sender_service`` -- Mail service, used to send mail
           -- ``on_board_delete`` -- function to call when the board is deleted
         """
         self.model = 'columns'
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
+        self.mail_sender = mail_sender_service
         self.id = id_
         self.on_board_delete = on_board_delete
         self.on_board_archive = on_board_archive
         self.on_board_restore = on_board_restore
         self.on_board_leave = on_board_leave
         self.on_update_members = on_update_members
-        self.assets_manager = assets_manager
+        self.assets_manager = assets_manager_service
         self.search_engine = search_engine
+        self._services = services_service
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())
@@ -160,7 +162,7 @@ class Board(object):
         columns = []
         archive = None
         for c in self.data.columns:
-            col = column.Column(c.id, self, self.assets_manager, self.search_engine, c)
+            col = self._services(column.Column, c.id, self, self.search_engine, data=c)
             if c.archive:
                 archive = col
             else:
@@ -172,7 +174,7 @@ class Board(object):
             # Create the unique archive column
             last_idx = max(c.index for c in self.data.columns)
             col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
-            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
+            self.archive_column = self._services(column.Column, col_id, self, self.search_engine)
 
         if self.archive and security.has_permissions('manage', self):
             columns.append(component.Component(self.archive_column))
@@ -191,9 +193,9 @@ class Board(object):
 
     def refresh(self):
         if self.archive:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns]
+            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns]
         else:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns if not c.archive]
+            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns if not c.archive]
 
 
     @property
@@ -210,9 +212,9 @@ class Board(object):
         members = [dbm.member for dbm in data.board_members]
         members = [member for member in set(members) - set(data.managers)]
         members.sort(key=lambda m: (m.fullname, m.email))
-        self.members = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'member'))
+        self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'member'))
                         for member in members]
-        self.managers = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'manager' if len(data.managers) != 1 else 'last_manager'))
+        self.managers = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'manager' if len(data.managers) != 1 else 'last_manager'))
                          for member in data.managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
                         for token in data.pending]
@@ -267,7 +269,7 @@ class Board(object):
             return False
         col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
         if not archive or (archive and self.archive):
-            self.columns.insert(index, component.Component(column.Column(col.id, self, self.assets_manager, self.search_engine), 'new'))
+            self.columns.insert(index, component.Component(self._services(column.Column, col.id, self, self.search_engine), 'new'))
         self.increase_version()
         return col.id
 
@@ -387,9 +389,6 @@ class Board(object):
     @property
     def archived(self):
         return self.data.archived
-
-    def archive_column(self):
-        return self.columns
 
     @property
     def archive(self):
@@ -627,7 +626,7 @@ class Board(object):
 
         user = usermanager.UserManager.get_by_email(member.username)
         if user:
-            user = usermanager.get_app_user(user.username, data=user)
+            user = usermanager.UserManager.get_app_user(user.username, data=user)
             for column in self.columns:
                 column().remove_board_member(user)
 
@@ -705,7 +704,7 @@ class Board(object):
         if self.on_update_members:
             self.on_update_members()
 
-    def invite_members(self, emails):
+    def invite_members(self, emails, application_url):
         """Invite somebody to this board,
 
         Create token used in invitation email.
@@ -718,11 +717,11 @@ class Board(object):
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
-            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
         return 'reload_boards();'
 
-    def resend_invitation(self, pending_member):
+    def resend_invitation(self, pending_member, application_url):
         """Resend an invitation,
 
         Resend invitation to the pending member
@@ -731,7 +730,7 @@ class Board(object):
             - ``pending_member`` -- Send invitation to this user (PendingMember instance)
         """
         email = pending_member.username
-        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
         invitation.send_email(self.mail_sender)
         # re-calculate pending
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, "pending"))
@@ -767,7 +766,7 @@ class Board(object):
         """
         already_in = set([m().email for m in self.all_members])
         best_friends = user.best_friends(already_in, 5)
-        self._best_friends = [component.Component(usermanager.get_app_user(u.username), "friend") for u in best_friends]
+        self._best_friends = [component.Component(usermanager.UserManager.get_app_user(u.username), "friend") for u in best_friends]
         return self._best_friends
 
     @property
@@ -863,7 +862,7 @@ class Board(object):
                 self.card_matches.add(None)
         else:
             self.card_matches = set()
-            
+
     @staticmethod
     def get_last_modified_boards_for(user_username, user_source):
         return DataBoard.get_last_modified_boards_for(user_username, user_source)
@@ -985,13 +984,13 @@ class BoardMember(object):
     def email(self):
         return self.user().email
 
-    def dispatch(self, action):
+    def dispatch(self, action, application_url):
         if action == 'remove':
             self.board.remove_board_member(self)
         elif action == 'toggle_role':
             self.board.change_role(self, 'manager' if self.role == 'member' else 'member')
         elif action == 'resend':
-            self.board.resend_invitation(self)
+            self.board.resend_invitation(self, application_url)
 
     def get_user_data(self):
         return self.user().data

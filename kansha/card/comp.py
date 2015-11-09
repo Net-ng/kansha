@@ -55,7 +55,7 @@ class Card(object):
 
     max_shown_members = 3
 
-    def __init__(self, id_, column, assets_manager, data=None):
+    def __init__(self, id_, column, services_service, data=None):
         """Initialization
 
         In:
@@ -65,7 +65,7 @@ class Card(object):
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
         self.column = column
-        self.assets_manager = assets_manager
+        self._services = services_service
         self._data = data
         self.reload(data if data else self.data)
 
@@ -88,12 +88,12 @@ class Card(object):
         self.checklists = component.Component(checklist.Checklists(self))
         self.description = component.Component(CardDescription(self))
         self.due_date = component.Component(due_date.DueDate(self))
-        self.gallery = component.Component(gallery.Gallery(self, self.assets_manager))
+        self.gallery = component.Component(self._services(gallery.Gallery, self))
         self.comments = component.Component(comment.Comments(self, data.comments))
         self.flow = component.Component(CardFlow(self, self.comments, self.gallery))
         self.labels = component.Component(label.CardLabels(self))
         self.votes = component.Component(vote.Votes(self))
-        self.author = component.Component(usermanager.get_app_user(data.author.username, data=data.author))
+        self.author = component.Component(usermanager.UserManager.get_app_user(data.author.username, data=data.author))
 
         self._weight = component.Component(CardWeightEditor(self))
 
@@ -102,7 +102,7 @@ class Card(object):
             overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.AddMembers(self.autocomplete_method)).on_answer(self.add_members)
-        self.members = [component.Component(usermanager.get_app_user(member.username, data=member))
+        self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in data.members]
 
         def many_user_render(h, number):
@@ -125,7 +125,7 @@ class Card(object):
         Return:
             - list of favorites (User instances) wrappend on component
         """
-        self._favorites = [component.Component(usermanager.get_app_user(username), "friend").on_answer(self.add_members)
+        self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend").on_answer(self.add_members)
                            for (username, _) in sorted(self.column.favorites.items(), key=lambda e:-e[1])[:5]
                            if username not in [member().username for member in self.members]]
         return self._favorites
@@ -255,12 +255,12 @@ class Card(object):
             log.debug('Adding %s to members' % (new_data_member.username,))
 
             data.members.append(new_data_member)
-            self.members.append(component.Component(usermanager.get_app_user(new_data_member.username, data=new_data_member)))
+            self.members.append(component.Component(usermanager.UserManager.get_app_user(new_data_member.username, data=new_data_member)))
             return new_data_member
 
     def remove_member(self, username):
         """Remove member username from card member"""
-        data_member = usermanager.UserManager().get_by_username(username)
+        data_member = usermanager.UserManager.get_by_username(username)
         if data_member:
             log.debug('Removing %s from card %s' % (username, self.id))
             data = self.data
@@ -283,7 +283,7 @@ class Card(object):
             - ``member`` -- Board Member instance to remove
         """
         self.data.remove_board_member(member)
-        self.members = [component.Component(usermanager.get_app_user(m.username, data=m))
+        self.members = [component.Component(usermanager.UserManager.get_app_user(m.username, data=m))
                         for m in self.data.members]
 
     # Cover methods
@@ -299,7 +299,7 @@ class Card(object):
         return self.data.cover is not None
 
     def get_cover(self):
-        return gallery.Asset(self.data.cover, self.assets_manager)
+        return self._services(gallery.Asset, self.data.cover)
 
     def remove_cover(self):
         self.data.remove_cover()

@@ -12,7 +12,7 @@ from nagare import presentation, security, log, component
 from nagare.i18n import _
 
 from .. import models
-from .app import App, WSGIApp
+from .comp import App, WSGIApp
 from ..exceptions import NotFound
 from ..authentication.database import forms
 from ..user.usermanager import UserManager
@@ -51,8 +51,7 @@ def init_app__register(self, url, comp, http_method, request):
         forms.RegistrationTask,
         self.app_title,
         self.app_banner,
-        self.custom_css,
-        self.mail_sender
+        self.custom_css
     )
     register.state = (url[1], url[2])
     comp.becomes(register).on_answer(lambda v: logout())
@@ -102,12 +101,14 @@ def init_app__reset(self, url, comp, http_method, request):
         self.app_title,
         self.app_banner,
         self.custom_css,
-        self.mail_sender
     )
-    reset.state = (url[1], url[2])
+    reset.state = (url[1], url[2], request.application_url)
     comp.becomes(reset).on_answer(lambda v: logout())
 
 
-@presentation.init_for(App, "len(url) >= 2 and url[0] == 'assets'")
+@presentation.init_for(App, "len(url) >= 3 and url[0] == 'services'")
 def init_app__assets(self, url, comp, http_method, request):
-    component.Component(self.assets_manager).init(url[1:], http_method, request)
+    if url[1] in self._services:
+        component.Component(self._services[url[1]]).init(url[2:], http_method, request)
+    else:
+        raise NotFound()

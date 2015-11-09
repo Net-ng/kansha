@@ -8,14 +8,12 @@
 # this distribution.
 # --
 
-import peak.rules
 from datetime import datetime
 
-from nagare import presentation, component, i18n
+from nagare import i18n
 from nagare.security import common as security_common
 
-from . import usermanager
-from ..models import DataToken
+from .models import DataToken, DataUser
 
 
 class User(security_common.User):
@@ -36,7 +34,7 @@ class User(security_common.User):
         """Return the user object from database
         """
         if not self._data:
-            self._data = usermanager.UserManager().get_by_username(self.username)
+            self._data = DataUser.get_by_username(self.username)
         return self._data
 
     def __getstate__(self):
@@ -168,11 +166,6 @@ class User(security_common.User):
         return self.data.display_week_numbers
 
 
-@peak.rules.when(usermanager.get_user_class, """source == 'application'""")
-def get_user_class(source):
-    return User
-
-
 class PendingUser(object):
     """ Class for pending user of a board
 
@@ -193,23 +186,3 @@ class PendingUser(object):
     @property
     def email(self):
         return self.data.username
-
-
-class ExternalUser(User):
-
-    def __init__(self, username, *args, **kw):
-        """Initialization
-
-        In:
-            - ``username`` -- the id of the user
-        """
-        super(User, self).__init__(username, 'passwd')
-        self.username = username
-        self._data = kw.get('data')
-
-
-@peak.rules.when(usermanager.get_user_class, """source != 'application'""")
-def get_user_class(source):
-    return ExternalUser
-
-

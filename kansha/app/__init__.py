@@ -7,7 +7,7 @@
 # this distribution.
 #--
 
-from .app import app
-from .app import run
+from .comp import app
+from .comp import run
 from . import urls
 import view

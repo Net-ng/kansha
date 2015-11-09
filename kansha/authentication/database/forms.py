@@ -20,7 +20,7 @@ from nagare.i18n import _
 
 from . import validators, captcha
 from kansha.user import usermanager
-from kansha.models import DataToken
+from kansha.user.models import DataToken
 from kansha.services.authentication_repository import Authentication
 
 UserConfirmationTimeout = timedelta(hours=12)
@@ -70,20 +70,21 @@ def redirect_to(url):
 
 class Login(Authentication):
 
-    config_spec = {
+    CONFIG_SPEC = {
         'activated': 'boolean(default=True)',
         'moderator': 'string(default="")',
         'default_username': 'string(default="")',
         'default_password': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, assetsmanager):
+    def __init__(self, app_title, app_banner, custom_css, services_service):
         self._error_message = ''
-        self.registration_task = RegistrationTask(app_title, app_banner, custom_css, mail_sender,
-                                                  self.config['moderator'])
+        self.registration_task = services_service(RegistrationTask, app_title, app_banner,
+                                                  custom_css,
+                                                  moderator=self.config['moderator'])
         self.default_username = self.config['default_username']
         self.default_password = self.config['default_password']
-        self.pwd_reset = PasswordResetTask(app_title, app_banner, custom_css, mail_sender)
+        self.pwd_reset = services_service(PasswordResetTask, app_title, app_banner, custom_css)
         self.content = component.Component()
 
     @property
@@ -204,10 +205,10 @@ class RegistrationForm(editor.Editor):
                                           email=self.email.value)
         return u
 
-    def on_ok(self, comp):
+    def on_ok(self, comp, application_url):
         u = self.commit()
         if u:
-            comp.answer(u.username)
+            comp.answer((u.username, application_url))
 
 
 @presentation.render_for(RegistrationForm)
@@ -245,10 +246,10 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(self.on_ok, comp)
+                             class_="btn btn-primary btn-small").action(self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
-                _("Log in")).action(comp.answer)
+                _("Log in")).action(comp.answer, (None, None))
 
     return h.root
 
@@ -264,7 +265,7 @@ def render_RegistrationForm_captcha(self, h, comp, *args):
 
 class EmailRegistrationForm(editor.Editor):
 
-    """Registration form for creating a new (unconfirmed) user"""
+    """Registration form for completing the email of a new external (and unconfirmed) user"""
 
     def __init__(self, app_title, app_banner, custom_css, username):
         self.email = editor.Property('').validate(validators.validate_email)
@@ -293,10 +294,10 @@ class EmailRegistrationForm(editor.Editor):
         self.error_message = _(u'Something went wrong: user does not exist! Please contact the administrator of this site.')
         return None
 
-    def on_ok(self, comp):
-        email = self.commit()
-        if email:
-            comp.answer(email)
+    def on_ok(self, comp, application_url):
+        username = self.commit()
+        if username:
+            comp.answer((username, application_url))
 
 
 @presentation.render_for(EmailRegistrationForm)
@@ -323,10 +324,11 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(self.on_ok, comp)
+                             class_="btn btn-primary btn-small").action(
+                                self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
-                _("Log in")).action(comp.answer)
+                _("Log in")).action(comp.answer, (None, None))
 
     return h.root
 
@@ -363,7 +365,7 @@ def render_registration_confirmation_success(self, h, comp, *args):
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
                                  class_="btn btn-primary btn-small",
-                                 value=_("Ok")).action(comp.answer)
+                                 value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
 
@@ -382,7 +384,7 @@ def render_registration_confirmation_failure(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit', class_="btn btn-primary btn-small",
-                                 value=_("Ok")).action(comp.answer)
+                                 value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
 
@@ -535,10 +537,11 @@ class PasswordResetForm(editor.Editor):
 
 @presentation.render_for(PasswordResetForm)
 def render_password_reset_form(self, h, comp, *args):
+    application_url = h.request.application_url
     def commit():
         user = self.commit()
         if user:
-            comp.answer(user.username)
+            comp.answer((user.username, application_url))
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
 
@@ -565,7 +568,7 @@ def render_password_reset_form(self, h, comp, *args):
                              value=_("Reset password"),
                              class_='btn btn-primary btn-small').action(commit)
 
-            h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer))
+            h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer, (None, None)))
 
     return h.root
 
@@ -865,7 +868,7 @@ class RegistrationTask(component.Task):
 
     """A task that handles the user registration process"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, moderator='', username=''):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender_service, moderator='', username=''):
         '''
         Register a new user (`username` not provided)
         or register email for an existing unconfirmed user (`username` provided).
@@ -874,16 +877,15 @@ class RegistrationTask(component.Task):
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
+        self.mail_sender = mail_sender_service
         self.moderator = moderator
-        self.confirmation_base_url = mail_sender.application_url
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.username = username
         self.alt_title = _(u'Sign up')
 
-    def _create_email_confirmation(self, username):
-        confirmation_url = '/'.join((self.confirmation_base_url, 'register', username))
+    def _create_email_confirmation(self, username, confirmation_base_url=''):
+        confirmation_url = '/'.join((confirmation_base_url, 'register', username))
         get_user = lambda: usermanager.UserManager.get_by_username(username)
         return EmailConfirmation(self.app_title, self.app_banner, self.custom_css, get_user, confirmation_url, self.moderator)
 
@@ -893,7 +895,7 @@ class RegistrationTask(component.Task):
             # - ask the user to fill a registration form
             # - send him a confirmation email
             if self.username:
-                username = comp.call(
+                username, application_url = comp.call(
                     EmailRegistrationForm(
                         self.app_title,
                         self.app_banner,
@@ -902,9 +904,9 @@ class RegistrationTask(component.Task):
                     )
                 )
             else:
-                username = comp.call(RegistrationForm(self.app_title, self.app_banner, self.custom_css))
+                username, application_url = comp.call(RegistrationForm(self.app_title, self.app_banner, self.custom_css))
             if username:
-                confirmation = self._create_email_confirmation(username)
+                confirmation = self._create_email_confirmation(username, application_url)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation)
         else:
@@ -917,12 +919,12 @@ class RegistrationTask(component.Task):
             confirmation = self._create_email_confirmation(username)
             if confirmation.confirm_email_address(token):
                 log.debug(_("Registration successful for user %s") % username)
-                comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='success')
+                base_url = comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='success')
             else:
                 log.debug(_("Registration failure for user %s") % username)
-                comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='failure')
+                base_url = comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='failure')
 
-            redirect_to(self.confirmation_base_url)
+            redirect_to(base_url)
 
 # ----------------------------------------------------------
 
@@ -942,7 +944,7 @@ class TokenGenerator(object):
         token = unicode(
             hashlib.sha512(str(time.time()) + self.username).hexdigest())
 
-        DataToken.delete_token_by_username(self.username, self.action)
+        DataToken.delete_by_username(self.username, self.action)
         # create new one
         token_instance = DataToken(token=token,
                                    username=self.username,
@@ -970,13 +972,12 @@ class PasswordResetTask(component.Task):
 
     """A task that handles the password reset process"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender):
+    def __init__(self, app_title, app_banner, custom_css, mail_sender_service):
         """Be careful! The confirmation URL *should* be rooted"""
         self.app_title = app_title
         self.app_banner = app_banner
         self.custom_css = custom_css
-        self.mail_sender = mail_sender
-        self.confirmation_base_url = mail_sender.application_url
+        self.mail_sender = mail_sender_service
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.alt_title = _(u'Reset password')
@@ -984,33 +985,33 @@ class PasswordResetTask(component.Task):
     def _get_user(self, username):
         return usermanager.UserManager.get_by_username(username)
 
-    def _create_password_reset_confirmation(self, username):
+    def _create_password_reset_confirmation(self, username, confirmation_base_url):
         return PasswordResetConfirmation(self.app_title, self.app_banner, self.custom_css,
                                          lambda: self._get_user(username),
-                                         self.confirmation_base_url)
+                                         confirmation_base_url)
 
     def go(self, comp):
         if not self.state:
             # step 1:
             # - ask the user email
             # - send him a confirmation email
-            username = comp.call(PasswordResetForm(self.app_title,
+            username, application_url = comp.call(PasswordResetForm(self.app_title,
                                                    self.app_banner,
                                                    self.custom_css,
                                                    self._get_user))
             if username:
                 confirmation = self._create_password_reset_confirmation(
-                    username)
+                    username, application_url)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation, model='email')
-                redirect_to(self.confirmation_base_url)
+                redirect_to(application_url)
         else:
             # step 2: the user clicked on the confirmation link on his email
             # - check the token (to avoid cheating)
             # - ask for the new password
-            username, token = self.state
+            username, token, application_url = self.state
 
-            confirmation = self._create_password_reset_confirmation(username)
+            confirmation = self._create_password_reset_confirmation(username, application_url)
             if confirmation.confirm_password_reset(token):
                 log.debug(_("Resetting the password for user %s") % username)
                 ret = comp.call(PasswordEditor(self.app_title, self.app_banner, self.custom_css,
@@ -1024,12 +1025,12 @@ class PasswordResetTask(component.Task):
                 log.debug(_("Password reset failure for user %s") % username)
                 comp.call(confirmation, model='failure')
 
-            redirect_to(self.confirmation_base_url)
+            redirect_to(application_url)
 
 
 @presentation.init_for(PasswordResetTask, "len(url) == 2")
 def init_password_reset_task(self, url, comp, http_method, request):
-    self.state = (url[0], url[1])
+    self.state = (url[0], url[1], request.application_url)
 
 
 # ----------------------------------------------------------

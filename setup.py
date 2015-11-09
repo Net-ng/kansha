@@ -39,6 +39,7 @@ setup(
         'alembic',
         'PEAK-Rules',
         'nagare[database,i18n]==0.4.1.post473',
+        'nagare-services',
         'docutils',
         'Pillow',
         'pycrypto',
@@ -73,6 +74,8 @@ setup(
 
       [kansha.services]
       authentication = kansha.services.authentication_repository:AuthenticationsRepository
+      mail_sender = kansha.services.mail:MailSender
+      assets_manager = kansha.services.simpleassetsmanager.simpleassetsmanager:SimpleAssetsManager
 
       [kansha.authentication]
       dblogin = kansha.authentication.database.forms:Login

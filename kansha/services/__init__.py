@@ -7,8 +7,4 @@
 # this distribution.
 #--
 
-import url
-
-from .components_repository import Service
 from .services_repository import ServicesRepository
-from .services_repository import set_entry_point

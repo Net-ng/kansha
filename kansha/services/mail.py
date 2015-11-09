@@ -15,18 +15,38 @@ from email.Utils import COMMASPACE, formatdate
 
 from nagare import log
 
+from .services_repository import Service
 
-class MailSender(object):
 
-    def __init__(self, host, port, default_sender):
+class MailSender(Service):
+    '''
+    Mail sender service.
+
+    API.
+    A mail sender service must provide a send method:
+    '''
+
+    LOAD_PRIORITY = 10
+    CONFIG_SPEC = {
+        'activated': 'boolean(default=True)',
+        'host': 'string(default="127.0.0.1")',
+        'port': 'integer(default=25)',
+        'default_sender': 'string(default="noreply@email.com")'
+    }
+
+    def __init__(self, config_filename, error, host, port, default_sender, activated):
+        super(MailSender, self).__init__(config_filename, error)
         self.host = host
         self.port = port
         self.default_sender = default_sender
-        log.debug(
-            'The mail sender will connect to %s on port %s' % (host, port))
-
-    def set_application_url(self, application_url):
-        self.application_url = application_url
+        self.activated = activated
+        if self.activated:
+            log.debug(
+                'The mail service will connect to %s on port %s' %
+                (self.host, self.port)
+            )
+        else:
+            log.warning('The mail service will drop all messages!')
 
     def _smtp_send(self, from_, to, contents):
         smtp = smtplib.SMTP(self.host, self.port)
@@ -42,13 +62,13 @@ class MailSender(object):
         """Sends an email
 
         In:
-         - ``subject`` -- email object
-         - ``to`` -- To email's list
+         - ``subject`` -- email subject
+         - ``to`` -- list of recipients' emails
          - ``content`` --  email content
-         - ``from_`` -- email sender
-         - ``cc`` --  CC email's list
-         - ``bcc`` -- BCC email's list
-         - ``type`` --  email type
+         - ``from_`` -- email sender adress
+         - ``cc`` --  list of CC emails
+         - ``bcc`` -- list of BCC emails
+         - ``type`` --  email type ('plain' or 'html')
          - ``mpart_type`` -- email part type
 
         """
@@ -73,17 +93,24 @@ class MailSender(object):
             msg.attach(MIMEText(html_content, 'html', charset))
 
         # log
-        log.info('Sending mail:\n  subject=%s\n  from=%s\n  to=%s\n  cc=%s\n  bcc=%s',
-                 subject, from_, to, cc, bcc)
+        log.info('%s mail:\n  subject=%s\n  from=%s\n  to=%s\n  cc=%s\n  bcc=%s',
+                 'sending' if self.activated else 'ignoring', subject, from_, to, cc, bcc)
         log.debug('Mail content:\n' + content)
 
         # post the email to the SMTP server
-        self._smtp_send(from_, to + cc + bcc, msg.as_string())
+        if self.activated:
+            self._smtp_send(from_, to + cc + bcc, msg.as_string())
 
 
-class NullMailSender(MailSender):
+class DummyMailSender(MailSender):
+    '''For use in unit tests.'''
 
-    """Mail sender that does not send any email"""
-
-    def _smtp_send(self, from_, to, contents):
-        pass  # do nothing
+    def __init__(self):
+        super(DummyMailSender, self).__init__(
+            '',
+            None,
+            host='localhost',
+            port=25,
+            activated=False,
+            default_sender='noreply@test.test'
+        )

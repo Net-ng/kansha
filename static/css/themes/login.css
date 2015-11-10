@@ -217,19 +217,6 @@ input[type="password"]:focus {
     color: white
 }
 
-/* OAuth */
-.oauth.google {
-    width: 160px;
-    height: 54px
-}
-
-.oauth.facebook {
-    width: 150px;
-    height: 44px;
-    padding-left: 6px
-}
-/* End OAuth */
-
 .message {
     text-align: center;
     padding: 10px;

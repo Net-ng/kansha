@@ -109,9 +109,9 @@ def render_card_actions(self, h, comp, *args):
                             h.a.action(comp.answer, 'delete').get('onclick')
                         )
                         h << h.button(
-                            h.i(class_='icon-bin icon-grey'),
+                            h.i(class_='icon-bin'),
                             _('Delete'),
-                            class_='btn btn-small delete',
+                            class_='btn delete',
                             onclick=(
                                 "if (confirm(%(confirm_msg)s)) {"
                                 "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
@@ -152,7 +152,7 @@ def render_card_dnd(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor)
 def render_cardweighteditor(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star icon-grey'), self.weight, class_='btn btn-small').action(
+    h << h.a(h.i(class_='icon-star'), self.weight, class_='btn').action(
         lambda: comp.call(self, model='edit'))
     return h.root
 
@@ -166,7 +166,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
     if self.board.weighting_cards == WEIGHTING_FREE:
         with h.form:
             h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
-            h << h.button(_('Save'), class_='btn btn-primary btn-small').action(answer)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
     elif self.board.weighting_cards == WEIGHTING_LIST:
         with h.form:
@@ -174,7 +174,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
                 with h.select.action(self.weight):
                     for value in self.board.weights.split(','):
                         h << h.option(value, value=value).selected(self.weight)
-            h << h.button(_('Save'), class_='btn btn-primary btn-small').action(answer)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
     return h.root
 
@@ -272,7 +272,7 @@ def render_card_badges(self, h, comp, *args):
         h << self.gallery.render(h, model='badge')
         if self.weight:
             label = _('weight')
-            h << h.span(h.i(class_='icon-star icon-grey'), ' ', self.weight, class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-star'), ' ', self.weight, class_='label', data_tooltip=label)
     return h.root
 
 
@@ -362,9 +362,9 @@ def render_new_card_add(self, h, comp, *args):
 
     with h.form(class_='card-add-form'):
         h << h.input(type='text', id=id_).action(text)
-        h << h.button(_('Add'), class_='btn btn-primary btn-small').action(answer)
+        h << h.button(_('Add'), class_='btn btn-primary').action(answer)
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
+        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
 
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 

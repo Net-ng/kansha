@@ -91,7 +91,7 @@ def render(self, h, comp, *args):
         with h.div(class_='overlay-header'):
             with h.div(class_='overlay-title'):
                 h << h.div(self.title or self.text(h))
-            h << h.a(title=_('Close this dialog window.'), href='#', class_='icon-remove icon-grey action-close', onclick='YAHOO.kansha.app.hideOverlay();return false')
+            h << h.a(h.i(class_='icon-cross'), title=_('Close this dialog window.'), href='#', class_='action-close', onclick='YAHOO.kansha.app.hideOverlay();return false')
         h << h.div(' ' if self.dynamic else self.content(h), class_='overlay-body', id=body_id)
 
     return h.root

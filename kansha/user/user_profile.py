@@ -8,7 +8,7 @@
 # this distribution.
 #--
 
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 import imghdr
 import peak.rules
 
@@ -18,6 +18,7 @@ from nagare.i18n import _, _L
 
 from kansha.authentication.database import validators, forms as registation_forms
 from kansha.board import comp as board
+from kansha.menu import MenuEntry
 from usermanager import UserManager
 
 from .user_cards import UserCards
@@ -25,9 +26,6 @@ from kansha import validator
 
 LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
-
-
-MenuEntry = namedtuple('MenuEntry', 'label icon content')
 
 
 class UserProfile(object):
@@ -188,7 +186,7 @@ def render(self, h, comp, *args):
                     h << h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers)
 
             with h.div:
-                h << h.input(value=_("Save"), class_="btn btn-primary btn-small",
+                h << h.input(value=_("Save"), class_="btn btn-primary",
                              type='submit').action(self.commit)
     return h.root
 
@@ -413,7 +411,7 @@ def render(self, h, comp, *args):
 
             with h.div(class_=''):
                 h << h.input(_("Save"),
-                             class_="btn btn-primary btn-small",
+                             class_="btn btn-primary",
                              type='submit').action(self.commit, h.request.application_url)
     return h.root
 

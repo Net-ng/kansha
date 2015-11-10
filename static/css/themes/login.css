@@ -217,6 +217,19 @@ input[type="password"]:focus {
     color: white
 }
 
+/* OAuth */
+.oauth.google {
+    width: 160px;
+    height: 54px
+}
+
+.oauth.facebook {
+    width: 150px;
+    height: 44px;
+    padding-left: 6px
+}
+/* End OAuth */
+
 .message {
     text-align: center;
     padding: 10px;
@@ -252,23 +265,6 @@ input[type="password"]:focus {
         min-height: auto;
     }
 
-    /*    .logo {
-        position: static;
-        margin: 0 auto
-    }
-
-    .header h1 {
-        position: static;
-        margin-bottom: 20px;
-        width: 100%;
-        padding: 0 10px
-    }
-
-    .title h2 {
-        font-size: 40px
-    }
-    */
-
     form {
         display: block
     }
@@ -288,25 +284,6 @@ input[type="password"]:focus {
         width: 100%;
         padding: 0 10px;
     }
-
-    /*    .databaseLogin, .regForm {
-        display: block;
-        border-left: 0;
-        border-top: 1px solid #e5e5e5
-    }
-
-    .oauthLogin {
-        display: block;
-        border-left: 0;
-        border-top: 1px solid #e5e5e5
-    }
-
-    .LDAPLogin {
-        display: block;
-        border-left: 0;
-        border-top: 1px solid #e5e5e5
-    }
-    */
 }
 
 @media (max-width:1095px) {

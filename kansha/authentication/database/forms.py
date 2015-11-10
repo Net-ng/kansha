@@ -135,7 +135,7 @@ def render_Login_form(self, h, comp, *args):
                          value=self.default_password, placeholder=_('Enter password'))
             h << h.a(_('Forgot password?')).action(self.content.call, self.pwd_reset)
             with h.div(class_='actions'):
-                h << h.input(type='submit', value=_(u'Sign in'), class_='btn btn-primary btn-small').action(self.log_in, comp)
+                h << h.input(type='submit', value=_(u'Sign in'), class_='btn btn-primary').action(self.log_in, comp)
                 with h.div:
                     h << _('No account yet? ')
                     h << h.a(_('Sign up')).action(self.content.call, self.registration_task)
@@ -246,7 +246,7 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(self.on_ok, comp, h.request.application_url)
+                             class_="btn btn-primary").action(self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
                 _("Log in")).action(comp.answer, (None, None))
@@ -324,7 +324,7 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(
+                             class_="btn btn-primary").action(
                                 self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
@@ -364,7 +364,7 @@ def render_registration_confirmation_success(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_="btn btn-primary btn-small",
+                                 class_="btn btn-primary",
                                  value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
@@ -383,7 +383,7 @@ def render_registration_confirmation_failure(self, h, comp, *args):
 
             with h.form:
                 with h.div(class_='actions'):
-                    h << h.input(type='submit', class_="btn btn-primary btn-small",
+                    h << h.input(type='submit', class_="btn btn-primary",
                                  value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
@@ -483,11 +483,11 @@ def render_password_editor(self, h, comp, *args):
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
                                  value=_("Change password"),
-                                 class_='btn btn-primary btn-small').action(commit)
+                                 class_='btn btn-primary').action(commit)
                     h << u' '
                     h << h.input(type='submit',
                                  value=_("Cancel"),
-                                 class_='btn btn-small').action(comp.answer)
+                                 class_='btn').action(comp.answer)
 
         return h.root
 
@@ -566,7 +566,7 @@ def render_password_reset_form(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Reset password"),
-                             class_='btn btn-primary btn-small').action(commit)
+                             class_='btn btn-primary').action(commit)
 
             h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer, (None, None)))
 
@@ -641,7 +641,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(comp.answer)
     return h.root
 
@@ -660,7 +660,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
         with h.form:
             with h.div(class_='actions'):
                 h << h.input(type='submit',
-                             class_='btn btn-primary btn-small',
+                             class_='btn btn-primary',
                              value=_("Ok")).action(comp.answer)
     return h.root
 
@@ -679,7 +679,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(comp.answer)
 
     return h.root
@@ -797,7 +797,7 @@ def render_registration_confirmation(self, h, comp, *args):
         with h.form:
             with h.div(class_='actions'):
                 h << h.input(type='submit',
-                             class_='btn btn-primary btn-small',
+                             class_='btn btn-primary',
                              value=_("Ok")).action(comp.answer)
 
     return h.root
@@ -1067,7 +1067,7 @@ def render_change_email_confirmation_success(self, h, comp, model):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(lambda: redirect_to(self.redirect_url))
 
     return h.root

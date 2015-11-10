@@ -12,52 +12,6 @@
     padding: 100px 20px 54px 0;
 }
 
-.home li a {
-    font: 15px OpenSansLight;
-    display: block
-}
-
-.home li a:hover {
-    text-decoration: none
-}
-
-/* Menu */
-.menu {
-    width: 190px;
-    height: 100%;
-    border-right: 1px dotted #737373
-}
-
-.menu li a {
-    padding: 8px 8px 8px 50px;
-    margin-bottom: 3px
-}
-
-.menu li span {
-    line-height: 20px;
-}
-
-.menu a.active {
-    background-color: #ebebeb
-}
-
-.menu a:hover {
-    background-color: #ebebeb
-}
-
-.menu .nav-header {
-    display: none
-}
-
-.menu {
-    padding-top: 0
-}
-
-.menu .icon {
-    font-size: 20px;
-    margin-right: 7px;
-}
-
 .home input:disabled {
     margin-bottom: 10px;
 }
@@ -132,36 +86,11 @@
     margin-top: 5px
 }
 
-.home .boards select {
-    margin-top: 5px
-}
-
-.home .memberPanel {
-    width: 300px;
-    height: 300px;
-    z-index: 15;
-    background: #ffffff;
-    position: absolute;
-    -webkit-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.2);
-    padding: 15px
+.home .boards .list {
+    height: auto;
 }
 
 .boards { margin-bottom: 50px; }
-
-.home #lists .list {
-    margin-left: 0;
-    margin-right: 10px;
-    margin-bottom: 15px;
-    width: 48%;
-    display: block !important;
-    float: left !important;
-}
-
-.home #lists .list .title a {
-    float: none;
-}
 
 /* Board labels */
 .boards .wide {
@@ -170,10 +99,6 @@
 
 .boards .compact {
     display: none;
-}
-
-.board-labels .overlay .action-close {
-    padding: 0 !important
 }
 
 .board-labels .members {
@@ -212,19 +137,6 @@
     overflow: hidden;
 }
 /* End board labels */
-
-/* OAuth */
-.oauth.google {
-    width: 160px;
-    height: 54px
-}
-
-.oauth.facebook {
-    width: 150px;
-    height: 44px;
-    padding-left: 6px
-}
-/* End OAuth */
 
 .info-message {
     display: block;

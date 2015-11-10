@@ -11,6 +11,10 @@ textarea.expanded {
     height: 112px;
 }
 
+.buttons {
+    margin: 5px 0;
+}
+
 /* Fix incopatibility between Knacss and fullcalendar */
 #calendar .fc-day-grid {
     flex: initial;
@@ -79,6 +83,15 @@ textarea.expanded {
 /* End display */
 
 /* Board */
+.board-configuration .menu li a {
+    padding-left: 5px;
+}
+
+.board-configuration > div:last-child {
+    width: 70%;
+    padding-left: 20px;
+}
+
 .board {
     height: 100%;
     width: 100%;
@@ -299,7 +312,7 @@ textarea.expanded {
     resize: none;
 }
 
-.list-footer .btn-small {
+.list-footer .btn {
     margin-left: 5px;
 }
 
@@ -541,10 +554,6 @@ a.card-label:hover {
     margin: 0;
 }
 
-.card-edit-form .buttons {
-    margin: 5px 0;
-}
-
 .card-edit-form textarea {
     resize: none;
     height: 29px;
@@ -600,10 +609,6 @@ a.card-label:hover {
     color: #636363;
     padding: 0 12px 4px 12px;
     min-width: 280px;
-}
-
-.overlay.card-overlay .action-close {
-    width: 14px
 }
 
 .card-overlay .members.search .yui-ac-input {
@@ -1267,7 +1272,7 @@ div.history th {
 .yui-skin-sam .yui-panel {
     margin: 70px auto 30px auto;
     max-width: 680px;
-    padding: 5px 30px 15px 50px;
+    padding: 5px 20px 15px 50px;
     border-radius: 10px;
     background: white;
 }
@@ -1276,19 +1281,28 @@ div.history th {
     width: 95%
 }
 
+.yui-skin-sam .yui-panel .panel-section:first-child {
+    border: 0;
+}
+
 .yui-skin-sam .yui-panel .panel-section {
-    line-height: 26px;
-    font-size: 160%;
-    color: #7D7D7D;
-    border-top: 1px solid #7D7D7D;
+    border-top: 1px solid #c0c0c0;
     margin: 10px 0 5px 0;
 }
 
-.yui-skin-sam .yui-panel .panel-section i {
-    margin: 3px 0 0 -32px;
-    float: left;
+.panel-section .panel-section-title {
+    font-size: 160%;
+    margin-bottom: 5px;
 }
 
+.panel-section.background div div:first-child,
+.panel-section.background div div:nth-child(2) {
+    display: inline-block;
+}
+
+.panel-section.background:first-child div:last-child {
+    margin-top: 5px;
+}
 /* End popin */
 
 /* Nb items */

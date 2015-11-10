@@ -75,7 +75,7 @@ def render(self, h, comp, *args):
                 id='ldap_password', placeholder=_('Enter password')).action(passwd)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in with LDAP'),
-                             class_='btn btn-primary btn-small'
+                             class_='btn btn-primary'
                              ).action(lambda: self.connect(uid(), passwd(), comp))
 
     return h.root

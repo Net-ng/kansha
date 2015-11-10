@@ -66,10 +66,10 @@ def render_comment_label_form(self, h, comp, *args):
         h << h.textarea(text(), class_='expanded', id_=txt_id).action(text)
         with h.div(class_='buttons', id=buttons_id):
             h << h.input(value=_("Save"), id=sub_id, type='submit',
-                         class_="btn btn-primary btn-small").action(lambda: comp.answer(self.change_text(text())))
+                         class_="btn btn-primary").action(lambda: comp.answer(self.change_text(text())))
             h << ' '
             h << h.input(value=_("Cancel"), type='submit',
-                         class_="btn btn-small").action(lambda: comp.answer(''))
+                         class_="btn").action(lambda: comp.answer(''))
 
     return h.root
 
@@ -96,10 +96,10 @@ def render_comments_form(self, h, comp, *args):
             )
             with h.div(id=buttons_id, class_="buttons hidden"):
                 h << h.input(value=_("Save"), id=sub_id, type='submit',
-                             class_="btn btn-primary btn-small").action(lambda: comp.answer(text()))
+                             class_="btn btn-primary").action(lambda: comp.answer(text()))
                 h << ' '
                 h << h.input(value=_("Cancel"), type='submit',
-                             class_="btn btn-small").action(lambda: comp.answer(''))
+                             class_="btn").action(lambda: comp.answer(''))
 
     return h.root
 
@@ -109,5 +109,5 @@ def render_comments_badge(self, h, *args):
     """Comment badge for the card"""
     if self.comments:
         label = _N('comment', 'comments', len(self.comments))
-        h << h.span(h.i(class_='icon-bubble icon-grey'), ' ', len(self.comments), class_='label', data_tooltip=label)
+        h << h.span(h.i(class_='icon-bubble'), ' ', len(self.comments), class_='label', data_tooltip=label)
     return h.root

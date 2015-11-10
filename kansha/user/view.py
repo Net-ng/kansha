@@ -80,7 +80,7 @@ def render_User_remove(self, h, comp, *args):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small delete").action(ajax.Update(action=lambda: comp.answer(self.username)))
+                             class_="btn btn-primary delete").action(ajax.Update(action=lambda: comp.answer(self.username)))
     return h.root
 
 
@@ -95,13 +95,13 @@ def render_User_manager(self, h, comp, model):
                 h << h.input(
                     value=_("Manager"),
                     type="submit",
-                    class_=("btn btn-primary btn-small toggle" if model == 'manager'
-                            else "btn btn-primary btn-small")
+                    class_=("btn btn-primary toggle" if model == 'manager'
+                            else "btn btn-primary")
                 ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
                 h << h.input(
                     value=_("Remove"),
                     type="submit",
-                    class_="btn btn-primary btn-small delete"
+                    class_="btn btn-primary delete"
                 ).action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
@@ -186,7 +186,7 @@ def render_NewMember(self, h, comp, *args):
 
         h << h.input(type='text', id=self.text_id,).action(members_to_add)
         h << h.input(value=_("Add"), type="submit",
-                     class_="btn btn-primary btn-small"
+                     class_="btn btn-primary"
                      ).action(remote.Action(lambda: comp.answer(get_emails())))
         h << self.autocomplete
     h << h.script(
@@ -223,7 +223,7 @@ def render_PendingUser_pending(self, h, comp, *args):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(value=_("Resend invitation"), type="submit",
-                             class_="btn btn-primary btn-small").action(ajax.Update(action=lambda: comp.answer('resend')))
+                             class_="btn btn-primary").action(ajax.Update(action=lambda: comp.answer('resend')))
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small delete").action(ajax.Update(action=(lambda: comp.answer('remove'))))
+                             class_="btn btn-primary delete").action(ajax.Update(action=(lambda: comp.answer('remove'))))
     return h.root

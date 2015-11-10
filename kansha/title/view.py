@@ -51,10 +51,10 @@ def render(self, h, comp, *args):
                          id_=id_).action(text)
         else:
             raise ValueError(_('Unsupported field_type %r') % self.field_type)
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
+        h << h.button(_('Save'), class_='btn btn-primary').action(
             lambda: comp.answer(self.change_text(text())))
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
+        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
         h << h.script(
             'YAHOO.kansha.app.selectElement(%s);'
             'YAHOO.kansha.app.hideCardsLimitEdit(%s)' %

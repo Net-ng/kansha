@@ -52,8 +52,9 @@ def render(self, h, comp, *args):
 
     with h.div(style='display: none'):
         with h.div(id=self.id):
-            h << h.a(title=_('Close this dialog window.'),
-                     class_='icon-remove icon-grey action-close popin-close',
+            h << h.a(h.i(class_='icon-cross'),
+                     title=_('Close this dialog window.'),
+                     class_='action-close',
                      onclick="YAHOO.kansha.app.closePopin()", href='#')
             self.comp.on_answer(comp.answer)
             h << self.comp.render(h.AsyncRenderer(), model=self.model)

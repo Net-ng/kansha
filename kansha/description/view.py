@@ -45,9 +45,9 @@ def render(self, h, comp, *args):
             h << h.textarea(text(), id_=txt_id).action(text)
 
             with h.div(class_='buttons'):
-                h << h.button(_('Save'), class_='btn btn-primary btn-small').action(lambda: comp.answer(text()))
+                h << h.button(_('Save'), class_='btn btn-primary').action(lambda: comp.answer(text()))
                 h << ' '
-                h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
+                h << h.button(_('Cancel'), class_='btn').action(comp.answer)
                 h << h.script(
                     "YAHOO.kansha.app.init_ckeditor(%s, %s)" % (
                         ajax.py2js(txt_id),
@@ -61,5 +61,5 @@ def render(self, h, comp, *args):
 def render(self, h, *args):
     """Render description component as a card badge"""
     if self.text:
-        h << h.span(h.i(class_='icon-pencil icon-grey'), class_='label', data_tooltip=_('This %s has a description') % _(self.type))
+        h << h.span(h.i(class_='icon-pencil'), class_='label', data_tooltip=_('This %s has a description') % _(self.type))
     return h.root

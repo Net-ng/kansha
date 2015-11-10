@@ -67,7 +67,7 @@ textarea.expanded {
 }
 
 #calendar .fc-view-container {
-    background: #F8F8F8;
+    background: #f9f9f9;
 }
 
 .wrap {
@@ -105,7 +105,7 @@ textarea.expanded {
 
 .board .boardTitle {
     display: inline-block;
-    color: #5c5c5c;
+    color: #636363;
     font: normal 33px OpenSansLight;
     padding: 10px 10px;
     margin-left: 400px;
@@ -115,7 +115,7 @@ textarea.expanded {
 
 .board .boardTitle a,
 .board .boardTitle a:hover {
-    color: #5c5c5c;
+    color: #636363;
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -139,7 +139,7 @@ textarea.expanded {
     line-height: 30px;
     padding: 0 5px;
     width: 150px;
-    background-color: #5C5C5C;
+    background-color: #636363;
     border: 1px solid #7D7D7D;
 }
 
@@ -166,7 +166,7 @@ textarea.expanded {
     float: none !important;
     white-space: normal;
     border-radius: 5px;
-    border: 1px solid #c7c7c7;
+    border: 1px solid #c0c0c0;
     height: 100%;
     position: relative;
     background: rgba(235, 235, 235, 0.8);
@@ -183,7 +183,7 @@ textarea.expanded {
 }
 
 .list.reduced .list-header {
-    border-bottom: 1px solid #F2F2F2
+    border-bottom: 1px solid #EAEAEA;
 }
 
 .list > div:last-child {
@@ -214,7 +214,7 @@ textarea.expanded {
 }
 
 .list-header .list-actions i {
-    color: #5c5c5c;
+    color: #636363;
 }
 
 .list-header .list-counter {
@@ -247,14 +247,14 @@ textarea.expanded {
 .list-header .title {
     font-size: 18px;
     font-family: OpenSansSemibold;
-    color: #424242;
+    color: #434343;
     padding-top: 3px
 }
 
 .list-header .title a,
 .list .header .title a:hover,
 .list .header .title a:visited {
-    color: #5c5c5c;
+    color: #636363;
     text-decoration: none;
     display: block;
     -o-text-overflow: ellipsis;
@@ -276,19 +276,19 @@ textarea.expanded {
     border-radius: 0 0 5px 5px;
     position: absolute;
     bottom: 0;
-    border-top: solid 1px #cfcfcf;
+    border-top: solid 1px #ccc;
     width: 100%;
     text-align: center;
     padding: 8px 0;
-    background: #e3e3e3;
+    background: #eaeaea;
 }
 
 .list .list-footer:hover {
-    background: #d6d6d6;
+    background: #dadada;
 }
 
 .list .list-footer .link-small {
-    color: #525252;
+    color: #636363;
     font: 15px OpenSansLight;
     display: block;
 }
@@ -298,7 +298,7 @@ textarea.expanded {
 }
 
 .list .list-footer .link-small strong {
-    color: #9d9a9a;
+    color: #939393;
     line-height: 1px !important;
     font: 22px arial;
     position: relative;
@@ -321,7 +321,7 @@ textarea.expanded {
     float: none !important;
     white-space: normal;
     margin-top: 3px;
-    border: #c8c8c8 1px solid;
+    border: 1px solid #c0c0c0;
     background-color: #EAEAEA;
     border-radius: 6px;
     height: calc(100% - 21px);
@@ -347,15 +347,15 @@ textarea.expanded {
 
 /* Cards */
 .card:hover {
-    -webkit-box-shadow: #a7a7a7 0px 0px 1px;
-    -moz-box-shadow: #a7a7a7 0px 0px 1px;
-    box-shadow: #a7a7a7 0px 0px 1px;
+    -webkit-box-shadow: #aaaaaa 0px 0px 1px;
+    -moz-box-shadow: #aaaaaa 0px 0px 1px;
+    box-shadow: #aaaaaa 0px 0px 1px;
 }
 
 .card {
     position: relative;
     min-height: 64px;
-    background-color: #FFFFFF;
+    background-color: white;
     border-radius: 5px;
     margin: 8px 4px;
     padding: 8px 8px 4px 8px;
@@ -445,12 +445,12 @@ textarea.expanded {
 }
 
 .card-dragging .card {
-    border: 1px solid #E0E0E0
+    border: 1px solid #eaeaea
 }
 
 .card-marker {
-    border: #c8c8c8 1px solid;
-    background-color: #dfdcdc;
+    border: 1px solid #c0c0c0;
+    background-color: #dadada;
     border-radius: 5px;
     margin: 2px;
     border: 1px solid #b5b5b5;
@@ -518,7 +518,7 @@ a.card-label:hover {
     font-family: OpenSansLightItalic;
     margin-left: 5px;
     display: inline;
-    color: #5b5959
+    color: #636363;
 }
 
 .card-edit-form .header .title-form input {
@@ -532,12 +532,12 @@ a.card-label:hover {
     word-wrap: break-word;
     display: inline;
     font-size: 30px;
-    color: #5b5959;
+    color: #636363;
     line-height: 1.2;
 }
 
 .card-edit-form .header .title a {
-    color: #5b5959
+    color: #636363
 }
 
 .card-edit-form .description {
@@ -621,7 +621,7 @@ a.card-label:hover {
 }
 
 .overlay.card-overlay h2 {
-    border-bottom: 1px solid #E5E5E5;
+    border-bottom: 1px solid #eaeaea;
     color: #636363;
     font-size: 17px;
     font-weight: normal;
@@ -697,8 +697,8 @@ a.card-label:hover {
 .cardCounter {
     font-size: 14px;
     display: inline-block;
-    background: #C4CCBD;
-    color: #FFF;
+    background: #CCCCCC;
+    color: #f9f9f9;
     padding: 2px 3px;
     border-radius: 5px;
     min-width: 20px;
@@ -735,7 +735,7 @@ a.card-label:hover {
 }
 
 .comment .right {
-    border-bottom: 1px solid #C1C1C1;
+    border-bottom: 1px solid #c0c0c0;
     margin-left: 45px;
 }
 
@@ -1127,7 +1127,7 @@ div.history th {
     background: white;
     width: 240px;
     z-index: 1;
-    border: 1px solid #a7a7a7;
+    border: 1px solid #aaaaaa;
 }
 
 .calendar .calendar-content table {
@@ -1141,28 +1141,28 @@ div.history th {
 }
 
 .calendar .calendar-content table th {
-    color: #5b5959
+    color: #636363
 }
 
 .calendar .calendar-content table tr td a {
-    color: #5b5959
+    color: #636363
 }
 
 .calendar .calendar-content table tr td.active a {
     font-weight: bold;
-    background: #d4d4d4;
-    border: 1px solid #eceaea;
+    background: #dadada;
+    border: 1px solid #EAEAEA;
 }
 
 .calendar .calendar-content table tr td.today a {
-    color: #5b5959;
+    color: #636363;
     font-weight: bold;
 }
 
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
-    color: #5b5959;
-    background-color: #f3f3f3;
+    color: #636363;
+    background-color: #eaeaea;
     font-weight: bold;
     text-align: center;
     display: block;
@@ -1314,7 +1314,7 @@ div.history th {
 
 .nbItems .label {
     background: none;
-    color: #A5A5A5;
+    color: #aaaaaa;
     font: 14px OpenSansSemibold
 }
 /* End nb items */
@@ -1325,7 +1325,7 @@ div.history th {
 }
 
 #resync h2 {
-    color: #5b5959;
+    color: #636363;
     line-height: 1.2;
     font: normal 30px OpenSansLight;
 }
@@ -1405,7 +1405,7 @@ div.history th {
     }
 
     .row > .list {
-        background-color: #DEDEDE;
+        background-color: #dadada;
         margin-bottom: 11px;
     }
 

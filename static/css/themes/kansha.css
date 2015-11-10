@@ -11,7 +11,7 @@
 html, body { height: 100%; max-height: 100% }
 body {
     font-family: OpenSansLight;
-    color: #5c5c5c;
+    color: #636363;
 }
 
 form {
@@ -117,7 +117,7 @@ button, .btn {
     margin: 0;
     color: #737373;
     padding: 3px 9px;
-    background-color: #f8f8f8;
+    background-color: #f9f9f9;
 }
 
 .btn:hover,
@@ -128,7 +128,7 @@ button:hover,
 button:focus,
 button:active,
 button.active {
-    background-color: #e6e6e6;
+    background-color: #eaeaea;
     color: #434343;
 }
 
@@ -277,11 +277,11 @@ a:hover .ico-btn {
 }
 
 .menu a.active {
-    background-color: #ebebeb
+    background-color: #EAEAEA;
 }
 
 .menu a:hover {
-    background-color: #ebebeb
+    background-color: #EAEAEA;
 }
 
 .menu {
@@ -377,7 +377,7 @@ a:hover .ico-btn {
 
 .navbar .navActions i {
     font-size: 24px;
-    color: #9d9a9a;
+    color: #939393;
     padding-right: 5px;
 }
 
@@ -445,7 +445,7 @@ a:hover .ico-btn {
     bottom: 0;
     width: 100%;
     text-align: center;
-    background-color: #e5e5e5;
+    background-color: #eaeaea;
     padding: 10px 0;
 }
 /* End footer */
@@ -453,7 +453,7 @@ a:hover .ico-btn {
 /* Overlays */
 .overlay {
     background: #aaa;
-    border: 1px solid #c7c7c7;
+    border: 1px solid #c0c0c0;
 }
 
 .overlay_arrow:before {
@@ -468,7 +468,7 @@ a:hover .ico-btn {
 }
 
 .overlay_arrow:after {
-    border-bottom: 6px solid #FFFFFF;
+    border-bottom: 6px solid #f9f9f9;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     content: "";
@@ -537,7 +537,7 @@ a:hover .ico-btn {
 }
 
 .overlay .members.search .yui-ac-bd li.yui-ac-highlight {
-    background: #F2F2F2
+    background: #EAEAEA;
 }
 
 .overlay .members.search .yui-ac-bd li {
@@ -549,7 +549,7 @@ a:hover .ico-btn {
 }
 
 .overlay .members.search .yui-ac-bd li:hover {
-    background: #F2F2F2
+    background: #eaeaea;
 }
 
 .overlay .members.search .yui-ac-bd li .avatar {
@@ -579,7 +579,7 @@ a:hover .ico-btn {
 }
 
 .overlay.board-labels-overlay h2 {
-    border-bottom: 1px solid #E5E5E5;
+    border-bottom: 1px solid #eaeaea;
     color: #636363;
     font-size: 17px;
     font-weight: normal;
@@ -642,7 +642,7 @@ a:hover .ico-btn {
 }
 
 .overlay.card-edit-form-overlay {
-    background: #ffffff;
+    background: #f9f9f9;
 }
 
 .overlay.card-edit-form-overlay .card-label-choose {

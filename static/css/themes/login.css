@@ -59,7 +59,7 @@
 .container {
     display: table;
     margin: auto;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #eaeaea;
     margin-top: 20px;
     background-color: white;
 }
@@ -77,7 +77,7 @@ label {
 }
 
 input[type="text"] {
-    border: 1px solid #e5e5e5;
+    border: 1px solid #eaeaea;
     padding: 10px;
     margin-bottom: 15px;
     display: block;
@@ -93,7 +93,7 @@ input[type="text"]:focus {
 }
 
 input[type="password"] {
-    border: 1px solid #e5e5e5;
+    border: 1px solid #eaeaea;
     padding: 10px;
     display: block;
     font-weight: 200;
@@ -125,7 +125,7 @@ input[type="password"]:focus {
     vertical-align: top;
     font-size: 16px;
     font-weight: 200;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid #eaeaea;
     background-color: white;
 }
 
@@ -151,7 +151,7 @@ input[type="password"]:focus {
 .oauthLogin a {
     display: block;
     width: 100%;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #eaeaea;
     height: 41px;
     margin: 15px 0;
     text-decoration: none;
@@ -163,7 +163,7 @@ input[type="password"]:focus {
 .oauthLogin a {
     display: block;
     width: 100%;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #eaeaea;
     height: 41px;
     margin: 15px 0;
     text-decoration: none;
@@ -338,21 +338,21 @@ input[type="password"]:focus {
     .slots3 .regForm {
         border-left: 0
         none;
-        border-top: 1px solid #e5e5e5;
+        border-top: 1px solid #eaeaea;
         display: block
     }
 
     .slots3 .oauthLogin {
         border-left: 0 none;
         border-top: 1px solid
-        #e5e5e5;
+        #eaeaea;
         display: block
     }
 
     .slots3 .LDAPLogin {
         border-left: 0 none;
         border-top: 1px solid
-        #e5e5e5;
+        #eaeaea;
         display: block
     }
 
@@ -372,21 +372,21 @@ input[type="password"]:focus {
     .slots2 .regForm {
         border-left: 0
         none;
-        border-top: 1px solid #e5e5e5;
+        border-top: 1px solid #eaeaea;
         display: block
     }
 
     .slots2 .oauthLogin {
         border-left: 0 none;
         border-top: 1px solid
-        #e5e5e5;
+        #eaeaea;
         display: block
     }
 
     .slots2 .LDAPLogin {
         border-left: 0 none;
         border-top: 1px solid
-        #e5e5e5;
+        #eaeaea;
         display: block
     }
 

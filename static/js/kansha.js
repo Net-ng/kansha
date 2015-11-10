@@ -339,6 +339,7 @@
                 // Add listener on the Esc key
                 keylisteners: new YAHOO.util.KeyListener(document, {keys: 27}, NS.app.closePopin, 'keyup')
             });
+            NS.app.popin.cfg.setProperty("x", 0);
             // Register the close function
             NS.app.closePopinFunction = closeFunction;
             // Render the panel
@@ -377,7 +378,7 @@
                 zIndex: 2000,
                 underlay: 'none',
                 constraintoviewport: true,
-                monitorresize: false,
+                monitorresize: false
             });
             // No top/left offset
             NS.app.modal.cfg.setProperty("x", 0);

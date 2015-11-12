@@ -108,8 +108,8 @@ input[type="password"]:focus {
 }
 
 .btn {
-    background: #F49B25;
-    color: #333;
+    background-color: #e6a323 !important;
+    color: #434343;
     border: 0;
     display: inline-block;
     font-size: 17px;
@@ -145,7 +145,7 @@ input[type="password"]:focus {
     vertical-align: middle;
     padding: 30px;
     font-size: 16px;
-    background: #f9f9f9
+    background: #eaeaea
 }
 
 .oauthLogin a {
@@ -255,137 +255,6 @@ input[type="password"]:focus {
     form {
         display: block
     }
-
-    .slots3 .title h2 {
-        font-size: 40px;
-    }
-
-    .slots3 .logo {
-        position: static;
-        margin: 0 auto;
-    }
-
-    .slots3 .header h1 {
-        position: static;
-        margin-bottom: 20px;
-        width: 100%;
-        padding: 0 10px;
-    }
-}
-
-@media (max-width:1095px) {
-    .slots2 .title h2 {
-        font-size: 40px
-    }
-
-    .slots2 .logo {
-        position: static;
-        margin: 0 auto
-    }
-
-    .slots2 .header h1 {
-        position: static;
-        margin-bottom: 20px;
-        width: 100%;
-        padding: 0 10px
-    }
-
-}
-
-@media (max-width:825px) {
-    .slots1 .title h2 {
-        font-size: 40px
-    }
-
-    .slots1 .logo {
-        position: static;
-        margin: 0 auto
-    }
-
-    .slots1 .header h1 {
-        position: static;
-        margin-bottom: 20px;
-        width: 100%;
-        padding: 0 10px
-    }
-
-    .slots1 input {
-        width: 100%
-    }
-
-    .slots1 .credits {
-        position: static;
-        padding: 20px
-    }
-
-}
-
-@media (max-width:935px) {
-    .slots3 .databaseLogin,
-    .slots3 .regForm {
-        border-left: 0
-        none;
-        border-top: 1px solid #eaeaea;
-        display: block
-    }
-
-    .slots3 .oauthLogin {
-        border-left: 0 none;
-        border-top: 1px solid
-        #eaeaea;
-        display: block
-    }
-
-    .slots3 .LDAPLogin {
-        border-left: 0 none;
-        border-top: 1px solid
-        #eaeaea;
-        display: block
-    }
-
-    .slots3 input {
-        width: 100%
-    }
-
-    .slots3 .credits {
-        position: static;
-        padding: 20px
-    }
-
-}
-
-@media (max-width:635px) {
-    .slots2 .databaseLogin,
-    .slots2 .regForm {
-        border-left: 0
-        none;
-        border-top: 1px solid #eaeaea;
-        display: block
-    }
-
-    .slots2 .oauthLogin {
-        border-left: 0 none;
-        border-top: 1px solid
-        #eaeaea;
-        display: block
-    }
-
-    .slots2 .LDAPLogin {
-        border-left: 0 none;
-        border-top: 1px solid
-        #eaeaea;
-        display: block
-    }
-
-    .slots2 input {
-        width: 100%
-    }
-
-    .slots2 .credits {
-        position: static;
-        padding: 20px
-    }
-
 }
 
 @media (max-width:700px) {

@@ -67,7 +67,7 @@ textarea.expanded {
 }
 
 #calendar .fc-view-container {
-    background: #f9f9f9;
+    background: #eaeaea;
 }
 
 .wrap {
@@ -83,13 +83,17 @@ textarea.expanded {
 /* End display */
 
 /* Board */
+.board-configuration .menu {
+    left: -20px;
+    position: relative;
+}
+
 .board-configuration .menu li a {
     padding-left: 5px;
 }
 
 .board-configuration > div:last-child {
     width: 70%;
-    padding-left: 20px;
 }
 
 .board {
@@ -105,17 +109,17 @@ textarea.expanded {
 
 .board .boardTitle {
     display: inline-block;
-    color: #636363;
+    color: #737373;
     font: normal 33px OpenSansLight;
     padding: 10px 10px;
     margin-left: 400px;
     height: 50px;
-    width: calc(100% - 400px - 230px);
+    width: calc(100% - 400px - 350px);
 }
 
 .board .boardTitle a,
 .board .boardTitle a:hover {
-    color: #636363;
+    color: #737373;
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -139,8 +143,8 @@ textarea.expanded {
     line-height: 30px;
     padding: 0 5px;
     width: 150px;
-    background-color: #636363;
-    border: 1px solid #7D7D7D;
+    background-color: #737373;
+    border: 1px solid #737373;
 }
 
 /* End board */
@@ -214,7 +218,7 @@ textarea.expanded {
 }
 
 .list-header .list-actions i {
-    color: #636363;
+    color: #737373;
 }
 
 .list-header .list-counter {
@@ -254,7 +258,7 @@ textarea.expanded {
 .list-header .title a,
 .list .header .title a:hover,
 .list .header .title a:visited {
-    color: #636363;
+    color: #737373;
     text-decoration: none;
     display: block;
     -o-text-overflow: ellipsis;
@@ -276,7 +280,7 @@ textarea.expanded {
     border-radius: 0 0 5px 5px;
     position: absolute;
     bottom: 0;
-    border-top: solid 1px #ccc;
+    border-top: solid 1px #c0c0c0;
     width: 100%;
     text-align: center;
     padding: 8px 0;
@@ -284,11 +288,11 @@ textarea.expanded {
 }
 
 .list .list-footer:hover {
-    background: #dadada;
+    background: #eaeaea;
 }
 
 .list .list-footer .link-small {
-    color: #636363;
+    color: #737373;
     font: 15px OpenSansLight;
     display: block;
 }
@@ -347,9 +351,9 @@ textarea.expanded {
 
 /* Cards */
 .card:hover {
-    -webkit-box-shadow: #aaaaaa 0px 0px 1px;
-    -moz-box-shadow: #aaaaaa 0px 0px 1px;
-    box-shadow: #aaaaaa 0px 0px 1px;
+    -webkit-box-shadow: #c0c0c0 0px 0px 1px;
+    -moz-box-shadow: #c0c0c0 0px 0px 1px;
+    box-shadow: #c0c0c0 0px 0px 1px;
 }
 
 .card {
@@ -449,11 +453,10 @@ textarea.expanded {
 }
 
 .card-marker {
-    border: 1px solid #c0c0c0;
-    background-color: #dadada;
+    background-color: #eaeaea;
     border-radius: 5px;
     margin: 2px;
-    border: 1px solid #b5b5b5;
+    border: 1px solid #c0c0c0;
 }
 
 .card-label {
@@ -518,7 +521,7 @@ a.card-label:hover {
     font-family: OpenSansLightItalic;
     margin-left: 5px;
     display: inline;
-    color: #636363;
+    color: #737373;
 }
 
 .card-edit-form .header .title-form input {
@@ -532,12 +535,12 @@ a.card-label:hover {
     word-wrap: break-word;
     display: inline;
     font-size: 30px;
-    color: #636363;
+    color: #737373;
     line-height: 1.2;
 }
 
 .card-edit-form .header .title a {
-    color: #636363
+    color: #737373
 }
 
 .card-edit-form .description {
@@ -606,7 +609,7 @@ a.card-label:hover {
 
 /* Card overlays */
 .overlay.card-overlay {
-    color: #636363;
+    color: #737373;
     padding: 0 12px 4px 12px;
     min-width: 280px;
 }
@@ -622,7 +625,7 @@ a.card-label:hover {
 
 .overlay.card-overlay h2 {
     border-bottom: 1px solid #eaeaea;
-    color: #636363;
+    color: #737373;
     font-size: 17px;
     font-weight: normal;
     line-height: inherit;
@@ -675,7 +678,7 @@ a.card-label:hover {
 
 .overlay.card-overlay .name {
     font-size: 15px;
-    color: #636363;
+    color: #737373;
 }
 
 .overlay.card-overlay .name .email {
@@ -697,8 +700,8 @@ a.card-label:hover {
 .cardCounter {
     font-size: 14px;
     display: inline-block;
-    background: #CCCCCC;
-    color: #f9f9f9;
+    background: #737373;
+    color: #eaeaea;
     padding: 2px 3px;
     border-radius: 5px;
     min-width: 20px;
@@ -786,71 +789,29 @@ a.card-label:hover {
     color: white
 }
 
-.due-date.past {
-    color: #b5b5b5 !important;
-}
-
-.due-date.yesterday {
-    color: #570409 !important;
-}
-
-.due-date.today {
-    color: #d52d35 !important;
-}
-
-.due-date.tomorrow {
-    color: #ffb92e !important;
-}
-
-.due-date.future {
-    color: #c8d656 !important;
-}
-
-.badges.highlight .due-date.past.label:hover {
+.due-date.past,
+.btn-due-date.past{
     color: #737373 !important;
 }
 
-.badges.highlight .due-date.yesterday.label:hover {
-    color: #000000 !important;
+.due-date.yesterday,
+.btn-due-date.yesterday {
+    color: #A01A00 !important;
 }
 
-.badges.highlight .due-date.today.label:hover {
-    color: #8E1E24 !important;
+.due-date.today,
+.btn-due-date.today{
+    color: #c22e2e !important;
 }
 
-.badges.highlight .due-date.tomorrow.label:hover {
-    color: #B48320 !important;
+.due-date.tomorrow,
+.btn-due-date.tomorrow{
+    color: #e6a323 !important;
 }
 
-.badges.highlight .due-date.future.label:hover {
-    color: #95A323 !important;
-}
-
-.btn.btn-due-date.past {
-    background: #b5b5b5;
-    border: 1px solid #737373
-}
-
-.btn.btn-due-date.yesterday {
-    background: #570409;
-    border: 1px solid #000000;
-    color: white;
-}
-
-.btn.btn-due-date.today {
-    background: #d52d35;
-    border: 1px solid #8E1E24;
-    color: white;
-}
-
-.btn.btn-due-date.tomorrow {
-    background: #ffb92e;
-    border: 1px solid #B48320
-}
-
-.btn.btn-due-date.future {
-    background: #c8d656;
-    border: 1px solid #95A323
+.due-date.future,
+.btn-due-date.future{
+    color: #93b70a !important;
 }
 
 .due-date .duedate-icon {
@@ -919,7 +880,7 @@ a.card-label:hover {
 }
 
 #switch_zone .btn.unselected:hover {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #c0c0c0;
 }
 
 #switch_zone .btn.unselected {
@@ -946,7 +907,7 @@ a.card-label:hover {
 }
 
 #search.nomatches {
-    background-color: #eca2a6;
+    border-color: red;
 }
 
 #show_results {
@@ -981,19 +942,18 @@ div.history th {
 /* Progress bar */
 .progress {
     height: 24px;
-    border: 1px solid #ccc;
+    border: 1px solid #c0c0c0;
 }
 
 .progress .bar {
     height: 22px;
-    background-color: #5eb95e;
+    background-color: #5ea9dd;
 }
 
 .progress span {
     position: absolute;
     top: 0;
     z-index: 2;
-    color: black;
     text-align: center;
     width: 100%
 }
@@ -1013,9 +973,9 @@ div.history th {
 .checklists .checklist {
     margin: 15px 0;
     padding: 10px;
-    background-color: #eee;
+    background-color: #eaeaea;
     border-radius: 5px;
-    border: 1px solid #ccc
+    border: 1px solid #c0c0c0
 }
 
 .checklists .checklist .nagare-generated,
@@ -1026,9 +986,9 @@ div.history th {
 .checklists .ui-state-highlight {
     height: 3em;
     line-height: 3em;
-    background: #eee;
+    background: #eaeaea;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #c0c0c0;
     opacity: 0.6;
 }
 
@@ -1127,7 +1087,7 @@ div.history th {
     background: white;
     width: 240px;
     z-index: 1;
-    border: 1px solid #aaaaaa;
+    border: 1px solid #c0c0c0;
 }
 
 .calendar .calendar-content table {
@@ -1141,27 +1101,27 @@ div.history th {
 }
 
 .calendar .calendar-content table th {
-    color: #636363
+    color: #737373
 }
 
 .calendar .calendar-content table tr td a {
-    color: #636363
+    color: #737373
 }
 
 .calendar .calendar-content table tr td.active a {
     font-weight: bold;
-    background: #dadada;
+    background: #eaeaea;
     border: 1px solid #EAEAEA;
 }
 
 .calendar .calendar-content table tr td.today a {
-    color: #636363;
+    color: #737373;
     font-weight: bold;
 }
 
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
-    color: #636363;
+    color: #737373;
     background-color: #eaeaea;
     font-weight: bold;
     text-align: center;
@@ -1177,7 +1137,7 @@ div.history th {
 .calendar .calendar-header select {
     font: normal 12px OpenSansSemibold;
     width: 100px;
-    border: 1px solid #dadada;
+    border: 1px solid #eaeaea;
     display: inline-block;
 }
 
@@ -1314,7 +1274,7 @@ div.history th {
 
 .nbItems .label {
     background: none;
-    color: #aaaaaa;
+    color: #c0c0c0;
     font: 14px OpenSansSemibold
 }
 /* End nb items */
@@ -1325,7 +1285,7 @@ div.history th {
 }
 
 #resync h2 {
-    color: #636363;
+    color: #737373;
     line-height: 1.2;
     font: normal 30px OpenSansLight;
 }
@@ -1405,7 +1365,7 @@ div.history th {
     }
 
     .row > .list {
-        background-color: #dadada;
+        background-color: #eaeaea;
         margin-bottom: 11px;
     }
 

@@ -153,7 +153,7 @@
     .home .menu {
         width: 100%;
         border-right: 0;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #c0c0c0;
     }
 
     .home .menu li {
@@ -167,7 +167,7 @@
     }
 
     .home .menu a.active {
-        border: 1px solid #ccc;
+        border: 1px solid #c0c0c0;
         border-bottom: 0;
     }
 

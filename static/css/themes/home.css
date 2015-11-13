@@ -16,11 +16,6 @@
     margin-bottom: 10px;
 }
 
-.home .boards {
-    color: #737373;
-    font: 15px OpenSansLight;
-}
-
 .home .boards li a {
     padding: 5px;
 }
@@ -48,7 +43,6 @@
 }
 
 .home .boards ul.board-labels {
-    border-bottom: 1px solid #c0c0c0;
     padding-left: 0;
     padding-bottom: 14px;
     margin-bottom: 17px;
@@ -56,9 +50,8 @@
 }
 
 .home .boards ul.board-labels .label-title {
-    line-height: 34px;
     padding: 0 0 0 5px;
-    font-size: 110%
+    line-height: 34px;
 }
 
 .home .boards ul.board-labels .label-title input {
@@ -76,10 +69,6 @@
 
 .home .boards ul.board-labels li {
     position: relative;
-}
-
-.home .boards ul.board-labels li:hover {
-    background: #EAEAEA;
 }
 
 .home .boards input {
@@ -140,8 +129,6 @@
 
 .info-message {
     display: block;
-    font: normal 15px OpenSansSemibold;
-    color: #008000;
     top: -10px;
     position: relative;
 }
@@ -152,8 +139,6 @@
 
     .home .menu {
         width: 100%;
-        border-right: 0;
-        border-bottom: 1px solid #c0c0c0;
     }
 
     .home .menu li {
@@ -164,11 +149,6 @@
     .home .menu a {
         padding: 10px 20px;
         margin: 0;
-    }
-
-    .home .menu a.active {
-        border: 1px solid #c0c0c0;
-        border-bottom: 0;
     }
 
     .home .menu, .home .boards { width: 100%; }

@@ -6,3 +6,42 @@
  * the file LICENSE.txt, which you should have received as part of
  * this distribution.
  **/
+
+/*Home page*/
+
+.home .boards {
+    color: #737373;
+    font: 15px OpenSansLight;
+}
+
+.home .boards ul.board-labels {
+    border-bottom: 1px solid #c0c0c0;
+}
+
+.home .boards ul.board-labels .label-title {
+    font-size: 110%
+}
+
+.home .boards ul.board-labels li:hover {
+    background: #EAEAEA;
+}
+
+/* End board labels */
+
+.info-message {
+    font: normal 15px OpenSansSemibold;
+    color: #008000;
+}
+
+/* Responsive medium size */
+@media (max-width:813px) {
+    .home .menu {
+        border-right: 0;
+        border-bottom: 1px solid #c0c0c0;
+    }
+
+    .home .menu a.active {
+        border: 1px solid #c0c0c0;
+        border-bottom: 0;
+    }
+}

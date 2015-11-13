@@ -16,24 +16,12 @@
     position: relative
 }
 
-.logo {
-    display: block;
-    background: url(../../img/logo.png) no-repeat top center;
-    width: 173px;
-    height: 315px;
-    position: absolute;
-    left: 53px;
-    top: 0
-}
-
 .header h1 {
-    font-weight: 400;
-    font-size: 25px;
     position: absolute;
     margin: 0;
-    width: 273px;
     text-align: center;
-    top: 300px
+    top: 300px;
+    width: 273px;
 }
 
 .title {
@@ -41,17 +29,12 @@
 }
 
 .title h2 {
-    font-weight: 200;
     margin: 0;
     text-align: center;
-    font-size: 60px
 }
 
 .title .error {
-    font-size: 20px;
-    font-weight: 200;
     background: rgba(0, 0, 0, 0) url("../../img/warning.png") no-repeat left center;
-    color: #c22e2e;
     padding-left: 25px;
     display: inline-block
 }
@@ -59,9 +42,7 @@
 .container {
     display: table;
     margin: auto;
-    border: 1px solid #eaeaea;
     margin-top: 20px;
-    background-color: white;
 }
 
 form {
@@ -72,65 +53,31 @@ form {
 
 label {
     display: block;
-    font-size: 22px;
-    font-weight: 300
 }
 
 input[type="text"] {
-    border: 1px solid #eaeaea;
     padding: 10px;
     margin-bottom: 15px;
     display: block;
-    font-weight: 200;
-    font-size: 20px;
     max-width: 240px
-}
-
-input[type="text"]:focus {
-    box-shadow: 0 0 5px rgba(230, 163, 35, 0.8);
-    border-color: #e6a323;
-    outline: none
 }
 
 input[type="password"] {
-    border: 1px solid #eaeaea;
     padding: 10px;
     display: block;
-    font-weight: 200;
-    font-size: 20px;
     max-width: 240px
 }
 
-input[type="password"]:focus {
-    box-shadow: 0 0 5px rgba(230, 163, 35, 0.8);
-    border-color: #e6a323;
-    outline: none
-}
-
 .btn {
-    background-color: #e6a323 !important;
-    color: #434343;
-    border: 0;
     display: inline-block;
-    font-size: 17px;
     padding: 10px 30px;
     margin: 18px 0 0 0;
-    text-decoration: none;
-    text-transform: uppercase;
 }
 
 .login {
     position: relative;
     display: table-cell;
     vertical-align: top;
-    font-size: 16px;
-    font-weight: 200;
-    border-left: 1px solid #eaeaea;
-    background-color: white;
-}
-
-.login:first-child {
-    border-left: none;
 }
 
 .regForm {
@@ -144,32 +91,24 @@ input[type="password"]:focus {
     display: table-cell;
     vertical-align: middle;
     padding: 30px;
-    font-size: 16px;
-    background: #eaeaea
 }
 
 .oauthLogin a {
     display: block;
-    width: 100%;
-    border: 1px solid #eaeaea;
     height: 41px;
+    width: 100%;
     margin: 15px 0;
-    text-decoration: none;
     padding: 0 10px 0 50px;
     line-height: 41px;
-    background-color: white;
 }
 
 .oauthLogin a {
     display: block;
-    width: 100%;
-    border: 1px solid #eaeaea;
     height: 41px;
-    margin: 15px 0;
-    text-decoration: none;
-    padding: 0 10px 0 50px;
+    width: 100%;
     line-height: 41px;
-    background-color: white;
+    margin: 15px 0;
+    padding: 0 10px 0 50px;
 }
 
 .oauthLogin .google {

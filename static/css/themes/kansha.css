@@ -9,10 +9,6 @@
 
 /* General */
 html, body { height: 100%; max-height: 100% }
-body {
-    font-family: OpenSansLight;
-    color: #737373;
-}
 
 form {
     margin: 0 0 3px 0;
@@ -24,7 +20,6 @@ input, select, textarea {
     padding: 4px 6px;
     margin: 0;
     resize: none;
-    border: 1px solid #c0c0c0;
 }
 
 input[type=checkbox],
@@ -35,18 +30,12 @@ input[type=radio] {
 select {
     height: 30px;
     line-height: 30px;
-    border: 1px solid #c0c0c0;
 }
 
 a, a:hover, a:visited, a:hover i { text-decoration: none; }
-a:focus, input:focus, textarea:focus, button:focus { outline: 0 none }
 
 ul { padding: 0; }
-li { list-style: none; padding: 3px 0; }
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: OpenSansLight;
-}
+li { padding: 3px 0; }
 
 label {
     display: block;
@@ -68,22 +57,12 @@ label {
 
 .yui-skin-sam .yui-ac-content {
     position: relative;
-    border: none
 }
 
 .yui-skin-sam .yui-ac-input {
     position: relative;
 }
 /* End YUI autocompletes */
-
-.yui-tt .bd {
-    background: #434343 !important;
-    border: 0 !important;
-    border-radius: 3px;
-    color: white !important;
-    font-weight: bold;
-    font-size: 11px !important;
-}
 
 .yui-tt {
     border: 0 !important;
@@ -92,7 +71,6 @@ label {
 }
 
 .yui-tt .yui-tt-shadow {
-    opacity: 1;
     display: block;
     height: 9px;
     width: 16px;
@@ -101,73 +79,17 @@ label {
     left: 5px;
 }
 
-/* YUI FIX */
-.yui-skin-sam .mask {
-    background: #000
-}
-
-
 /* Buttons */
 button, .btn {
-    border: 0;
     min-width: 62px;
     width: auto;
     cursor: pointer;
     display: inline-block;
     margin: 0;
-    color: #737373;
     padding: 3px 9px;
-    background-color: #eaeaea;
-    border-radius: 3px;
-}
-
-.btn:hover,
-.btn:focus,
-.btn:active,
-.btn.active,
-button:hover,
-button:focus,
-button:active,
-button.active {
-    background-color: #eaeaea;
-    color: #434343;
 }
 
 button:disabled { cursor: inherit }
-button:disabled:hover { background-color: transparent; }
-
-.btn.btn-primary {
-    color: white;
-    background: #93B70A;
-}
-
-.btn.btn-primary:hover,
-.btn.btn-primary:focus,
-.btn.btn-primary:active,
-.btn.btn-primary.active,
-.btn.btn-primary.disabled,
-.btn.btn-primary[disabled] {
-    background-color: #7E9C12
-}
-
-.btn.delete,
-button.delete {
-    color: white;
-    background: #c22e2e;
-}
-
-.btn.delete:hover,
-.btn.delete:active,
-.btn.delete.active,
-.btn.delete.disabled,
-.btn.delete[disabled],
-button.delete:hover,
-button.delete:active,
-button.delete.active,
-button.delete.disabled,
-button.delete[disabled]{
-    background-color: #A01A00
-}
 
 /* Button groups */
 .btn-group {
@@ -194,28 +116,6 @@ i[class^="icon-"]:before {
     visibility: hidden;
 }
 
-.ico-btn {
-    font-size: 28px;
-    color: #737373;
-}
-
-a:hover .ico-btn {
-    color: #434343;
-}
-
-.btn.btn-primary.toggle {
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5) inset;
-    outline: 0 none;
-    background-image: none;
-    background: #93B70A;
-}
-
-.board-labels i.ico-btn,
-.card i.ico-btn,
-.card-actions i.ico-btn {
-    font-size: 25px;
-}
-
 .board-labels .avatar img,
 .card .avatar img,
 .card-actions .avatar img {
@@ -225,14 +125,12 @@ a:hover .ico-btn {
 
 /*Error page*/
 #errorPage {
-    color: #737373;
     height: auto;
     padding: 0;
     margin: 0
 }
 
 #errorPage #status {
-    font: 36px OpenSansLight;
     position: absolute;
     bottom: 15px;
     right: 15px;
@@ -240,13 +138,8 @@ a:hover .ico-btn {
 
 #errorPage #message {
     padding: 10px 10px;
-    background: white;
     margin-top: 70px;
     text-align: center;
-}
-
-#errorPage #message p {
-    font: 48px /64px OpenSansLight;
 }
 /* End error page */
 
@@ -254,13 +147,11 @@ a:hover .ico-btn {
 .menu {
     width: 190px;
     height: 100%;
-    border-right: 1px dotted #737373
 }
 
 .menu li a {
     padding: 8px 8px 8px 50px;
     margin-bottom: 3px;
-    font: 15px OpenSansLight;
     display: block;
 }
 
@@ -268,20 +159,11 @@ a:hover .ico-btn {
     line-height: 20px;
 }
 
-.menu a.active {
-    background-color: #EAEAEA;
-}
-
-.menu a:hover {
-    background-color: #EAEAEA;
-}
-
 .menu {
     padding-top: 0
 }
 
 .menu .icon {
-    font-size: 20px;
     margin-right: 7px;
 }
 /* End menu */
@@ -304,10 +186,6 @@ a:hover .ico-btn {
     height: 40px;
     position: absolute;
     left: 50px;
-    background: white;
-    border-radius: 0 0 10px 10px;
-    border: 1px solid #c0c0c0;
-    border-top: 0;
     cursor: pointer;
     padding: 0 10px 0 10px;
     z-index: 25;
@@ -319,11 +197,6 @@ a:hover .ico-btn {
     height: 45px;
 }
 
-.tab a {
-    color: #434343;
-    font: normal 25px OpenSansSemiBold;
-}
-
 .tab a:hover {
     text-decoration: none;
 }
@@ -331,12 +204,6 @@ a:hover .ico-btn {
 .navbar .navActions {
     position: relative;
     padding: 18px 20px 12px 20px;
-    background: white;
-    color: #434343;
-    font: normal 16px OpenSansLight;
-    border-radius: 0 0 10px 0;
-    border: 1px solid #c0c0c0;
-    border-bottom: 0;
     z-index: 30;
 }
 
@@ -349,8 +216,6 @@ a:hover .ico-btn {
 }
 
 .navbar .navActions a {
-    color: #434343;
-    font: 15px OpenSansLight;
     padding: 10px;
 }
 
@@ -359,8 +224,6 @@ a:hover .ico-btn {
 }
 
 .navbar .navActions i {
-    font-size: 24px;
-    color: #939393;
     padding-right: 5px;
 }
 
@@ -428,21 +291,12 @@ a:hover .ico-btn {
     bottom: 0;
     width: 100%;
     text-align: center;
-    background-color: #eaeaea;
     padding: 10px 0;
 }
 /* End footer */
 
 /* Overlays */
-.overlay {
-    background: #aaa;
-    border: 1px solid #c0c0c0;
-}
-
 .overlay_arrow:before {
-    border-bottom: 7px solid rgba(0, 0, 0, 0.1);
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
     content: "";
     display: inline-block;
     left: 9px;
@@ -451,9 +305,6 @@ a:hover .ico-btn {
 }
 
 .overlay_arrow:after {
-    border-bottom: 6px solid #eaeaea;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
     content: "";
     display: inline-block;
     left: 10px;
@@ -463,15 +314,12 @@ a:hover .ico-btn {
 
 .overlay,
 .yui-overlay {
-    font-family: OpenSansLight;
     visibility: hidden;
     position: absolute;
     left: -1000px;
     top: 0;
     padding: 5px 10px;
     min-width: 200px;
-    border-radius: 5px;
-    background: white;
 }
 
 .overlay-header {
@@ -492,8 +340,6 @@ a:hover .ico-btn {
 
 .overlay .favorites h3 {
     float: left;
-    color: #737373;
-    font: normal 15px OpenSansLight
 }
 
 .overlay .favorites h3:after {
@@ -519,20 +365,12 @@ a:hover .ico-btn {
     width: 100%
 }
 
-.overlay .members.search .yui-ac-bd li.yui-ac-highlight {
-    background: #EAEAEA;
-}
-
 .overlay .members.search .yui-ac-bd li {
     clear: both;
     overflow: hidden;
     cursor: pointer;
     width: 100%;
     line-height: normal
-}
-
-.overlay .members.search .yui-ac-bd li:hover {
-    background: #eaeaea;
 }
 
 .overlay .members.search .yui-ac-bd li .avatar {
@@ -552,7 +390,6 @@ a:hover .ico-btn {
 }
 
 .overlay.board-labels-overlay {
-    color: #737373;
     padding: 0 12px 4px 12px
 }
 
@@ -562,10 +399,6 @@ a:hover .ico-btn {
 }
 
 .overlay.board-labels-overlay h2 {
-    border-bottom: 1px solid #eaeaea;
-    color: #737373;
-    font-size: 17px;
-    font-weight: normal;
     line-height: inherit;
     margin: 0 0 5px;
     padding-bottom: 4px
@@ -602,14 +435,11 @@ a:hover .ico-btn {
 
 .overlay.board-labels-overlay .name .email {
     display: block;
-    font-size: 11px;
-    font-style: italic;
     position: relative;
     top: -2px
 }
 
 .overlay.board-labels-overlay .member .actions .btn {
-    font-size: 12px;
     padding: 1px 3px;
     margin: 0 2px;
 }
@@ -619,44 +449,19 @@ a:hover .ico-btn {
     vertical-align: middle
 }
 
-.overlay.board-labels-overlay .name {
-    font-size: 15px;
-    color: #737373;
-}
-
-.overlay.card-edit-form-overlay {
-    background: #eaeaea;
-}
-
 .overlay.card-edit-form-overlay .card-label-choose {
     display: block;
     padding-left: 10px;
-    background-position: -1114px 5px !important;
     padding-bottom: 1px
-}
-
-.overlay.card-edit-form-overlay .card-label-choose.active .card-label {
-    opacity: 1;
-}
-
-.overlay.card-edit-form-overlay .card-label-choose .card-label {
-    opacity: 0.3;
 }
 
 .overlay.card-edit-form-overlay .card-label-choose .card-label {
     margin-right: 7px
 }
-
-.action-close {
-    position: absolute;
-    right: 8px;
-}
 /* End overlays */
 
 #mask {
-    background: none repeat scroll 0 0 #000;
     height: 100%;
-    opacity: 0.55;
     position: fixed;
     width: 100%;
     z-index: 25;
@@ -688,31 +493,19 @@ a:hover .ico-btn {
     position: relative;
     left: -11px;
     top: -1px;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
 }
 
 .unselectable {
     cursor: default
 }
 
-.pending {
-    opacity: 0.5
-}
-
 .last-manager {
-    font-size: 11px;
-    font-style: italic;
     position: relative;
 }
 /* End members search */
 
 /* Errors */
 .nagare-error-message {
-    background: url("../../img/warning.png") no-repeat left center;
-    font: normal 15px OpenSansSemibold;
-    color: #c22e2e;
     padding-left: 24px;
     position: relative;
     top: -10px

@@ -6,3 +6,555 @@
  * the file LICENSE.txt, which you should have received as part of
  * this distribution.
  **/
+
+#calendar .fc-view-container {
+    background: #eaeaea;
+}
+
+/* Board */
+.board .boardTitle {
+    color: #737373;
+    font: normal 33px OpenSansLight;
+}
+
+.board .boardTitle a,
+.board .boardTitle a:hover {
+    color: #737373;
+    text-decoration: none;
+}
+
+.board .boardTitle .title-form {
+    font-size: 24px;
+}
+
+.board-title-color {
+    border-radius: 3px;
+    background-color: #737373;
+    border: 1px solid #737373;
+}
+
+/* End board */
+
+/* Lists */
+
+.list {
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+    background: rgba(235, 235, 235, 0.8);
+}
+
+.list.reduced .list-header {
+    border-bottom: 1px solid #EAEAEA;
+}
+
+.list-header {
+    border-radius: 5px 5px 0 0;
+}
+
+.list-header .list-actions i {
+    color: #737373;
+}
+
+.list-header .title {
+    font-size: 18px;
+    font-family: OpenSansSemibold;
+    color: #434343;
+}
+
+.list-header .title a,
+.list .header .title a:hover,
+.list .header .title a:visited {
+    color: #737373;
+    text-decoration: none;
+}
+
+.list .list-footer {
+    border-radius: 0 0 5px 5px;
+}
+
+.list .list-footer-disabled {
+    border-radius: 0 0 5px 5px;
+    border-top: solid 1px #c0c0c0;
+    background: #eaeaea;
+}
+
+.list .list-footer:hover {
+    background: #eaeaea;
+}
+
+.list .list-footer .link-small {
+    color: #737373;
+    font: 15px OpenSansLight;
+}
+
+.list .list-footer .link-small:hover {
+    text-decoration: none;
+}
+
+.list .list-footer .link-small strong {
+    color: #939393;
+    font-size: 22px;
+}
+
+.list-marker {
+    border: 1px solid #c0c0c0;
+    background-color: #EAEAEA;
+    border-radius: 6px;
+}
+/* End lists */
+
+/* Cards */
+.card:hover {
+    -webkit-box-shadow: #c0c0c0 0px 0px 1px;
+    -moz-box-shadow: #c0c0c0 0px 0px 1px;
+    box-shadow: #c0c0c0 0px 0px 1px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: white 0px 0px 1px;
+    -moz-box-shadow: white 0px 0px 1px;
+    box-shadow: white 0px 0px 1px;
+}
+
+.card > div > a {
+    color: #434343;
+}
+
+.card.highlight {
+    border: solid 2px #e6a323;
+}
+
+/* Card drag n drop */
+.card-dragging {
+    -moz-transform: rotate(2deg);
+    -ms-transform: rotate(2deg);
+    -webkit-transform: rotate(2deg);
+    -o-transform: rotate(2deg);
+    transform: rotate(2deg);
+}
+
+.card-dragging .card {
+    border: 1px solid #eaeaea
+}
+
+.card-marker {
+    background-color: #eaeaea;
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+}
+
+.card-label {
+    border-radius: 3px 3px 3px 3px;
+}
+
+.card-label > span {
+    color: white;
+}
+
+a.card-label:hover {
+    text-decoration: none;
+}
+/* End card drag n drop */
+
+/* Editor */
+.card-edit-form .header,
+.card-edit-form .header a,
+.card-edit-form .header a:hover {
+    text-decoration: none;
+}
+
+.card-edit-form .header .in-list {
+    font-size: 18px;
+    font-family: OpenSansLightItalic;
+    color: #737373;
+}
+
+.card-edit-form .header .title-form input {
+    font-size: 125%;
+}
+
+.card-edit-form .header .title {
+    font-size: 30px;
+    color: #737373;
+}
+
+.card-edit-form .header .title a {
+    color: #737373
+}
+
+.card-edit-form .description {
+    font: normal 14px OpenSansLight;
+}
+
+.card-edit-form .description p {
+    font: normal 14px OpenSansLight;
+}
+/* End editor */
+
+/* Badges */
+.badges i {
+    font-size: 13px;
+}
+
+.badges > .label {
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: #737373;
+    font-size: 12px;
+}
+
+.badges.highlight > .label:hover {
+    color: black;
+}
+/* End badges */
+
+/* Card overlays */
+.overlay.card-overlay {
+    color: #737373;
+}
+
+.overlay.card-overlay h2 {
+    border-bottom: 1px solid #eaeaea;
+    color: #737373;
+    font-size: 17px;
+    font-weight: normal;
+}
+
+.overlay.card-overlay .member .actions .btn {
+    font-size: 12px;
+}
+
+.overlay.card-overlay .name {
+    font-size: 15px;
+    color: #737373;
+}
+
+.overlay.card-overlay .name .email {
+    font-size: 11px;
+    font-style: italic;
+}
+/* End card overlays */
+
+/* Card counter */
+.cardCounter {
+    font-size: 14px;
+    background: #737373;
+    color: #eaeaea;
+    border-radius: 5px;
+}
+
+.cardCounter.limitReached {
+    background: #c22e2e;
+}
+/* End card counter */
+
+/* Comments */
+.comment .date {
+    font-size: 11px;
+}
+
+.comment .fullname {
+    font: normal 14px OpenSansBold
+}
+
+.comment .right {
+    border-bottom: 1px solid #c0c0c0;
+}
+
+.comment .contents img.medium {
+    border: 4px solid white;
+}
+
+.comment:last-child .right {
+    border: 0
+}
+
+.comment .user.fullname {
+    font-weight: bold;
+}
+
+.comment .footer {
+    font-size: 90%;
+}
+
+.comment .delete {
+    font-size: 12px;
+}
+/* End comments */
+
+/* Due dates */
+.due-date span {
+    font-size: 10px;
+    color: white
+}
+
+.due-date.past,
+.btn-due-date.past{
+    color: #737373 !important;
+}
+
+.due-date.yesterday,
+.btn-due-date.yesterday {
+    color: #A01A00 !important;
+}
+
+.due-date.today,
+.btn-due-date.today{
+    color: #c22e2e !important;
+}
+
+.due-date.tomorrow,
+.btn-due-date.tomorrow{
+    color: #e6a323 !important;
+}
+
+.due-date.future,
+.btn-due-date.future{
+    color: #93b70a !important;
+}
+/* End due dates */
+
+/* Card gallery */
+#card-gallery a {
+    border: 4px solid white;
+}
+
+.cover img {
+    border: 4px solid white;
+}
+/* End card gallery */
+
+/* End cards */
+
+/* Board view switch zone (calendar / columns / search) */
+#switch_zone .btn {
+    font-size: 16px;
+}
+
+#switch_zone .btn.unselected:hover {
+    border: 1px solid #c0c0c0;
+}
+
+#switch_zone .btn.unselected {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+#search {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#search:focus, #search.highlight {
+    border-color: rgba(230, 163, 35, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+}
+
+#search.nomatches {
+    border-color: red;
+}
+
+#show_results {
+    font-size: 18px;
+    color: #e6a323;
+}
+
+span.nomatches {
+    color: red;
+}
+
+/* End board view switch zone (calendar / columns / search) */
+
+/* History */
+div.history {
+    font-size: 12px;
+}
+
+div.history th {
+    font-size: 12px;
+}
+
+/* End history */
+
+/* Progress bar */
+.progress {
+    border: 1px solid #c0c0c0;
+}
+
+.progress .bar {
+    background-color: #5ea9dd;
+}
+/* End progress bar */
+
+/* Checklists */
+.checklists .checklist {
+    background-color: #eaeaea;
+    border-radius: 5px;
+    border: 1px solid #c0c0c0
+}
+
+.checklists .ui-state-highlight {
+    background: #eaeaea;
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+    opacity: 0.6;
+}
+
+.checklists .checklist .title:hover .show_onhover {
+    color: #AAA;
+}
+
+.checklists .checklist .btn-group .btn:first-child {
+    border-left: 0;
+}
+
+.checklists .checklist i[class^="icon-checkbox-"] {
+    font-size: 16px;
+}
+
+.checklists .checklist .title {
+    font-weight: bold
+}
+/* Checklists end */
+
+/* Calendar */
+.calendar {
+    background: white;
+    border: 1px solid #c0c0c0;
+}
+
+.calendar .calendar-content table th {
+    color: #737373
+}
+
+.calendar .calendar-content table tr td a {
+    color: #737373
+}
+
+.calendar .calendar-content table tr td.active a {
+    font-weight: bold;
+    background: #eaeaea;
+    border: 1px solid #EAEAEA;
+}
+
+.calendar .calendar-content table tr td.today a {
+    color: #737373;
+    font-weight: bold;
+}
+
+.calendar .calendar-content table tr th.week_number,
+.calendar .calendar-content table tr td.week_number {
+    color: #737373;
+    background-color: #eaeaea;
+    font-weight: bold;
+    border-right: solid 1px lightgrey;
+}
+
+.calendar .calendar-header select {
+    font: normal 12px OpenSansSemibold;
+    border: 1px solid #eaeaea;
+}
+/* End calendar */
+
+/* Weights */
+.actionWeight select {
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+/* End weights */
+
+/* Weights */
+.inline-labels .card-label {
+    border-radius: 14px;
+    border: 2px solid white;
+}
+
+.label-color-picker .yui-picker-controls .bd {
+    background-color: inherit;
+}
+/* End weights */
+
+/* Popin */
+.yui-skin-sam .mask {
+    opacity: 0.55;
+}
+
+.yui-skin-sam .yui-panel-container {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.yui-skin-sam .yui-panel {
+    border-radius: 10px;
+    background: white;
+}
+
+.yui-skin-sam .yui-panel .panel-section:first-child {
+    border: 0;
+}
+
+.yui-skin-sam .yui-panel .panel-section {
+    border-top: 1px solid #c0c0c0;
+}
+
+.panel-section .panel-section-title {
+    font-size: 160%;
+}
+/* End popin */
+
+/* Nb items */
+.nbItems .label {
+    background: none;
+    color: #c0c0c0;
+    font: 14px OpenSansSemibold
+}
+/* End nb items */
+
+/* Resync content */
+#resync h2 {
+    color: #737373;
+    font: normal 30px OpenSansLight;
+}
+/* End resync content */
+
+/* Responsive */
+@media all and (max-width: 1360px) {
+    .navbar #mainActions {
+        background: white;
+        color: #434343;
+        font: normal 14px OpenSansLight;
+        border-radius: 0 0 10px 0;
+    }
+}
+
+@media (max-width: 813px) {
+    .row > .list {
+        background-color: #eaeaea;
+    }
+
+    .board .boardTitle {
+        font-size: 25px
+    }
+}
+
+@media all and (max-width: 640px) {
+    .navbar #mainActions {
+        background: white;
+        color: #434343;
+        font: normal 14px OpenSansLight;
+        border-radius: 0 0 10px 0;
+    }
+
+    .board .boardTitle {
+        font-size: 18px;
+    }
+
+    .board .boardTitle .title-form {
+        font-size: 16px;
+    }
+}

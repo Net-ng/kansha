@@ -66,10 +66,6 @@ textarea.expanded {
     margin: 0 10px;
 }
 
-#calendar .fc-view-container {
-    background: #eaeaea;
-}
-
 .wrap {
     height: auto;
     min-height: 100%;
@@ -109,8 +105,6 @@ textarea.expanded {
 
 .board .boardTitle {
     display: inline-block;
-    color: #737373;
-    font: normal 33px OpenSansLight;
     padding: 10px 10px;
     margin-left: 400px;
     height: 50px;
@@ -119,16 +113,10 @@ textarea.expanded {
 
 .board .boardTitle a,
 .board .boardTitle a:hover {
-    color: #737373;
-    text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
     overflow: hidden;
-}
-
-.board .boardTitle .title-form {
-    font-size: 24px;
 }
 
 .board .boardTitle .title-form input {
@@ -137,14 +125,11 @@ textarea.expanded {
 }
 
 .board-title-color {
-    border-radius: 3px;
     display: inline-block;
     height: 30px;
     line-height: 30px;
     padding: 0 5px;
     width: 150px;
-    background-color: #737373;
-    border: 1px solid #737373;
 }
 
 /* End board */
@@ -169,11 +154,8 @@ textarea.expanded {
     display: inline-block !important;
     float: none !important;
     white-space: normal;
-    border-radius: 5px;
-    border: 1px solid #c0c0c0;
     height: 100%;
     position: relative;
-    background: rgba(235, 235, 235, 0.8);
     height: calc(100% - 21px);
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
@@ -186,10 +168,6 @@ textarea.expanded {
     display: none
 }
 
-.list.reduced .list-header {
-    border-bottom: 1px solid #EAEAEA;
-}
-
 .list > div:last-child {
     height: 100%
 }
@@ -197,7 +175,6 @@ textarea.expanded {
 .list-header {
     position: relative;
     cursor: pointer;
-    border-radius: 5px 5px 0 0;
 }
 
 .list-header .grip {
@@ -215,10 +192,6 @@ textarea.expanded {
     position: absolute;
     top: 9px;
     right: 9px;
-}
-
-.list-header .list-actions i {
-    color: #737373;
 }
 
 .list-header .list-counter {
@@ -249,17 +222,12 @@ textarea.expanded {
 }
 
 .list-header .title {
-    font-size: 18px;
-    font-family: OpenSansSemibold;
-    color: #434343;
     padding-top: 3px
 }
 
 .list-header .title a,
 .list .header .title a:hover,
 .list .header .title a:visited {
-    color: #737373;
-    text-decoration: none;
     display: block;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
@@ -268,7 +236,6 @@ textarea.expanded {
 }
 
 .list .list-footer {
-    border-radius: 0 0 5px 5px;
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -277,34 +244,19 @@ textarea.expanded {
 }
 
 .list .list-footer-disabled {
-    border-radius: 0 0 5px 5px;
     position: absolute;
     bottom: 0;
-    border-top: solid 1px #c0c0c0;
     width: 100%;
     text-align: center;
     padding: 8px 0;
-    background: #eaeaea;
-}
-
-.list .list-footer:hover {
-    background: #eaeaea;
 }
 
 .list .list-footer .link-small {
-    color: #737373;
-    font: 15px OpenSansLight;
     display: block;
 }
 
-.list .list-footer .link-small:hover {
-    text-decoration: none;
-}
-
 .list .list-footer .link-small strong {
-    color: #939393;
     line-height: 1px !important;
-    font: 22px arial;
     position: relative;
     left: -4px;
     top: 2px
@@ -325,9 +277,6 @@ textarea.expanded {
     float: none !important;
     white-space: normal;
     margin-top: 3px;
-    border: 1px solid #c0c0c0;
-    background-color: #EAEAEA;
-    border-radius: 6px;
     height: calc(100% - 21px);
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
@@ -350,38 +299,19 @@ textarea.expanded {
 /* End lists */
 
 /* Cards */
-.card:hover {
-    -webkit-box-shadow: #c0c0c0 0px 0px 1px;
-    -moz-box-shadow: #c0c0c0 0px 0px 1px;
-    box-shadow: #c0c0c0 0px 0px 1px;
-}
-
 .card {
     position: relative;
     min-height: 64px;
-    background-color: white;
-    border-radius: 5px;
     margin: 8px 4px;
     padding: 8px 8px 4px 8px;
     cursor: pointer;
     word-wrap: break-word;
-    -webkit-box-shadow: white 0px 0px 1px;
-    -moz-box-shadow: white 0px 0px 1px;
-    box-shadow: white 0px 0px 1px;
 }
 
 .card:after {
     content: "";
     display: block;
     clear: both
-}
-
-.card > div > a {
-    color: #434343;
-}
-
-.card.highlight {
-    border: solid 2px #e6a323;
 }
 
 .card .members {
@@ -440,27 +370,11 @@ textarea.expanded {
 }
 
 /* Card drag n drop */
-.card-dragging {
-    -moz-transform: rotate(2deg);
-    -ms-transform: rotate(2deg);
-    -webkit-transform: rotate(2deg);
-    -o-transform: rotate(2deg);
-    transform: rotate(2deg);
-}
-
-.card-dragging .card {
-    border: 1px solid #eaeaea
-}
-
 .card-marker {
-    background-color: #eaeaea;
-    border-radius: 5px;
     margin: 2px;
-    border: 1px solid #c0c0c0;
 }
 
 .card-label {
-    border-radius: 3px 3px 3px 3px;
     display: inline-block;
     height: 30px;
     line-height: 30px;
@@ -469,12 +383,7 @@ textarea.expanded {
 }
 
 .card-label > span {
-    color: white;
     text-overflow: ellipsis;
-}
-
-a.card-label:hover {
-    text-decoration: none;
 }
 
 .card-label i {
@@ -506,26 +415,16 @@ a.card-label:hover {
     margin-bottom: 10px;
 }
 
-.card-edit-form .header,
-.card-edit-form .header a,
-.card-edit-form .header a:hover {
-    text-decoration: none;
-}
-
 .card-edit-form .header .async-title > div {
     display: inline;
 }
 
 .card-edit-form .header .in-list {
-    font-size: 18px;
-    font-family: OpenSansLightItalic;
     margin-left: 5px;
     display: inline;
-    color: #737373;
 }
 
 .card-edit-form .header .title-form input {
-    font-size: 125%;
     padding: 5px;
     width: 67%;
     margin-right: 10px
@@ -534,26 +433,18 @@ a.card-label:hover {
 .card-edit-form .header .title {
     word-wrap: break-word;
     display: inline;
-    font-size: 30px;
-    color: #737373;
     line-height: 1.2;
-}
-
-.card-edit-form .header .title a {
-    color: #737373
 }
 
 .card-edit-form .description {
     margin: 0;
     padding: 14px 0 0 0;
     margin-bottom: 14px;
-    font: normal 14px OpenSansLight;
     clear: both;
     cursor: pointer;
 }
 
 .card-edit-form .description p {
-    font: normal 14px OpenSansLight;
     margin: 0;
 }
 
@@ -587,29 +478,16 @@ a.card-label:hover {
     margin-top: 5px;
 }
 
-.badges i {
-    font-size: 13px;
-}
-
 .badges > .label {
-    border: 1px solid transparent;
-    border-radius: 3px;
     margin-right: 3px;
     padding: 3px;
     float: right;
-    color: #737373;
-    font-size: 12px;
     width: auto;
-}
-
-.badges.highlight > .label:hover {
-    color: black;
 }
 /* End badges */
 
 /* Card overlays */
 .overlay.card-overlay {
-    color: #737373;
     padding: 0 12px 4px 12px;
     min-width: 280px;
 }
@@ -624,10 +502,6 @@ a.card-label:hover {
 }
 
 .overlay.card-overlay h2 {
-    border-bottom: 1px solid #eaeaea;
-    color: #737373;
-    font-size: 17px;
-    font-weight: normal;
     line-height: inherit;
     margin: 0 0 5px;
     padding-bottom: 4px
@@ -671,20 +545,12 @@ a.card-label:hover {
 }
 
 .overlay.card-overlay .member .actions .btn {
-    font-size: 12px;
     padding: 1px 3px;
     margin: 0 2px;
 }
 
-.overlay.card-overlay .name {
-    font-size: 15px;
-    color: #737373;
-}
-
 .overlay.card-overlay .name .email {
     display: block;
-    font-size: 11px;
-    font-style: italic;
     position: relative;
     top: -2px
 }
@@ -698,20 +564,12 @@ a.card-label:hover {
 
 /* Card counter */
 .cardCounter {
-    font-size: 14px;
     display: inline-block;
-    background: #737373;
-    color: #eaeaea;
     padding: 2px 3px;
-    border-radius: 5px;
     min-width: 20px;
     text-align: center;
     position: relative;
     top: -4px;
-}
-
-.cardCounter.limitReached {
-    background: #c22e2e;
 }
 /* End card counter */
 
@@ -723,14 +581,6 @@ a.card-label:hover {
     clear: both
 }
 
-.comment .date {
-    font-size: 11px;
-}
-
-.comment .fullname {
-    font: normal 14px OpenSansBold
-}
-
 .comment .left {
     width: 30px;
     float: left;
@@ -738,7 +588,6 @@ a.card-label:hover {
 }
 
 .comment .right {
-    border-bottom: 1px solid #c0c0c0;
     margin-left: 45px;
 }
 
@@ -748,16 +597,10 @@ a.card-label:hover {
 }
 
 .comment .contents img.medium {
-    border: 4px solid white;
     margin-right: 5px;
 }
 
-.comment:last-child .right {
-    border: 0
-}
-
 .comment .user.fullname {
-    font-weight: bold;
     display: inline-block;
 }
 
@@ -769,11 +612,9 @@ a.card-label:hover {
 
 .comment .footer {
     text-align: right;
-    font-size: 90%;
 }
 
 .comment .delete {
-    font-size: 12px;
     margin-left: 5px;
 }
 /* End comments */
@@ -785,33 +626,6 @@ a.card-label:hover {
     display: inline-block;
     width: 100%;
     text-align: center;
-    font-size: 10px;
-    color: white
-}
-
-.due-date.past,
-.btn-due-date.past{
-    color: #737373 !important;
-}
-
-.due-date.yesterday,
-.btn-due-date.yesterday {
-    color: #A01A00 !important;
-}
-
-.due-date.today,
-.btn-due-date.today{
-    color: #c22e2e !important;
-}
-
-.due-date.tomorrow,
-.btn-due-date.tomorrow{
-    color: #e6a323 !important;
-}
-
-.due-date.future,
-.btn-due-date.future{
-    color: #93b70a !important;
 }
 
 .due-date .duedate-icon {
@@ -836,7 +650,6 @@ a.card-label:hover {
     position: relative;
     display: inline-block;
     margin: 8px 8px 0 0;
-    border: 4px solid white;
 }
 
 #card-gallery a span.is_cover {
@@ -856,9 +669,7 @@ a.card-label:hover {
 .cover img {
     width: 98%;
     margin: 5px auto;
-    border: 4px solid white;
 }
-
 /* End card gallery */
 
 /* End cards */
@@ -876,16 +687,6 @@ a.card-label:hover {
     padding: 4px 8px;
     min-width: 0;
     margin: 0 5px;
-    font-size: 16px;
-}
-
-#switch_zone .btn.unselected:hover {
-    border: 1px solid #c0c0c0;
-}
-
-#switch_zone .btn.unselected {
-    background: transparent;
-    border: 1px solid transparent;
 }
 
 #switch_zone .btn [class^="icon-"] {
@@ -894,10 +695,6 @@ a.card-label:hover {
 
 #search {
     width: 10em;
-    /*vertical-align: sub;*/
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
 }
 
 #search:focus, #search.highlight {
@@ -906,34 +703,22 @@ a.card-label:hover {
     outline: thin dotted \9;
 }
 
-#search.nomatches {
-    border-color: red;
-}
-
 #show_results {
     min-width: 200px;
-    font-size: 18px;
-    color: #e6a323;
     display: inline-block;
     padding: 5px;
     text-align: right;
-}
-
-span.nomatches {
-    color: red;
 }
 
 /* End board view switch zone (calendar / columns / search) */
 
 /* History */
 div.history {
-    font-size: 12px;
     overflow: auto;
     max-height: 600px;
 }
 
 div.history th {
-    font-size: 12px;
     width: 9em;
 }
 
@@ -942,12 +727,10 @@ div.history th {
 /* Progress bar */
 .progress {
     height: 24px;
-    border: 1px solid #c0c0c0;
 }
 
 .progress .bar {
     height: 22px;
-    background-color: #5ea9dd;
 }
 
 .progress span {
@@ -973,9 +756,6 @@ div.history th {
 .checklists .checklist {
     margin: 15px 0;
     padding: 10px;
-    background-color: #eaeaea;
-    border-radius: 5px;
-    border: 1px solid #c0c0c0
 }
 
 .checklists .checklist .nagare-generated,
@@ -986,10 +766,6 @@ div.history th {
 .checklists .ui-state-highlight {
     height: 3em;
     line-height: 3em;
-    background: #eaeaea;
-    border-radius: 5px;
-    border: 1px solid #c0c0c0;
-    opacity: 0.6;
 }
 
 .checklists .checklist a.delete {
@@ -1014,16 +790,11 @@ div.history th {
 
 .checklists .checklist .title:hover .show_onhover {
     display: inline;
-    color: #AAA;
 }
 
 .checklists .checklist .btn {
     min-width: 0;
     height: 29px
-}
-
-.checklists .checklist .btn-group .btn:first-child {
-    border-left: 0;
 }
 
 .checklists .checklist .new-item-form .btn,
@@ -1035,14 +806,6 @@ div.history th {
     left: 0
 }
 
-.checklist a {
-    color: #737373;
-}
-
-.checklist a:hover {
-    color: #434343;
-}
-
 .checklists .checklist li {
     line-height: 20px;
     list-style-type: disc;
@@ -1050,16 +813,11 @@ div.history th {
 }
 
 .checklists .checklist i[class^="icon-checkbox-"] {
-    font-size: 16px;
     margin-right: 5px
 }
 
 .checklists .checklist .done {
     text-decoration: line-through
-}
-
-.checklists .checklist .title {
-    font-weight: bold
 }
 
 .checklists .checklist .title input {
@@ -1084,10 +842,8 @@ div.history th {
 .calendar {
     position: absolute;
     padding: 10px;
-    background: white;
     width: 240px;
     z-index: 1;
-    border: 1px solid #c0c0c0;
 }
 
 .calendar .calendar-content table {
@@ -1100,34 +856,11 @@ div.history th {
     text-align: center;
 }
 
-.calendar .calendar-content table th {
-    color: #737373
-}
-
-.calendar .calendar-content table tr td a {
-    color: #737373
-}
-
-.calendar .calendar-content table tr td.active a {
-    font-weight: bold;
-    background: #eaeaea;
-    border: 1px solid #EAEAEA;
-}
-
-.calendar .calendar-content table tr td.today a {
-    color: #737373;
-    font-weight: bold;
-}
-
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
-    color: #737373;
-    background-color: #eaeaea;
-    font-weight: bold;
     text-align: center;
     display: block;
     margin-right: 2px;
-    border-right: solid 1px lightgrey;
 }
 
 .calendar .calendar-header {
@@ -1135,9 +868,7 @@ div.history th {
 }
 
 .calendar .calendar-header select {
-    font: normal 12px OpenSansSemibold;
     width: 100px;
-    border: 1px solid #eaeaea;
     display: inline-block;
 }
 
@@ -1181,11 +912,8 @@ div.history th {
 
 .actionWeight select {
     overflow: hidden;
-    border: none;
     margin: 0;
     height: auto;
-    outline: none;
-    background-color: transparent;
 }
 /* End weights */
 
@@ -1195,8 +923,6 @@ div.history th {
     height: 14px;
     padding: 0;
     margin-right: 6px;
-    border-radius: 14px;
-    border: 2px solid white;
 }
 
 .label-color-picker {
@@ -1205,27 +931,18 @@ div.history th {
     width: 315px;
 }
 
-.label-color-picker .yui-picker-controls .bd {
-    background-color: inherit;
-}
-
 .label-color-picker .yui-picker-controls .bd input {
     padding: 0;
 }
 /* End weights */
 
 /* Popin */
-.yui-skin-sam .mask {
-    opacity: 0.55;
-}
 
 .yui-skin-sam .yui-panel-container {
-    background: transparent;
     width: 100%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    border-radius: 5px;
     padding: 0;
 }
 
@@ -1233,25 +950,17 @@ div.history th {
     margin: 70px auto 30px auto;
     max-width: 680px;
     padding: 5px 20px 15px 50px;
-    border-radius: 10px;
-    background: white;
 }
 
 .yui-skin-sam .yui-panel .panel-header {
     width: 95%
 }
 
-.yui-skin-sam .yui-panel .panel-section:first-child {
-    border: 0;
-}
-
 .yui-skin-sam .yui-panel .panel-section {
-    border-top: 1px solid #c0c0c0;
     margin: 10px 0 5px 0;
 }
 
 .panel-section .panel-section-title {
-    font-size: 160%;
     margin-bottom: 5px;
 }
 
@@ -1271,12 +980,6 @@ div.history th {
     left: 12px;
     margin-top: 4px
 }
-
-.nbItems .label {
-    background: none;
-    color: #c0c0c0;
-    font: 14px OpenSansSemibold
-}
 /* End nb items */
 
 /* Resync content */
@@ -1285,9 +988,7 @@ div.history th {
 }
 
 #resync h2 {
-    color: #737373;
     line-height: 1.2;
-    font: normal 30px OpenSansLight;
 }
 /* End resync content */
 
@@ -1300,10 +1001,6 @@ div.history th {
 
     .navbar #mainActions {
         display: inline-block;
-        background: white;
-        color: #434343;
-        font: normal 14px OpenSansLight;
-        border-radius: 0 0 10px 0;
     }
 
     .navbar #mainActions #login {
@@ -1313,10 +1010,6 @@ div.history th {
     .navbar #mainActions #login a {
         display: inline-block;
         padding: 2px 0 3px 39px;
-    }
-
-    .navbar #mainActions #login a:hover {
-        background-position: -609px -500px
     }
 
     .list-header {
@@ -1365,7 +1058,6 @@ div.history th {
     }
 
     .row > .list {
-        background-color: #eaeaea;
         margin-bottom: 11px;
     }
 
@@ -1395,10 +1087,6 @@ div.history th {
     .navbar #boardActions a i {
         width: 0 !important;
         overflow: hidden;
-    }
-
-    .board .boardTitle {
-        font-size: 25px
     }
 
     #lists {
@@ -1458,10 +1146,6 @@ div.history th {
 
     .navbar #mainActions {
         display: inline-block;
-        background: white;
-        color: #434343;
-        font: normal 14px OpenSansLight;
-        border-radius: 0 0 10px 0;
     }
 
     .navbar #mainActions #login a {
@@ -1471,13 +1155,8 @@ div.history th {
     }
 
     .board .boardTitle {
-        font-size: 18px;
         margin-left: 0;
         width: 100%;
-    }
-
-    .board .boardTitle .title-form {
-        font-size: 16px;
     }
 
     .navbar .tab {

@@ -93,7 +93,7 @@ def render_Board(self, h, comp, *args):
     """Main board renderer"""
 
     h.head.css_url('css/themes/board.css')
-    h.head.css_url('css/themes/kansha_flat/board.css')
+    h.head.css_url('css/themes/%s/board.css' % self.theme)
 
     h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')

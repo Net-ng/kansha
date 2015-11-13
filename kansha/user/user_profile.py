@@ -30,7 +30,7 @@ LANGUAGES = {'en': _L('english'),
 
 class UserProfile(object):
 
-    def __init__(self, app_title, app_banner, custom_css, user, search_engine, services_service):
+    def __init__(self, app_title, app_banner, theme, user, search_engine, services_service):
         """
         In:
          - ``user`` -- user (DataUser instance)
@@ -44,21 +44,21 @@ class UserProfile(object):
                 UserBoards,
                 app_title,
                 app_banner,
-                custom_css,
+                theme,
                 user,
             )
         )
         self.menu['my-cards'] = MenuEntry(
             _L(u'My cards'),
             'profile',
-            services_service(UserCards, user, search_engine)
+            services_service(UserCards, user, search_engine, theme)
         )
         self.menu['profile'] = MenuEntry(
             _L(u'Profile'),
             'user',
             services_service(
                 get_userform(
-                    app_title, app_banner, custom_css, user.source
+                    app_title, app_banner, theme, user.source
                 ),
                 user,
             )
@@ -191,7 +191,7 @@ def render(self, h, comp, *args):
     return h.root
 
 
-def get_userform(app_title, app_banner, custom_css, source):
+def get_userform(app_title, app_banner, theme, source):
     """ Default method to get UserForm Class
 
     In:
@@ -202,7 +202,7 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserForm(BasicUserForm):
 
-    def __init__(self, app_title, app_banner, custom_css, target, assets_manager_service, mail_sender_service):
+    def __init__(self, app_title, app_banner, theme, target, assets_manager_service, mail_sender_service):
         """
         In:
          - ``target`` -- DataUser instance
@@ -212,7 +212,7 @@ class UserForm(BasicUserForm):
 
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.mail_sender = mail_sender_service
         self.assets_manager = assets_manager_service
         self.username.validate(self.validate_username)
@@ -289,7 +289,7 @@ class UserForm(BasicUserForm):
         """Create email confirmation"""
         confirmation_url = '/'.join(
             (application_url, 'new_mail', self.username()))
-        return registation_forms.EmailConfirmation(self.app_title, self.app_banner, self.custom_css, lambda: security.get_user().data, confirmation_url)
+        return registation_forms.EmailConfirmation(self.app_title, self.app_banner, self.theme, lambda: security.get_user().data, confirmation_url)
 
     def commit(self, application_url):
         """ Commit method
@@ -352,7 +352,7 @@ class UserForm(BasicUserForm):
 @presentation.render_for(UserForm, "edit")
 def render(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/kansha_flat/home.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
 
     with h.div(class_='row'):
         with h.form.pre_action(self.pre_action):
@@ -417,11 +417,11 @@ def render(self, h, comp, *args):
 
 
 @peak.rules.when(get_userform, """source == 'application'""")
-def get_userform(app_title, app_banner, custom_css, source):
+def get_userform(app_title, app_banner, theme, source):
     """ User form for application user
     """
     def factory_compatible_with_services(target, services_service):
-        return services_service(UserForm, app_title, app_banner, custom_css, target)
+        return services_service(UserForm, app_title, app_banner, theme, target)
 
     return factory_compatible_with_services
 
@@ -430,7 +430,7 @@ class ExternalUserForm(BasicUserForm):
 
 
 @peak.rules.when(get_userform, """source != 'application'""")
-def get_userform(app_title, app_banner, custom_css, source):
+def get_userform(app_title, app_banner, theme, source):
     """ User form for application user
     """
     return ExternalUserForm
@@ -438,7 +438,7 @@ def get_userform(app_title, app_banner, custom_css, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, custom_css, user, mail_sender_service, assets_manager_service, services_service):
+    def __init__(self, app_title, app_banner, theme, user, mail_sender_service, assets_manager_service, services_service):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -446,7 +446,7 @@ class UserBoards(object):
         In:
          - ``app_title`` -- Application title
          - ``app_banner`` -- Application banner
-         - ``custom_css`` -- Custom CSS file
+         - ``theme`` -- Custom theme name
          - ``user`` -- User whose boards will be listed
          - ``mail_sender`` -- Mail sender
          - ``assets_manager`` -- Assets manager service
@@ -455,7 +455,7 @@ class UserBoards(object):
 
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.mail_sender = mail_sender_service
         self.assets_manager = assets_manager_service
         self.user_id = user.username
@@ -465,7 +465,7 @@ class UserBoards(object):
         self.reload_boards()
 
     def _get_board(self, b, model=0):
-        b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.custom_css,
+        b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
                            None,
                            on_board_delete=self.reload_boards,
                            on_board_archive=self.reload_boards,
@@ -497,7 +497,7 @@ def render_userboards(self, h, comp, *args):
     h.head << h.head.title(self.app_title)
 
     h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/kansha_flat/home.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
 
     if self.last_modified_boards:
         h << h.h1(_(u'Last modified boards'))

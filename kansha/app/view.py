@@ -36,7 +36,7 @@ def answer_on_menu(self, comp, user, v):
             user_profile.UserProfile,
             self.app_title,
             self.app_banner,
-            self.custom_css,
+            self.theme,
             user.data,
             self.search_engine
         )
@@ -125,9 +125,7 @@ def render_kansha(self, h, comp, *args):
     h.head.css_url('css/knacss.css')
     h.head.css_url('css/themes/fonts.css')
     h.head.css_url('css/themes/kansha.css')
-    h.head.css_url('css/themes/kansha_flat/kansha.css')
-    if self.custom_css:
-        h.head.css_url(self.custom_css)
+    h.head.css_url('css/themes/%s/kansha.css' % self.theme)
 
     h.head.javascript_url('js/jquery-2.1.3.min.js')
     h.head.javascript_url('js/jquery-ui-1.11.2.custom/jquery-ui.js')

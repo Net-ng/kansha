@@ -28,7 +28,7 @@ class Login(Authentication):
         'schema': 'string(default="kansha.authentication.ldap:NngLDAPAuth")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, assets_manager_service):
+    def __init__(self, app_title, app_banner, theme, assets_manager_service):
         cls = load_object(self.config['schema'])[0]
         self.ldap_engine = cls(self.config)
         self.error_message = ''

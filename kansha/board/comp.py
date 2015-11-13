@@ -62,7 +62,7 @@ class Board(object):
     max_shown_members = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, custom_css, search_engine,
+    def __init__(self, id_, app_title, app_banner, theme, search_engine,
                  assets_manager_service, mail_sender_service, services_service,
                  on_board_delete=None, on_board_archive=None,
                  on_board_restore=None, on_board_leave=None, on_update_members=None,load_data=True):
@@ -76,7 +76,7 @@ class Board(object):
         self.model = 'columns'
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.mail_sender = mail_sender_service
         self.id = id_
         self.on_board_delete = on_board_delete
@@ -717,7 +717,7 @@ class Board(object):
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
-            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
+            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
         return 'reload_boards();'
 
@@ -730,7 +730,7 @@ class Board(object):
             - ``pending_member`` -- Send invitation to this user (PendingMember instance)
         """
         email = pending_member.username
-        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, application_url)
+        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
         invitation.send_email(self.mail_sender)
         # re-calculate pending
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, "pending"))

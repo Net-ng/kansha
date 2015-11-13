@@ -17,9 +17,9 @@ from kansha import VERSION
 
 
 class Header(object):
-    def __init__(self, banner, custom_css):
+    def __init__(self, banner, theme):
         self.banner = banner
-        self.custom_css = custom_css
+        self.theme = theme
 
 
 @presentation.render_for(Header)
@@ -34,10 +34,8 @@ def render_Header(self, h, comp, *args):
     h.head.css_url('css/themes/fonts.css')
     h.head.css_url('css/themes/kansha.css')
     h.head.css_url('css/themes/login.css')
-    h.head.css_url('css/themes/kansha_flat/kansha.css')
-    h.head.css_url('css/themes/kansha_flat/login.css')
-    if self.custom_css:
-        h.head.css_url(self.custom_css)
+    h.head.css_url('css/themes/%s/kansha.css' % self.theme)
+    h.head.css_url('css/themes/%s/login.css' % self.theme)
 
     with h.div(class_='header'):
         with h.a(href=h.request.application_url):
@@ -47,20 +45,20 @@ def render_Header(self, h, comp, *args):
 
 
 class Login(object):
-    def __init__(self, app_title, app_banner, custom_css, cfg, authentication_service, services_service):
+    def __init__(self, app_title, app_banner, theme, cfg, authentication_service, services_service):
         """Login components
 
         """
         logins = []
         for each in authentication_service:
-            logins.append(services_service(authentication_service[each], app_title, app_banner, custom_css))
+            logins.append(services_service(authentication_service[each], app_title, app_banner, theme))
 
         self.app_title = app_title
         self.logins = [component.Component(login) for login in logins]
         self.header = component.Component(
             Header(
                 cfg['pub_cfg']['banner'],
-                custom_css
+                theme
             )
         )
         self.disclaimer = cfg['pub_cfg']['disclaimer']

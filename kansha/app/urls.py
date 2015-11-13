@@ -51,7 +51,7 @@ def init_app__register(self, url, comp, http_method, request):
         forms.RegistrationTask,
         self.app_title,
         self.app_banner,
-        self.custom_css
+        self.theme
     )
     register.state = (url[1], url[2])
     comp.becomes(register).on_answer(lambda v: logout())
@@ -65,7 +65,7 @@ def init_app__new_mail(self, url, comp, http_method, request):
         forms.EmailConfirmation,
         self.app_title,
         self.app_banner,
-        self.custom_css,
+        self.theme,
         get_user
     )
     if confirmation.confirm_email_address(token):
@@ -74,7 +74,7 @@ def init_app__new_mail(self, url, comp, http_method, request):
             forms.ChangeEmailConfirmation,
             self.app_title,
             self.app_banner,
-            self.custom_css,
+            self.theme,
             request.application_url
         ),
             model='success'
@@ -87,7 +87,7 @@ def init_app__new_mail(self, url, comp, http_method, request):
                 forms.ChangeEmailConfirmation,
                 self.app_title,
                 self.app_banner,
-                self.custom_css,
+                self.theme,
                 request.application_url
             ),
             model='failure'
@@ -100,7 +100,7 @@ def init_app__reset(self, url, comp, http_method, request):
         forms.PasswordResetTask,
         self.app_title,
         self.app_banner,
-        self.custom_css,
+        self.theme,
     )
     reset.state = (url[1], url[2], request.application_url)
     comp.becomes(reset).on_answer(lambda v: logout())

@@ -710,8 +710,9 @@ textarea.expanded {
 #show_results {
     min-width: 200px;
     display: inline-block;
-    padding: 5px;
+    padding: 0 5px;
     text-align: right;
+    vertical-align: middle;
 }
 
 /* End board view switch zone (calendar / columns / search) */

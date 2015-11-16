@@ -314,6 +314,10 @@ textarea.expanded {
     clear: both
 }
 
+.card > div > a {
+    display: block;
+}
+
 .card .members {
     width: 50%;
     float: left;

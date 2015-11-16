@@ -460,6 +460,10 @@ textarea.expanded {
     overflow: hidden;
 }
 
+.card-edit-form textarea.expanded {
+    height: 112px;
+}
+
 .card-edit-form .badges {
     display: none
 }

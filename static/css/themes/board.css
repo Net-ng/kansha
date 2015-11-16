@@ -159,7 +159,7 @@ textarea.expanded {
     height: calc(100% - 21px);
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
-    margin-right: 6px;
+    margin-left: 10px;
     vertical-align: top
 }
 

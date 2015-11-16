@@ -739,10 +739,10 @@
                 element = Dom.get(id);
             editor = CKEDITOR.replace(id, {
                 title: '',
-                contentsCss: ['/static/kansha/css/bootstrap.min.css',
-                              '/static/kansha/css/fonts.css',
+                contentsCss: ['/static/kansha/css/themes/fonts.css',
                               '/static/kansha/css/ckeditor.css'],
                 language: language,
+                skin: 'bootstrapck',
                 enterMode: CKEDITOR.ENTER_BR,
                 shiftEnterMode: CKEDITOR.ENTER_BR,
                 resize_enabled: false,

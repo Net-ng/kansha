@@ -127,11 +127,6 @@ class UserManager(object):
                                                                           creation_date=datetime.utcnow(),
                                                                           author=u2))
 
-        for i in xrange(4, 10):
-            user = self.create_user(u'user%s' % i, u'password', u'user %s' % i, u'user%s@net-ng.com' % i)
-            user.confirm_email()
-
-
 ###### TODO: Move the defintions below somewhere else ##########
 
 class NewMember(object):

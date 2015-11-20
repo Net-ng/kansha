@@ -22,7 +22,7 @@ def html_hex_to_rgb_tuple(hex_str):
 
 
 def color_style(self):
-    return 'background-color:%s; box-shadow: 0px 0px 1px %s' % (self.data.color, self.data.color)
+    return 'background-color:%s' % self.data.color
 
 
 @presentation.render_for(Label)

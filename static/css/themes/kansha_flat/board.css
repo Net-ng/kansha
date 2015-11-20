@@ -468,6 +468,7 @@ div.history th {
 .inline-labels .card-label {
     border-radius: 14px;
     border: 2px solid white;
+    box-shadow: 3px 1px 1px #D6D6D6;
 }
 
 .label-color-picker .yui-picker-controls .bd {
@@ -477,7 +478,7 @@ div.history th {
 
 /* Popin */
 .yui-skin-sam .mask {
-    opacity: 0.55;
+    opacity: 0.4;
 }
 
 .yui-skin-sam .yui-panel-container {
@@ -486,8 +487,10 @@ div.history th {
 }
 
 .yui-skin-sam .yui-panel {
-    border-radius: 10px;
+    border-radius: 5px;
     background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
 }
 
 .yui-skin-sam .yui-panel .panel-section:first-child {

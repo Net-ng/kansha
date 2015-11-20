@@ -106,8 +106,6 @@
 
 /* Cards */
 .card:hover {
-    -webkit-box-shadow: #a7a7a7 1px 1px 1px;
-    -moz-box-shadow: #a7a7a7 1px 1px 1px;
     box-shadow: #a7a7a7 1px 1px 1px
 }
 

@@ -67,11 +67,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Buttons */
 .btn-group .btn {
-    border-left: 0;
+    border-left-width: 0;
     border-radius: 0;
 }
 
 .btn-group .btn:first-child {
+    border-left-width: 1px;
     border-radius: 3px 0 0 3px;
 }
 

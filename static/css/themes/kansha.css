@@ -191,7 +191,7 @@ i[class^="icon-"]:before {
     left: 50px;
     cursor: pointer;
     padding: 0 10px 0 10px;
-    z-index: 25;
+    z-index: 30;
     white-space: nowrap;
     overflow: hidden;
 }

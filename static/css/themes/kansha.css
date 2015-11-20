@@ -20,6 +20,7 @@ input, select, textarea {
     padding: 4px 6px;
     margin: 0;
     resize: none;
+    border-radius: 3px;
 }
 
 input[type=checkbox],

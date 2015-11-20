@@ -815,6 +815,14 @@ div.history th {
     left: 0
 }
 
+.checklists .checklist input {
+    border-radius: 3px 0 0 3px;
+}
+
+.checklists .checklist .btn-group .btn:first-child {
+    border-radius: 0;
+}
+
 .checklists .checklist li {
     line-height: 20px;
     list-style-type: disc;

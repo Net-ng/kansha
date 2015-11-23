@@ -238,7 +238,7 @@ a:hover .ico-btn {
 
 /* Overlays */
 .overlay {
-    background: #aaaaaa;
+    background: white;
     border: 1px solid #c0c0c0;
 }
 
@@ -249,7 +249,7 @@ a:hover .ico-btn {
 }
 
 .overlay_arrow:after {
-    border-bottom: 6px solid #eaeaea;
+    border-bottom: 6px solid white;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
 }
@@ -297,10 +297,6 @@ a:hover .ico-btn {
 .overlay.board-labels-overlay .name {
     font-size: 15px;
     color: #737373;
-}
-
-.overlay.card-edit-form-overlay {
-    background: #eaeaea;
 }
 
 .overlay.card-edit-form-overlay .card-label-choose.active .card-label {

@@ -102,6 +102,9 @@ def render_card_actions(self, h, comp, *args):
                     h << self.votes.render(h.AsyncRenderer(), 'edit')
                 with h.li(class_="buttonDueDate"):
                     h << self.due_date.render(h.AsyncRenderer(), 'button')
+                if self.board.weighting_cards:
+                    with h.li(class_="actionWeight"):
+                        h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))
                 with h.li(class_="buttonDeleteCard"):
                     if security.has_permissions('edit', self) and not self.column.is_archive:
                         close_func = ajax.js(
@@ -131,9 +134,6 @@ def render_card_actions(self, h, comp, *args):
                                 }
                             )
                         )
-                if self.board.weighting_cards:
-                    with h.li(class_="actionWeight"):
-                        h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))
                 h << comp.render(h, 'members')
 
     return h.root

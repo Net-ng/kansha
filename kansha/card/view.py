@@ -152,7 +152,7 @@ def render_card_dnd(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor)
 def render_cardweighteditor(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star'), self.weight, class_='btn').action(
+    h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
         lambda: comp.call(self, model='edit'))
     return h.root
 

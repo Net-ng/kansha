@@ -135,7 +135,7 @@ def render_async(self, h, comp, *args):
         with h.div(class_='calendar', id_=calendar_id, style=style):
             with h.div(class_='calendar-header'):
                 with h.a(title=_(u'Previous')).action(self.previous_month):
-                    h << h.i(class_='icon-arrow-left icon-grey', title=_(u'Previous'))
+                    h << h.i(class_='icon-arrow-left', title=_(u'Previous'))
                 with h.span(class_='current'):
                     with h.select(onchange=ajax.Update(action=self.change_month)):
                         for n, month in i18n.get_month_names().iteritems():
@@ -147,7 +147,7 @@ def render_async(self, h, comp, *args):
                             h << h.option(year, value=year).selected(self.current.year)
 
                 with h.a(title=_(u'Next')).action(self.next_month):
-                    h << h.i(class_='icon-arrow-right icon-grey', title=_(u'Next'))
+                    h << h.i(class_='icon-arrow-right', title=_(u'Next'))
 
             with h.div(class_='calendar-content'):
                 if isinstance(self.date, date):
@@ -196,9 +196,9 @@ def render_async(self, h, comp, *args):
                                             else:
                                                 h << h.span(day)
             with h.div(class_='calendar-today'):
-                h << h.a(h.i(class_='icon-calendar icon-grey'), _(u"Today"), class_='today-link btn').action(self.set_today)
+                h << h.a(h.i(class_='icon-calendar'), _(u"Today"), class_='today-link btn').action(self.set_today)
                 if self.allow_none:
-                    h << h.a(h.i(class_='icon-remove icon-grey'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
+                    h << h.a(h.i(class_='icon-remove'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
 
             h << h.script(
                 "YAHOO.util.Event.onDOMReady(function() {"

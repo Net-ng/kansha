@@ -1,0 +1,530 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/* General */
+html, body { height: 100%; max-height: 100% }
+
+form {
+    margin: 0 0 3px 0;
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4px 6px;
+    margin: 0;
+    resize: none;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: auto;
+}
+
+select {
+    height: 30px;
+    line-height: 30px;
+}
+
+a, a:hover, a:visited, a:hover i { text-decoration: none; }
+
+ul { padding: 0; }
+li { padding: 3px 0; }
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    line-height: 20px;
+}
+
+/* Knacss fix to hide script tags */
+.row > script {
+    display: none;
+}
+
+/* YUI autocompletes */
+.yui-skin-sam .yui-ac-container {
+    top: 0 !important;
+    left: 0 !important;
+    position: relative;
+}
+
+.yui-skin-sam .yui-ac-content {
+    position: relative;
+}
+
+.yui-skin-sam .yui-ac-input {
+    position: relative;
+}
+/* End YUI autocompletes */
+
+.yui-tt {
+    border: 0 !important;
+    padding: 0;
+    min-width: 50px;
+}
+
+.yui-tt .yui-tt-shadow {
+    position: absolute;
+    top: -9px;
+    left: 5px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 8px 9px 8px;
+    border-color: transparent transparent #434343 transparent;
+    background-color: transparent;
+}
+
+/* Buttons */
+button, .btn {
+    min-width: 62px;
+    width: auto;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0;
+    padding: 3px 9px;
+}
+
+button:disabled { cursor: inherit }
+
+/* Button groups */
+.btn-group {
+    display: inline-block;
+}
+/* End buttons */
+
+[data-icon]:before {
+    font-family: icons;
+    content: attr(data-icon);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    padding-right: 5px;
+}
+
+/* Remove underline from links */
+i[class^="icon-"]:before {
+	display: inline-block;
+	text-decoration: none;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.board-labels .avatar img,
+.card .avatar img,
+.card-actions .avatar img {
+    max-height: 24px;
+    max-width: 24px;
+}
+
+/*Error page*/
+#errorPage {
+    height: auto;
+    padding: 0;
+    margin: 0
+}
+
+#errorPage #status {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+#errorPage #message {
+    padding: 10px 10px;
+    margin-top: 70px;
+    text-align: center;
+}
+/* End error page */
+
+/* Menu */
+.menu {
+    width: 190px;
+    height: 100%;
+}
+
+.menu li a {
+    padding: 8px 8px 8px 50px;
+    margin-bottom: 3px;
+    display: block;
+}
+
+.menu li span {
+    line-height: 20px;
+}
+
+.menu {
+    padding-top: 0
+}
+
+.menu .icon {
+    margin-right: 7px;
+}
+/* End menu */
+
+/* Navigation menu */
+#mainTab .avatar {
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.navbar {
+    position: fixed;
+    margin-bottom: 0;
+    height: auto;
+    z-index: 25;
+}
+
+.navbar .tab {
+    height: 40px;
+    position: absolute;
+    left: 50px;
+    cursor: pointer;
+    padding: 0 10px 0 10px;
+    z-index: 25;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.collapse:hover {
+    height: 45px;
+}
+
+.tab a:hover {
+    text-decoration: none;
+}
+
+.navbar .navActions {
+    position: relative;
+    padding: 18px 20px 12px 20px;
+    z-index: 30;
+}
+
+.navbar #mainActions {
+    min-width: 250px;
+}
+
+.navbar #boardActions {
+    min-width: 350px;
+}
+
+.navbar .navActions a {
+    padding: 10px;
+}
+
+.navbar .navActions a:hover {
+    text-decoration: underline;
+}
+
+.navbar .navActions i {
+    padding-right: 5px;
+}
+
+.navbar .navActions a:hover i {
+    text-decoration: underline;
+}
+
+.navbar .navActions #login {
+    display: inline-block;
+    padding: 10px 0 10px 46px;
+}
+
+#mainNavbar .tab {
+    width: 195px;
+}
+
+#boardNavbar .tab {
+    left: 255px;
+}
+
+#boardNavbar .overlay-body textarea {
+    margin-top: 8px;
+    width: 260px
+}
+
+#membersNavbar .tab {
+    left: 280px;
+}
+/* End navigation menu */
+
+/* Avatars */
+.avatar.big {
+    background: none repeat scroll 0 0 transparent;
+    height: 100px;
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.avatar {
+    display: inline-block;
+    max-height: 32px;
+    max-width: 36px;
+}
+
+.avatar img {
+    max-width: 30px;
+    max-height: 28px;
+    display: block
+}
+/* End avatars */
+
+/* Boards (home + boards) */
+.boardItemLabel {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 68%;
+}
+/* End boards */
+
+/* Footer */
+.credits {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+/* End footer */
+
+/* Overlays */
+.overlay_arrow:before {
+    content: "";
+    display: inline-block;
+    left: 9px;
+    position: absolute;
+    top: -7px;
+}
+
+.overlay_arrow:after {
+    content: "";
+    display: inline-block;
+    left: 10px;
+    position: absolute;
+    top: -6px;
+}
+
+.overlay,
+.yui-overlay {
+    visibility: hidden;
+    position: absolute;
+    left: -1000px;
+    top: 0;
+    min-width: 200px;
+}
+
+.overlay-header {
+    margin-right: 16px
+}
+
+.overlay-title {
+    display: none
+}
+
+.overlay-body li a {
+    cursor: pointer;
+}
+
+.overlay .favorites {
+    padding-top: 5px
+}
+
+.overlay .favorites h3 {
+    float: left;
+}
+
+.overlay .favorites h3:after {
+    content: " :"
+}
+
+.overlay .favorites ul {
+    float: right;
+    margin: 0;
+    padding: 0
+}
+
+.overlay .members.search .yui-ac-input {
+    width: calc(100% - 80px)
+}
+
+.overlay .members.search .yui-ac-content {
+    background: none;
+    width: 100% !important
+}
+
+.overlay .members.search .yui-ac-bd ul {
+    width: 100%
+}
+
+.overlay .members.search .yui-ac-bd li {
+    clear: both;
+    overflow: hidden;
+    cursor: pointer;
+    width: 100%;
+    line-height: normal
+}
+
+.overlay .members.search .yui-ac-bd li .avatar {
+    float: left
+}
+
+.overlay .members.search .yui-ac-bd li .name {
+    float: left
+}
+
+.overlay .favorites li a:hover {
+    background: none !important;
+    padding-left: 0
+}
+.overlay.board-labels-overlay .search {
+    position: static
+}
+
+.overlay.board-labels-overlay {
+    padding: 0 12px 4px 12px
+}
+
+.overlay.board-labels-overlay .avatar {
+    overflow: hidden;
+    white-space: nowrap
+}
+
+.overlay.board-labels-overlay h2 {
+    line-height: inherit;
+    margin: 0 0 5px;
+    padding-bottom: 4px
+}
+
+.overlay.board-labels-overlay .member {
+    padding-top: 20px
+}
+
+.overlay.board-labels-overlay .members {
+    display: table;
+    width: 100%;
+    margin-top: 8px;
+    position: static;
+}
+
+.overlay.board-labels-overlay .members .member {
+    display: table-row;
+    width: 100%;
+    padding-top: 0
+}
+
+.overlay.board-labels-overlay .member span {
+    display: table-cell;
+    white-space: nowrap
+}
+
+.overlay.board-labels-overlay .member .name {
+    display: table-cell;
+    padding: 4px;
+    white-space: nowrap;
+    min-width: 92px
+}
+
+.overlay.board-labels-overlay .name .email {
+    display: block;
+    position: relative;
+    top: -2px
+}
+
+.overlay.board-labels-overlay .member .actions .btn {
+    padding: 1px 3px;
+    margin: 0 2px;
+}
+
+.overlay.board-labels-overlay .member .actions {
+    text-align: right;
+    vertical-align: middle
+}
+
+.overlay.card-edit-form-overlay .card-label-choose {
+    display: block;
+    padding-left: 10px;
+    padding-bottom: 1px
+}
+
+.overlay.card-edit-form-overlay .card-label-choose .card-label {
+    margin-right: 7px
+}
+/* End overlays */
+
+#mask {
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    z-index: 25;
+    display: none;
+}
+
+/* Members */
+.members.search {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 7px;
+    overflow: auto;
+    float: none
+}
+
+.members.search #new_members {
+    width: 70%;
+    float: left;
+    margin-right: 8px
+}
+
+.members.search .btn-primary {
+    float: right;
+    width: auto !important;
+    margin: 0
+}
+
+.members .more .badge {
+    position: relative;
+    left: -11px;
+    top: -1px;
+}
+
+.unselectable {
+    cursor: default
+}
+
+.last-manager {
+    position: relative;
+}
+/* End members search */
+
+/* Errors */
+.nagare-error-message {
+    padding-left: 24px;
+    position: relative;
+    top: -10px
+}
+
+.list-title .nagare-error-message {
+    top: 0
+}
+
+.weights-form .nagare-error-message {
+    display: inline-block;
+    top: 0;
+    position: static;
+    padding: 3px 3px 3px 24px
+}
+
+.weights-form .nagare-error-input {
+    display: inline
+}
+/* End errors */

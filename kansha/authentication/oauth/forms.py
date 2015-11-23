@@ -64,13 +64,13 @@ class Login(Authentication):
         'secret': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, services_service):
+    def __init__(self, app_title, app_banner, theme, services_service):
         self.oauth_modules = {}
         self._error_message = u''
         self.services_service = services_service
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.content = component.Component()  # workaround nagare weird behavior of call if on_answer registered on this component
 
         for source, cfg in self.config.iteritems():
@@ -123,7 +123,7 @@ class Login(Authentication):
                     RegistrationTask,
                     self.app_title,
                     self.app_banner,
-                    self.custom_css,
+                    self.theme,
                     username=profile_id
                 )
             )

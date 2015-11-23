@@ -31,7 +31,7 @@ class UserCards(object):
         'due': (lambda: desc(DataCard.due_date), lambda c: c().data.due_date)
     }
 
-    def __init__(self, user, search_engine, services_service):
+    def __init__(self, user, search_engine, theme, services_service):
         """
         In:
          - ``user`` -- DataUser instance
@@ -40,6 +40,7 @@ class UserCards(object):
         self._services = services_service
         self.search_engine = search_engine
         self.order_by = ('board', 'column')
+        self.theme = theme
 
     @property
     def order_by(self):
@@ -90,6 +91,11 @@ class UserCards(object):
 
 @presentation.render_for(UserCards)
 def render(self, h, comp, *args):
+    h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/board.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
+    h.head.css_url('css/themes/%s/board.css' % self.theme)
+
     with h.div(class_='row', id_='lists'):
         for main_group, cards in groupby(self.cards, key=self.KEYS[self.order_by[0]][1]):
             subgroup = None

@@ -181,11 +181,11 @@ def render_newcolumn(self, h, comp, *args):
             for i in xrange(1, self.count_board_columns() + 2):
                 h << h.option(i, value=i - 1).selected(i)
         h << self.nb_cards_comp
-        with h.div:
-            h << h.button(_('Add'), class_=('btn btn-primary btn-small'),
+        with h.div(class_='buttons'):
+            h << h.button(_('Add'), class_=('btn btn-primary'),
                           ).action(remote.Action(lambda: self.create_column(comp)))
             h << ' '
-            h << h.button(_('Cancel'), class_='btn btn-small').action(
+            h << h.button(_('Cancel'), class_='btn').action(
                 remote.Action(lambda: """YAHOO.kansha.app.hideOverlay()"""))
     return h.root
 
@@ -240,10 +240,10 @@ def render_CardsCounter_edit(self, h, comp, *args):
                         }
              });""" % ajax.py2js(id_)
         )
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
+        h << h.button(_('Save'), class_='btn btn-primary').action(
             lambda: self.validate(text(), comp))
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(self.cancel, comp)
+        h << h.button(_('Cancel'), class_='btn').action(self.cancel, comp)
         if self.error is not None:
             with h.div(class_='nagare-error-message'):
                 h << self.error

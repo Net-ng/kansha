@@ -8,10 +8,12 @@
 # this distribution.
 #--
 
+from collections import namedtuple, OrderedDict
 from nagare import component, security, var
 from nagare.i18n import _
 
 from kansha import notifications
+from kansha.menu import MenuEntry
 from ..label import comp as label
 from nagare import editor
 from nagare import validator
@@ -29,26 +31,24 @@ class BoardConfig(object):
             - ``board`` -- the board object will want to configure
         """
         self.board = board
-        self.menu = [(_(u'Profile'), BoardProfile)]
+        self.menu = OrderedDict()
+        self.menu['profile'] = MenuEntry(_(u'Profile'), 'icon-profile', BoardProfile)
         if security.has_permissions('manage', self.board):
-            self.menu.append((_(u'Card labels'), BoardLabels))
-            self.menu.append((_(u'Card weights'), BoardWeights))
-            self.menu.append((_(u'Background'), BoardBackground))
+            self.menu['labels'] = MenuEntry(_(u'Card labels'), 'icon-price-tag', BoardLabels)
+            self.menu['weights'] = MenuEntry(_(u'Card weights'), 'icon-meter', BoardWeights)
+            self.menu['background'] = MenuEntry(_(u'Background'), 'icon-paint-format', BoardBackground)
         self.selected = None
         self.content = component.Component(None)
-        self.select(self.menu[0][0])
+        self.select(self.menu.iterkeys().next())
 
     def select(self, v):
         """Select a configuration menu item
 
         In:
-            - ``v`` -- the label of the menu item we want to show
+            - ``v`` -- the id_ of the menu item we want to show
         """
-        for label, o in self.menu:
-            if label == v:
-                self.content.becomes(o(self.board))
-                self.selected = v
-                break
+        self.selected = v
+        self.content.becomes(self.menu[v].content(self.board))
 
 
 class BoardLabels(object):

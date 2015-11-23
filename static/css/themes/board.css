@@ -1,0 +1,1182 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+textarea.expanded {
+    height: 112px;
+}
+
+.buttons {
+    margin: 5px 0;
+}
+
+/* Fix incopatibility between Knacss and fullcalendar */
+#calendar .fc-day-grid {
+    flex: initial;
+    width: auto;
+}
+
+#calendar table {
+    margin-bottom: 0;
+}
+
+/* Display */
+#viewport {
+    height: 100%;
+}
+
+#viewport-wrapper {
+    z-index: 1500;
+    clear: both;
+    height: 100%;
+}
+
+.bbody {
+    position: absolute;
+    top: 65px;
+    bottom: 0;
+    width: 100%;
+}
+
+.bbody > div:first-child {
+    height: 100%;
+}
+
+#dnd-frame {
+    z-index: 1000;
+    position: absolute;
+    white-space: normal;
+}
+
+#dnd-frame.list {
+    overflow: hidden
+}
+
+#application {
+    z-index: 2000;
+    height: 100%;
+}
+
+#calendar {
+    margin: 0 10px;
+}
+
+.wrap {
+    height: auto;
+    min-height: 100%;
+    margin: 0 auto -44px;
+}
+
+.container {
+    width: 100%;
+}
+
+/* End display */
+
+/* Board */
+.board-configuration .menu {
+    left: -20px;
+    position: relative;
+}
+
+.board-configuration .menu li a {
+    padding-left: 5px;
+}
+
+.board-configuration > div:last-child {
+    width: 70%;
+}
+
+.board {
+    height: 100%;
+    width: 100%;
+    overflow-y: hidden; /* board viewport already has one */
+}
+
+.board .header {
+    position: fixed;
+    width: 100%;
+}
+
+.board .boardTitle {
+    display: inline-block;
+    padding: 10px 10px;
+    margin-left: 400px;
+    height: 50px;
+    width: calc(100% - 400px - 350px);
+}
+
+.board .boardTitle a,
+.board .boardTitle a:hover {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+}
+
+.board .boardTitle .title-form input {
+    width: 440px;
+    margin-right: 5px;
+}
+
+.board-title-color {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    width: 150px;
+}
+
+/* End board */
+
+/* Lists */
+#lists {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    z-index: 1;
+    margin-left: 0;
+    height: 100%;
+    vertical-align: top;
+}
+
+#lists > .span-auto {
+    max-width: 350px;
+    min-width: 250px;
+}
+
+.list {
+    display: inline-block !important;
+    float: none !important;
+    white-space: normal;
+    height: 100%;
+    position: relative;
+    height: calc(100% - 21px);
+    height: -moz-calc(100% - 21px);
+    height: -webkit-calc(100% - 21px);
+    margin-left: 10px;
+    vertical-align: top
+}
+
+.list.reduced .list-body,
+.list.reduced .list-footer {
+    display: none
+}
+
+.list > div:last-child {
+    height: 100%
+}
+
+.list-header {
+    position: relative;
+    cursor: pointer;
+}
+
+.list-header .grip {
+    position: absolute;
+    left: 5px;
+    top: 5px
+}
+
+.list-header .list-title {
+    margin: 0 13px 4px 13px;
+    padding-top: 2px;
+}
+
+.list-header .list-actions {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+}
+
+.list-header .list-counter {
+    position: absolute;
+    right: 25px;
+    top: 9px;
+}
+
+.list-header .list-counter .title-form {
+    margin: -8px 108px 0 13px;
+    width: 100%
+}
+
+.list-header .list-counter .title-form button {
+    padding: 4px;
+}
+
+.list-header .list-counter .title-form input {
+    width: 52%;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+
+.list-header input {
+    width: 52%;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+
+.list-header .title {
+    padding-top: 3px
+}
+
+.list-header .title a,
+.list .header .title a:hover,
+.list .header .title a:visited {
+    display: block;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-bottom: 5px
+}
+
+.list .list-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.list .list-footer-disabled {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.list .list-footer .link-small {
+    display: block;
+}
+
+.list .list-footer .link-small strong {
+    line-height: 1px !important;
+    position: relative;
+    left: -4px;
+    top: 2px
+}
+
+.list .list-footer input[type="text"] {
+    width: 93%;
+    margin: 5px;
+    resize: none;
+}
+
+.list-footer .btn {
+    margin-left: 5px;
+}
+
+.list-marker {
+    display: inline-block !important;
+    float: none !important;
+    white-space: normal;
+    margin-top: 3px;
+    height: calc(100% - 21px);
+    height: -moz-calc(100% - 21px);
+    height: -webkit-calc(100% - 21px);
+}
+
+.list-body {
+    overflow: auto;
+    position: relative;
+    min-height: 50px;
+    height: calc(100% - 70px);
+    height: -moz-calc(100% - 70px);
+    height: -webkit-calc(100% - 70px);
+}
+
+.list-body h4 {
+    text-align: right;
+    margin: 1em;
+}
+
+/* End lists */
+
+/* Cards */
+.card {
+    position: relative;
+    min-height: 64px;
+    margin: 8px 4px;
+    padding: 8px 8px 4px 8px;
+    cursor: pointer;
+    word-wrap: break-word;
+}
+
+.card:after {
+    content: "";
+    display: block;
+    clear: both
+}
+
+.card > div > a {
+    display: block;
+}
+
+.card .members {
+    width: 50%;
+    float: left;
+    min-height: 32px;
+    margin-top: 5px;
+}
+
+.card-actions {
+    width: 145px;
+}
+
+.card-contents {
+    width: calc(100% - 175px);
+}
+
+.card-actions button i[class^="icon-"],
+.card-actions .btn i[class^="icon-"] {
+    margin-right: 3px;
+}
+
+.card .members a,
+.card-actions .members a {
+    width: auto;
+    float: left;
+    padding: 0
+}
+
+.card .members .add {
+    visibility: hidden;
+}
+
+.card .members.highlight .add,
+.card-actions .members.highlight .add {
+    visibility: visible;
+}
+
+.card .members .add a,
+.card-actions .members .add a {
+    white-space: nowrap;
+}
+
+.card .members .miniavatar,
+.card-actions .members .miniavatar {
+    display: inline-block;
+    overflow: hidden;
+    margin-right: 5px;
+    max-height: 28px;
+    max-width: 28px;
+}
+
+.card .inline-labels {
+    float: right;
+    margin: -14px 0 0
+}
+
+/* Card drag n drop */
+.card-marker {
+    margin: 2px;
+}
+
+.card-label {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    width: 150px;
+}
+
+.card-label > span {
+    text-overflow: ellipsis;
+}
+
+.card-label i {
+    float: right;
+    margin: 7px 2px 0 0;
+}
+
+.card-label-choose {
+    cursor: pointer
+}
+
+/* End card drag n drop */
+
+/* Editor */
+.card-edit-form .card-actions ul {
+    list-style-type: none;
+    margin-left: 0;
+    width: 100%
+}
+
+.card-edit-form hr {
+    clear: both;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.card-edit-form .header {
+    padding: 10px 0 2px 0;
+    margin-bottom: 10px;
+}
+
+.card-edit-form .header .async-title > div {
+    display: inline;
+}
+
+.card-edit-form .header .in-list {
+    margin-left: 5px;
+    display: inline;
+}
+
+.card-edit-form .header .title-form input {
+    padding: 5px;
+    width: 67%;
+    margin-right: 10px
+}
+
+.card-edit-form .header .title {
+    word-wrap: break-word;
+    display: inline;
+    line-height: 1.2;
+}
+
+.card-edit-form .description {
+    margin: 0;
+    padding: 14px 0 0 0;
+    margin-bottom: 14px;
+    clear: both;
+    cursor: pointer;
+}
+
+.card-edit-form .description p {
+    margin: 0;
+}
+
+.card-edit-form textarea {
+    resize: none;
+    height: 29px;
+    min-height: 0;
+    padding: 4px 6px;
+    overflow: hidden;
+}
+
+.card-edit-form textarea.expanded {
+    height: 112px;
+}
+
+.card-edit-form .badges {
+    display: none
+}
+
+.card-edit-form .card-actions .btn {
+    margin-bottom: 8px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+}
+/* End editor */
+
+/* Badges */
+.badges {
+    width: 50%;
+    float: right;
+    min-height: 20px;
+    margin-top: 5px;
+}
+
+.badges > .label {
+    margin-right: 3px;
+    padding: 3px;
+    float: right;
+    width: auto;
+}
+/* End badges */
+
+/* Card overlays */
+.overlay.card-overlay {
+    padding: 0 12px 4px 12px;
+    min-width: 280px;
+}
+
+.card-overlay .members.search .yui-ac-input {
+    width: calc(100% - 12px)
+}
+
+.overlay.card-overlay .avatar {
+    overflow: hidden;
+    white-space: nowrap
+}
+
+.overlay.card-overlay h2 {
+    line-height: inherit;
+    margin: 0 0 5px;
+    padding-bottom: 4px
+}
+
+.overlay.card-overlay .member {
+    padding-top: 7px;
+    display: table;
+    width: 100%
+}
+
+.overlay.card-overlay .members {
+    display: table;
+    width: 100%;
+    margin-top: 8px
+}
+
+.overlay.card-overlay .members .member {
+    display: table-row;
+    width: 100%;
+    padding-top: 0;
+}
+
+.overlay.card-overlay .member span {
+    display: table-cell;
+}
+
+.overlay.card-overlay .member .avatar {
+    vertical-align: middle;
+}
+
+.overlay.card-overlay .member .name {
+    padding: 4px;
+    white-space: nowrap;
+    min-width: 92px
+}
+
+.overlay.card-overlay .member .actions {
+    text-align: right;
+    vertical-align: middle
+}
+
+.overlay.card-overlay .member .actions .btn {
+    padding: 1px 3px;
+    margin: 0 2px;
+}
+
+.overlay.card-overlay .name .email {
+    display: block;
+    position: relative;
+    top: -2px
+}
+
+.overlay-body .yui-crop {
+    width: auto !important;
+    height: auto !important;
+}
+
+/* End card overlays */
+
+/* Card counter */
+.cardCounter {
+    display: inline-block;
+    padding: 2px 3px;
+    min-width: 20px;
+    text-align: center;
+    position: relative;
+    top: -4px;
+}
+/* End card counter */
+
+/* Comments */
+.comment {
+    margin-bottom: 5px;
+    margin-left: -45px;
+    padding: 3px 0;
+    clear: both
+}
+
+.comment .left {
+    width: 30px;
+    float: left;
+    padding: 5px 0 0 5px;
+}
+
+.comment .right {
+    margin-left: 45px;
+}
+
+.comment .contents {
+    margin-top: 5px;
+    padding: 3px;
+}
+
+.comment .contents img.medium {
+    margin-right: 5px;
+}
+
+.comment .user.fullname {
+    display: inline-block;
+}
+
+.comment .text {
+    margin: 3px 0;
+    padding: 3px;
+    word-wrap: break-word;
+}
+
+.comment .footer {
+    text-align: right;
+}
+
+.comment .delete {
+    margin-left: 5px;
+}
+/* End comments */
+
+/* Due dates */
+.due-date span {
+    position: relative;
+    top: 3px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.due-date .duedate-icon {
+    position: relative;
+    top: 8px;
+    left: -3px
+}
+
+.due-date + div {
+    margin-left: 18px
+}
+
+/* End due dates */
+
+/* Card gallery */
+#card-gallery img.thumb {
+    height: 68px;
+    width: 68px;
+}
+
+#card-gallery a {
+    position: relative;
+    display: inline-block;
+    margin: 8px 8px 0 0;
+}
+
+#card-gallery a span.is_cover {
+    display: block;
+    width: 26px;
+    height: 26px;
+    background: url(../../img/check.png);
+    position: absolute;
+    top: -10px;
+    right: -10px
+}
+
+.file_icon {
+    width: 68px;
+}
+
+.cover img {
+    width: 98%;
+    margin: 5px auto;
+}
+/* End card gallery */
+
+/* End cards */
+
+/* Board view switch zone (calendar / columns / search) */
+#switch_zone {
+    vertical-align: text-bottom;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top: 10px;
+}
+
+#switch_zone .btn {
+    padding: 4px 8px;
+    min-width: 0;
+    margin: 0 5px;
+}
+
+#switch_zone .btn [class^="icon-"] {
+    left: 0;
+}
+
+#search {
+    width: 10em;
+}
+
+#search:focus, #search.highlight {
+    border-color: rgba(230, 163, 35, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+}
+
+#show_results {
+    min-width: 200px;
+    display: inline-block;
+    padding: 0 5px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+/* End board view switch zone (calendar / columns / search) */
+
+/* History */
+div.history {
+    overflow: auto;
+    max-height: 600px;
+}
+
+div.history th {
+    width: 9em;
+}
+
+/* End history */
+
+/* Progress bar */
+.progress {
+    height: 24px;
+}
+
+.progress .bar {
+    height: 22px;
+}
+
+.progress span {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    text-align: center;
+    width: 100%
+}
+
+.progress .bar {
+    z-index: 1;
+    position: absolute
+}
+
+.progress {
+    position: relative
+}
+
+/* End progress bar */
+
+/* Checklists */
+.checklists .checklist {
+    margin: 15px 0;
+    padding: 10px;
+}
+
+.checklists .checklist .nagare-generated,
+.checklists .checklist form {
+    display: inline-block
+}
+
+.checklists .ui-state-highlight {
+    height: 3em;
+    line-height: 3em;
+}
+
+.checklists .checklist a.delete {
+    display: none;
+    float: right;
+    margin-right: 5px;
+}
+
+.checklists .checklist .title:hover a.delete,
+.checklists .checklist li:hover a.delete {
+    display: inline-block
+}
+
+.checklists .checklist .title i.icon-list {
+    margin-right: 10px;
+    cursor: move;
+}
+
+.checklists .checklist .title .show_onhover {
+    display: none;
+}
+
+.checklists .checklist .title:hover .show_onhover {
+    display: inline;
+}
+
+.checklists .checklist .btn {
+    min-width: 0;
+    height: 29px
+}
+
+.checklists .checklist .new-item-form .btn,
+.checklists .checklist li .btn {
+    top: -5px
+}
+
+.checklists .checklist .btn [class^="icon-"] {
+    left: 0
+}
+
+.checklists .checklist li {
+    line-height: 20px;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+.checklists .checklist i[class^="icon-checkbox-"] {
+    margin-right: 5px
+}
+
+.checklists .checklist .done {
+    text-decoration: line-through
+}
+
+.checklists .checklist .title input {
+    width: 322px
+}
+
+.checklists .checklist li input {
+    width: 310px
+}
+
+.checklists .checklist .new-item-form input {
+    width: 346px
+}
+
+.checklists .checklist .content {
+    padding-top: 10px
+}
+
+/* Checklists end */
+
+/* Calendar */
+.calendar {
+    position: absolute;
+    padding: 10px;
+    width: 240px;
+    z-index: 1;
+}
+
+.calendar .calendar-content table {
+    width: 100%;
+}
+
+.calendar .calendar-content table td,
+.calendar .calendar-content table th {
+    padding: 0;
+    text-align: center;
+}
+
+.calendar .calendar-content table tr th.week_number,
+.calendar .calendar-content table tr td.week_number {
+    text-align: center;
+    display: block;
+    margin-right: 2px;
+}
+
+.calendar .calendar-header {
+    margin-bottom: 10px;
+}
+
+.calendar .calendar-header select {
+    width: 100px;
+    display: inline-block;
+}
+
+.calendar .calendar-header select:last-child {
+    width: 65px;
+}
+
+.calendar .calendar-header a {
+    width: 10%;
+}
+
+.calendar .calendar-header .current {
+    padding: 0 10px;
+    width: 88%;
+}
+
+.calendar .calendar-today a.btn {
+    width: auto;
+    margin: 0;
+}
+
+.calendar .calendar-today a.btn.today-link {
+    float: left;
+}
+
+.calendar .calendar-today a.btn.erase {
+    float: right;
+}
+
+/* End calendar */
+
+/* Weights */
+.weights-form {
+    margin-top: 10px;
+}
+
+.weights-form input {
+    width: 50%;
+    margin-bottom: 0;
+}
+
+.actionWeight select {
+    overflow: hidden;
+    margin: 0;
+    height: auto;
+}
+/* End weights */
+
+/* Weights */
+.inline-labels .card-label {
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    margin-right: 6px;
+}
+
+.label-color-picker {
+    position: relative;
+    height: 193px;
+    width: 315px;
+}
+
+.label-color-picker .yui-picker-controls .bd input {
+    padding: 0;
+}
+/* End weights */
+
+/* Popin */
+
+.yui-skin-sam .yui-panel-container {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.yui-skin-sam .yui-panel {
+    margin: 70px auto 30px auto;
+    max-width: 680px;
+    padding: 5px 20px 15px 50px;
+}
+
+.yui-skin-sam .yui-panel .panel-header {
+    width: 95%
+}
+
+.yui-skin-sam .yui-panel .panel-section {
+    margin: 10px 0 5px 0;
+}
+
+.panel-section .panel-section-title {
+    margin-bottom: 5px;
+}
+
+.panel-section.background div div:first-child,
+.panel-section.background div div:nth-child(2) {
+    display: inline-block;
+}
+
+.panel-section.background:first-child div:last-child {
+    margin-top: 5px;
+}
+/* End popin */
+
+/* Nb items */
+.nbItems {
+    position: absolute;
+    left: 12px;
+    margin-top: 4px
+}
+/* End nb items */
+
+/* Resync content */
+#resync .content {
+    padding: 10px 0;
+}
+
+#resync h2 {
+    line-height: 1.2;
+}
+/* End resync content */
+
+/* Responsive */
+@media all and (max-width: 1360px) {
+    .navbar {
+        height: 58px;
+        margin-top: -57px
+    }
+
+    .navbar #mainActions {
+        display: inline-block;
+    }
+
+    .navbar #mainActions #login {
+        display: inline-block
+    }
+
+    .navbar #mainActions #login a {
+        display: inline-block;
+        padding: 2px 0 3px 39px;
+    }
+
+    .list-header {
+        height: auto
+    }
+
+    .list-header input {
+        width: 89%;
+        display: block;
+        margin-bottom: 5px
+    }
+
+    .board .boardTitle {
+        margin-top: 50px;
+        margin-left: 50px;
+        width: calc(100% - 50px);
+    }
+
+    .bbody {
+        top: 115px;
+    }
+
+}
+
+@media (max-width: 813px) {
+    body {
+        padding: 0;
+        overflow: auto;
+    }
+
+    [class*="span"] {
+        margin-left: 0;
+    }
+
+    #lists {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    #viewport-wrapper {
+        padding: 0;
+    }
+
+    #viewport {
+        overflow: auto;
+    }
+
+    .row > .list {
+        margin-bottom: 11px;
+    }
+
+    .list-marker {
+        margin-bottom: 5px;
+    }
+
+    .card-edit-form .card-edit-comment textarea,
+    .card-edit-form .description textarea {
+        width: 96.77419%;
+    }
+
+    #lists {
+        margin-left: 0;
+        z-index: 1;
+    }
+
+    #lists > .span-auto {
+        width: 100%;
+        max-width: 99%;
+    }
+
+    .navbar {
+        margin-bottom: 24px
+    }
+
+    .navbar #boardActions a i {
+        width: 0 !important;
+        overflow: hidden;
+    }
+
+    #lists {
+        white-space: normal;
+        width: 100% !important;
+    }
+
+    .list {
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+
+    .list-body {
+        padding-bottom: 36px
+    }
+
+    .list-header input {
+        width: 52%;
+        display: inline-block;
+        margin-bottom: 0
+    }
+
+    .board .boardTitle {
+        margin-top: 50px;
+        margin-left: 20px;
+    }
+
+    .checklists .checklist .new-item-form input {
+        width: calc(100% - 70px);
+    }
+
+    .checklists .checklist .title input {
+        width: calc(100% - 94px);
+    }
+
+    .checklists .checklist li input {
+        width: calc(100% - 70px);
+    }
+
+    .checklists .checklist form {
+        display: block;
+        width: 100%;
+    }
+
+    .checklists .checklist li form {
+        display: inline-block;
+        width: calc(100% - 36px);
+    }
+
+}
+
+@media all and (max-width: 640px) {
+    .navbar {
+        margin-top: 0;
+        height: 40px;
+    }
+
+    .navbar #mainActions {
+        display: inline-block;
+    }
+
+    .navbar #mainActions #login a {
+        width: 0;
+        height: 20px;
+        overflow: hidden
+    }
+
+    .board .boardTitle {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .navbar .tab {
+        left: 10px;
+    }
+
+    #boardNavbar .tab {
+        left: 195px;
+    }
+
+    .board .boardTitle .title-form input {
+        width: calc(100% - 150px);
+    }
+}

@@ -28,7 +28,7 @@ class Login(Authentication):
         'schema': 'string(default="kansha.authentication.ldap:NngLDAPAuth")'
     }
 
-    def __init__(self, app_title, app_banner, custom_css, assets_manager_service):
+    def __init__(self, app_title, app_banner, theme, assets_manager_service):
         cls = load_object(self.config['schema'])[0]
         self.ldap_engine = cls(self.config)
         self.error_message = ''
@@ -75,7 +75,7 @@ def render(self, h, comp, *args):
                 id='ldap_password', placeholder=_('Enter password')).action(passwd)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in with LDAP'),
-                             class_='btn btn-primary btn-small'
+                             class_='btn btn-primary'
                              ).action(lambda: self.connect(uid(), passwd(), comp))
 
     return h.root

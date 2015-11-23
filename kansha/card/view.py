@@ -41,12 +41,11 @@ def render_card_edit(self, h, comp, *args):
         return h.root
     h << h.script('''YAHOO.kansha.app.hideOverlay();''')
     with h.div(class_='card-edit-form'):
-        with h.div(class_='header row-fluid'):
-            with h.div(class_='span12'):
-                self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
-                h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
-        with h.div(class_='row-fluid'):
-            with h.div(class_='span9'):
+        with h.div(class_='header'):
+            self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
+            h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
+        with h.div(class_='grid-2'):
+            with h.div(class_='card-contents'):
                 h << self.labels.render(h.AsyncRenderer(), model='edit')
                 h << self.description.render(h.AsyncRenderer())
                 h << self.gallery
@@ -92,7 +91,7 @@ def render_Card_comments_flow(self, h, comp, model):
 
 @presentation.render_for(Card, model='actions')
 def render_card_actions(self, h, comp, *args):
-    with h.div(class_='span2 cardactions'):
+    with h.div(class_='card-actions'):
         with h.form:
             with h.ul():
                 with h.li(class_="buttonAddChecklist"):
@@ -110,9 +109,9 @@ def render_card_actions(self, h, comp, *args):
                             h.a.action(comp.answer, 'delete').get('onclick')
                         )
                         h << h.button(
-                            h.i(class_='icon-remove icon-grey'),
+                            h.i(class_='icon-bin'),
                             _('Delete'),
-                            class_='btn btn-small',
+                            class_='btn delete',
                             onclick=(
                                 "if (confirm(%(confirm_msg)s)) {"
                                 "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
@@ -153,7 +152,7 @@ def render_card_dnd(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor)
 def render_cardweighteditor(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star icon-grey'), self.weight, class_='btn btn-small').action(
+    h << h.a(h.i(class_='icon-star'), self.weight, class_='btn').action(
         lambda: comp.call(self, model='edit'))
     return h.root
 
@@ -167,7 +166,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
     if self.board.weighting_cards == WEIGHTING_FREE:
         with h.form:
             h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
-            h << h.button(_('Save'), class_='btn btn-primary btn-small').action(answer)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
     elif self.board.weighting_cards == WEIGHTING_LIST:
         with h.form:
@@ -175,7 +174,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
                 with h.select.action(self.weight):
                     for value in self.board.weights.split(','):
                         h << h.option(value, value=value).selected(self.weight)
-            h << h.button(_('Save'), class_='btn btn-primary btn-small').action(answer)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
     return h.root
 
@@ -273,7 +272,7 @@ def render_card_badges(self, h, comp, *args):
         h << self.gallery.render(h, model='badge')
         if self.weight:
             label = _('weight')
-            h << h.span(h.i(class_='icon-star icon-grey'), ' ', self.weight, class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-star'), ' ', self.weight, class_='label', data_tooltip=label)
     return h.root
 
 
@@ -333,7 +332,7 @@ def render_members_add_member_overlay(self, h, comp, *args):
     if self.favorites:
         with h.div(class_="favorites"):
             h << h.h3(_('Suggestions'))
-            with h.ul():
+            with h.ul:
                 h << h.li(self.favorites)
     with h.div(class_="members search"):
         h << self.new_member
@@ -363,9 +362,9 @@ def render_new_card_add(self, h, comp, *args):
 
     with h.form(class_='card-add-form'):
         h << h.input(type='text', id=id_).action(text)
-        h << h.button(_('Add'), class_='btn btn-primary btn-small').action(answer)
+        h << h.button(_('Add'), class_='btn btn-primary').action(answer)
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
+        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
 
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 

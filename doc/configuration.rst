@@ -26,7 +26,7 @@ Kansha features can be activated and customized with a configuration file like t
     as_root = on
     title = <<APP_TITLE>> # should be short!
     banner = <<LONG_TITLE>> # or motto/slogan or empty
-    custom_css = <<CUSTOM_CSS>>  # path or empty
+    theme = <<CUSTOM_THEME_NAME>>
     favicon = # path (optional)
     templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
     activity_monitor = <<MONITOR_EMAIL>> # optional
@@ -118,6 +118,8 @@ To manage and run Kansha with your own custom configuration::
 
 The different sections are detailled below.
 
+.. _application:
+
 Application
 -----------
 
@@ -144,8 +146,8 @@ title
 banner
     Longer title for your site, kind of motto or slogan. It is displayed below the logo on the login page.
 
-custom_css
-    Path to a CSS file that will be applied to every page, after the default styles, so you can amend and personalize the look of your site.
+theme
+    Name of the theme you want to use, a default one is bundled with Kansha and is named "kansha_flat".
 
 favicon
     Path to a favicon file that will be applied to your site.

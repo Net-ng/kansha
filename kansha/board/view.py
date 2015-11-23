@@ -92,6 +92,9 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
 
+    h.head.css_url('css/themes/board.css')
+    h.head.css_url('css/themes/%s/board.css' % self.theme)
+
     h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')
     h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
@@ -173,10 +176,10 @@ def render_Board_item(self, h, comp, *args):
                          class_=klass)
             #h << h.a(h.i(class_='icon-search', title=_('search')), class_='btn unselected')
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn unselected').action(self.switch_view)
-            h << h.SyncRenderer().a(h.i(class_='icon-th-list'), title=_('Board mode'), class_='btn disabled')
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn disabled')
         else:
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn disabled')
-            h << h.SyncRenderer().a(h.i(class_='icon-th-list'), title=_('Board mode'), class_='btn unselected').action(self.switch_view)
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn unselected').action(self.switch_view)
 
     return h.root
 
@@ -187,7 +190,7 @@ def render_Board_item(self, h, comp, *args):
         comp.answer(self.data.id)
 
     url = self.data.url
-    with h.li(class_="row-fluid"):
+    with h.li:
         link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
         if self.data.description:
             link.set('data-tooltip', self.data.description)
@@ -202,18 +205,16 @@ def render_Board_item(self, h, comp, *args):
         h << self.comp_members.render(h, 'members')
 
         if security.has_permissions('manage', self):
-            h << h.a(class_='archive', title=_(u'Archive this board')).action(self.archive_board)
+            h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
         else:
-            h << h.a(class_='leave',
-                     title=_(u'Leave this board'),
-                     onclick='return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-                     ).action(self.leave)
+            onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
+            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
     return h.root
 
 
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
-    with h.li(class_="row-fluid"):
+    with h.li:
         h << h.a(self.data.title, href='#', class_="boardItemLabel")
 
         h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'delete', false);
@@ -223,8 +224,8 @@ def render_Board_archived_item(self, h, comp, *args):
 
         if security.has_permissions('manage', self):
             onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-            h << h.a(class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
-            h << h.a(class_='restore', title=_(u'Restore this board')).action(self.restore_board)
+            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-bin'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
+            h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
     return h.root
 
 
@@ -278,8 +279,8 @@ def render_Board_add_member_overlay(self, h, comp, *args):
 @presentation.render_for(Icon)
 def render_Icon(self, h, comp, *args):
     if self.title is not None:
-        h << h.i(
-            self.title, class_=self.icon, title=self.title, alt=self.title)
+        h << h.i(class_=self.icon, title=self.title)
+        h << self.title
     else:
         h << h.i(class_=self.icon)
     return h.root
@@ -298,12 +299,10 @@ def render_NewBoard(self, h, comp, *args):
                           ) % buttons_id, }
         h << h.input(type='text', placeholder=_(
             'Create a new board'), class_='new-board-name', **kw).action(title)
-        with h.div(id=buttons_id, class_="hidden"):
-            h << h.button(_('Add'),
-                          class_='btn btn-primary btn-small').action(lambda: self.create_board(comp, title(), user))
+        with h.div(id=buttons_id, class_="buttons hidden"):
+            h << h.button(_('Add'), class_='btn btn-primary').action(lambda: self.create_board(comp, title(), user))
             h << ' '
-            h << h.button(
-                _('Cancel'), class_='btn btn-small').action(comp.answer)
+            h << h.button(_('Cancel'), class_='btn').action(comp.answer)
     return h.root
 
 
@@ -358,7 +357,7 @@ def render_Board_columns(self, h, comp, *args):
             h.head.javascript(h.generate_id(), """function increase_version() {%s}""" % increase_version.get('onclick'))
 
             # Render columns
-            with h.div(id='lists', class_='row'):
+            with h.div(id='lists'):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
                     model = None if not security.has_permissions('edit', self) else column.model or 'dnd'
@@ -402,13 +401,13 @@ def render_BoardDescription(self, h, comp, *args):
         if not security.has_permissions('edit', self):
             ta(disabled='disabled')
         h << ta
-        with h.div:
+        with h.div(class_='buttons'):
             if security.has_permissions('edit', self):
-                h << h.button(_('Save'), class_='btn btn-primary btn-small',
+                h << h.button(_('Save'), class_='btn btn-primary',
                               id=btn_id).action(remote.Action(lambda: self.change_text(text())))
                 h << ' '
                 h << h.button(
-                    _('Cancel'), class_='btn btn-small').action(remote.Action(lambda: self.change_text(None)))
+                    _('Cancel'), class_='btn').action(remote.Action(lambda: self.change_text(None)))
 
         h.head.javascript(
             h.generate_id(),
@@ -429,16 +428,19 @@ def render_BoardConfig(self, h, comp, *args):
 def render_BoardConfig_edit(self, h, comp, *args):
     """Render the board configuration panel"""
     h << h.h2(_(u'Board configuration'))
-    with h.div(class_='row-fluid'):
-        with h.div(class_='span8'):
+    with h.div(class_='row board-configuration'):
+        with h.div(class_='menu'):
+            with h.div:
+                with h.ul:
+                    for id_, item in self.menu.iteritems():
+                        with h.li:
+                            with h.a.action(lambda id_=id_: self.select(id_)):
+                                if id_ == self.selected:
+                                    h << {'class': 'active'}
+                                h << h.i(class_='icon ' + item.icon)
+                                h << h.span(item.label)
+        with h.div:
             h << self.content
-        with h.div(class_='span4'):
-            with h.ul(class_='nav nav-pills nav-stacked'):
-                h << h.li(_('Menu'), class_='nav-header')
-                for title, _o in self.menu:
-                    with h.li(class_='active' if title == self.selected else ''):
-                        h << h.a(title).action(
-                            lambda title=title: self.select(title))
 
     h << h.script('YAHOO.kansha.app.hideOverlay();')
     h << h.script("YAHOO.util.Event.onDOMReady(function() {YAHOO.util.Dom.setStyle('mask', 'display', 'block')})")
@@ -456,15 +458,14 @@ def render_BoardLabels_menu(self, h, comp, *args):
 @presentation.render_for(BoardLabels, model='edit')
 def render_BoardLabels_edit(self, h, comp, *args):
     """Render the labels configuration panel"""
-    h << h.div(h.i(class_='icon-tag'), _(u'Card labels'), class_='panel-section')
-    with h.ul(class_='unstyled board-labels clearfix'):
-        for title, label in self.labels:
-            with h.li(class_='row-fluid'):
-                with h.div(class_='span7'):
+    with h.div(class_='panel-section'):
+        h << h.div(_(u'Card labels'), class_='panel-section-title')
+        with h.ul(class_='board-labels clearfix'):
+            for title, label in self.labels:
+                with h.li:
                     with h.div(class_='label-title'):
                         h << title.on_answer(lambda a, title=title: title.
                                              call(model='edit')).render(h.AsyncRenderer())
-                with h.div(class_='span5'):
                     with h.div(class_='label-color'):
                         h << label
     return h.root
@@ -481,79 +482,80 @@ def render_boardweights_menu(self, h, comp, *args):
 @presentation.render_for(BoardWeights, model='edit')
 def render_boardweights_edit(self, h, comp, *args):
     """Render the weights configuration panel"""
-    h << h.div(h.i(class_='icon-weighting'), _(u'Weighting cards'), class_='panel-section')
-    h << h.p(_(u'Activate cards weights'))
-    with h.form:
-        with h.div(class_='btn-group'):
-            if self._changed():
-                h << h.script('reload_columns()')
-                self._changed(False)
+    with h.div(class_='panel-section'):
+        h << h.div(_(u'Weighting cards'), class_='panel-section-title')
+        h << h.p(_(u'Activate cards weights'))
+        with h.form:
+            with h.div(class_='btn-group'):
+                if self._changed():
+                    h << h.script('reload_columns()')
+                    self._changed(False)
 
-            h << h.a(
-                _('Disabled'),
-                class_='btn %s' % (
-                    'active btn-primary'
-                    if self.board.weighting_cards == WEIGHTING_OFF
-                    else ''
-                ),
-                onclick=(
-                    "if (confirm(%(message)s)){%(action)s;}return false" %
-                    {
-                        'action': h.a.action(
-                            self.deactivate_weighting
-                        ).get('onclick'),
-                        'message': ajax.py2js(
-                            _(u'All affected weights will be reseted. Are you sure?')
-                        ).decode('UTF-8')
-                    }
+                h << h.a(
+                    _('Disabled'),
+                    class_='btn %s' % (
+                        'active btn-primary'
+                        if self.board.weighting_cards == WEIGHTING_OFF
+                        else ''
+                    ),
+                    onclick=(
+                        "if (confirm(%(message)s)){%(action)s;}return false" %
+                        {
+                            'action': h.a.action(
+                                self.deactivate_weighting
+                            ).get('onclick'),
+                            'message': ajax.py2js(
+                                _(u'All affected weights will be reseted. Are you sure?')
+                            ).decode('UTF-8')
+                        }
+                    )
                 )
-            )
 
-            h << h.button(
-                _('Free integer'),
-                class_='btn %s' % (
-                    'active btn-primary'
-                    if self.board.weighting_cards == WEIGHTING_FREE
-                    else ''
-                ),
-                onclick=(
-                    "if (confirm(%(message)s)){%(action)s;}return false" %
-                    {
-                        'action': h.a.action(
-                            lambda: self.activate_weighting(WEIGHTING_FREE)
-                        ).get('onclick'),
-                        'message': ajax.py2js(
-                            _(u'All affected weights will be reseted. Are you sure?')
-                        ).decode('UTF-8')
-                    }
-                ),
-                title=i18n._('Card weights can be any integer')
-            )
+                h << h.button(
+                    _('Free integer'),
+                    class_='btn %s' % (
+                        'active btn-primary'
+                        if self.board.weighting_cards == WEIGHTING_FREE
+                        else ''
+                    ),
+                    onclick=(
+                        "if (confirm(%(message)s)){%(action)s;}return false" %
+                        {
+                            'action': h.a.action(
+                                lambda: self.activate_weighting(WEIGHTING_FREE)
+                            ).get('onclick'),
+                            'message': ajax.py2js(
+                                _(u'All affected weights will be reseted. Are you sure?')
+                            ).decode('UTF-8')
+                        }
+                    ),
+                    title=i18n._('Card weights can be any integer')
+                )
 
-            h << h.button(
-                _('Integer sequence'),
-                class_='btn %s' % (
-                    'active btn-primary'
-                    if self.board.weighting_cards == WEIGHTING_LIST
-                    else ''
-                ),
-                onclick=(
-                    "if (confirm(%(message)s)){%(action)s;}return false" %
-                    {
-                        'action': h.a.action(
-                            lambda: self.activate_weighting(WEIGHTING_LIST)
-                        ).get('onclick'),
-                        'message': ajax.py2js(
-                            _(u'All affected weights will be reseted. Are you sure?')
-                        ).decode('UTF-8')
-                    }
-                ),
-                title=i18n._('Choosen within a sequence of integers')
-            )
+                h << h.button(
+                    _('Integer sequence'),
+                    class_='btn %s' % (
+                        'active btn-primary'
+                        if self.board.weighting_cards == WEIGHTING_LIST
+                        else ''
+                    ),
+                    onclick=(
+                        "if (confirm(%(message)s)){%(action)s;}return false" %
+                        {
+                            'action': h.a.action(
+                                lambda: self.activate_weighting(WEIGHTING_LIST)
+                            ).get('onclick'),
+                            'message': ajax.py2js(
+                                _(u'All affected weights will be reseted. Are you sure?')
+                            ).decode('UTF-8')
+                        }
+                    ),
+                    title=i18n._('Choosen within a sequence of integers')
+                )
 
-    if self.board.weighting_cards == WEIGHTING_LIST:
-        h << h.p(i18n._('Enter a sequence of integers'))
-        h << self._weights_editor
+        if self.board.weighting_cards == WEIGHTING_LIST:
+            h << h.p(i18n._('Enter a sequence of integers'))
+            h << self._weights_editor
 
     return h.root
 
@@ -565,7 +567,7 @@ def render_weightssequenceeditor(self, h, comp, model):
         if not self.weights():
             kw["placeholder"] = "10,20,30"
         h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Edit'), class_='btn btn-primary btn-small').action(lambda: comp.call(self, 'edit'))
+        h << h.button(_('Edit'), class_='btn btn-primary').action(lambda: comp.call(self, 'edit'))
     return h.root
 
 
@@ -581,7 +583,7 @@ def render_weightssequenceeditor_edit(self, h, comp, model):
         if not self.weights():
             kw["placeholder"] = "10,20,30"
         h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(answer)
+        h << h.button(_('Save'), class_='btn btn-primary').action(answer)
     return h.root
 
 
@@ -589,73 +591,77 @@ def render_weightssequenceeditor_edit(self, h, comp, model):
 def render_BoardProfile(self, h, comp, *args):
     """Render the board profile form"""
     if security.has_permissions('manage', self.board):
-        h << h.div(h.i(class_='icon-visibility'),
-                   _(u'Visibility'), class_='panel-section')
-        h << h.p(_(u'Choose whether the board is private or public.'))
-        with h.form:
-            with h.div(class_='btn-group'):
-                active = 'active btn-primary' if self.board.visibility == BOARD_PRIVATE else ''
-                h << h.button(_('Private'), class_='btn %s' % active).action(
-                    lambda: self.board.set_visibility(BOARD_PRIVATE))
-                active = 'active btn-primary' if self.board.visibility == BOARD_PUBLIC else ''
-                h << h.button(_('Public'), class_='btn %s' % active).action(
-                    lambda: self.board.set_visibility(BOARD_PUBLIC))
+        with h.div(class_='panel-section'):
+            h << h.div(_(u'Card Visibility'), class_='panel-section-title')
+            h << h.p(_(u'Choose whether the board is private or public.'))
+            with h.form:
+                with h.div(class_='btn-group'):
+                    active = 'active btn-primary' if self.board.visibility == BOARD_PRIVATE else ''
+                    h << h.button(_('Private'), class_='btn %s' % active).action(
+                        lambda: self.board.set_visibility(BOARD_PRIVATE))
+                    active = 'active btn-primary' if self.board.visibility == BOARD_PUBLIC else ''
+                    h << h.button(_('Public'), class_='btn %s' % active).action(
+                        lambda: self.board.set_visibility(BOARD_PUBLIC))
 
-        h << h.div(h.i(class_='icon-comment'), _(u'Comments'), class_='panel-section')
-        h << h.p(_('Commenting allows members to make short messages on cards. You can enable or disable this feature.'))
-        with h.form:
-            with h.div(class_='btn-group'):
-                active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_OFF else ''
-                h << h.button(_('Disabled'), class_='btn %s' % active).action(
-                    lambda: self.allow_comments(COMMENTS_OFF))
-                active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_MEMBERS else ''
-                h << h.button(_('Members'), class_='btn %s' % active).action(
-                    lambda: self.allow_comments(COMMENTS_MEMBERS))
-                kw = {} if self.board.visibility == BOARD_PUBLIC else {
-                    "disabled": "disabled"}
-                active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_PUBLIC else ''
-                h << h.button(_('Public'), class_='btn %s' % active, **kw).action(
-                    lambda: self.allow_comments(COMMENTS_PUBLIC))
+        with h.div(class_='panel-section'):
+            h << h.div(_(u'Comments'), class_='panel-section-title')
+            h << h.p(_('Commenting allows members to make short messages on cards. You can enable or disable this feature.'))
+            with h.form:
+                with h.div(class_='btn-group'):
+                    active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_OFF else ''
+                    h << h.button(_('Disabled'), class_='btn %s' % active).action(
+                        lambda: self.allow_comments(COMMENTS_OFF))
+                    active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_MEMBERS else ''
+                    h << h.button(_('Members'), class_='btn %s' % active).action(
+                        lambda: self.allow_comments(COMMENTS_MEMBERS))
+                    kw = {} if self.board.visibility == BOARD_PUBLIC else {
+                        "disabled": "disabled"}
+                    active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_PUBLIC else ''
+                    h << h.button(_('Public'), class_='btn %s' % active, **kw).action(
+                        lambda: self.allow_comments(COMMENTS_PUBLIC))
 
-        h << h.div(h.i(class_='icon-vote'), _(u'Votes'), class_='panel-section')
-        h << h.p(_(u'Allow votes'))
-        with h.form:
-            with h.div(class_='btn-group'):
-                active = 'active btn-primary' if self.board.votes_allowed == VOTES_OFF else ''
-                h << h.button(_('Disabled'), class_='btn %s' %
-                              active).action(lambda: self.allow_votes(VOTES_OFF))
-                active = 'active btn-primary' if self.board.votes_allowed == VOTES_MEMBERS else ''
-                h << h.button(_('Members'), class_='btn %s' % active).action(
-                    lambda: self.allow_votes(VOTES_MEMBERS))
-                kw = {} if self.board.visibility == BOARD_PUBLIC else {
-                    "disabled": "disabled"}
-                active = 'active btn-primary' if self.board.votes_allowed == VOTES_PUBLIC else ''
-                h << h.button(_('Public'), class_='btn %s' % active,
-                              **kw).action(lambda: self.allow_votes(VOTES_PUBLIC))
+        with h.div(class_='panel-section'):
+            h << h.div(_(u'Votes'), class_='panel-section-title')
+            h << h.p(_(u'Allow votes'))
+            with h.form:
+                with h.div(class_='btn-group'):
+                    active = 'active btn-primary' if self.board.votes_allowed == VOTES_OFF else ''
+                    h << h.button(_('Disabled'), class_='btn %s' %
+                                  active).action(lambda: self.allow_votes(VOTES_OFF))
+                    active = 'active btn-primary' if self.board.votes_allowed == VOTES_MEMBERS else ''
+                    h << h.button(_('Members'), class_='btn %s' % active).action(
+                        lambda: self.allow_votes(VOTES_MEMBERS))
+                    kw = {} if self.board.visibility == BOARD_PUBLIC else {
+                        "disabled": "disabled"}
+                    active = 'active btn-primary' if self.board.votes_allowed == VOTES_PUBLIC else ''
+                    h << h.button(_('Public'), class_='btn %s' % active,
+                                  **kw).action(lambda: self.allow_votes(VOTES_PUBLIC))
 
-        h << h.div(h.i(class_='icon-archive'), _(u'Archive'), class_='panel-section')
-        h << h.p(_(u'View archive column'))
-        with h.form:
-            with h.div(class_='btn-group'):
-                if self._changed():
-                    h << h.script('reload_columns();')
-                    self._changed(False)
+        with h.div(class_='panel-section'):
+            h << h.div(_(u'Archive'), class_='panel-section-title')
+            h << h.p(_(u'View archive column'))
+            with h.form:
+                with h.div(class_='btn-group'):
+                    if self._changed():
+                        h << h.script('reload_columns();')
+                        self._changed(False)
 
-                active = 'active btn-primary' if self.board.archive else ''
-                h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))
-                active = 'active btn-primary' if not self.board.archive else ''
-                h << h.button(_('Hide'), class_='btn %s' % active).action(lambda: self.set_archive(0))
+                    active = 'active btn-primary' if self.board.archive else ''
+                    h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))
+                    active = 'active btn-primary' if not self.board.archive else ''
+                    h << h.button(_('Hide'), class_='btn %s' % active).action(lambda: self.set_archive(0))
 
-    h << h.div(h.i(class_='icon-notify'), _(u'Notifications'), class_='panel-section')
-    h << h.p(_(u'You will be notified by email of changes made in this board to cards'))
-    with h.form:
-        with h.div(class_='btn-group'):
-            active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_OFF else ''
-            h << h.button(_('None'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_OFF)
-            active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_MINE else ''
-            h << h.button(_('Affected to me'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_MINE)
-            active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_ALL else ''
-            h << h.button(_('All'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_ALL)
+        with h.div(class_='panel-section'):
+            h << h.div(_(u'Notifications'), class_='panel-section-title')
+            h << h.p(_(u'You will be notified by email of changes made in this board to cards'))
+            with h.form:
+                with h.div(class_='btn-group'):
+                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_OFF else ''
+                    h << h.button(_('None'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_OFF)
+                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_MINE else ''
+                    h << h.button(_('Affected to me'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_MINE)
+                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_ALL else ''
+                    h << h.button(_('All'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_ALL)
     return h.root
 
 
@@ -682,7 +688,7 @@ def render_BoardMember_overlay(self, h, comp, *args):
         ).render(h, model='overlay-%s' % self.role)
     else:
         member = self.user.render(h, "avatar")
-        member.attrib.update({'class': 'miniavatar unselectable'})
+        member.attrib.update({'class': 'avatar unselectable'})
         return member
 
 
@@ -697,63 +703,65 @@ def render_board_background_menu(self, h, comp, *args):
 @presentation.render_for(BoardBackground, model='edit')
 def render_board_background_edit(self, h, comp, *args):
     """Render the background configuration panel"""
-    h << h.div(_(u'Background image'), class_='panel-section')
-    with h.div(class_='row-fluid'):
-        with h.div(class_='span6'):
-            def set_background(img):
-                self.board.set_background_image(img)
-                self._changed(True)
-            v_file = var.Var()
-            submit_id = h.generate_id("attach_submit")
-            input_id = h.generate_id("attach_input")
-            h << h.label((h.i(class_='icon-file icon-grey'),
-                          _("Choose an image")), class_='btn btn-small', for_=input_id)
-            with h.form:
-                h << h.script(
-                    u'''
-            function valueChanged(e) {
-                if (YAHOO.kansha.app.checkFileSize(this, %(max_size)s)) {
-                    YAHOO.util.Dom.get(%(submit_id)s).click();
-                } else {
-                    alert(%(error)s);
-                }
-            }
-
-            YAHOO.util.Event.onDOMReady(function() {
-                YAHOO.util.Event.on(%(input_id)s, 'change', valueChanged);
-            });''' % {
-                        'max_size': ajax.py2js(self.board.background_max_size),
-                        'input_id': ajax.py2js(input_id),
-                        'submit_id': ajax.py2js(submit_id),
-                        'error': ajax.py2js(
-                            _(u'Max file size exceeded')
-                        ).decode('UTF-8')
+    with h.div(class_='panel-section background'):
+        h << h.div(_(u'Background image'), class_='panel-section-title')
+        with h.div:
+            with h.div:
+                def set_background(img):
+                    self.board.set_background_image(img)
+                    self._changed(True)
+                v_file = var.Var()
+                submit_id = h.generate_id("attach_submit")
+                input_id = h.generate_id("attach_input")
+                h << h.label((h.i(class_='icon-file-text2'),
+                              _("Choose an image")), class_='btn', for_=input_id)
+                with h.form(class_='hidden'):
+                    h << h.script(
+                        u'''
+                function valueChanged(e) {
+                    if (YAHOO.kansha.app.checkFileSize(this, %(max_size)s)) {
+                        YAHOO.util.Dom.get(%(submit_id)s).click();
+                    } else {
+                        alert(%(error)s);
                     }
-                )
-                h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file",
-                             multiple="multiple", maxlength="100",).action(v_file)
-                h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(
-                    lambda: set_background(v_file()))
-        with h.div(class_='span5'):
-            def reset_background():
-                self.board.set_background_image(None)
-                self._changed(True)
-            h << _('or') << ' '
-            h << h.a(_('Reset background')).action(reset_background)
-    with h.div(class_='row-fluid'):
-        with h.span(class_='span12 text-center'):
-            h << component.Component(self.board, model='background_image')
+                }
 
-    h << h.div(_(u'Board title color'), class_='panel-section')
-    with h.div(class_='row-fluid'):
-        with h.div(class_='span6'):
-            h << comp.render(h, model='title-color-edit')
-        with h.div(class_='span5'):
-            def reset_color():
-                self.board.set_title_color(None)
-                self._changed(True)
-            h << _('or') << ' '
-            h << h.a(_('Reset to default color')).action(reset_color)
+                YAHOO.util.Event.onDOMReady(function() {
+                    YAHOO.util.Event.on(%(input_id)s, 'change', valueChanged);
+                });''' % {
+                            'max_size': ajax.py2js(self.board.background_max_size),
+                            'input_id': ajax.py2js(input_id),
+                            'submit_id': ajax.py2js(submit_id),
+                            'error': ajax.py2js(
+                                _(u'Max file size exceeded')
+                            ).decode('UTF-8')
+                        }
+                    )
+                    h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file",
+                                 multiple="multiple", maxlength="100",).action(v_file)
+                    h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(
+                        lambda: set_background(v_file()))
+            with h.div:
+                def reset_background():
+                    self.board.set_background_image(None)
+                    self._changed(True)
+                h << _('or') << ' '
+                h << h.a(_('Reset background')).action(reset_background)
+        with h.div:
+            with h.span(class_='text-center'):
+                h << component.Component(self.board, model='background_image')
+
+    with h.div(class_='panel-section background'):
+        h << h.div(_(u'Board title color'), class_='panel-section-title')
+        with h.div:
+            with h.div:
+                h << comp.render(h, model='title-color-edit')
+            with h.div:
+                def reset_color():
+                    self.board.set_title_color(None)
+                    self._changed(True)
+                h << _('or') << ' '
+                h << h.a(_('Reset to default color')).action(reset_color)
     return h.root
 
 
@@ -815,9 +823,9 @@ def render_board_background_title_color_overlay(self, h, comp, *args):
     h << h.div(id=i, class_='label-color-picker clearfix')
     with h.form:
         h << h.input(type='hidden', value=v(), id='%s-hex-value' % i).action(v)
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
+        h << h.button(_('Save'), class_='btn btn-primary').action(
             ajax.Update(action=lambda v=v: set_color(v())))
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(lambda: None)
+        h << h.button(_('Cancel'), class_='btn').action(lambda: None)
     h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
     return h.root

@@ -22,7 +22,7 @@ def html_hex_to_rgb_tuple(hex_str):
 
 
 def color_style(self):
-    return 'background-color:%s; box-shadow: 3px 1px 1px rgba(%s, 0.45)' % (self.data.color, '%s, %s, %s' % html_hex_to_rgb_tuple(self.data.color))
+    return 'background-color:%s; box-shadow: 0px 0px 1px %s' % (self.data.color, self.data.color)
 
 
 @presentation.render_for(Label)
@@ -65,10 +65,10 @@ def render(self, h, comp, *args):
     h << h.div(id=i, class_='label-color-picker clearfix')
     with h.form:
         h << h.input(type='hidden', value=v(), id='%s-hex-value' % i).action(v)
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
+        h << h.button(_('Save'), class_='btn btn-primary').action(
             ajax.Update(action=lambda v=v: self.set_color(v())))
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(lambda: None)
+        h << h.button(_('Cancel'), class_='btn').action(lambda: None)
     h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
     return h.root
 
@@ -126,5 +126,5 @@ def render(self, h, comp, *args):
                                 style='background-color: %s' % label.color)
                     h << h.span(label.title)
                     if label.id in self.labels:
-                        h << h.i(class_='icon-ok')
+                        h << h.i(class_='icon-checkmark')
     return h.root

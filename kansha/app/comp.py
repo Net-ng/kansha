@@ -45,7 +45,7 @@ def run():
 class Kansha(object):
     """The Kansha root component"""
 
-    def __init__(self, app_title, app_banner, custom_css,
+    def __init__(self, app_title, app_banner, theme,
                  search, services_service):
         """Initialization
         """
@@ -53,7 +53,7 @@ class Kansha(object):
 
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.title = component.Component(self, 'tab')
         self.user_menu = component.Component(None)
         self.content = component.Component(None).on_answer(self.select_board)
@@ -94,7 +94,7 @@ class Kansha(object):
                     id_,
                     self.app_title,
                     self.app_banner,
-                    self.custom_css,
+                    self.theme,
                     self.search_engine,
                     on_board_archive=self.select_last_board,
                     on_board_leave=self.select_last_board
@@ -131,7 +131,7 @@ class Kansha(object):
                     user_profile.UserProfile,
                     self.app_title,
                     self.app_banner,
-                    self.custom_css,
+                    self.theme,
                     user.data,
                     self.search_engine
                 ),
@@ -140,20 +140,20 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, app_banner, custom_css, main_app,
+    def __init__(self, app_title, app_banner, theme, main_app,
                  cfg, search, services_service):
         self._services = services_service
 
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
         self.auth_cfg = cfg['authentication']
         self.tpl_cfg = cfg['tpl_cfg']
         self.app = services_service(
             Kansha,
             self.app_title,
             self.app_banner,
-            self.custom_css,
+            self.theme,
             search
         )
         self.main_app = main_app
@@ -169,7 +169,7 @@ class MainTask(component.Task):
                     login.Login,
                     self.app_title,
                     self.app_banner,
-                    self.custom_css,
+                    self.theme,
                     self.cfg,
                 )
             )
@@ -190,21 +190,21 @@ class MainTask(component.Task):
 
 
 class App(object):
-    def __init__(self, app_title, custom_css, cfg,
+    def __init__(self, app_title, theme, cfg,
                  search, services_service):
         self._services = services_service
 
         self.app_title = app_title
         self.app_banner = cfg['pub_cfg']['banner']
         self.favicon = cfg['pub_cfg']['favicon']
-        self.custom_css = custom_css
+        self.theme = theme
         self.search_engine = search
         self.task = component.Component(
             services_service(
                 MainTask,
                 self.app_title,
                 self.app_banner,
-                self.custom_css,
+                self.theme,
                 self, cfg,
                 search
             )
@@ -219,7 +219,7 @@ class WSGIApp(wsgi.WSGIApp):
         'application': {'as_root': 'boolean(default=True)',
                         'title': 'string(default="")',
                         'banner': 'string(default="")',
-                        'custom_css': 'string(default="")',
+                        'theme': 'string(default="kansha_flat")',
                         'favicon': 'string(default="img/favicon.ico")',
                         'disclaimer': 'string(default="")',
                         'activity_monitor': "string(default='')",
@@ -242,7 +242,7 @@ class WSGIApp(wsgi.WSGIApp):
 
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
-        self.custom_css = conf['application']['custom_css']
+        self.theme = conf['application']['theme']
         self.application_path = conf['application']['path']
 
         # search_engine engine configuration
@@ -274,7 +274,7 @@ class WSGIApp(wsgi.WSGIApp):
     def create_root(self):
         return super(WSGIApp, self).create_root(
             self.app_title,
-            self.custom_css,
+            self.theme,
             self.app_cfg,
             self.search_engine,
             self._services
@@ -308,7 +308,7 @@ class WSGIApp(wsgi.WSGIApp):
         data = {'text': u'', 'status': 200,
                 'go_back': _(u'Go back'),
                 'app_title': self.app_title,
-                'custom_css': self.custom_css}
+                'theme': self.theme}
         if exc_class == Unauthorized:
             status = 403
             text = _(u"You are not authorized to access this board")

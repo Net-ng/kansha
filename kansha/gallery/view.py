@@ -58,8 +58,8 @@ def render_download(self, h, comp, *args):
         v_file = var.Var()
         submit_id = h.generate_id("attach_submit")
         input_id = h.generate_id("attach_input")
-        h << h.label((h.i(class_='icon-file icon-grey'),
-                      _("Add file")), class_='btn btn-small', for_=input_id)
+        h << h.label((h.i(class_='icon-file-text2'),
+                      _("Add file")), class_='btn', for_=input_id)
         with h.form:
             h << h.script(
                 u'''
@@ -84,8 +84,8 @@ def render_download(self, h, comp, *args):
                     ).decode('UTF-8')
                 }
             )
-            h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
-            h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
+            h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
+            h << h.input(class_='hidden', id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
     return h.root
 
 
@@ -94,7 +94,7 @@ def render_gallery_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.assets:
         label = _N('file', 'files', len(self.assets))
-        h << h.span(h.i(class_='icon-file icon-grey'), ' ', len(self.assets), class_='label', data_tooltip=label)
+        h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
     return h.root
 
 
@@ -217,7 +217,7 @@ def render_gallery_cropper(self, h, comp, *args):
         )
         h << h.input(type='submit',
                      value=_('Done'),
-                     class_='btn btn-primary btn-small').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),
+                     class_='btn btn-primary').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),
                                                                             action=lambda: comp.answer((int(self.crop_left() or 0),
                                                                                                         int(self.crop_top() or 0),
                                                                                                         int(self.crop_width() or crop_width),

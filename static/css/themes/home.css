@@ -1,0 +1,161 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/*Home page*/
+.home {
+    padding: 100px 20px 54px 0;
+}
+
+.home input:disabled {
+    margin-bottom: 10px;
+}
+
+.home .boards li a {
+    padding: 5px;
+}
+
+.home .boards a.archive,
+.home .boards a.restore,
+.home .boards a.delete,
+.home .boards a.leave {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.home .boards a.archive.highlight,
+.home .boards a.restore.highlight,
+.home .boards a.delete.highlight,
+.home .boards a.leave.highlight {
+    display: block
+}
+
+.home .boards a.restore {
+    right: 40px;
+}
+
+.home .boards ul.board-labels {
+    padding-left: 0;
+    padding-bottom: 14px;
+    margin-bottom: 17px;
+    max-width: 800px;
+}
+
+.home .boards ul.board-labels .label-title {
+    padding: 0 0 0 5px;
+    line-height: 34px;
+}
+
+.home .boards ul.board-labels .label-title input {
+    margin: 0;
+}
+
+.home .boards ul.unstyled label {
+    margin-bottom: 0;
+}
+
+.home .new-board-name {
+    max-width: 800px;
+    margin-bottom: 5px;
+}
+
+.home .boards ul.board-labels li {
+    position: relative;
+}
+
+.home .boards input {
+    margin-top: 5px
+}
+
+.home .boards .list {
+    height: auto;
+}
+
+.boards { margin-bottom: 50px; }
+
+/* Board labels */
+.boards .wide {
+    display: inline;
+}
+
+.boards .compact {
+    display: none;
+}
+
+.board-labels .members {
+    width: auto;
+    float: none;
+    position: absolute;
+    right: 34px;
+    top: 4px
+}
+
+.board-labels .members a {
+    width: auto;
+    padding: 0 !important
+}
+
+.board-labels .members .add {
+    display: none;
+    overflow: hidden
+}
+
+.board-labels .members.highlight .add {
+    display: inline-block;
+}
+
+.board-labels .members .miniavatar {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.board-labels .members .more {
+    margin-right: -5px
+}
+
+.board-labels .members .more > a {
+    display: inline-block;
+    overflow: hidden;
+}
+/* End board labels */
+
+.info-message {
+    display: block;
+    top: -10px;
+    position: relative;
+}
+
+/* Responsive medium size */
+@media (max-width:813px) {
+    .home { padding: 60px 20px 0 20px; }
+
+    .home .menu {
+        width: 100%;
+    }
+
+    .home .menu li {
+        display: inline-block;
+        padding: 0;
+    }
+
+    .home .menu a {
+        padding: 10px 20px;
+        margin: 0;
+    }
+
+    .home .menu, .home .boards { width: 100%; }
+}
+
+/* Responsive small size */
+@media all and (max-width:640px) {
+    .home .boards .wide { display: none; }
+    .home .boards .compact { display: inline-block; }
+}

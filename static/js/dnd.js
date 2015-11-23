@@ -127,7 +127,7 @@
             var target = new YAHOO.util.DDTarget(Dom.get('list-target'), 'list'),
                 listBody;
             NS.dnd.listMarker = document.createElement('div');
-            Dom.addClass(NS.dnd.listMarker, 'list-marker span3');
+            Dom.addClass(NS.dnd.listMarker, 'list-marker');
 
             NS.dnd.cardMarker = document.createElement('div');
             Dom.addClass(NS.dnd.cardMarker, 'card-marker');

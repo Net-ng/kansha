@@ -21,11 +21,11 @@ def render_Votes_edit(self, h, comp, *args):
     if security.has_permissions('vote', self.parent):
         nb_votes = len(self.votes)
         if self.has_voted():
-            h << h.a(h.i(class_='icon-heart icon-grey'), _('Unvote (%s)') % nb_votes,
-                     class_='btn btn-small').action(self.vote)
+            h << h.a(h.i(class_='icon-heart'), _('Unvote (%s)') % nb_votes,
+                     class_='btn').action(self.vote)
         else:
-            h << h.a(h.i(class_='icon-heart icon-grey'), _('Vote (%s)') % nb_votes,
-                     class_='btn btn-small').action(self.vote)
+            h << h.a(h.i(class_='icon-heart'), _('Vote (%s)') % nb_votes,
+                     class_='btn').action(self.vote)
     return h.root
 
 
@@ -39,7 +39,7 @@ def render_Votes_badge(self, h, *args):
         label = _N('vote', 'votes', len(self.votes))
         label = u'%s %s' % (len(self.votes), label)
         id_ = h.generate_id()
-        link = h.a(h.i(class_='icon-heart icon-grey'), ' ', len(self.votes), class_='label', id=id_, data_tooltip=label)
+        link = h.a(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label', id=id_, data_tooltip=label)
         # Test if user can vote
         if security.has_permissions('vote', self.parent):
             link.action(self.vote)

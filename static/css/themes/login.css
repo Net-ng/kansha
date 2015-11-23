@@ -1,0 +1,212 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:100,300,400,500,700);
+@import url(http://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Condensed);
+
+.body-login {
+    min-height: 520px;
+    position: relative
+}
+
+.header h1 {
+    position: absolute;
+    margin: 0;
+    text-align: center;
+    top: 300px;
+    width: 273px;
+}
+
+.title {
+    text-align: center
+}
+
+.title h2 {
+    margin: 0;
+    text-align: center;
+}
+
+.title .error {
+    background: rgba(0, 0, 0, 0) url("../../img/warning.png") no-repeat left center;
+    padding-left: 25px;
+    display: inline-block
+}
+
+.container {
+    display: table;
+    margin: auto;
+    margin-top: 20px;
+}
+
+form {
+    position: relative;
+    display: block;
+    padding: 30px;
+}
+
+label {
+    display: block;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    display: block;
+    max-width: 240px
+}
+
+input[type="password"] {
+    padding: 10px;
+    display: block;
+    max-width: 240px
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 30px;
+    margin: 18px 0 0 0;
+}
+
+.login {
+    position: relative;
+    display: table-cell;
+    vertical-align: top;
+}
+
+.regForm {
+    min-width: 330px;
+    max-width: 700px;
+    padding: 0 20px;
+}
+
+.oauthLogin {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 30px;
+}
+
+.oauthLogin a {
+    display: block;
+    height: 41px;
+    width: 100%;
+    margin: 15px 0;
+    padding: 0 10px 0 50px;
+    line-height: 41px;
+}
+
+.oauthLogin a {
+    display: block;
+    height: 41px;
+    width: 100%;
+    line-height: 41px;
+    margin: 15px 0;
+    padding: 0 10px 0 50px;
+}
+
+.oauthLogin .google {
+    background: white url(../../img/google.png) no-repeat center left
+}
+
+.oauthLogin .google:hover {
+    background-color: #c75541;
+    color: white
+}
+
+.oauthLogin .facebook {
+    background: white url(../../img/facebook.png) no-repeat center left
+}
+
+.oauthLogin .facebook:hover {
+    background-color: #39569b;
+    color: white
+}
+
+.oauthLogin .linkedin {
+    background: white url(../../img/linkedin.png) no-repeat center left
+}
+
+.oauthLogin .linkedin:hover {
+    background-color: #1883bb;
+    color: white
+}
+
+.oauthLogin .twitter {
+    background: white url(../../img/twitter.png) no-repeat center left
+}
+
+.oauthLogin .twitter:hover {
+    background-color: #5ea9dd;
+    color: white
+}
+
+.oauthLogin .github {
+    background: white url(../../img/git.png) no-repeat center left
+}
+
+.oauthLogin .github:hover {
+    background-color: #939393;
+    color: white
+}
+
+.message {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 50px;
+}
+
+.field label,
+.field input {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    width: 15em;
+}
+
+#captchaImage {
+    float: right;
+    margin-bottom: 15px;
+}
+
+#captchaRefresh {
+    background: url("../../img/iconmonstr-refresh-5-icon.png") no-repeat left center;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    margin-left: 8px;
+    position: relative;
+    top: 15px;
+}
+
+@media (max-width:1370px) {
+    .body-login {
+        min-height: auto;
+    }
+
+    form {
+        display: block
+    }
+}
+
+@media (max-width:700px) {
+    #captchaImage {
+        float: none;
+        margin-bottom: 15px;
+    }
+
+}
+
+@media (max-width:400px) {
+    input {
+        width: 100%
+    }
+
+}

@@ -172,7 +172,7 @@
                 Event.addListener('mask', 'click', onMaskClick);
             }
 
-            var attributes = {'margin-top': { to: nextMarginTop }};
+            var attributes = {'margin-top': { to: nextMarginTop - 2 }};
             var anim_nav = new Anim(navId, attributes, 0.2);
             anim_nav.animate();
         },
@@ -180,7 +180,7 @@
         initToggleKansha: function () {
             YAHOO.util.Dom.batch(ECN('navbar', 'div'), function (e) {
                 var zone = ECN('navActions', '', e)[0];
-                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight + 'px');
+                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight - 2 + 'px');
             });
         },
 
@@ -339,6 +339,7 @@
                 // Add listener on the Esc key
                 keylisteners: new YAHOO.util.KeyListener(document, {keys: 27}, NS.app.closePopin, 'keyup')
             });
+            NS.app.popin.cfg.setProperty("x", 0);
             // Register the close function
             NS.app.closePopinFunction = closeFunction;
             // Render the panel
@@ -377,7 +378,7 @@
                 zIndex: 2000,
                 underlay: 'none',
                 constraintoviewport: true,
-                monitorresize: false,
+                monitorresize: false
             });
             // No top/left offset
             NS.app.modal.cfg.setProperty("x", 0);
@@ -738,10 +739,10 @@
                 element = Dom.get(id);
             editor = CKEDITOR.replace(id, {
                 title: '',
-                contentsCss: ['/static/kansha/css/bootstrap.min.css',
-                              '/static/kansha/css/fonts.css',
+                contentsCss: ['/static/kansha/css/themes/fonts.css',
                               '/static/kansha/css/ckeditor.css'],
                 language: language,
+                skin: 'bootstrapck',
                 enterMode: CKEDITOR.ENTER_BR,
                 shiftEnterMode: CKEDITOR.ENTER_BR,
                 resize_enabled: false,

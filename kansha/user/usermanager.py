@@ -127,7 +127,6 @@ class UserManager(object):
                                                                           creation_date=datetime.utcnow(),
                                                                           author=u2))
 
-
 ###### TODO: Move the defintions below somewhere else ##########
 
 class NewMember(object):

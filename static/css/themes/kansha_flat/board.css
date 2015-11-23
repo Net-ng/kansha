@@ -315,10 +315,12 @@ a.card-label:hover {
 /* Card gallery */
 #card-gallery a {
     border: 4px solid white;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24);
 }
 
 .cover img {
     border: 4px solid white;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24);
 }
 /* End card gallery */
 

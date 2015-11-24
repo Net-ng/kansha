@@ -172,7 +172,7 @@
                 Event.addListener('mask', 'click', onMaskClick);
             }
 
-            var attributes = {'margin-top': { to: nextMarginTop - 2 }};
+            var attributes = {'margin-top': { to: nextMarginTop - 3 }};
             var anim_nav = new Anim(navId, attributes, 0.2);
             anim_nav.animate();
         },
@@ -180,7 +180,7 @@
         initToggleKansha: function () {
             YAHOO.util.Dom.batch(ECN('navbar', 'div'), function (e) {
                 var zone = ECN('navActions', '', e)[0];
-                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight - 2 + 'px');
+                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight - 3 + 'px');
             });
         },
 

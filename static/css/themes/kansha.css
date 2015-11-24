@@ -20,6 +20,7 @@ input, select, textarea {
     padding: 4px 6px;
     margin: 0;
     resize: none;
+    border-radius: 3px;
 }
 
 input[type=checkbox],
@@ -191,7 +192,7 @@ i[class^="icon-"]:before {
     left: 50px;
     cursor: pointer;
     padding: 0 10px 0 10px;
-    z-index: 25;
+    z-index: 30;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -211,7 +212,7 @@ i[class^="icon-"]:before {
 }
 
 .navbar #mainActions {
-    min-width: 250px;
+    min-width: 260px;
 }
 
 .navbar #boardActions {
@@ -330,6 +331,10 @@ i[class^="icon-"]:before {
 
 .overlay-title {
     display: none
+}
+
+.overlay-body {
+    padding: 0 10px;
 }
 
 .overlay-body li a {

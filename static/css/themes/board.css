@@ -135,6 +135,10 @@ textarea.expanded {
 /* End board */
 
 /* Lists */
+.nav-list li {
+    padding-left: 10px;
+}
+
 #lists {
     overflow-x: auto;
     overflow-y: hidden;
@@ -813,6 +817,14 @@ div.history th {
 
 .checklists .checklist .btn [class^="icon-"] {
     left: 0
+}
+
+.checklists .checklist input {
+    border-radius: 3px 0 0 3px;
+}
+
+.checklists .checklist .btn-group .btn:first-child {
+    border-radius: 0;
 }
 
 .checklists .checklist li {

@@ -38,9 +38,9 @@
 /* Lists */
 
 .list {
-    border-radius: 5px;
-    border: 1px solid #c0c0c0;
-    background: rgba(235, 235, 235, 0.8);
+    border-radius: 3px;
+    border: 1px solid #d8d8d8;
+    background: #e5e5e5;
 }
 
 .list.reduced .list-header {
@@ -69,17 +69,18 @@
 }
 
 .list .list-footer {
+    border-top: 1px solid #d8d8d8;
     border-radius: 0 0 5px 5px;
 }
 
 .list .list-footer-disabled {
     border-radius: 0 0 5px 5px;
     border-top: solid 1px #c0c0c0;
-    background: #eaeaea;
+    background: #d8d8d8;
 }
 
 .list .list-footer:hover {
-    background: #eaeaea;
+    background: #d8d8d8;
 }
 
 .list .list-footer .link-small {
@@ -105,17 +106,12 @@
 
 /* Cards */
 .card:hover {
-    -webkit-box-shadow: #c0c0c0 0px 0px 1px;
-    -moz-box-shadow: #c0c0c0 0px 0px 1px;
-    box-shadow: #c0c0c0 0px 0px 1px;
+    box-shadow: #a7a7a7 1px 1px 1px
 }
 
 .card {
     background-color: white;
-    border-radius: 5px;
-    -webkit-box-shadow: white 0px 0px 1px;
-    -moz-box-shadow: white 0px 0px 1px;
-    box-shadow: white 0px 0px 1px;
+    border-radius: 3px;
 }
 
 .card > div > a {
@@ -319,10 +315,12 @@ a.card-label:hover {
 /* Card gallery */
 #card-gallery a {
     border: 4px solid white;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24);
 }
 
 .cover img {
     border: 4px solid white;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24);
 }
 /* End card gallery */
 
@@ -472,6 +470,7 @@ div.history th {
 .inline-labels .card-label {
     border-radius: 14px;
     border: 2px solid white;
+    box-shadow: 3px 1px 1px #D6D6D6;
 }
 
 .label-color-picker .yui-picker-controls .bd {
@@ -481,7 +480,7 @@ div.history th {
 
 /* Popin */
 .yui-skin-sam .mask {
-    opacity: 0.55;
+    opacity: 0.4;
 }
 
 .yui-skin-sam .yui-panel-container {
@@ -490,8 +489,10 @@ div.history th {
 }
 
 .yui-skin-sam .yui-panel {
-    border-radius: 10px;
+    border-radius: 5px;
     background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
 }
 
 .yui-skin-sam .yui-panel .panel-section:first-child {

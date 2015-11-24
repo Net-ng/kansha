@@ -215,13 +215,14 @@ def render_gallery_cropper(self, h, comp, *args):
                 ajax.py2js(crop_height)
             )
         )
-        h << h.input(type='submit',
-                     value=_('Done'),
-                     class_='btn btn-primary').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),
-                                                                            action=lambda: comp.answer((int(self.crop_left() or 0),
-                                                                                                        int(self.crop_top() or 0),
-                                                                                                        int(self.crop_width() or crop_width),
-                                                                                                        int(self.crop_height() or crop_height))),
-                                                                            component_to_update=self.card_component_id)
-                                                                )
+        with h.div(class_='buttons'):
+            h << h.input(type='submit',
+                         value=_('Done'),
+                         class_='btn btn-primary').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),
+                                                                                action=lambda: comp.answer((int(self.crop_left() or 0),
+                                                                                                            int(self.crop_top() or 0),
+                                                                                                            int(self.crop_width() or crop_width),
+                                                                                                            int(self.crop_height() or crop_height))),
+                                                                                component_to_update=self.card_component_id)
+                                                                    )
     return h.root

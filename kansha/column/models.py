@@ -28,6 +28,12 @@ class DataColumn(Entity):
     cards = OneToMany('DataCard', order_by='index', cascade='delete')
     board = ManyToOne('DataBoard', colname='board_id')
 
+    def copy(self, other):
+        self.title = other.title
+        self.index = other.index
+        self.nb_max_cards = other.nb_max_cards
+        self.archive = other.archive
+
     @classmethod
     def create_column(cls, board, index, title, nb_cards=None, archive=False):
         """Create new column

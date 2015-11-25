@@ -40,6 +40,12 @@ class DataCard(Entity):
     history = OneToMany('DataHistory')
     weight = Field(Unicode(255), default=u'')
 
+    def copy(self, other):
+        self.title = other.title
+        self.description = other.description
+        self.cover = other.cover
+        self.weight = other.weight
+
     def delete_history(self):
         for event in self.history:
             session.delete(event)

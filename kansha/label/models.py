@@ -25,3 +25,8 @@ class DataLabel(Entity):
     board = ManyToOne('DataBoard')
     cards = ManyToMany('DataCard')
     index = Field(Integer)
+
+    def copy(self, other):
+        self.title = other.title
+        self.color = other.color
+        self.index = other.index

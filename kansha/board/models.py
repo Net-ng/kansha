@@ -26,6 +26,7 @@ class DataBoard(Entity):
     """Board mapper
 
      - ``title`` -- board title
+     - ``is_template`` -- is this a real board or a template?
      - ``columns`` -- list of board columns
      - ``labels`` -- list of labels for cards
      - ``comments_allowed`` -- who can comment ? (0 nobody, 1 board members only , 2 all application users)
@@ -42,6 +43,7 @@ class DataBoard(Entity):
     """
     using_options(tablename='board')
     title = Field(Unicode(255))
+    is_template = Field(Boolean, default=False)
     columns = OneToMany('DataColumn', order_by="index",
                         cascade='delete')
     labels = OneToMany('DataLabel', order_by='index')
@@ -67,6 +69,18 @@ class DataBoard(Entity):
 
     weighting_cards = Field(Integer, default=0)
     weights = Field(Unicode(255), default=u'')
+
+    def copy(self, other):
+        self.title = other.title
+        self.description = other.description
+        self.background_image = other.background_image # TODO
+        self.background_position = other.background_position
+        self.title_color = other.title_color
+        self.comments_allowed = other.comments_allowed
+        self.votes_allowed = other.votes_allowed
+        self.weighting_cards = other.weighting_cards
+        self.weights = other.weights
+
 
     def delete_members(self):
         for member in self.board_members:
@@ -192,6 +206,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(DataBoard.id.in_(q2))
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         return q
 
     @classmethod
@@ -200,6 +215,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardManager.user_username == user_username)
         q = q.filter(DataBoardManager.user_source == user_source)
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         q = q.order_by(DataBoard.title)
         return q
 
@@ -212,6 +228,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_username == user_username)
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         q = q.filter(~DataBoard.id.in_(q2))
         q = q.order_by(DataBoard.title)
         return q
@@ -222,5 +239,6 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_username == user_username)
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(cls.archived == True)
+        q = q.filter(cls.is_template == False)
         q = q.order_by(DataBoard.title)
         return q

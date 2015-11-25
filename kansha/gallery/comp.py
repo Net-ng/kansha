@@ -7,22 +7,22 @@
 # this distribution.
 #--
 
-from ..authentication.database import validators
-from ..flow import comp as flow
-from ..toolbox import overlay
-from ..user import usermanager
-from .models import DataGallery, DataAsset
-from .. import notifications
 from cgi import FieldStorage
+from webob.exc import HTTPOk
 from nagare import component, security, var
 from nagare.i18n import _
-from webob.exc import HTTPOk
 
+from kansha import notifications
+from kansha.authentication.database import validators
+from kansha.toolbox import overlay
+from kansha.user import usermanager
+
+from .models import DataGallery, DataAsset
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 
-class Gallery(flow.FlowSource):
+class Gallery(object):
 
     def __init__(self, card, assets_manager_service):
         """Init method
@@ -52,10 +52,6 @@ class Gallery(flow.FlowSource):
         return component.Component(overlay.Overlay(lambda h, asset_thumb=asset_thumb: asset_thumb.render(h),
                                                    lambda h, asset_menu=asset_menu: asset_menu.render(h),
                                                    dynamic=False, cls='card-edit-form-overlay'))
-
-    @property
-    def flow_elements(self):
-        return self.assets
 
     def add_asset(self, new_file):
         """Add one new file to card
@@ -161,7 +157,7 @@ class Gallery(flow.FlowSource):
         self.overlays = []
 
 
-class Asset(flow.FlowElement):
+class Asset(object):
 
     def __init__(self, data_asset, assets_manager_service):
         self.filename = data_asset.filename

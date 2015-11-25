@@ -126,23 +126,6 @@ def render_asset(self, h, comp, model, *args):
     return res
 
 
-@presentation.render_for(Asset, model='flow')
-def render_asset_flow(self, h, comp, *args):
-    with h.div(class_='comment'):
-        with h.div(class_='left'):
-            h << self.author.render(h, model='avatar')
-        with h.div(class_='right'):
-            h << self.author.render(h, model='fullname')
-            h << _(' added a file ')
-            h << comp.render(h, 'creation_date')
-            with h.div(class_='contents'):
-                with h.p:
-                    h << h.SyncRenderer().a(comp.render(h, model='medium'),
-                                            href=self.assets_manager.get_image_url(self.filename),
-                                            target='_blank')
-    return h.root
-
-
 @presentation.render_for(Asset, 'menu')
 def render_overlay_menu(self, h, comp, *args):
 

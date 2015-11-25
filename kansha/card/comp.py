@@ -10,29 +10,22 @@
 
 import dateutil.parser
 
-from nagare import component, log, security
+from nagare import (component, log, security, editor, validator)
 from nagare.i18n import _, _L
 
+from kansha import exceptions, notifications
+from kansha.checklist import comp as checklist
+from kansha.comment import comp as comment
+from kansha.description import comp as description
+from kansha.due_date import comp as due_date
+from kansha.gallery import comp as gallery
+from kansha.label import comp as label
+from kansha.title import comp as title
+from kansha.toolbox import overlay
+from kansha.user import usermanager
+from kansha.vote import comp as vote
+
 from .models import DataCard
-from ..checklist import comp as checklist
-from ..label import comp as label
-from ..comment import comp as comment
-from ..vote import comp as vote
-from ..description import comp as description
-from ..due_date import comp as due_date
-from ..title import comp as title
-from ..user import usermanager
-from .. import exceptions, notifications
-from ..toolbox import overlay
-from ..gallery import comp as gallery
-from nagare import editor
-from nagare import validator
-
-
-# WEIGHTING TYPES
-WEIGHTING_OFF = 0
-WEIGHTING_FREE = 1
-WEIGHTING_LIST = 2
 
 
 class NewCard(object):
@@ -90,7 +83,6 @@ class Card(object):
         self.due_date = component.Component(due_date.DueDate(self))
         self.gallery = component.Component(self._services(gallery.Gallery, self))
         self.comments = component.Component(comment.Comments(self, data.comments))
-        self.flow = component.Component(CardFlow(self, self.comments, self.gallery))
         self.labels = component.Component(label.CardLabels(self))
         self.votes = component.Component(vote.Votes(self))
         self.author = component.Component(usermanager.UserManager.get_app_user(data.author.username, data=data.author))
@@ -309,6 +301,8 @@ class Card(object):
         self.due_date().set_value(start)
 
 
+############### Extension components ###################
+
 class CardTitle(title.Title):
 
     """Card title component
@@ -324,34 +318,17 @@ class CardDescription(description.Description):
     type = _L('card')
 
 
-class CardFlow(object):
-
-    """Flow of comments, pictures, and so on, associated to a card"""
-
-    def __init__(self, card, *source_components):
-        """Init method
-        In:
-          - ``source_components`` -- Components
-                                     - on an object inheriting from FlowSource
-                                     - having a "flow" view
-        """
-        self.card = card
-        self.source_components = source_components
-
-    @property
-    def elements(self):
-        res = []
-        for s in self.source_components:
-            res.extend(s().flow_elements)
-        return sorted(res, key=lambda el: getattr(el(), 'creation_date', ''), reverse=True)
-
-
 class CardWeightEditor(editor.Editor):
 
     """ Card weight Form
     """
 
     fields = {'weight'}
+    # WEIGHTING TYPES
+    WEIGHTING_OFF = 0
+    WEIGHTING_FREE = 1
+    WEIGHTING_LIST = 2
+
 
     def __init__(self, target, *args):
         """

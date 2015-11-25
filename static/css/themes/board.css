@@ -586,6 +586,11 @@ textarea.expanded {
 /* End card counter */
 
 /* Comments */
+
+.card-extension-comments {
+    margin-top: 1em;
+}
+
 .comment {
     margin-bottom: 5px;
     margin-left: -45px;
@@ -626,7 +631,7 @@ textarea.expanded {
     text-align: right;
 }
 
-.comment .delete {
+.comment-delete {
     margin-left: 5px;
 }
 /* End comments */

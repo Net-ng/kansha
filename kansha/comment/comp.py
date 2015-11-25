@@ -19,7 +19,7 @@ from ..flow import comp as flow
 from .. import notifications, validator
 
 
-class Comment(flow.FlowElement):
+class Comment(object):
 
     """Comment component"""
 
@@ -94,7 +94,7 @@ class Commentlabel(object):
         return self.parent.is_author(user)
 
 
-class Comments(flow.FlowSource):
+class Comments(object):
 
     """Comments component
     """
@@ -108,10 +108,6 @@ class Comments(flow.FlowSource):
         """
         self.parent = parent
         self.comments = [self._create_comment_component(data_comment) for data_comment in data_comments]
-
-    @property
-    def flow_elements(self):
-        return self.comments
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete)

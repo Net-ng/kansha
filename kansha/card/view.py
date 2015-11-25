@@ -8,19 +8,16 @@
 # this distribution.
 # --
 import peak
-import json
 
 import calendar
 from datetime import datetime
 
-from nagare import presentation, var, security, component, ajax, i18n
+from nagare import presentation, var, security, component, ajax
 from nagare.i18n import _
 
-from kansha.card.comp import CardFlow
 from kansha.card.comp import CardWeightEditor
 
 from .comp import Card, NewCard, CardTitle
-from .comp import WEIGHTING_FREE, WEIGHTING_LIST
 
 
 @peak.rules.when(ajax.py2js, (Card,))
@@ -50,8 +47,7 @@ def render_card_edit(self, h, comp, *args):
                 h << self.description.render(h.AsyncRenderer())
                 h << self.gallery
                 h << self.checklists
-                h << h.hr
-                h << comp.render(h.AsyncRenderer(), 'comments_flow')
+                h << self.comments.render(h.AsyncRenderer())
             h << comp.render(h, "actions")
     return h.root
 
@@ -79,13 +75,6 @@ def render(self, h, comp, *args):
             'clicked_cb': clicked_cb,
             'dropped_cb': dropped_cb
         })
-    return h.root
-
-
-@presentation.render_for(Card, 'comments_flow')
-def render_Card_comments_flow(self, h, comp, model):
-    h << self.comments.render(h, model='header')
-    h << self.flow.render(h.AsyncRenderer())
     return h.root
 
 
@@ -163,12 +152,12 @@ def render_cardweighteditor_edit(self, h, comp, *args):
         if self.commit():
             comp.answer()
 
-    if self.board.weighting_cards == WEIGHTING_FREE:
+    if self.board.weighting_cards == self.WEIGHTING_FREE:
         with h.form:
             h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
             h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
-    elif self.board.weighting_cards == WEIGHTING_LIST:
+    elif self.board.weighting_cards == self.WEIGHTING_LIST:
         with h.form:
             with h.div(class_='btn select'):
                 with h.select.action(self.weight):
@@ -232,7 +221,7 @@ def render(self, h, comp, *args):
     if self.must_reload_search:
         self.reload_search()
         h << h.script('''$(window).trigger('reload_search');''')
-    
+
     return h.root
 
 
@@ -371,41 +360,8 @@ def render_new_card_add(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, model='flow')
-def render_card_flow(self, h, comp, model, *args):
-    with h.div(class_='comment'):
-        with h.div(class_='left'):
-            h << self.author.render(h, model='avatar')
-        with h.div(class_='right'):
-            h << self.author.render(h, model='fullname')
-            h << _(' added this card ') << comp.render(h, 'creation_date')
-    return h.root
-
-
-@presentation.render_for(Card, model='creation_date')
-def render_card_creation_date(self, h, comp, model, *args):
-    span_id = h.generate_id()
-    h << h.span(id=span_id, class_="date")
-
-    utcseconds = calendar.timegm(datetime.utctimetuple(self.data.creation_date))
-
-    h << h.script(
-        "YAHOO.kansha.app.utcToLocal('%s', %s, '%s', '%s');" % (span_id, utcseconds, _(u'at'), _(u'on'))
-    )
-
-    return h.root
-
-
 @presentation.render_for(CardTitle, 'card-title')
 def render_card_title(self, h, comp, *args):
     """Render the title of the associated card"""
     h << h.a(self.text)
-    return h.root
-
-
-@presentation.render_for(CardFlow)
-def render_cardflow(self, h, comp, model, *args):
-    for e in self.elements:
-        h << e.render(h, model='flow')
-    h << component.Component(self.card).render(h, 'flow')
     return h.root

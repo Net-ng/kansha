@@ -10,15 +10,16 @@
 
 from .comp import Comments, Comment, Commentlabel
 from nagare import ajax, presentation, security, var
-from nagare.i18n import _, _N
+from nagare.i18n import _, _N, format_datetime
 
 
-@presentation.render_for(Comments, model='header')
+@presentation.render_for(Comments)
 def render(self, h, comp, *args):
     """Render card comments"""
-    h << h.div(comp.render(h, "badge"), class_="nbItems")
-    h << comp.on_answer(self.add).render(h, "form")
-    #h << self.comments
+    with h.div(class_='card-extension-comments'):
+        h << h.div(comp.render(h, "badge"), class_="nbItems")
+        h << comp.on_answer(self.add).render(h, "form") << h.hr
+        h << self.comments
 
     return h.root
 
@@ -32,10 +33,13 @@ def render_comment(self, h, comp, model, *args):
         with h.div(class_='right'):
             h << self.author.render(h, model='fullname')
             h << _(' wrote ')
-            h << comp.render(h, 'creation_date')
+            h << h.span(
+                _(u'on'), ' ',
+                format_datetime(self.creation_date),
+                class_="date")
             if security.has_permissions('delete_comment', self):
                 h << h.a(_('Delete'),
-                         class_="delete").action(lambda: comp.answer(comp))
+                         class_="comment-delete").action(lambda: comp.answer(comp))
             h << self.comment_label.render(h.AsyncRenderer())
     return h.root
 

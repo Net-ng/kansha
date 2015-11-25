@@ -255,10 +255,6 @@ a.card-label:hover {
     font: normal 14px OpenSansBold
 }
 
-.comment .right {
-    border-bottom: 1px solid #c0c0c0;
-}
-
 .comment .contents img.medium {
     border: 4px solid white;
 }
@@ -275,9 +271,15 @@ a.card-label:hover {
     font-size: 90%;
 }
 
-.comment .delete {
-    font-size: 12px;
+.comment-delete {
+    display: none;
+    float: right;
 }
+
+.comment:hover .comment-delete {
+    display: inline-block;
+}
+
 /* End comments */
 
 /* Due dates */

@@ -93,7 +93,7 @@ def render_card_actions(self, h, comp, *args):
                     h << self.due_date.render(h.AsyncRenderer(), 'button')
                 if self.board.weighting_cards:
                     with h.li(class_="actionWeight"):
-                        h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))
+                        h << self._weight
                 with h.li(class_="buttonDeleteCard"):
                     if security.has_permissions('edit', self) and not self.column.is_archive:
                         close_func = ajax.js(
@@ -142,7 +142,7 @@ def render_card_dnd(self, h, comp, *args):
 @presentation.render_for(CardWeightEditor)
 def render_cardweighteditor(self, h, comp, *args):
     h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
-        lambda: comp.call(self, model='edit'))
+        comp.call, self, model='edit')
     return h.root
 
 

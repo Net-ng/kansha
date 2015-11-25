@@ -85,7 +85,6 @@ class Card(object):
         self.comments = component.Component(comment.Comments(self, data.comments))
         self.labels = component.Component(label.CardLabels(self))
         self.votes = component.Component(vote.Votes(self))
-        self.author = component.Component(usermanager.UserManager.get_app_user(data.author.username, data=data.author))
 
         self._weight = component.Component(CardWeightEditor(self))
 

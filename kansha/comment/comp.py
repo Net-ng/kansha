@@ -99,7 +99,7 @@ class Comments(object):
     """Comments component
     """
 
-    def __init__(self, parent, data_comments=()):
+    def __init__(self, parent):
         """Initialization
 
         In:
@@ -107,7 +107,7 @@ class Comments(object):
             - ``comments`` -- the comments of the card
         """
         self.parent = parent
-        self.comments = [self._create_comment_component(data_comment) for data_comment in data_comments]
+        self.comments = [self._create_comment_component(data_comment) for data_comment in parent.get_comments()]
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete)

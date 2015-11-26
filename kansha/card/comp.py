@@ -80,7 +80,7 @@ class Card(object):
         self.description = component.Component(CardDescription(self))
         self.due_date = component.Component(due_date.DueDate(self))
         self.gallery = component.Component(self._services(gallery.Gallery, self))
-        self.comments = component.Component(comment.Comments(self, data.comments))
+        self.comments = component.Component(comment.Comments(self))
         self.labels = component.Component(label.CardLabels(self))
         self.votes = component.Component(vote.Votes(self))
         self.card_members = component.Component(CardMembers(self))
@@ -234,6 +234,11 @@ class Card(object):
         values = {'from': self.data.weight, 'to': value, 'card': self.data.title}
         notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_weight', values)
         self.data.weight = value
+
+    # Comments
+
+    def get_comments(self):
+        return self.data.comments
 
 
 ############### Extension components ###################

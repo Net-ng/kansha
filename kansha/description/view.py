@@ -11,10 +11,10 @@
 from nagare import presentation, var, security, ajax
 from nagare.i18n import _
 
-from .comp import Description
+from .comp import CardDescription
 
 
-@presentation.render_for(Description)
+@presentation.render_for(CardDescription)
 def render(self, h, comp, *args):
     """Render description component.
 
@@ -35,7 +35,7 @@ def render(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Description, model='edit')
+@presentation.render_for(CardDescription, model='edit')
 def render(self, h, comp, *args):
     """Render description component in edit mode"""
     text = var.Var(self.text)
@@ -57,9 +57,9 @@ def render(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Description, model='badge')
+@presentation.render_for(CardDescription, model='badge')
 def render(self, h, *args):
     """Render description component as a card badge"""
     if self.text:
-        h << h.span(h.i(class_='icon-pencil'), class_='label', data_tooltip=_('This %s has a description') % _(self.type))
+        h << h.span(h.i(class_='icon-pencil'), class_='label')
     return h.root

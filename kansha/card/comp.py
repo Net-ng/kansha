@@ -74,17 +74,16 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
-        data = data if data else self.data
         self.title = component.Component(CardTitle(self))
-        self.checklists = component.Component(checklist.Checklists(self))
-        self.description = component.Component(CardDescription(self))
-        self.due_date = component.Component(due_date.DueDate(self))
-        self.gallery = component.Component(self._services(gallery.Gallery, self))
-        self.comments = component.Component(comment.Comments(self))
         self.labels = component.Component(label.CardLabels(self))
+        self.description = component.Component(description.CardDescription(self))
+        self.checklists = component.Component(checklist.Checklists(self))
+        self.gallery = component.Component(self._services(gallery.Gallery, self))#
+        self.comments = component.Component(comment.Comments(self))
+        self.due_date = component.Component(due_date.DueDate(self))#
         self.votes = component.Component(vote.Votes(self))
-        self.card_members = component.Component(CardMembers(self))
         self._weight = component.Component(CardWeightEditor(self))
+        self.card_members = component.Component(CardMembers(self))
 
     @property
     def data(self):
@@ -240,6 +239,14 @@ class Card(object):
     def get_comments(self):
         return self.data.comments
 
+    # Description
+
+    def get_description(self):
+        return self.data.description
+
+    def set_description(self, value):
+        self.data.description = value
+
 
 ############### Extension components ###################
 
@@ -249,13 +256,6 @@ class CardTitle(title.Title):
     """
     model = DataCard
     field_type = 'input'
-
-
-class CardDescription(description.Description):
-
-    # We work on wards
-    model = DataCard
-    type = _L('card')
 
 
 class CardWeightEditor(editor.Editor):

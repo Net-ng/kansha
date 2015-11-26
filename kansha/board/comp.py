@@ -575,6 +575,13 @@ class Board(object):
     def votes_allowed(self):
         return self.data.votes_allowed
 
+    def get_description(self):
+        return self.data.description
+
+    def set_description(self, value):
+        self.data.description = value
+
+
     ##################
     # Member methods
     ##################
@@ -932,11 +939,19 @@ class BoardTitle(title.Title):
     field_type = 'input'
 
 
-class BoardDescription(description.Description):
+class BoardDescription(object):
 
     """Description component for boards
     """
-    type = _L('board')
+
+    def __init__(self, parent):
+        """Initialization
+
+        In:
+            - ``parent`` -- the object parent
+        """
+        self.parent = parent
+        self.text = parent.get_description()
 
     def change_text(self, text):
         """Changes text description.
@@ -955,8 +970,15 @@ class BoardDescription(description.Description):
             if text:
                 text = validator.clean_text(text)
 
-            self.text = self.parent.data.description = text
+            self.text = text
+            self.parent.set_description(text)
         return 'YAHOO.kansha.app.hideOverlay();'
+
+    def __nonzero__(self):
+        """Return False if the description if empty
+        """
+        return bool(self.text)
+
 
 
 class BoardMember(object):

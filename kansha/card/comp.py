@@ -98,16 +98,6 @@ class Card(object):
         self._data = None
         return self.__dict__
 
-    @property
-    def weight(self):
-        return self.data.weight
-
-    @weight.setter
-    def weight(self, value):
-        values = {'from': self.data.weight, 'to': value, 'card': self.data.title}
-        notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_weight', values)
-        self.data.weight = value
-
     def set_title(self, title):
         """Set title
 
@@ -143,12 +133,18 @@ class Card(object):
         column.data.cards.append(data_card)
         self.column = column
 
-    def get_available_labels(self):
-        return self.column.get_available_labels()
+    def new_start_from_ajax(self, request, response):
+        """
+        Dropped on new date (calendar view).
+        """
+        start = dateutil.parser.parse(request.GET['start']).date()
+        self.due_date().set_value(start)
 
-    #################
-    # Members methods
-    #################
+    ################################
+    # Feature methods, persistency #
+    ################################
+
+    # Members
 
     def get_authorized_users(self):
         """Return user's which are authorized to be add on this card
@@ -204,6 +200,7 @@ class Card(object):
         self.reload()  # brute force solution until we have proper communication between extensions
 
     # Cover methods
+
     def make_cover(self, asset):
         """Make card cover with asset
 
@@ -221,9 +218,22 @@ class Card(object):
     def remove_cover(self):
         self.data.remove_cover()
 
-    def new_start_from_ajax(self, request, response):
-        start = dateutil.parser.parse(request.GET['start']).date()
-        self.due_date().set_value(start)
+    # Label methods
+
+    def get_available_labels(self):
+        return self.column.get_available_labels()
+
+    # Weight
+
+    @property
+    def weight(self):
+        return self.data.weight
+
+    @weight.setter
+    def weight(self, value):
+        values = {'from': self.data.weight, 'to': value, 'card': self.data.title}
+        notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_weight', values)
+        self.data.weight = value
 
 
 ############### Extension components ###################
@@ -253,7 +263,6 @@ class CardWeightEditor(editor.Editor):
     WEIGHTING_OFF = 0
     WEIGHTING_FREE = 1
     WEIGHTING_LIST = 2
-
 
     def __init__(self, target, *args):
         """

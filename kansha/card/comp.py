@@ -200,7 +200,6 @@ class Card(object):
         In:
             - ``member`` -- Board Member instance to remove
         """
-        print "remove board member from card", member
         self.data.remove_board_member(member)
         self.reload()  # brute force solution until we have proper communication between extensions
 

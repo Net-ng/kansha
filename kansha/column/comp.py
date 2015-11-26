@@ -133,7 +133,6 @@ class Column(object):
         In:
             - ``member`` -- Board Member instance to remove
         """
-        print "remove board member from col", member
         for c in self.cards:
             if isinstance(c(), card.Card):
                 c().remove_board_member(member)

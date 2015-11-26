@@ -9,15 +9,12 @@
 # --
 import peak
 
-import calendar
-from datetime import datetime
-
 from nagare import presentation, var, security, component, ajax
 from nagare.i18n import _
 
 from kansha.card.comp import CardWeightEditor
 
-from .comp import Card, NewCard, CardTitle
+from .comp import Card, NewCard, CardTitle, CardMembers
 
 
 @peak.rules.when(ajax.py2js, (Card,))
@@ -123,7 +120,7 @@ def render_card_actions(self, h, comp, *args):
                                 }
                             )
                         )
-                h << comp.render(h, 'members')
+                h << self.card_members
 
     return h.root
 
@@ -208,9 +205,9 @@ def render(self, h, comp, *args):
                 h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
             h << comp.render(h, 'badges')
             if security.has_permissions('edit', self):
-                h << comp.render(h, 'members')
+                h << self.card_members
             else:
-                h << comp.render(h, 'members_read_only')
+                h << self.card_members.render(h, 'members_read_only')
 
     h << h.script(
         "YAHOO.kansha.reload_cards[%s]=function() {%s}""" % (
@@ -244,7 +241,7 @@ def render(self, h, comp, *args):
             if self.has_cover():
                 h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
             h << comp.render(h, 'badges')
-            h << comp.render(h, 'members_read_only')
+            h << self.card_members.render(h, 'members_read_only')
 
     return h.root
 
@@ -264,8 +261,9 @@ def render_card_badges(self, h, comp, *args):
             h << h.span(h.i(class_='icon-star'), ' ', self.weight, class_='label', data_tooltip=label)
     return h.root
 
+### members handling
 
-@presentation.render_for(Card, model='members')
+@presentation.render_for(CardMembers)
 def render_card_members(self, h, comp, *args):
     """Member section view for card
 
@@ -283,7 +281,7 @@ def render_card_members(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, model='members_read_only')
+@presentation.render_for(CardMembers, model='members_read_only')
 def render_card_members_read_only(self, h, comp, *args):
     """Member section view for card
 
@@ -301,7 +299,7 @@ def render_card_members_read_only(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, "members_list_overlay")
+@presentation.render_for(CardMembers, "members_list_overlay")
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
@@ -314,7 +312,7 @@ def render_members_members_list_overlay(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, "add_member_overlay")
+@presentation.render_for(CardMembers, "add_member_overlay")
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Add members'))
@@ -326,6 +324,8 @@ def render_members_add_member_overlay(self, h, comp, *args):
     with h.div(class_="members search"):
         h << self.new_member
     return h.root
+
+#####
 
 
 @presentation.render_for(NewCard)

@@ -669,7 +669,7 @@ class Board(object):
                          'manager': self.remove_manager,
                          'member': self.remove_member}
         remove_method[member.role](member)
-
+        print "remove board member"
         # remove member from columns
         for c in self.columns:
             c().remove_board_member(member)

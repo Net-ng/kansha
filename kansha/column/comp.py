@@ -120,7 +120,7 @@ class Column(object):
             # Test if c() is a Card instance and not Popin instance
             if isinstance(c(), card.Card):
                 for m in c().members:
-                    username = m().username
+                    username = m.username
                     most_used_users[username] = most_used_users.get(username, 0) + 1
         return most_used_users
 
@@ -133,6 +133,7 @@ class Column(object):
         In:
             - ``member`` -- Board Member instance to remove
         """
+        print "remove board member from col", member
         for c in self.cards:
             if isinstance(c(), card.Card):
                 c().remove_board_member(member)

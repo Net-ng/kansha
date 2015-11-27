@@ -945,10 +945,7 @@ class TokenGenerator(object):
 
         DataToken.delete_by_username(self.username, self.action)
         # create new one
-        token_instance = DataToken(token=token,
-                                   username=self.username,
-                                   action=self.action,
-                                   date=datetime.now())
+        token_instance = DataToken.new(token, self.username, self.action)
         return token_instance
 
     def get_tokens(self):

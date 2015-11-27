@@ -25,7 +25,8 @@ class BoardTest(unittest.TestCase):
 
     def setUp(self):
         helpers.setup_db(__metadata__)
-        self.boards_manager = boardsmanager.BoardsManager()
+        services = helpers.create_services()
+        self.boards_manager = boardsmanager.BoardsManager('', '', '', None, services)
 
     def tearDown(self):
         helpers.teardown_db(__metadata__)

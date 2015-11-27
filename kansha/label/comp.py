@@ -43,6 +43,11 @@ class Label(object):
         """
         return DataLabel.get(self.id)
 
+    @property
+    def color(self):
+        return self.data.color
+
+    @color.setter
     def set_color(self, v):
         """Change the color of the label
 
@@ -52,6 +57,11 @@ class Label(object):
         self.data.color = v
         self._changed(True)
 
+    @property
+    def title(self):
+        return self.data.title
+
+    @title.setter
     def set_title(self, title):
         """Set title
 
@@ -59,14 +69,6 @@ class Label(object):
             - ``title`` -- new title
         """
         self.data.title = title
-
-    def get_title(self):
-        """Get title
-
-        Return :
-            - the board title
-        """
-        return self.data.title
 
 
 class CardLabels(object):

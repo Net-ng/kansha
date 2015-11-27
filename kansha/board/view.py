@@ -23,7 +23,7 @@ from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                    VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
                    WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
-from .comp import (Board, Icon, NewBoard, BoardTitle,
+from .comp import (Board, Icon, BoardTitle,
                    BoardDescription, BoardMember)
 from nagare import i18n
 from nagare.ajax import py2js
@@ -283,26 +283,6 @@ def render_Icon(self, h, comp, *args):
         h << self.title
     else:
         h << h.i(class_=self.icon)
-    return h.root
-
-
-@presentation.render_for(NewBoard)
-@security.permissions('create_board')
-def render_NewBoard(self, h, comp, *args):
-    """Render board creator"""
-    title = var.Var()
-    buttons_id = h.generate_id()
-    user = security.get_user()
-    with h.form:
-        kw = {"onfocus": ("YAHOO.kansha.app.show('%s', true);"
-                          "YAHOO.util.Dom.addClass(this, 'expanded');"
-                          ) % buttons_id, }
-        h << h.input(type='text', placeholder=_(
-            'Create a new board'), class_='new-board-name', **kw).action(title)
-        with h.div(id=buttons_id, class_="buttons hidden"):
-            h << h.button(_('Add'), class_='btn btn-primary').action(lambda: self.create_board(comp, title(), user))
-            h << ' '
-            h << h.button(_('Cancel'), class_='btn').action(comp.answer)
     return h.root
 
 

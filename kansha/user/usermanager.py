@@ -79,7 +79,7 @@ class UserManager(object):
         return DataUser.get_confirmed_users()
 
     def create_user(self, username, password, fullname, email,
-                    source=u'application', picture=None, create_board=True):
+                    source=u'application', picture=None):
         from ..authentication.database import forms
         from ..board.boardsmanager import BoardsManager
         user = DataUser(username, password, fullname, email,
@@ -89,8 +89,6 @@ class UserManager(object):
             if token_gen.check_token(token.token) and token.board:
                 user.add_board(token.board)
             token_gen.reset_token(token.token)
-        if create_board:
-            BoardsManager().create_board(u"Welcome Board", user, True)
         return user
 
     def populate(self):

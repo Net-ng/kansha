@@ -58,9 +58,9 @@ class Kansha(object):
         self.user_menu = component.Component(None)
         self.content = component.Component(None).on_answer(self.select_board)
         self.user_manager = UserManager()
-        self.boards_manager = BoardsManager()
         self.search_engine = search
         self.default_board_id = None
+        self.boards_manager = self._services(BoardsManager, self.app_title, self.app_banner, self.theme, self.search_engine)
 
     def initialization(self):
         """ Initialize Kansha application
@@ -174,13 +174,6 @@ class MainTask(component.Task):
                 )
             )
             user = security.get_user()
-            if user.last_login is None:
-                # first connection.
-                # Load template boards if any,
-                self.app.boards_manager.create_boards_from_templates(user.data, self.cfg['tpl_cfg'])
-                #  then index cards
-                self.app.boards_manager.index_user_cards(user.data,
-                                                         self.search_engine)
             user.update_last_login()
 
         comp.call(self.app.initialization())

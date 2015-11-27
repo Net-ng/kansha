@@ -69,6 +69,9 @@ class Card(object):
         self._data = data
         self.reload(data if data else self.data)
 
+    def copy(self, other, additional_data):
+        self.data.copy(other.data)
+
     @property
     def must_reload_search(self):
         return self.board.must_reload_search

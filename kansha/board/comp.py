@@ -13,26 +13,23 @@ import re
 import unicodedata
 from cStringIO import StringIO
 
-from nagare import ajax
-from nagare import security, component, log
+from nagare import component, log, security
 from nagare.database import session
 from nagare.i18n import _, _L, format_date
 from webob import exc
 import xlwt
 
-from ..toolbox import popin, overlay
-from ..column import comp as column
-from ..description import comp as description
-from ..title import comp as title
-from .boardsmanager import BoardsManager
+from kansha import exceptions, notifications, validator
+from kansha.authentication.database import forms
+from kansha.card import fts_schema
+from kansha.column import comp as column
+from kansha.description import comp as description
+from kansha.label import comp as label
+from kansha.title import comp as title
+from kansha.toolbox import popin, overlay
+from kansha.user import usermanager
+from kansha.user.comp import PendingUser
 from .models import DataBoard, DataBoardMember
-from ..column.models import DataColumn
-from ..user.comp import PendingUser
-from ..user import usermanager
-from ..authentication.database import forms
-from .. import exceptions, notifications
-from ..card import fts_schema
-from .. import validator
 
 # Board visibility
 BOARD_PRIVATE = 0
@@ -155,6 +152,18 @@ class Board(object):
 
         self.must_reload_search = False
 
+    def copy(self, board, additional_data):
+        self.data.copy(board.data)
+        cols = [col() for col in board.columns if not col().is_archive]
+        for index, column in enumerate(cols):
+            new_column = self.create_column(index, column.data.title)
+            new_column.copy(column, additional_data)
+
+        for lbl in board.labels:
+            lbl = self.data.create_label(lbl.title, lbl.color)
+            self.labels.append(self._services(label.Label, lbl))
+
+
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
@@ -172,9 +181,8 @@ class Board(object):
             self.archive_column = archive
         else:
             # Create the unique archive column
-            last_idx = max(c.index for c in self.data.columns)
-            col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
-            self.archive_column = self._services(column.Column, col_id, self, self.search_engine)
+            last_idx = max(c.index for c in self.data.columns) if self.data.columns else -1
+            self.archive_column = self.create_column(index=last_idx + 1, title=_(u'Archive'), archive=True)
 
         if self.archive and security.has_permissions('manage', self):
             columns.append(component.Component(self.archive_column))
@@ -267,11 +275,12 @@ class Board(object):
         security.check_permissions('edit', self)
         if title == '':
             return False
-        col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
+        col = self.data.create_column(index, title, nb_cards, archive=archive)
+        col_obj = self._services(column.Column, col.id, self, self.search_engine)
         if not archive or (archive and self.archive):
-            self.columns.insert(index, component.Component(self._services(column.Column, col.id, self, self.search_engine), 'new'))
+            self.columns.insert(index, component.Component(col_obj, 'new'))
         self.increase_version()
-        return col.id
+        return col_obj
 
     def delete_column(self, id_):
         """Delete a board's column
@@ -543,13 +552,16 @@ class Board(object):
     def labels(self):
         """Returns the labels associated with the board
         """
-        return self.data.labels
+        return [self._services(label.Label, data) for data in self.data.labels]
+
+    def get_label_by_title(self, title):
+        return (l for l in self.labels if l.title == title).next()
 
     @property
     def data(self):
         """Return the board object from database
         """
-        return BoardsManager().get_by_id(self.id)
+        return DataBoard.get(self.id)
 
     def allow_comments(self, v):
         """Changes permission to add comments
@@ -900,25 +912,6 @@ class Icon(object):
         """
         self.icon = icon
         self.title = title
-
-################
-
-
-class NewBoard(object):
-
-    """Board creator component"""
-
-    @security.permissions('create_board')
-    def create_board(self, comp, title, user):
-        """Create a new board.
-
-        In:
-          - ``title`` -- the new board title
-        """
-        if title and title.strip():
-            b = BoardsManager().create_board(title, user)
-            comp.answer(b.id)
-        comp.answer()
 
 ################
 

@@ -12,10 +12,12 @@ import uuid
 import urllib
 
 from elixir import using_options
-from elixir import ManyToMany, ManyToOne, OneToMany
+from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
 from kansha.models import Entity
+from kansha.column.models import DataColumn
+from kansha.label.models import DataLabel
 from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
 from kansha.notifications import DataHistory
 from nagare.database import session
@@ -111,16 +113,6 @@ class DataBoard(Entity):
         """
         super(DataBoard, self).__init__(*args, **kwargs)
         self.uri = unicode(uuid.uuid4())
-
-    def label_by_title(self, title):
-        """Return a label instance which match with title
-
-        In:
-         - ``title`` -- the title of the label to search for
-        Return:
-         - label instance
-        """
-        return (l for l in self.labels if l.title == title).next()
 
     @classmethod
     def get_by_id(cls, id):
@@ -242,3 +234,12 @@ class DataBoard(Entity):
         q = q.filter(cls.is_template == False)
         q = q.order_by(DataBoard.title)
         return q
+
+    def create_column(self, index, title, nb_cards=None, archive=False):
+        return DataColumn.create_column(self, index, title, nb_cards, archive)
+
+    def create_label(self, title, color):
+        label = DataLabel(title=title, color=color)
+        self.labels.append(label)
+        session.flush()
+        return label

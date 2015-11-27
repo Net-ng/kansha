@@ -461,7 +461,6 @@ class UserBoards(object):
         self.user_id = user.username
         self.user_source = user.source
         self._services = services_service
-        self.new_board = component.Component(board.NewBoard())
         self.reload_boards()
 
     def _get_board(self, b, model=0):
@@ -514,7 +513,7 @@ def render_userboards(self, h, comp, *args):
             h << [b.on_answer(comp.answer).render(h, "item") for b in self.guest_boards.itervalues()]
 
     with h.div:
-        h << self.new_board.on_answer(lambda ret: self.reload_boards())
+        pass # TODO add board templates
 
     if len(self.archived_boards):
         h << h.h1(_('Archived boards'))

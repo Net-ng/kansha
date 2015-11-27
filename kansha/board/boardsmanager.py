@@ -7,21 +7,22 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-from datetime import datetime, timedelta, date
-from glob import glob
-import os.path
 import json
+import os.path
 import time
+from datetime import date, datetime, timedelta
+from glob import glob
 
 from nagare import database
 
+from .comp import Board
 from .models import DataBoard
-from ..label.models import DataLabel
-from ..card.models import DataCard
-from ..card.fts_schema import Card as FTSCard
-from ..column.models import DataColumn
-from ..comment.models import DataComment
-from ..vote.models import DataVote
+from kansha.card.fts_schema import Card as FTSCard
+from kansha.card.models import DataCard
+from kansha.column.models import DataColumn
+from kansha.comment.models import DataComment
+from kansha.label.models import DataLabel
+from kansha.vote.models import DataVote
 
 
 DEFAULT_LABELS = (
@@ -35,6 +36,51 @@ DEFAULT_LABELS = (
 
 
 class BoardsManager(object):
+    def __init__(self, app_title, app_banner, theme, search_engine, services_service):
+        self.app_title = app_title
+        self.app_banner = app_banner
+        self.theme = theme
+        self.search_engine = search_engine
+        self._services = services_service
+
+    def _create_board(self, manager, **kw):
+        '''Create a new board'''
+        board_data = DataBoard(**kw)
+        database.session.flush()
+
+        board = self._get_board(board_data)
+        if manager:
+            board.add_member(manager, 'manager')
+        return board
+
+    def _get_board(self, data_board):
+        '''Build a board object'''
+        return self._services(Board, data_board.id, self.app_title, self.app_banner, self.theme, self.search_engine)
+
+    def create_template_todo(self):
+        '''Get a default Todo template'''
+        board = DataBoard(title=u'Todo', is_template=True)
+        for title, index in [(u'To Do', 0), (u'Doing', 1), (u'Done', 2)]:
+            board.create_column(index, title)
+        for i, (title, color) in enumerate(DEFAULT_LABELS):
+            # TODO: Labels should not be created by their data model
+            board.labels.append(DataLabel(title=title, color=color, index=i))
+        database.session.add(board)
+        database.session.flush()
+        return self._get_board(board)
+
+    def copy_board(self, board, user, board_to_template=True):
+        data = {}
+        new_board = self._create_board(user)
+        new_board.data.is_template = board_to_template
+        new_board.copy(board, data)
+        return new_board
+
+    def get_by_id(self, id):
+        return DataBoard.get(id)
+
+    def get_by_uri(self, uri):
+        return DataBoard.get_by_uri(uri)
 
     def create_board(self, title, user, default=False):
         """Create new board
@@ -46,36 +92,17 @@ class BoardsManager(object):
         Return:
             - new DataBoard created
         """
-        board = DataBoard(title=title)
-        self.create_default_columns(board)
-        self.create_default_label(board)
+        tpl = self.create_template_todo()
+        board = self.copy_board(tpl, user, False)
         if default:
             self.create_default_cards(board, user)
         user.add_board(board, "manager")
         return board
 
-    def get_by_id(self, id):
-        return DataBoard.get(id)
-
-    def get_by_uri(self, uri):
-        return DataBoard.get_by_uri(uri)
-
-    def create_default_columns(self, board):
-        """Create three default columns for new board
-
-        In:
-          - ``board`` -- the new board
-        """
-        for title, index in [(u'To Do', 0), (u'Doing', 1), (u'Done', 2)]:
-            DataColumn(title=title, index=index, board=board)
-
-    def create_default_label(self, board):
-        for i, (title, color) in enumerate(DEFAULT_LABELS):
-            DataLabel(title=title, color=color, board=board, index=i)
-
     def create_default_cards(self, board, user):
-        green = board.label_by_title(u'Green')
-        red = board.label_by_title(u'Red')
+        user = user.data
+        green = board.get_label_by_title(u'Green').data
+        red = board.get_label_by_title(u'Red').data
         column_1 = board.columns[0]
         cards = [DataCard(title=u"Welcome to your board!", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
                  DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", author=user, creation_date=datetime.utcnow()),

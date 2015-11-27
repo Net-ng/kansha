@@ -64,9 +64,8 @@ class BoardLabels(object):
         self.board = board
         self.labels = []
         for data in board.labels:
-            new_label = label.Label(data)
-            t = component.Component(label.LabelTitle(new_label))
-            l = component.Component(new_label, model='edit-color')
+            t = component.Component(label.LabelTitle(data))
+            l = component.Component(data, model='edit-color')
             self.labels.append((t, l))
 
 

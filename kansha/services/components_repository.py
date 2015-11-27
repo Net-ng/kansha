@@ -19,6 +19,8 @@ class CardExtension(object):
     def delete(self):
         pass
 
+    def new_card_position(self, value):
+        pass
 
 @presentation.render_for(CardExtension)
 @presentation.render_for(CardExtension, 'cover')

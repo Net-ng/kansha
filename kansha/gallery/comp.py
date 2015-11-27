@@ -13,16 +13,17 @@ from nagare import component, security, var
 from nagare.i18n import _
 
 from kansha import notifications
-from kansha.authentication.database import validators
 from kansha.toolbox import overlay
 from kansha.user import usermanager
+from kansha.authentication.database import validators
+from kansha.services.components_repository import CardExtension
 
 from .models import DataGallery, DataAsset
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 
-class Gallery(object):
+class Gallery(CardExtension):
 
     def __init__(self, card, assets_manager_service):
         """Init method
@@ -155,7 +156,7 @@ class Gallery(object):
                 break
             i = i + 1
 
-    def delete_assets(self):
+    def delete(self):
         '''Delete all assets'''
         for asset in self.data.get_assets():
             self.assets_manager.delete(asset.filename)

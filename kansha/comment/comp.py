@@ -13,11 +13,12 @@ import datetime
 from nagare import component, security
 from nagare.database import session
 
-from .models import DataComment
-from ..user import usermanager
-from ..flow import comp as flow
-from .. import notifications, validator
+from kansha.services.components_repository import CardExtension
 
+from kansha import notifications, validator
+from kansha.user import usermanager
+
+from .models import DataComment
 
 class Comment(object):
 
@@ -94,7 +95,7 @@ class Commentlabel(object):
         return self.parent.is_author(user)
 
 
-class Comments(object):
+class Comments(CardExtension):
 
     """Comments component
     """

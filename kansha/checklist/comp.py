@@ -11,8 +11,10 @@ from nagare import component, database, security
 
 import json
 
-from kansha.title import comp as title
 from kansha import notifications
+from kansha.title import comp as title
+from kansha.services.components_repository import CardExtension
+
 from models import DataChecklist, DataChecklistItem
 
 
@@ -142,7 +144,7 @@ class Checklist(object):
                                   data)
 
 
-class Checklists(object):
+class Checklists(CardExtension):
 
     def __init__(self, card):
         self.parent = card

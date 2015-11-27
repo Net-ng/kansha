@@ -11,7 +11,7 @@
 import dateutil.parser
 
 from nagare import (component, log, security, editor, validator)
-from nagare.i18n import _, _L
+from nagare.i18n import _
 
 from kansha import exceptions, notifications
 from kansha.checklist import comp as checklist
@@ -24,6 +24,7 @@ from kansha.title import comp as title
 from kansha.toolbox import overlay
 from kansha.user import usermanager
 from kansha.vote import comp as vote
+from kansha.services.components_repository import CardExtension
 
 from .models import DataCard
 
@@ -58,6 +59,7 @@ class Card(object):
         self.column = column
         self._services = services_service
         self._data = data
+        self.card_extensions = tuple()
         self.reload(data if data else self.data)
 
     @property
@@ -74,16 +76,20 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
+        extensions_classes = (
+            ('labels', label.CardLabels),
+            ('description', description.CardDescription),
+            ('checklists', checklist.Checklists),
+            ('gallery', gallery.Gallery),
+            ('comments', comment.Comments),
+            ('due_date', due_date.DueDate),
+            ('votes', vote.Votes),
+            ('_weight', CardWeightEditor),
+            ('card_members', CardMembers)
+        )
         self.title = component.Component(CardTitle(self))
-        self.labels = component.Component(label.CardLabels(self))
-        self.description = component.Component(description.CardDescription(self))
-        self.checklists = component.Component(checklist.Checklists(self))
-        self.gallery = component.Component(self._services(gallery.Gallery, self))#
-        self.comments = component.Component(comment.Comments(self))
-        self.due_date = component.Component(due_date.DueDate(self))#
-        self.votes = component.Component(vote.Votes(self))
-        self._weight = component.Component(CardWeightEditor(self))
-        self.card_members = component.Component(CardMembers(self))
+        self.card_extensions = [(name, component.Component(self._services(extension, self)))
+                                for name, extension in extensions_classes]
 
     @property
     def data(self):
@@ -117,7 +123,8 @@ class Card(object):
 
     def delete(self):
         """Delete itself"""
-        self.gallery().delete_assets()
+        for __, extension in self.card_extensions:
+            extension().delete()
         DataCard.delete_card(self.data)
 
     def move_card(self, card_index, column):
@@ -132,12 +139,13 @@ class Card(object):
         column.data.cards.append(data_card)
         self.column = column
 
-    def new_start_from_ajax(self, request, response):
+    def card_dropped(self, request, response):
         """
         Dropped on new date (calendar view).
         """
         start = dateutil.parser.parse(request.GET['start']).date()
-        self.due_date().set_value(start)
+        for __, extension in self.card_extensions:
+            extension().new_card_position(start)
 
     ################################
     # Feature methods, persistency #
@@ -234,6 +242,9 @@ class Card(object):
         notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_weight', values)
         self.data.weight = value
 
+    def weighting_on(self):
+        return self.board.weighting_cards
+
     # Comments
 
     def get_comments(self):
@@ -258,7 +269,7 @@ class CardTitle(title.Title):
     field_type = 'input'
 
 
-class CardWeightEditor(editor.Editor):
+class CardWeightEditor(editor.Editor, CardExtension):
 
     """ Card weight Form
     """
@@ -296,7 +307,7 @@ class CardWeightEditor(editor.Editor):
         return False
 
 
-class CardMembers(object):
+class CardMembers(CardExtension):
 
     max_shown_members = 3
 

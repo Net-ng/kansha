@@ -180,13 +180,7 @@ a.card-label:hover {
     color: #737373
 }
 
-.card-edit-form .description {
-    font: normal 14px OpenSansLight;
-}
 
-.card-edit-form .description p {
-    font: normal 14px OpenSansLight;
-}
 /* End editor */
 
 /* Badges */
@@ -252,7 +246,7 @@ a.card-label:hover {
 }
 
 .comment .fullname {
-    font: normal 14px OpenSansBold
+    font-weight: bold;
 }
 
 .comment .right {
@@ -453,7 +447,8 @@ div.history th {
 }
 
 .calendar .calendar-header select {
-    font: normal 12px OpenSansSemibold;
+    font-size: 12px;
+    font-weight: bold;
     border: 1px solid #eaeaea;
 }
 /* End calendar */

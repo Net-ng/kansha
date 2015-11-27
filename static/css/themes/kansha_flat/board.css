@@ -190,20 +190,15 @@ a.card-label:hover {
 /* End editor */
 
 /* Badges */
-.badges i {
+.badge i {
     font-size: 13px;
 }
 
-.badges > .label {
-    border: 1px solid transparent;
-    border-radius: 3px;
+.badge > .label {
     color: #737373;
     font-size: 12px;
 }
 
-.badges.highlight > .label:hover {
-    color: black;
-}
 /* End badges */
 
 /* Card overlays */

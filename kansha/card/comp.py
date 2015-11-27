@@ -212,7 +212,7 @@ class Card(object):
         return self.data.cover is not None
 
     def get_cover(self):
-        return self._services(gallery.Asset, self.data.cover)
+        return self.data.cover
 
     def remove_cover(self):
         self.data.remove_cover()
@@ -327,7 +327,7 @@ class CardMembers(object):
     def many_user_render(h, number):
         return h.span(
             h.i(class_='ico-btn icon-user-nb'),
-            h.span(number, class_='badge'),
+            h.span(number, class_='count'),
             title=_("%s more...") % number)
 
     @property
@@ -349,7 +349,6 @@ class CardMembers(object):
         Return:
             - JS code, reload card and hide overlay
         """
-        print emails
         members = []
         if isinstance(emails, (str, unicode)):
             emails = [e.strip() for e in emails.split(',') if e.strip() != '']

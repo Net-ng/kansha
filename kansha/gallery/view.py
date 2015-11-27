@@ -7,9 +7,10 @@
 # this distribution.
 # --
 
-from .comp import Gallery, Asset, AssetCropper
-from nagare import presentation, var, ajax, security
 from nagare.i18n import _, _N
+from nagare import presentation, var, ajax, security, component
+
+from .comp import Gallery, Asset, AssetCropper
 
 
 def render_image(self, h, comp, size, randomize=False, **kw):
@@ -52,7 +53,14 @@ def render(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Gallery, "download")
+@presentation.render_for(Gallery, 'cover')
+def render_cover(self, h, comp, model):
+    cover = self.get_cover()
+    if cover:
+        h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
+    return h.root
+
+@presentation.render_for(Gallery, "action")
 def render_download(self, h, comp, *args):
     if security.has_permissions('edit', self):
         v_file = var.Var()
@@ -93,8 +101,9 @@ def render_download(self, h, comp, *args):
 def render_gallery_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.assets:
-        label = _N('file', 'files', len(self.assets))
-        h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
+        with h.span(class_='badge'):
+            label = _N('file', 'files', len(self.assets))
+            h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
     return h.root
 
 

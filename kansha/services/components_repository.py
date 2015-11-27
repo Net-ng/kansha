@@ -22,7 +22,7 @@ class CardExtension(object):
 
 @presentation.render_for(CardExtension)
 @presentation.render_for(CardExtension, 'cover')
-# @presentation.render_for(CardExtension, 'edit')
+@presentation.render_for(CardExtension, 'calendar')
 @presentation.render_for(CardExtension, 'badge')
 @presentation.render_for(CardExtension, 'header')
 @presentation.render_for(CardExtension, 'action')

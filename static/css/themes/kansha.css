@@ -268,13 +268,12 @@ i[class^="icon-"]:before {
 
 .avatar {
     display: inline-block;
-    max-height: 32px;
-    max-width: 36px;
+    height: 28px;
 }
 
 .avatar img {
     max-width: 30px;
-    max-height: 28px;
+    height: 28px;
     display: block
 }
 /* End avatars */
@@ -496,7 +495,7 @@ i[class^="icon-"]:before {
     margin: 0
 }
 
-.members .more .badge {
+.members .more .count {
     position: relative;
     left: -11px;
     top: -1px;

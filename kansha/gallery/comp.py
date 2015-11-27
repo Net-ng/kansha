@@ -121,6 +121,12 @@ class Gallery(object):
             a().is_cover = False
         asset.is_cover = True
 
+    def get_cover(self):
+        cover = None
+        if self.card.has_cover():
+            cover = Asset(self.card.get_cover(), self.assets_manager)
+        return cover
+
     def remove_cover(self, asset):
         """Don't use the asset as cover anymore
 

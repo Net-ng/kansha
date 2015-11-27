@@ -112,6 +112,7 @@ def render_comments_form(self, h, comp, *args):
 def render_comments_badge(self, h, *args):
     """Comment badge for the card"""
     if self.comments:
-        label = _N('comment', 'comments', len(self.comments))
-        h << h.span(h.i(class_='icon-bubble'), ' ', len(self.comments), class_='label', data_tooltip=label)
+        with h.span(class_='badge'):
+            label = _N('comment', 'comments', len(self.comments))
+            h << h.span(h.i(class_='icon-bubble'), ' ', len(self.comments), class_='label', data_tooltip=label)
     return h.root

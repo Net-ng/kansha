@@ -61,5 +61,6 @@ def render(self, h, comp, *args):
 def render(self, h, *args):
     """Render description component as a card badge"""
     if self.text:
-        h << h.span(h.i(class_='icon-pencil'), class_='label')
+        with h.span(class_='badge'):
+            h << h.span(h.i(class_='icon-pencil'), class_='label')
     return h.root

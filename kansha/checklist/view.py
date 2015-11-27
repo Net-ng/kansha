@@ -80,7 +80,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Checklists, 'button')
+@presentation.render_for(Checklists, 'action')
 def render_Checklists_button(self, h, comp, model):
     if security.has_permissions('checklist', self.parent):
         with h.a(class_='btn').action(self.add_checklist):
@@ -140,7 +140,8 @@ def render_Checklists(self, h, comp, model):
 @presentation.render_for(Checklists, 'badge')
 def render_Checklists_badge(self, h, comp, model):
     if self.checklists:
-        h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
+        with h.span(class_='badge'):
+            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
     return h.root
 
 

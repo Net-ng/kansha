@@ -110,7 +110,7 @@ class Board(object):
         def many_user_render(h, number):
             return h.span(
                 h.i(class_='ico-btn icon-user-nb'),
-                h.span(number, class_='badge'),
+                h.span(number, class_='count'),
                 title=_("%s more...") % number)
 
         self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.max_shown_members),

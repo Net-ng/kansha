@@ -48,11 +48,12 @@ def render_DueDate(self, h, comp, model):
 def render_DueDate_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.value:
-        h << h.span(h.i(class_='icon-alarm'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), data_tooltip=format_date(self.value, 'full'))
+        with h.span(class_='badge'):
+            h << h.span(h.i(class_='icon-alarm'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), data_tooltip=format_date(self.value, 'full'))
     return h.root
 
 
-@presentation.render_for(DueDate, model='button')
+@presentation.render_for(DueDate, model='action')
 def render_DueDate_button(self, h, comp, *args):
     if security.has_permissions('due_date', self.parent):
         id_ = h.generate_id()

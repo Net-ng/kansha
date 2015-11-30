@@ -82,13 +82,8 @@ def render(self, h, comp, *args):
                     '%s#id_%s' % (self.data.column.board.url, self.id)
                 )
             }
-            # h << self.labels
             h << self.title.render(h, 'card-title')
-            if self.has_cover():
-                h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
-            # h << comp.render(h, 'badges')
-            # h << self.card_members.render(h, 'members_read_only') # FIXME
-
+            # FIXME: unify with main card view.
     return h.root
 
 

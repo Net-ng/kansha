@@ -28,6 +28,8 @@ IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 class Gallery(CardExtension):
 
+    LOAD_PRIORITY = 40
+
     def __init__(self, card, assets_manager_service):
         """Init method
 

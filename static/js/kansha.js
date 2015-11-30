@@ -231,7 +231,7 @@
                 Dom.get('lists').replaceChild(list, newList);
             }
             var lists = ECN('list', 'div', 'lists');
-            Dom.setStyle(lists, 'width', 92 / lists.length + '%');
+            Dom.setStyle(lists, 'width', 100 / lists.length + '%');
             if (newList) {
                 lists = Dom.get('lists');
                 lists.scrollLeft = list.offsetLeft - lists.offsetLeft;

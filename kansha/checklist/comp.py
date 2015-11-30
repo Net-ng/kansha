@@ -147,6 +147,8 @@ class Checklist(object):
 
 class Checklists(CardExtension):
 
+    LOAD_PRIORITY = 30
+
     def __init__(self, card):
         self.parent = card
         self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.get_datalists()]

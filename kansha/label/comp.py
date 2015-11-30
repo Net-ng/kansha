@@ -77,6 +77,8 @@ class CardLabels(CardExtension):
     This component represents all labels associated with a card
     """
 
+    LOAD_PRIORITY = 10
+
     def __init__(self, card):
         """Initialization
 

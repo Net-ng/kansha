@@ -19,6 +19,8 @@ class CardDescription(CardExtension):
     Examples are available in card and board modules
     """
 
+    LOAD_PRIORITY = 20
+
     def __init__(self, parent):
         """Initialization
 

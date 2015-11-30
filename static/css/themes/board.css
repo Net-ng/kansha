@@ -325,10 +325,11 @@ textarea.expanded {
 .members {
     min-height: 32px;
     margin-top: 5px;
+    display: inline-block;
 }
 
 .members .more {
-    float: left;
+    display: inline-block;
     margin-top: 2px;
 }
 

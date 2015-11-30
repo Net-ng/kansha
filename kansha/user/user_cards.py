@@ -75,8 +75,9 @@ class UserCards(object):
             order = [prop() for prop, __ in order_keys]
             self._cards = [
                 component.Component(
-                    self._services(card.Card, c.id, None, data=c)
+                    self._services(card.Card, c.id, None, {}, data=c)
                 )
+                # FIXME: nosql in components!
                 for c in (self.user.cards.join(DataCard.column).
                           join(DataColumn.board).
                           filter(DataColumn.archive==False).

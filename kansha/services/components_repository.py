@@ -8,10 +8,10 @@
 # this distribution.
 #--
 from nagare import presentation
+from nagare.services import plugin, plugins
 
-
-class CardExtension(object):
-    component_category = 'card-extension'
+class CardExtension(plugin.Plugin):
+    CATEGORY = 'card-extension'
 
     def __init__(self, card):
         self.card = card
@@ -21,6 +21,12 @@ class CardExtension(object):
 
     def new_card_position(self, value):
         pass
+
+
+class CardExtensions(plugins.Plugins):
+    ENTRY_POINTS = 'kansha.card.extensions'
+    CONFIG_SECTION = 'card_extensions'
+
 
 @presentation.render_for(CardExtension)
 @presentation.render_for(CardExtension, 'cover')

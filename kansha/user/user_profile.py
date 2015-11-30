@@ -466,7 +466,7 @@ class UserBoards(object):
 
     def _get_board(self, b, model=0):
         b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
-                           None,
+                           {}, None,
                            on_board_delete=self.reload_boards,
                            on_board_archive=self.reload_boards,
                            on_board_restore=self.reload_boards,

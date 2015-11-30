@@ -14,16 +14,9 @@ from nagare import (component, log, security, editor, validator)
 from nagare.i18n import _
 
 from kansha import exceptions, notifications
-from kansha.checklist import comp as checklist
-from kansha.comment import comp as comment
-from kansha.description import comp as description
-from kansha.due_date import comp as due_date
-from kansha.gallery import comp as gallery
-from kansha.label import comp as label
 from kansha.title import comp as title
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha.vote import comp as vote
 from kansha.services.components_repository import CardExtension
 
 from .models import DataCard
@@ -47,7 +40,7 @@ class Card(object):
     """Card component
     """
 
-    def __init__(self, id_, column, services_service, data=None):
+    def __init__(self, id_, column, card_extensions, services_service, data=None):
         """Initialization
 
         In:
@@ -60,6 +53,7 @@ class Card(object):
         self._services = services_service
         self._data = data
         self.card_extensions = tuple()
+        self.card_repo = card_extensions
         self.reload(data if data else self.data)
 
     @property
@@ -76,20 +70,9 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
-        EXTENSIONS_CLASSES = (
-            ('labels', label.CardLabels),
-            ('description', description.CardDescription),
-            ('checklists', checklist.Checklists),
-            ('gallery', gallery.Gallery),
-            ('comments', comment.Comments),
-            ('due_date', due_date.DueDate),
-            ('votes', vote.Votes),
-            ('_weight', CardWeightEditor),
-            ('card_members', CardMembers)
-        )
         self.title = component.Component(CardTitle(self))
         self.card_extensions = [(name, component.Component(self._services(extension, self)))
-                                for name, extension in EXTENSIONS_CLASSES]
+                                for name, extension in self.card_repo.items()]
 
     @property
     def data(self):
@@ -292,6 +275,8 @@ class CardWeightEditor(editor.Editor, CardExtension):
     """ Card weight Form
     """
 
+    LOAD_PRIORITY = 80
+
     fields = {'weight'}
     # WEIGHTING TYPES
     WEIGHTING_OFF = 0
@@ -327,6 +312,8 @@ class CardWeightEditor(editor.Editor, CardExtension):
 
 
 class CardMembers(CardExtension):
+
+    LOAD_PRIORITY = 90
 
     max_shown_members = 3
 

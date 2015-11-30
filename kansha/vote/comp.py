@@ -16,6 +16,8 @@ from .models import DataVote
 
 class Votes(CardExtension):
 
+    LOAD_PRIORITY = 70
+
     """Vote component
     """
 

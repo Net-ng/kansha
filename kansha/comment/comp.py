@@ -97,6 +97,8 @@ class Commentlabel(object):
 
 class Comments(CardExtension):
 
+    LOAD_PRIORITY = 50
+
     """Comments component
     """
 

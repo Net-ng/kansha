@@ -17,6 +17,8 @@ from kansha.services.components_repository import CardExtension
 
 class DueDate(CardExtension):
 
+    LOAD_PRIORITY = 60
+
     def __init__(self, parent):
         """Initialization
 

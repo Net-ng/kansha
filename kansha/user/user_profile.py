@@ -472,7 +472,7 @@ class UserBoards(object):
 
     def _get_board(self, b, model=0):
         if b.id in self.all_boards:
-            bbo = self.all_boards[b.id]
+            bc = self.all_boards[b.id]
         else:
             bbo = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
                                  {}, None,
@@ -482,10 +482,12 @@ class UserBoards(object):
                                  on_board_leave=self.reload_boards,
                                  on_update_members=self.reload_boards,
                                  load_data=False)
-            self.all_boards[b.id] = bbo
-        return component.Component(bbo, model)
+            bc = component.Component(bbo, model)
+            self.all_boards[b.id] = bc
+        return bc
 
     def reload_boards(self):
+        self.all_boards = {}
         self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
                                                 for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
         self.my_boards = OrderedDict((b.id, self._get_board(b))

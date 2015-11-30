@@ -287,6 +287,7 @@ class CardWeightEditor(editor.Editor, CardExtension):
         """
         super(CardWeightEditor, self).__init__(target, self.fields)
         self.weight.validate(self.validate_weight)
+        self.action_button = component.Component(self, 'action_button')
 
     def validate_weight(self, value):
         """

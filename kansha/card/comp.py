@@ -230,6 +230,9 @@ class Card(object):
     def get_available_labels(self):
         return self.column.get_available_labels()
 
+    def get_datalabels(self):
+        return self.data.labels
+
     # Weight
 
     @property
@@ -257,6 +260,21 @@ class Card(object):
 
     def set_description(self, value):
         self.data.description = value
+
+    # Checklists
+
+    def get_datalists(self):
+        return self.data.checklists
+
+    # Due Date
+
+    @property
+    def due_date(self):
+        return self.data.due_date
+
+    @due_date.setter
+    def due_date(self, value):
+        self.data.due_date = value
 
 
 ############### Extension components ###################

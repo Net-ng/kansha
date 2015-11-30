@@ -23,13 +23,13 @@ class DueDate(CardExtension):
             - ``parent`` -- the object parent
         """
         self.parent = parent
-        self.value = parent.data.due_date
+        self.value = parent.due_date
         self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
         self.calendar = component.Component(self.calendar)
 
     def set_value(self, value):
         '''Set the value to a new date (or None)'''
-        self.parent.data.due_date = value
+        self.parent.due_date = value
         self.value = value
 
     def new_card_position(self, value):

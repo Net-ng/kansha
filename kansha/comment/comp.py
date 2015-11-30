@@ -126,7 +126,7 @@ class Comments(CardExtension):
         if v:
             v = validator.clean_text(v)
             user = security.get_user()
-            comment = DataComment(comment=v.strip(), card_id=self.parent.data.id,
+            comment = DataComment(comment=v.strip(), card_id=self.parent.db_id,
                                   author=user.data, creation_date=datetime.datetime.utcnow())
             session.add(comment)
             session.flush()

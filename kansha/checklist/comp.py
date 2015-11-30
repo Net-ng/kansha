@@ -149,7 +149,7 @@ class Checklists(CardExtension):
 
     def __init__(self, card):
         self.parent = card
-        self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.data.checklists]
+        self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.get_datalists()]
         self.comp_id = str(random.randint(10000, 100000))
 
     @property

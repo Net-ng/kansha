@@ -268,13 +268,13 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(len(board.members), 1)
         self.assertEqual(len(board.managers), 1)
 
-        member.dispatch('toggle_role')
+        member.dispatch('toggle_role', '')
         member = find_board_member()
         board.update_members()
         self.assertEqual(len(board.members), 0)
         self.assertEqual(len(board.managers), 2)
 
-        member.dispatch('toggle_role')
+        member.dispatch('toggle_role', '')
         board.update_members()
         self.assertEqual(len(board.members), 1)
         self.assertEqual(len(board.managers), 1)

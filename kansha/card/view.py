@@ -240,7 +240,7 @@ def render_card_members(self, h, comp, *args):
     And at the end icon "add user"
     """
     with h.div(class_='members'):
-        # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
+        h << h.script('''YAHOO.kansha.app.hideOverlay();''')
         for m in self.members[:self.max_shown_members]:
             h << m.on_answer(self.remove_member).render(h, model="overlay-remove")
         if len(self.members) > self.max_shown_members:

@@ -99,7 +99,6 @@ def render_card_edit(self, h, comp, *args):
     if self.data is None:
         return h.root
     # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
-    extensions = [extension for name, extension in self.card_extensions]
 
     with h.div(class_='card-edit-form'):
         with h.div(class_='header'):
@@ -107,11 +106,12 @@ def render_card_edit(self, h, comp, *args):
             h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
-                h << [extension.render(h.AsyncRenderer()) for extension in extensions]
+                for name, extension in self.card_extensions:
+                    h << h.div(extension.render(h.AsyncRenderer()), class_=name)
             with h.div(class_='card-actions'):
                 with h.form:
                     h << comp.render(h, 'delete-action')
-                    h << [extension.render(h.AsyncRenderer(), 'action') for extension in extensions]
+                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.card_extensions]
     return h.root
 
 

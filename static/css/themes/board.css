@@ -347,13 +347,16 @@ textarea.expanded {
 
 .members a {
     width: auto;
-    float: left;
+    /*float: left;*/
     padding: 0
 }
 
 .members .add {
     visibility: hidden;
     margin-top: 2px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
 }
 
 .card:hover .members .add,

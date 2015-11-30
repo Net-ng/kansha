@@ -124,6 +124,7 @@ class Board(object):
                       'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
                       'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
                       'export': component.Component(Icon("icon-download3", _("Export board"))),
+                      'save_template': component.Component(Icon("icon-floppy-disk", _("Save as template"))),
                       'archive': component.Component(Icon("icon-bin", _("Archive board"))),
                       'leave': component.Component(Icon("icon-exit", _("Leave this board"))),
                       'history': component.Component(Icon("icon-history", _("Action log"))),
@@ -150,12 +151,20 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
+        self.save_template_comp = component.Component(self, 'save_template')
+        self.save_template_overlay = component.Component(
+            overlay.Overlay(lambda r: self.icons['save_template'],
+                            lambda r: self.save_template_comp.render(r),
+                            title=_(u"Save board as template"), dynamic=True)
+        )
+
         self.must_reload_search = False
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
         new_obj = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.search_engine, load_data=False)
         new_obj.add_member(owner, 'manager')
+        additional_data['author'] = owner
 
         cols = [col() for col in self.columns if not col().is_archive]
         for index, column in enumerate(cols):
@@ -169,6 +178,12 @@ class Board(object):
 
         return new_obj
 
+    def save_as_template(self, shared):
+        user = security.get_user()
+        template = self.copy(user, {})
+        template.data.is_template = True
+        template.data.visibility = BOARD_PRIVATE if not shared else BOARD_PUBLIC
+        return 'YAHOO.kansha.app.hideOverlay();'
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
@@ -893,6 +908,10 @@ class Board(object):
     @staticmethod
     def get_archived_boards_for(user_username, user_source):
         return DataBoard.get_archived_boards_for(user_username, user_source)
+
+    @staticmethod
+    def get_templates_for(user_username, user_source):
+        return DataBoard.get_templates_for(user_username, user_source, BOARD_PUBLIC)
 
     def set_reload_search(self):
         self.must_reload_search = True

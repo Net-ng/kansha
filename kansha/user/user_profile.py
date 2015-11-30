@@ -12,17 +12,17 @@ from collections import OrderedDict
 import imghdr
 import peak.rules
 
-from nagare import ajax
-from nagare import presentation, security, editor, component
+from nagare import ajax, component, editor, presentation, security, var
 from nagare.i18n import _, _L
 
-from kansha.authentication.database import validators, forms as registation_forms
+from kansha import validator
 from kansha.board import comp as board
 from kansha.menu import MenuEntry
-from usermanager import UserManager
+from kansha.authentication.database import validators, forms as registation_forms
 
 from .user_cards import UserCards
-from kansha import validator
+from .usermanager import UserManager
+
 
 LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
@@ -461,7 +461,22 @@ class UserBoards(object):
         self.user_id = user.username
         self.user_source = user.source
         self._services = services_service
+
         self.reload_boards()
+
+    def create_board(self, board_id, comp):
+        b = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
+                           None,
+                           on_board_delete=self.reload_boards,
+                           on_board_archive=self.reload_boards,
+                           on_board_restore=self.reload_boards,
+                           on_board_leave=self.reload_boards,
+                           on_update_members=self.reload_boards,
+                           load_data=False)
+        b.load_data()
+        new_board = b.copy(security.get_user(), {})
+        new_board.data.is_template = False
+        comp.answer(new_board.id)
 
     def _get_board(self, b, model=0):
         b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
@@ -475,6 +490,8 @@ class UserBoards(object):
         return component.Component(b, model)
 
     def reload_boards(self):
+        self.templates = OrderedDict((b.id, b.title)
+                                      for b in board.Board.get_templates_for(self.user_id, self.user_source))
         self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
                                                 for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
         self.my_boards = OrderedDict((b.id, self._get_board(b))
@@ -493,6 +510,7 @@ class UserBoards(object):
 
 @presentation.render_for(UserBoards)
 def render_userboards(self, h, comp, *args):
+    template = var.Var(u'')
     h.head << h.head.title(self.app_title)
 
     h.head.css_url('css/themes/home.css')
@@ -512,8 +530,20 @@ def render_userboards(self, h, comp, *args):
         with h.ul(class_="board-labels"):
             h << [b.on_answer(comp.answer).render(h, "item") for b in self.guest_boards.itervalues()]
 
-    with h.div:
-        pass # TODO add board templates
+    with h.div(class_='new-board'):
+        with h.form:
+            h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
+            h << _(u' a new ')
+
+            if len(self.templates) > 1:
+                with h.select.action(template):
+                    h << [h.option(tpl, value=id_) for id_, tpl in self.templates.iteritems()]
+            else:
+                id_, tpl = self.templates.items()[0]
+                template(id_)
+                h << tpl
+
+            h << _(u' board')
 
     if len(self.archived_boards):
         h << h.h1(_('Archived boards'))
@@ -522,14 +552,15 @@ def render_userboards(self, h, comp, *args):
             h << [b.render(h, "archived_item")
                   for b in self.archived_boards.itervalues()]
 
-        h << h.button(
-            _("Delete"),
-            class_="delete",
-            onclick='return confirm(%s)' % ajax.py2js(
-                _("These boards will be destroyed. Are you sure?")
-            ).decode('UTF-8'),
-            type='submit'
-        ).action(self.purge_archived_boards)
+        with h.form:
+            h << h.button(
+                _("Delete"),
+                class_="delete",
+                onclick='return confirm(%s)' % ajax.py2js(
+                    _("These boards will be destroyed. Are you sure?")
+                ).decode('UTF-8'),
+                type='submit'
+            ).action(self.purge_archived_boards)
 
     h << h.script('YAHOO.kansha.app.hideOverlay();'
                   'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_boards, render=0)).get('onclick'))

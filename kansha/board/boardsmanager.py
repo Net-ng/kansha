@@ -15,7 +15,7 @@ from glob import glob
 
 from nagare import database
 
-from .comp import Board
+from .comp import Board, BOARD_PUBLIC
 from .models import DataBoard
 from kansha.card.fts_schema import Card as FTSCard
 from kansha.card.models import DataCard
@@ -60,10 +60,10 @@ class BoardsManager(object):
     def create_template_todo(self):
         '''Get a default Todo template'''
         board = DataBoard(title=u'Todo', is_template=True)
+        board.visibility = BOARD_PUBLIC
         for title, index in [(u'To Do', 0), (u'Doing', 1), (u'Done', 2)]:
             board.create_column(index, title)
         for i, (title, color) in enumerate(DEFAULT_LABELS):
-            # TODO: Labels should not be created by their data model
             board.labels.append(DataLabel(title=title, color=color, index=i))
         database.session.add(board)
         database.session.flush()

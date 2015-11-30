@@ -71,7 +71,8 @@ class Card(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = self._services(Card, new_data.id, parent, self._services, data=new_data)
+        new_data.author = additional_data['author'].data
+        new_obj = self._services(Card, new_data.id, parent, data=new_data)
 
         # TODO extensions
 

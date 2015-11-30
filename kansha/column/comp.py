@@ -58,7 +58,7 @@ class Column(object):
         new_obj = self._services(Column, new_data.id, None, self.search_engine, data=new_data)
 
         for card in self.cards:
-            new_card = card.copy(new_obj, additional_data)
+            new_card = card().copy(new_obj, additional_data)
             new_obj.cards.append(component.Component(new_card))
 
         return new_obj

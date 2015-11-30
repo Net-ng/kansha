@@ -240,6 +240,23 @@ class DataBoard(Entity):
         q = q.order_by(DataBoard.title)
         return q
 
+    @classmethod
+    def get_templates_for(cls, user_username, user_source, public_value):
+        q = cls.query
+        q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == True)
+
+        q1 = q.filter(cls.visibility == public_value)
+
+        q2 = q.join(DataBoardManager)
+        q2 = q2.filter(DataBoardManager.user_username == user_username)
+        q2 = q2.filter(DataBoardManager.user_source == user_source)
+
+        q = q1.union(q2)
+        q = q.order_by(DataBoard.visibility.desc(), DataBoard.title)
+
+        return q
+
     def create_column(self, index, title, nb_cards=None, archive=False):
         return DataColumn.create_column(self, index, title, nb_cards, archive)
 

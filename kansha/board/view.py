@@ -47,8 +47,10 @@ def render_Board_menu(self, h, comp, *args):
             if security.has_permissions('edit', self):
                 h << self.add_list_overlay
                 h << self.edit_description_overlay
+                h << self.save_template_overlay
 
             h << h.a(self.icons['export']).action(self.export)
+
 
             h << h.a(self.icons['history']).action(
                 lambda: self.popin.call(
@@ -346,6 +348,22 @@ def render_Board_columns(self, h, comp, *args):
 
             # Call columns resize
             h << h.script('YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();')
+    return h.root
+
+
+@presentation.render_for(Board, 'save_template')
+def render_Board_save_template(self, h, comp, *args):
+    shared = var.Var('me')
+    with h.form(class_='description-form'):
+        h << h.label(_(u'Save this board as a template'))
+        with h.select.action(shared):
+            h << h.option(_(u'For me only'), value='me').selected(shared)
+            h << h.option(_(u'For all users'), value='shared').selected(shared)
+        with h.div(class_='buttons'):
+            action = remote.Action(lambda: self.save_as_template(shared() == 'shared'))
+            h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(action)
+            h << ' '
+            h << h.button(_('Cancel'), class_='btn', onclick='YAHOO.kansha.app.hideOverlay();')
     return h.root
 
 

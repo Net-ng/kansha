@@ -13,13 +13,14 @@ import datetime
 from nagare import component, security
 from nagare.database import session
 
+from kansha.services.components_repository import CardExtension
+
+from kansha import notifications, validator
+from kansha.user import usermanager
+
 from .models import DataComment
-from ..user import usermanager
-from ..flow import comp as flow
-from .. import notifications, validator
 
-
-class Comment(flow.FlowElement):
+class Comment(object):
 
     """Comment component"""
 
@@ -94,12 +95,14 @@ class Commentlabel(object):
         return self.parent.is_author(user)
 
 
-class Comments(flow.FlowSource):
+class Comments(CardExtension):
+
+    LOAD_PRIORITY = 50
 
     """Comments component
     """
 
-    def __init__(self, parent, data_comments=()):
+    def __init__(self, parent):
         """Initialization
 
         In:
@@ -107,11 +110,7 @@ class Comments(flow.FlowSource):
             - ``comments`` -- the comments of the card
         """
         self.parent = parent
-        self.comments = [self._create_comment_component(data_comment) for data_comment in data_comments]
-
-    @property
-    def flow_elements(self):
-        return self.comments
+        self.comments = [self._create_comment_component(data_comment) for data_comment in parent.get_comments()]
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete)
@@ -129,7 +128,7 @@ class Comments(flow.FlowSource):
         if v:
             v = validator.clean_text(v)
             user = security.get_user()
-            comment = DataComment(comment=v.strip(), card_id=self.parent.data.id,
+            comment = DataComment(comment=v.strip(), card_id=self.parent.db_id,
                                   author=user.data, creation_date=datetime.datetime.utcnow())
             session.add(comment)
             session.flush()

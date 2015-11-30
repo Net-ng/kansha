@@ -73,7 +73,7 @@ def render(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardLabels)
+@presentation.render_for(CardLabels, model='header')
 def render(self, h, comp, *args):
     """Show labels inline (used in card summary view)"""
     if self.colors:
@@ -96,7 +96,7 @@ def render(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardLabels, model='edit')
+@presentation.render_for(CardLabels)
 def render(self, h, comp, *args):
     """Add or remove labels to card"""
     if security.has_permissions('edit', self.card):

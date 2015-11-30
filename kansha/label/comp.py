@@ -12,10 +12,11 @@ import random
 
 from nagare import component, var
 
-from .models import DataLabel
-from ..toolbox import overlay
-from ..title import comp as title
+from kansha.title import comp as title
+from kansha.toolbox import overlay
+from kansha.services.components_repository import CardExtension
 
+from .models import DataLabel
 
 class Label(object):
 
@@ -69,12 +70,14 @@ class Label(object):
         return self.data.title
 
 
-class CardLabels(object):
+class CardLabels(CardExtension):
 
     """Card labels component
 
     This component represents all labels associated with a card
     """
+
+    LOAD_PRIORITY = 10
 
     def __init__(self, card):
         """Initialization
@@ -84,7 +87,7 @@ class CardLabels(object):
         """
         self.card = card
         self.comp_id = str(random.randint(10000, 100000))
-        self.labels = [l.id for l in card.data.labels]
+        self.labels = [l.id for l in card.get_datalabels()]
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                            lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))

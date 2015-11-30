@@ -7,12 +7,15 @@
 # this distribution.
 # --
 
+import json
+import random
+
 from nagare import component, database, security
 
-import json
-
-from kansha.title import comp as title
 from kansha import notifications
+from kansha.title import comp as title
+from kansha.services.components_repository import CardExtension
+
 from models import DataChecklist, DataChecklistItem
 
 
@@ -142,11 +145,14 @@ class Checklist(object):
                                   data)
 
 
-class Checklists(object):
+class Checklists(CardExtension):
+
+    LOAD_PRIORITY = 30
 
     def __init__(self, card):
         self.parent = card
-        self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.data.checklists]
+        self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.get_datalists()]
+        self.comp_id = str(random.randint(10000, 100000))
 
     @property
     def nb_items(self):

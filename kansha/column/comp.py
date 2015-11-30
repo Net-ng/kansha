@@ -25,7 +25,7 @@ class Column(object):
     """Column component
     """
 
-    def __init__(self, id_, board, search_engine, services_service, data=None):
+    def __init__(self, id_, board, card_extensions, search_engine, services_service, data=None):
         """Initialization
 
         In:
@@ -39,11 +39,12 @@ class Column(object):
         self.nb_card = var.Var(data.nb_max_cards)
         self._services = services_service
         self.search_engine = search_engine
+        self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
         self.title = component.Component(ColumnTitle(self))
         self.title.on_answer(lambda v: self.title.call(model='edit'))
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [component.Component(self._services(card.Card, c.id, self, data=c))
+        self.cards = [component.Component(self._services(card.Card, c.id, self, self.card_extensions, data=c))
                       for c in data.cards]
         self.new_card = component.Component(
             card.NewCard(self)).on_answer(self.create_card)
@@ -120,7 +121,7 @@ class Column(object):
             # Test if c() is a Card instance and not Popin instance
             if isinstance(c(), card.Card):
                 for m in c().members:
-                    username = m().username
+                    username = m.username
                     most_used_users[username] = most_used_users.get(username, 0) + 1
         return most_used_users
 
@@ -223,7 +224,8 @@ class Column(object):
             if self.can_add_cards:
                 new_card = DataCard.create_card(self.data, text, security.get_user().data)
                 self.cards.append(component.Component(self._services(
-                                                        card.Card, new_card.id, self
+                                                        card.Card, new_card.id, self,
+                                                        self.card_extensions,
                                                        ),
                                                       'new'))
                 values = {'column_id': self.id,
@@ -255,8 +257,9 @@ class Column(object):
         c.delete()
 
     def reload(self):
-        self.cards = [component.Component(self._services(card.Card, c.id, self, data=c))
-                      for c in self.data.cards]
+        self.cards = [component.Component(
+            self._services(card.Card, c.id, self, self.card_extensions, data=c)
+            ) for c in self.data.cards]
 
     def archive_card(self, c):
         """Delete card

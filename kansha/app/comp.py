@@ -46,11 +46,11 @@ class Kansha(object):
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, theme,
-                 search, services_service):
+                 card_extensions, search, services_service):
         """Initialization
         """
         self._services = services_service
-
+        self.card_extensions = card_extensions
         self.app_title = app_title
         self.app_banner = app_banner
         self.theme = theme
@@ -95,6 +95,7 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.theme,
+                    self.card_extensions,
                     self.search_engine,
                     on_board_archive=self.select_last_board,
                     on_board_leave=self.select_last_board
@@ -141,9 +142,8 @@ class Kansha(object):
 
 class MainTask(component.Task):
     def __init__(self, app_title, app_banner, theme, main_app,
-                 cfg, search, services_service):
+                 cfg, card_extensions, search, services_service):
         self._services = services_service
-
         self.app_title = app_title
         self.app_banner = app_banner
         self.theme = theme
@@ -154,6 +154,7 @@ class MainTask(component.Task):
             self.app_title,
             self.app_banner,
             self.theme,
+            card_extensions,
             search
         )
         self.main_app = main_app
@@ -191,9 +192,9 @@ class MainTask(component.Task):
 
 class App(object):
     def __init__(self, app_title, theme, cfg,
-                 search, services_service):
+                 search, services_service, card_extensions):
         self._services = services_service
-
+        self.card_extensions = card_extensions
         self.app_title = app_title
         self.app_banner = cfg['pub_cfg']['banner']
         self.favicon = cfg['pub_cfg']['favicon']
@@ -206,6 +207,7 @@ class App(object):
                 self.app_banner,
                 self.theme,
                 self, cfg,
+                card_extensions,
                 search
             )
         )
@@ -237,6 +239,10 @@ class WSGIApp(wsgi.WSGIApp):
         config.validate(config_filename, conf, error)
 
         self._services = services.ServicesRepository(
+            config_filename, error, conf
+        )
+
+        self.card_extensions = services.CardExtensions(
             config_filename, error, conf
         )
 
@@ -277,7 +283,8 @@ class WSGIApp(wsgi.WSGIApp):
             self.theme,
             self.app_cfg,
             self.search_engine,
-            self._services
+            self._services,
+            self.card_extensions
         )
 
     def start_request(self, root, request, response):

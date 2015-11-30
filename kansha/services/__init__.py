@@ -8,3 +8,4 @@
 #--
 
 from .services_repository import ServicesRepository
+from .components_repository import CardExtensions

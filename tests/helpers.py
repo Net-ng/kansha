@@ -125,4 +125,4 @@ def create_board():
     session.add(data_board)
     session.flush()
     _services = create_services()
-    return _services(board.Board, data_board.id, 'boards', '', '', None)
+    return _services(board.Board, data_board.id, 'boards', '', '', {}, None)

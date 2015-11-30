@@ -82,6 +82,17 @@ setup(
       oauthlogin = kansha.authentication.oauth.forms:Login
       ldaplogin = kansha.authentication.ldap.forms:Login
 
+      [kansha.card.extensions]
+      labels = kansha.label.comp:CardLabels
+      description = kansha.description.comp:CardDescription
+      checklists = kansha.checklist.comp:Checklists
+      gallery = kansha.gallery.comp:Gallery
+      comments = kansha.comment.comp:Comments
+      due_date = kansha.due_date.comp:DueDate
+      votes = kansha.vote.comp:Votes
+      weight = kansha.card.comp:CardWeightEditor
+      card_members = kansha.card.comp:CardMembers
+
       [nagare.applications]
       kansha = kansha.app:app
 

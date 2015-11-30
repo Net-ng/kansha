@@ -8,175 +8,13 @@
 # this distribution.
 # --
 import peak
-import json
 
-import calendar
-from datetime import datetime
-
-from nagare import presentation, var, security, component, ajax, i18n
+from nagare import presentation, var, security, component, ajax
 from nagare.i18n import _
 
-from kansha.card.comp import CardFlow
 from kansha.card.comp import CardWeightEditor
 
-from .comp import Card, NewCard, CardTitle
-from .comp import WEIGHTING_FREE, WEIGHTING_LIST
-
-
-@peak.rules.when(ajax.py2js, (Card,))
-def py2js(value, h):
-    due_date = ajax.py2js(value.due_date(), h)
-    if due_date:
-        return u'{title:%s, editable:true, allDay: true, start: %s}' % (
-            ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)
-    else:
-        return None
-
-
-@presentation.render_for(Card, model='edit')
-def render_card_edit(self, h, comp, *args):
-    """Render card in edition mode"""
-    # Test for delete card
-    if self.data is None:
-        return h.root
-    h << h.script('''YAHOO.kansha.app.hideOverlay();''')
-    with h.div(class_='card-edit-form'):
-        with h.div(class_='header'):
-            self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
-            h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
-        with h.div(class_='grid-2'):
-            with h.div(class_='card-contents'):
-                h << self.labels.render(h.AsyncRenderer(), model='edit')
-                h << self.description.render(h.AsyncRenderer())
-                h << self.gallery
-                h << self.checklists
-                h << h.hr
-                h << comp.render(h.AsyncRenderer(), 'comments_flow')
-            h << comp.render(h, "actions")
-    return h.root
-
-
-@presentation.render_for(Card, 'calendar')
-def render(self, h, comp, *args):
-    card = ajax.py2js(self, h)
-    if card:
-        clicked_cb = h.a.action(
-            lambda: comp.answer(comp)
-        ).get('onclick')
-
-        dropped_cb = h.a.action(
-            ajax.Update(
-                action=self.new_start_from_ajax,
-                render=lambda render: '',
-                with_request=True
-            )
-        ).get('onclick')[:-2]
-
-        h << h.script(u"""YAHOO.kansha.app.add_event($('#calendar'), %(card)s,
-                         function() { %(clicked_cb)s},
-                         function(start) { %(dropped_cb)s&start="+start);} )""" % {
-            'card': card,
-            'clicked_cb': clicked_cb,
-            'dropped_cb': dropped_cb
-        })
-    return h.root
-
-
-@presentation.render_for(Card, 'comments_flow')
-def render_Card_comments_flow(self, h, comp, model):
-    h << self.comments.render(h, model='header')
-    h << self.flow.render(h.AsyncRenderer())
-    return h.root
-
-
-@presentation.render_for(Card, model='actions')
-def render_card_actions(self, h, comp, *args):
-    with h.div(class_='card-actions'):
-        with h.form:
-            with h.ul():
-                with h.li(class_="buttonAddChecklist"):
-                    h << self.checklists.render(h, 'button')
-                with h.li(class_="buttonAddFile"):
-                    h << self.gallery.render(h, 'download')
-                with h.li(class_="buttonVote"):
-                    h << self.votes.render(h.AsyncRenderer(), 'edit')
-                with h.li(class_="buttonDueDate"):
-                    h << self.due_date.render(h.AsyncRenderer(), 'button')
-                if self.board.weighting_cards:
-                    with h.li(class_="actionWeight"):
-                        h << self._weight.on_answer(lambda v: self._weight.call(model='edit_weight' if v else None))
-                with h.li(class_="buttonDeleteCard"):
-                    if security.has_permissions('edit', self) and not self.column.is_archive:
-                        close_func = ajax.js(
-                            'function (){%s;}' %
-                            h.a.action(comp.answer, 'delete').get('onclick')
-                        )
-                        h << h.button(
-                            h.i(class_='icon-bin'),
-                            _('Delete'),
-                            class_='btn delete',
-                            onclick=(
-                                "if (confirm(%(confirm_msg)s)) {"
-                                "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
-                                "   reload_columns();"
-                                "}"
-                                "return false" %
-                                {
-                                    'close_func': ajax.py2js(close_func),
-                                    'id': ajax.py2js(self.id),
-                                    'col_id': ajax.py2js(self.column.id),
-                                    'archive_col_id': ajax.py2js(
-                                        self.column.board.archive_column.id
-                                    ),
-                                    'confirm_msg': ajax.py2js(
-                                        _(u'This card will be deleted. Are you sure?')
-                                    ).decode('UTF-8')
-                                }
-                            )
-                        )
-                h << comp.render(h, 'members')
-
-    return h.root
-
-
-@presentation.render_for(Card, 'dnd')
-def render_card_dnd(self, h, comp, *args):
-    """DnD wrapping of the card"""
-    if self.data is not None:
-        id_ = h.generate_id('dnd')
-        with h.div(id=id_):
-            h << comp.render(h.AsyncRenderer())
-            h << h.script('YAHOO.kansha.dnd.initCard(%s)' % ajax.py2js(id_))
-    return h.root
-
-
-@presentation.render_for(CardWeightEditor)
-def render_cardweighteditor(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
-        lambda: comp.call(self, model='edit'))
-    return h.root
-
-
-@presentation.render_for(CardWeightEditor, 'edit')
-def render_cardweighteditor_edit(self, h, comp, *args):
-    def answer():
-        if self.commit():
-            comp.answer()
-
-    if self.board.weighting_cards == WEIGHTING_FREE:
-        with h.form:
-            h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
-            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
-
-    elif self.board.weighting_cards == WEIGHTING_LIST:
-        with h.form:
-            with h.div(class_='btn select'):
-                with h.select.action(self.weight):
-                    for value in self.board.weights.split(','):
-                        h << h.option(value, value=value).selected(self.weight)
-            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
-
-    return h.root
+from .comp import Card, NewCard, CardTitle, CardMembers
 
 
 @presentation.render_for(Card, 'no_dnd')
@@ -201,6 +39,9 @@ def render_card_new(self, h, comp, *args):
 @presentation.render_for(Card)
 def render(self, h, comp, *args):
     """Render the card"""
+
+    extensions = [extension for name, extension in self.card_extensions]
+
     card_id = h.generate_id()
 
     onclick = h.a.action(lambda: comp.answer(comp)).get('onclick').replace('return', "")
@@ -209,19 +50,14 @@ def render(self, h, comp, *args):
     else:
         c_class = 'card'
     with h.div(id=self.id, class_=c_class):
-        h << {
-            'onmouseover': "YAHOO.kansha.app.highlight(this, 'badges', false);YAHOO.kansha.app.highlight(this, 'members', false);",
-            'onmouseout': "YAHOO.kansha.app.highlight(this, 'badges', true);YAHOO.kansha.app.highlight(this, 'members', true);"}
         with h.div(id=card_id, onclick=onclick):
-            h << self.labels
-            h << self.title.render(h, 'card-title')
-            if self.has_cover():
-                h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
-            h << comp.render(h, 'badges')
-            if security.has_permissions('edit', self):
-                h << comp.render(h, 'members')
-            else:
-                h << comp.render(h, 'members_read_only')
+            with h.div(class_='headers'):
+                h << [extension.render(h, 'header') for extension in extensions]
+            with h.div(class_='covers'):
+                h << self.title.render(h, 'card-title')
+                h << [extension.render(h, 'cover') for extension in extensions]
+            with h.div(class_='card-footer'):
+                h << [extension.render(h, 'badge') for extension in extensions]
 
     h << h.script(
         "YAHOO.kansha.reload_cards[%s]=function() {%s}""" % (
@@ -232,7 +68,7 @@ def render(self, h, comp, *args):
     if self.must_reload_search:
         self.reload_search()
         h << h.script('''$(window).trigger('reload_search');''')
-    
+
     return h.root
 
 
@@ -240,43 +76,162 @@ def render(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card read-only"""
     with h.div(id=self.id, class_='card'):
-        h << {
-            'onmouseover': "YAHOO.kansha.app.highlight(this, 'badges', false);YAHOO.kansha.app.highlight(this, 'members', false);",
-            'onmouseout': "YAHOO.kansha.app.highlight(this, 'badges', true);YAHOO.kansha.app.highlight(this, 'members', true);"
-        }
         with h.div:
             h << {
                 'onclick': "window.location.href=%s" % ajax.py2js(
                     '%s#id_%s' % (self.data.column.board.url, self.id)
                 )
             }
-            h << self.labels
             h << self.title.render(h, 'card-title')
-            if self.has_cover():
-                h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
-            h << comp.render(h, 'badges')
-            h << comp.render(h, 'members_read_only')
+            # FIXME: unify with main card view.
+    return h.root
+
+
+@presentation.render_for(Card, model='edit')
+def render_card_edit(self, h, comp, *args):
+    """Render card in edition mode"""
+    # Test for delete card
+    if self.data is None:
+        return h.root
+    # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
+
+    with h.div(class_='card-edit-form'):
+        with h.div(class_='header'):
+            self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
+            h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
+        with h.div(class_='grid-2'):
+            with h.div(class_='card-edition'):
+                for name, extension in self.card_extensions:
+                    h << h.div(extension.render(h.AsyncRenderer()), class_=name)
+            with h.div(class_='card-actions'):
+                with h.form:
+                    h << comp.render(h, 'delete-action')
+                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.card_extensions]
+    return h.root
+
+
+@presentation.render_for(Card, 'delete-action')
+def render_card_delete(self, h, comp, model):
+    if security.has_permissions('edit', self) and not self.column.is_archive:
+        close_func = ajax.js(
+            'function (){%s;}' %
+            h.a.action(comp.answer, 'delete').get('onclick')
+        )
+        h << h.button(
+            h.i(class_='icon-bin'),
+            _('Delete'),
+            class_='btn delete',
+            onclick=(
+                "if (confirm(%(confirm_msg)s)) {"
+                "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
+                "   reload_columns();"
+                "}"
+                "return false" %
+                {
+                    'close_func': ajax.py2js(close_func),
+                    'id': ajax.py2js(self.id),
+                    'col_id': ajax.py2js(self.column.id),
+                    'archive_col_id': ajax.py2js(
+                        self.column.board.archive_column.id
+                    ),
+                    'confirm_msg': ajax.py2js(
+                        _(u'This card will be deleted. Are you sure?')
+                    ).decode('UTF-8')
+                }
+            )
+        )
+    return h.root
+
+
+@presentation.render_for(Card, 'calendar')
+def render(self, h, comp, *args):
+    card = ajax.py2js(self, h)
+    if card:
+        clicked_cb = h.a.action(
+            lambda: comp.answer(comp)
+        ).get('onclick')
+
+        dropped_cb = h.a.action(
+            ajax.Update(
+                action=self.card_dropped,
+                render=lambda render: '',
+                with_request=True
+            )
+        ).get('onclick')[:-2]
+
+        h << h.script(u"""YAHOO.kansha.app.add_event($('#calendar'), %(card)s,
+                         function() { %(clicked_cb)s},
+                         function(start) { %(dropped_cb)s&start="+start);} )""" % {
+            'card': card,
+            'clicked_cb': clicked_cb,
+            'dropped_cb': dropped_cb
+        })
+    return h.root
+
+
+@presentation.render_for(Card, 'dnd')
+def render_card_dnd(self, h, comp, *args):
+    """DnD wrapping of the card"""
+    if self.data is not None:
+        id_ = h.generate_id('dnd')
+        with h.div(id=id_):
+            h << comp.render(h.AsyncRenderer())
+            h << h.script('YAHOO.kansha.dnd.initCard(%s)' % ajax.py2js(id_))
+    return h.root
+
+########################
+
+
+@presentation.render_for(CardWeightEditor, 'action')
+def render_cardweighteditor(self, h, comp, *args):
+    if self.target.weighting_on():
+        h << self.action_button
+    return h.root
+
+
+@presentation.render_for(CardWeightEditor, 'action_button')
+def render_cardweighteditor_button(self, h, comp, *args):
+    h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
+            comp.call, self, model='edit')
+    return h.root
+
+
+@presentation.render_for(CardWeightEditor, 'edit')
+def render_cardweighteditor_edit(self, h, comp, *args):
+    def answer():
+        if self.commit():
+            comp.answer()
+
+    if self.board.weighting_cards == self.WEIGHTING_FREE:
+        with h.form:
+            h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
+
+    elif self.board.weighting_cards == self.WEIGHTING_LIST:
+        with h.form:
+            with h.div(class_='btn select'):
+                with h.select.action(self.weight):
+                    for value in self.board.weights.split(','):
+                        h << h.option(value, value=value).selected(self.weight)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
 
     return h.root
 
 
-@presentation.render_for(Card, model='badges')
-def render_card_badges(self, h, comp, *args):
-    """Render card badges in summary view"""
-    with h.div(class_='badges'):
-        h << self.checklists.render(h, model='badge')
-        h << self.votes.render(h, model='badge')
-        h << self.due_date.render(h, model='badge')
-        h << self.description.render(h, model='badge')
-        h << self.comments.render(h, model='badge')
-        h << self.gallery.render(h, model='badge')
-        if self.weight:
+@presentation.render_for(CardWeightEditor, 'badge')
+def render_cardweighteditor_edit(self, h, comp, *args):
+    if self.weight.value:
+        with h.span(class_='badge'):
             label = _('weight')
-            h << h.span(h.i(class_='icon-star'), ' ', self.weight, class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-star-full'), ' ',
+                        self.weight.value, class_='label',
+                        data_tooltip=label)
     return h.root
 
 
-@presentation.render_for(Card, model='members')
+### members handling
+
+@presentation.render_for(CardMembers, 'action')
 def render_card_members(self, h, comp, *args):
     """Member section view for card
 
@@ -285,7 +240,7 @@ def render_card_members(self, h, comp, *args):
     And at the end icon "add user"
     """
     with h.div(class_='members'):
-        h << h.script('''YAHOO.kansha.app.hideOverlay();''')
+        # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
         for m in self.members[:self.max_shown_members]:
             h << m.on_answer(self.remove_member).render(h, model="overlay-remove")
         if len(self.members) > self.max_shown_members:
@@ -294,7 +249,16 @@ def render_card_members(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, model='members_read_only')
+@presentation.render_for(CardMembers, 'badge')
+def render_members_badge(self, h, comp, model):
+    if security.has_permissions('edit', self.card):
+        h << comp.render(h, 'action')
+    else:
+        h << comp.render(h, 'members_read_only')
+    return h.root
+
+
+@presentation.render_for(CardMembers, model='members_read_only')
 def render_card_members_read_only(self, h, comp, *args):
     """Member section view for card
 
@@ -312,7 +276,7 @@ def render_card_members_read_only(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, "members_list_overlay")
+@presentation.render_for(CardMembers, "members_list_overlay")
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
@@ -325,7 +289,7 @@ def render_members_members_list_overlay(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, "add_member_overlay")
+@presentation.render_for(CardMembers, "add_member_overlay")
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Add members'))
@@ -337,6 +301,9 @@ def render_members_add_member_overlay(self, h, comp, *args):
     with h.div(class_="members search"):
         h << self.new_member
     return h.root
+
+
+#####
 
 
 @presentation.render_for(NewCard)
@@ -371,31 +338,6 @@ def render_new_card_add(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Card, model='flow')
-def render_card_flow(self, h, comp, model, *args):
-    with h.div(class_='comment'):
-        with h.div(class_='left'):
-            h << self.author.render(h, model='avatar')
-        with h.div(class_='right'):
-            h << self.author.render(h, model='fullname')
-            h << _(' added this card ') << comp.render(h, 'creation_date')
-    return h.root
-
-
-@presentation.render_for(Card, model='creation_date')
-def render_card_creation_date(self, h, comp, model, *args):
-    span_id = h.generate_id()
-    h << h.span(id=span_id, class_="date")
-
-    utcseconds = calendar.timegm(datetime.utctimetuple(self.data.creation_date))
-
-    h << h.script(
-        "YAHOO.kansha.app.utcToLocal('%s', %s, '%s', '%s');" % (span_id, utcseconds, _(u'at'), _(u'on'))
-    )
-
-    return h.root
-
-
 @presentation.render_for(CardTitle, 'card-title')
 def render_card_title(self, h, comp, *args):
     """Render the title of the associated card"""
@@ -403,9 +345,11 @@ def render_card_title(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardFlow)
-def render_cardflow(self, h, comp, model, *args):
-    for e in self.elements:
-        h << e.render(h, model='flow')
-    h << component.Component(self.card).render(h, 'flow')
-    return h.root
+@peak.rules.when(ajax.py2js, (Card,))
+def py2js(value, h):
+    due_date = ajax.py2js(value.due_date(), h)
+    if due_date:
+        return u'{title:%s, editable:true, allDay: true, start: %s}' % (
+            ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)
+    else:
+        return None

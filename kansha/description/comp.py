@@ -7,24 +7,19 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-from .. import validator
+from kansha import validator
+from kansha.services.components_repository import CardExtension
 
-class Description(object):
+
+class CardDescription(CardExtension):
     """Description component,
 
     This component can be used for with all element which have a description
     field.
     Examples are available in card and board modules
-
-    ``class variables``:
-      - model  -- Data Model ie. DataCard or DataBoard
-      - type  -- a string used in tooltip
     """
 
-    # The database mapper we are working on
-    model = None
-    # Render mode in edit mode
-    type = None
+    LOAD_PRIORITY = 20
 
     def __init__(self, parent):
         """Initialization
@@ -33,7 +28,7 @@ class Description(object):
             - ``parent`` -- the object parent
         """
         self.parent = parent
-        self.text = parent.data.description
+        self.text = parent.get_description()
 
     def change_text(self, text):
         """Edit the description
@@ -49,7 +44,7 @@ class Description(object):
         if text:
             text = validator.clean_html(text)
         self.text = text
-        self.parent.data.description = text
+        self.parent.set_description(text)
 
     def __nonzero__(self):
         """Return False if the description if empty

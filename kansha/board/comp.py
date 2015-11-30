@@ -62,10 +62,10 @@ class Board(object):
     max_shown_members = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, theme, search_engine,
+    def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
                  assets_manager_service, mail_sender_service, services_service,
                  on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, on_update_members=None,load_data=True):
+                 on_board_restore=None, on_board_leave=None, on_update_members=None, load_data=True):
         """Initialization
 
         In:
@@ -87,6 +87,7 @@ class Board(object):
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine
         self._services = services_service
+        self.card_extensions = card_extensions
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())
@@ -110,7 +111,7 @@ class Board(object):
         def many_user_render(h, number):
             return h.span(
                 h.i(class_='ico-btn icon-user-nb'),
-                h.span(number, class_='badge'),
+                h.span(number, class_='count'),
                 title=_("%s more...") % number)
 
         self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.max_shown_members),
@@ -162,7 +163,9 @@ class Board(object):
         columns = []
         archive = None
         for c in self.data.columns:
-            col = self._services(column.Column, c.id, self, self.search_engine, data=c)
+            col = self._services(
+                column.Column, c.id, self, self.card_extensions,
+                self.search_engine, data=c)
             if c.archive:
                 archive = col
             else:
@@ -174,7 +177,9 @@ class Board(object):
             # Create the unique archive column
             last_idx = max(c.index for c in self.data.columns)
             col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
-            self.archive_column = self._services(column.Column, col_id, self, self.search_engine)
+            self.archive_column = self._services(
+                column.Column, col_id, self,
+                self.card_extensions, self.search_engine)
 
         if self.archive and security.has_permissions('manage', self):
             columns.append(component.Component(self.archive_column))
@@ -193,9 +198,17 @@ class Board(object):
 
     def refresh(self):
         if self.archive:
-            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns]
+            self.columns = [component.Component(
+                self._services(
+                    column.Column, c.id, self,
+                    self.card_extensions, self.search_engine)
+                ) for c in self.data.columns]
         else:
-            self.columns = [component.Component(self._services(column.Column, c.id, self, self.search_engine)) for c in self.data.columns if not c.archive]
+            self.columns = [component.Component(
+                self._services(
+                    column.Column, c.id, self,
+                    self.card_extensions, self.search_engine)
+                ) for c in self.data.columns if not c.archive]
 
 
     @property
@@ -269,7 +282,12 @@ class Board(object):
             return False
         col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
         if not archive or (archive and self.archive):
-            self.columns.insert(index, component.Component(self._services(column.Column, col.id, self, self.search_engine), 'new'))
+            self.columns.insert(
+                index, component.Component(
+                    self._services(
+                        column.Column, col.id,
+                        self, self.card_extensions, self.search_engine),
+                        'new'))
         self.increase_version()
         return col.id
 
@@ -575,6 +593,13 @@ class Board(object):
     def votes_allowed(self):
         return self.data.votes_allowed
 
+    def get_description(self):
+        return self.data.description
+
+    def set_description(self, value):
+        self.data.description = value
+
+
     ##################
     # Member methods
     ##################
@@ -669,8 +694,9 @@ class Board(object):
                          'manager': self.remove_manager,
                          'member': self.remove_member}
         remove_method[member.role](member)
-
         # remove member from columns
+        if not self.columns:
+            self.load_data()
         for c in self.columns:
             c().remove_board_member(member)
 
@@ -931,11 +957,19 @@ class BoardTitle(title.Title):
     field_type = 'input'
 
 
-class BoardDescription(description.Description):
+class BoardDescription(object):
 
     """Description component for boards
     """
-    type = _L('board')
+
+    def __init__(self, parent):
+        """Initialization
+
+        In:
+            - ``parent`` -- the object parent
+        """
+        self.parent = parent
+        self.text = parent.get_description()
 
     def change_text(self, text):
         """Changes text description.
@@ -954,8 +988,15 @@ class BoardDescription(description.Description):
             if text:
                 text = validator.clean_text(text)
 
-            self.text = self.parent.data.description = text
+            self.text = text
+            self.parent.set_description(text)
         return 'YAHOO.kansha.app.hideOverlay();'
+
+    def __nonzero__(self):
+        """Return False if the description if empty
+        """
+        return bool(self.text)
+
 
 
 class BoardMember(object):

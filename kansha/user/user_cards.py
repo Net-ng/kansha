@@ -75,8 +75,9 @@ class UserCards(object):
             order = [prop() for prop, __ in order_keys]
             self._cards = [
                 component.Component(
-                    self._services(card.Card, c.id, None, data=c)
+                    self._services(card.Card, c.id, None, {}, data=c)
                 )
+                # FIXME: nosql in components!
                 for c in (self.user.cards.join(DataCard.column).
                           join(DataColumn.board).
                           filter(DataColumn.archive==False).
@@ -97,6 +98,7 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/%s/board.css' % self.theme)
 
     with h.div(class_='row', id_='lists'):
+        i = 1
         for main_group, cards in groupby(self.cards, key=self.KEYS[self.order_by[0]][1]):
             subgroup = None
             sg_title = self.KEYS[self.order_by[1]][1]
@@ -117,4 +119,7 @@ def render(self, h, comp, *args):
                             h << h.h4(subgroup)
                         h << card.render(h, 'readonly')
                 h << h.div(class_='list-footer hidden')
+            if i % 4 == 0:
+                h << h.br
+            i += 1
     return h.root

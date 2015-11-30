@@ -7,22 +7,28 @@
 # this distribution.
 #--
 
-from ..authentication.database import validators
-from ..flow import comp as flow
-from ..toolbox import overlay
-from ..user import usermanager
-from .models import DataGallery, DataAsset
-from .. import notifications
+import random
+
 from cgi import FieldStorage
-from nagare import component, security, var
-from nagare.i18n import _
 from webob.exc import HTTPOk
 
+from nagare import component, security, var
+from nagare.i18n import _
+
+from kansha import notifications
+from kansha.toolbox import overlay
+from kansha.user import usermanager
+from kansha.authentication.database import validators
+from kansha.services.components_repository import CardExtension
+
+from .models import DataGallery, DataAsset
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 
-class Gallery(flow.FlowSource):
+class Gallery(CardExtension):
+
+    LOAD_PRIORITY = 40
 
     def __init__(self, card, assets_manager_service):
         """Init method
@@ -39,6 +45,7 @@ class Gallery(flow.FlowSource):
         for data_asset in self.data.get_assets():
             self._create_asset_c(data_asset)
         #self.crop_overlay = None
+        self.comp_id = str(random.randint(10000, 100000))
 
     def _create_asset_c(self, data_asset):
         asset = Asset(data_asset, self.assets_manager)
@@ -52,10 +59,6 @@ class Gallery(flow.FlowSource):
         return component.Component(overlay.Overlay(lambda h, asset_thumb=asset_thumb: asset_thumb.render(h),
                                                    lambda h, asset_menu=asset_menu: asset_menu.render(h),
                                                    dynamic=False, cls='card-edit-form-overlay'))
-
-    @property
-    def flow_elements(self):
-        return self.assets
 
     def add_asset(self, new_file):
         """Add one new file to card
@@ -125,6 +128,12 @@ class Gallery(flow.FlowSource):
             a().is_cover = False
         asset.is_cover = True
 
+    def get_cover(self):
+        cover = None
+        if self.card.has_cover():
+            cover = Asset(self.card.get_cover(), self.assets_manager)
+        return cover
+
     def remove_cover(self, asset):
         """Don't use the asset as cover anymore
 
@@ -153,7 +162,7 @@ class Gallery(flow.FlowSource):
                 break
             i = i + 1
 
-    def delete_assets(self):
+    def delete(self):
         '''Delete all assets'''
         for asset in self.data.get_assets():
             self.assets_manager.delete(asset.filename)
@@ -161,7 +170,7 @@ class Gallery(flow.FlowSource):
         self.overlays = []
 
 
-class Asset(flow.FlowElement):
+class Asset(object):
 
     def __init__(self, data_asset, assets_manager_service):
         self.filename = data_asset.filename

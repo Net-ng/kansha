@@ -313,7 +313,7 @@ a:hover .ico-btn {
 }
 
 /* Members */
-.members .more .badge {
+.members .more .count {
     color: white;
     font-size: 11px;
     font-weight: bold;

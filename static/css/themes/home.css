@@ -115,6 +115,7 @@
 .board-labels .members .miniavatar {
     display: inline-block;
     overflow: hidden;
+    max-height: 28px;
 }
 
 .board-labels .members .more {

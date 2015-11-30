@@ -8,6 +8,8 @@
 # this distribution.
 #--
 
+from datetime import datetime
+
 from elixir import using_options
 from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean
@@ -28,11 +30,14 @@ class DataColumn(Entity):
     cards = OneToMany('DataCard', order_by='index', cascade='delete')
     board = ManyToOne('DataBoard', colname='board_id')
 
-    def copy(self, other):
-        self.title = other.title
-        self.index = other.index
-        self.nb_max_cards = other.nb_max_cards
-        self.archive = other.archive
+    def copy(self, parent):
+        new_data = DataColumn(title=self.title,
+                              index=self.index,
+                              nb_max_cards=self.nb_max_cards,
+                              board=parent)
+        session.add(new_data)
+        session.flush()
+        return new_data
 
     @classmethod
     def create_column(cls, board, index, title, nb_cards=None, archive=False):
@@ -53,6 +58,12 @@ class DataColumn(Entity):
         session.add(col)
         session.flush()
         return col
+
+    def create_card(self, title, user):
+        card = DataCard(title=title, author=user, column=self, creation_date=datetime.now())
+        session.add(card)
+        session.flush()
+        return card
 
     @classmethod
     def delete_column(cls, column):

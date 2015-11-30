@@ -72,17 +72,22 @@ class DataBoard(Entity):
     weighting_cards = Field(Integer, default=0)
     weights = Field(Unicode(255), default=u'')
 
-    def copy(self, other):
-        self.title = other.title
-        self.description = other.description
-        self.background_image = other.background_image # TODO
-        self.background_position = other.background_position
-        self.title_color = other.title_color
-        self.comments_allowed = other.comments_allowed
-        self.votes_allowed = other.votes_allowed
-        self.weighting_cards = other.weighting_cards
-        self.weights = other.weights
+    def copy(self, parent):
+        new_data = DataBoard(title=self.title,
+                             description=self.description,
+                             background_image=self.background_image,
+                             background_position=self.background_position,
+                             title_color=self.title_color,
+                             comments_allowed=self.comments_allowed,
+                             votes_allowed=self.votes_allowed,
+                             weighting_cards=self.weighting_cards,
+                             weights=self.weights)
+        session.add(new_data)
+        session.flush()
+        return new_data
 
+    def get_label_by_title(self, title):
+        return (l for l in self.labels if l.title == title).next()
 
     def delete_members(self):
         for member in self.board_members:

@@ -71,9 +71,8 @@ class BoardsManager(object):
 
     def copy_board(self, board, user, board_to_template=True):
         data = {}
-        new_board = self._create_board(user)
+        new_board = board.copy(user, data)
         new_board.data.is_template = board_to_template
-        new_board.copy(board, data)
         return new_board
 
     def get_by_id(self, id):
@@ -95,14 +94,16 @@ class BoardsManager(object):
         tpl = self.create_template_todo()
         board = self.copy_board(tpl, user, False)
         if default:
-            self.create_default_cards(board, user)
+            self.create_default_cards(board.data, user)
         user.add_board(board, "manager")
+        board.set_title(title)
+        board.load_data()
         return board
 
     def create_default_cards(self, board, user):
         user = user.data
-        green = board.get_label_by_title(u'Green').data
-        red = board.get_label_by_title(u'Red').data
+        green = board.get_label_by_title(u'Green')
+        red = board.get_label_by_title(u'Red')
         column_1 = board.columns[0]
         cards = [DataCard(title=u"Welcome to your board!", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
                  DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", author=user, creation_date=datetime.utcnow()),
@@ -129,6 +130,7 @@ class BoardsManager(object):
             c.index = i
         column_2.cards = cards
         column_2.nb_max_cards = len(cards) + 2
+        database.session.refresh(board)
 
     @staticmethod
     def index_user_cards(user, search_engine):

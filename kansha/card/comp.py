@@ -69,8 +69,14 @@ class Card(object):
         self._data = data
         self.reload(data if data else self.data)
 
-    def copy(self, other, additional_data):
-        self.data.copy(other.data)
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_obj = self._services(Card, new_data.id, parent, self._services, data=new_data)
+
+        # TODO extensions
+
+        return new_obj
+
 
     @property
     def must_reload_search(self):

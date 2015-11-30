@@ -8,15 +8,17 @@
 # this distribution.
 #--
 
+import json
 import unittest
+
+from elixir import metadata as __metadata__
 from nagare import database
-from sqlalchemy import MetaData
+
 from kansha.board.models import DataBoard
 from kansha.board import comp as board_module
 from kansha.board import boardsmanager
 from kansha import notifications
 from . import helpers
-from elixir import metadata as __metadata__
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 
@@ -38,7 +40,7 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user()
         helpers.set_context(user)
         self.boards_manager.create_board(helpers.word(), user)
-        self.assertEqual(DataBoard.query.count(), 1)
+        self.assertEqual(DataBoard.query.filter_by(is_template=False).count(), 1)
 
     def test_add_column_ok(self):
         """Add a column to a board"""
@@ -73,52 +75,39 @@ class BoardTest(unittest.TestCase):
         helpers.set_dummy_context()
         board = helpers.create_board()
         self.assertEqual(len(board.columns), 3)
-        move_cards_value = """[
-            ["list_2", ["card_10", "card_1", "card_3", "card_5"]],
-            ["list_1", ["card_7", "card_2", "card_8", "card_11"]],
-            ["list_3", ["card_6", "card_4", "card_9"]]]"""
-        # This has the side effect of implicitly hiding the archive
-        # because it is not present in above values
+
+        data = []
+        for col in board.columns:
+            cards = [c().id for c in col().cards]
+            data.append([col().id, cards])
+
+        obj = data.pop(0)
+        data.insert(1, obj)
+
+        card = data[1][1].pop(-1)
+        data[0][1].append(card)
+        card = data[1][1].pop(1)
+        data[2][1].append(card)
+        card = data[2][1].pop(0)
+        data[0][1].append(card)
+        card = data[1][1].pop(1)
+        data[0][1].append(card)
+        card = data[1][1].pop(1)
+        data[2][1].append(card)
+        data[0][1].append(card)
+
+        move_cards_value = json.dumps(data)
         board.move_cards(move_cards_value)
-        # Test columns
+
         self.assertEqual(len(board.data.columns), 4)
         self.assertEqual(len(board.columns), 3)
-        self.assertEqual(board.data.columns[0].id, 2)
-        self.assertEqual(board.columns[0]().id, "list_2")
-        self.assertEqual(board.data.columns[1].id, 1)
-        self.assertEqual(board.columns[1]().id, "list_1")
-        self.assertEqual(board.data.columns[2].id, 3)
-        self.assertEqual(board.columns[2]().id, "list_3")
 
-        # Test cards
-        self.assertEqual(len(board.data.columns[0].cards), 4)
-        self.assertEqual(len(board.columns[0]().cards), 4)
-        self.assertEqual(board.data.columns[0].cards[0].id, 10)
-        self.assertEqual(board.columns[0]().cards[0]().id, 'card_10')
-        self.assertEqual(board.data.columns[0].cards[1].id, 1)
-        self.assertEqual(board.columns[0]().cards[1]().id, 'card_1')
-        self.assertEqual(board.data.columns[0].cards[2].id, 3)
-        self.assertEqual(board.columns[0]().cards[2]().id, 'card_3')
-        self.assertEqual(board.data.columns[0].cards[3].id, 5)
-        self.assertEqual(board.columns[0]().cards[3]().id, 'card_5')
-        self.assertEqual(len(board.data.columns[1].cards), 4)
-        self.assertEqual(len(board.columns[1]().cards), 4)
-        self.assertEqual(board.data.columns[1].cards[0].id, 7)
-        self.assertEqual(board.columns[1]().cards[0]().id, 'card_7')
-        self.assertEqual(board.data.columns[1].cards[1].id, 2)
-        self.assertEqual(board.columns[1]().cards[1]().id, 'card_2')
-        self.assertEqual(board.data.columns[1].cards[2].id, 8)
-        self.assertEqual(board.columns[1]().cards[2]().id, 'card_8')
-        self.assertEqual(board.data.columns[1].cards[3].id, 11)
-        self.assertEqual(board.columns[1]().cards[3]().id, 'card_11')
-        self.assertEqual(len(board.data.columns[2].cards), 3)
-        self.assertEqual(len(board.columns[2]().cards), 3)
-        self.assertEqual(board.data.columns[2].cards[0].id, 6)
-        self.assertEqual(board.columns[2]().cards[0]().id, 'card_6')
-        self.assertEqual(board.data.columns[2].cards[1].id, 4)
-        self.assertEqual(board.columns[2]().cards[1]().id, 'card_4')
-        self.assertEqual(board.data.columns[2].cards[2].id, 9)
-        self.assertEqual(board.columns[2]().cards[2]().id, 'card_9')
+        for index, (col_id, cards) in enumerate(data):
+            col = board.columns[index]()
+            self.assertEqual(col.id, col_id)
+            self.assertEqual(len(col.cards), len(cards))
+            card_ids = [c().id for c in col.cards]
+            self.assertEqual(card_ids, cards)
 
     def test_set_visibility_1(self):
         """Test set visibility method 1
@@ -269,13 +258,13 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(len(board.members), 1)
         self.assertEqual(len(board.managers), 1)
 
-        member.dispatch('toggle_role')
+        member.dispatch('toggle_role', '')
         member = find_board_member()
         board.update_members()
         self.assertEqual(len(board.members), 0)
         self.assertEqual(len(board.managers), 2)
 
-        member.dispatch('toggle_role')
+        member.dispatch('toggle_role', '')
         board.update_members()
         self.assertEqual(len(board.members), 1)
         self.assertEqual(len(board.managers), 1)

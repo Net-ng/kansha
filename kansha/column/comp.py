@@ -53,11 +53,15 @@ class Column(object):
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 
-    def copy(self, other, additional_data):
-        self.data.copy(other.data)
-        for other_card in other.cards:
-            new_card = self.create_card(other_card.text)
-            new_card.copy(other_card, additional_data)
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_obj = self._services(Column, new_data.id, None, self.search_engine, data=new_data)
+
+        for card in self.cards:
+            new_card = card.copy(new_obj, additional_data)
+            new_obj.cards.append(component.Component(new_card))
+
+        return new_obj
 
     def set_reload_search(self):
         self.board.set_reload_search()
@@ -226,7 +230,7 @@ class Column(object):
         """
         if text:
             if self.can_add_cards:
-                new_card = DataCard.create_card(self.data, text, security.get_user().data)
+                new_card = self.data.create_card(text, security.get_user().data)
                 card_obj = self._services(card.Card, new_card.id, self)
                 self.cards.append(component.Component(card_obj, 'new'))
                 values = {'column_id': self.id,

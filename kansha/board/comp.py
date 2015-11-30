@@ -152,16 +152,22 @@ class Board(object):
 
         self.must_reload_search = False
 
-    def copy(self, board, additional_data):
-        self.data.copy(board.data)
-        cols = [col() for col in board.columns if not col().is_archive]
-        for index, column in enumerate(cols):
-            new_column = self.create_column(index, column.data.title)
-            new_column.copy(column, additional_data)
+    def copy(self, owner, additional_data):
+        new_data = self.data.copy(None)
+        new_obj = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.search_engine, load_data=False)
+        new_obj.add_member(owner, 'manager')
 
-        for lbl in board.labels:
-            lbl = self.data.create_label(lbl.title, lbl.color)
-            self.labels.append(self._services(label.Label, lbl))
+        cols = [col() for col in self.columns if not col().is_archive]
+        for index, column in enumerate(cols):
+            new_col = column.copy(new_obj, additional_data)
+            new_obj.columns.append(component.Component(new_col))
+
+        new_obj.archive_column = new_obj.create_column(index=index + 1, title=_(u'Archive'), archive=True)
+
+        for lbl in self.labels:
+            new_obj.labels.append(lbl.copy(new_obj, additional_data))
+
+        return new_obj
 
 
     def switch_view(self):
@@ -179,7 +185,7 @@ class Board(object):
 
         if archive is not None:
             self.archive_column = archive
-        else:
+        elif not self.data.is_template:
             # Create the unique archive column
             last_idx = max(c.index for c in self.data.columns) if self.data.columns else -1
             self.archive_column = self.create_column(index=last_idx + 1, title=_(u'Archive'), archive=True)
@@ -554,9 +560,6 @@ class Board(object):
         """
         return [self._services(label.Label, data) for data in self.data.labels]
 
-    def get_label_by_title(self, title):
-        return (l for l in self.labels if l.title == title).next()
-
     @property
     def data(self):
         """Return the board object from database
@@ -832,9 +835,9 @@ class Board(object):
 
             w, h = self.assets_manager.get_image_size(fileid)
             if all((w, h, w >= 500, h >= 500)):
-                pos = 'cover'
+                pos = u'cover'
             else:
-                pos = 'repeat'
+                pos = u'repeat'
             self.data.background_image = fileid
             self.data.background_position = pos
         else:

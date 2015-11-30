@@ -34,6 +34,11 @@ class Label(object):
         self.id = data.id
         self._changed = var.Var(False)
 
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_obj = Label(new_data)
+        return new_obj
+
     @property
     def data(self):
         """Return the label from the database
@@ -43,11 +48,9 @@ class Label(object):
         """
         return DataLabel.get(self.id)
 
-    @property
-    def color(self):
+    def get_color(self):
         return self.data.color
 
-    @color.setter
     def set_color(self, v):
         """Change the color of the label
 
@@ -57,11 +60,9 @@ class Label(object):
         self.data.color = v
         self._changed(True)
 
-    @property
-    def title(self):
+    def get_title(self):
         return self.data.title
 
-    @title.setter
     def set_title(self, title):
         """Set title
 

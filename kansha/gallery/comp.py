@@ -7,8 +7,11 @@
 # this distribution.
 #--
 
+import random
+
 from cgi import FieldStorage
 from webob.exc import HTTPOk
+
 from nagare import component, security, var
 from nagare.i18n import _
 
@@ -40,6 +43,7 @@ class Gallery(CardExtension):
         for data_asset in self.data.get_assets():
             self._create_asset_c(data_asset)
         #self.crop_overlay = None
+        self.comp_id = str(random.randint(10000, 100000))
 
     def _create_asset_c(self, data_asset):
         asset = Asset(data_asset, self.assets_manager)

@@ -39,16 +39,17 @@ CONTENT_TYPES = {'image/png': render_image,
 
 @presentation.render_for(Gallery)
 def render(self, h, comp, *args):
-    with h.div(class_='nbItems'):
-        h << h.script(u'YAHOO.kansha.app.closeModal();')
-        h << comp.render(h, model='badge')
-    with h.div(id="card-gallery"):
-        if security.has_permissions('edit', self):
-            for overlay in self.overlays:
-                h << overlay
-        else:
-            for asset in self.assets:
-                h << asset.render(h, model="anonymous")
+    with h.div(id='gal' + self.comp_id):
+        with h.div(class_='nbItems'):
+            h << h.script(u'YAHOO.kansha.app.closeModal(); YAHOO.kansha.app.hideOverlay();')
+            h << comp.render(h, model='badge')
+        with h.div(id="card-gallery"):
+            if security.has_permissions('edit', self):
+                for overlay in self.overlays:
+                    h << overlay
+            else:
+                for asset in self.assets:
+                    h << asset.render(h, model="anonymous")
 
     return h.root
 
@@ -59,6 +60,7 @@ def render_cover(self, h, comp, model):
     if cover:
         h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
     return h.root
+
 
 @presentation.render_for(Gallery, "action")
 def render_download(self, h, comp, *args):
@@ -92,8 +94,12 @@ def render_download(self, h, comp, *args):
                     ).decode('UTF-8')
                 }
             )
+            submit_action = ajax.Update(render=lambda r: comp.render(r, model=None),
+                     component_to_update='gal' + self.comp_id,
+                     action=lambda: self.add_assets(v_file()))
+
             h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
-            h << h.input(class_='hidden', id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
+            h << h.input(class_='hidden', id=submit_id, type="submit").action(submit_action)
     return h.root
 
 

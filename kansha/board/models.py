@@ -72,6 +72,12 @@ class DataBoard(Entity):
     weighting_cards = Field(Integer, default=0)
     weights = Field(Unicode(255), default=u'')
 
+    @property
+    def template_title(self):
+        if not self.managers or self.visibility == 0:
+            return self.title
+        return u'{0} ({1})'.format(self.title, self.managers[0].fullname)
+
     def copy(self, parent):
         new_data = DataBoard(title=self.title,
                              description=self.description,
@@ -245,17 +251,16 @@ class DataBoard(Entity):
         q = cls.query
         q = q.filter(cls.archived == False)
         q = q.filter(cls.is_template == True)
+        q = q.order_by(cls.title)
 
         q1 = q.filter(cls.visibility == public_value)
 
         q2 = q.join(DataBoardManager)
         q2 = q2.filter(DataBoardManager.user_username == user_username)
         q2 = q2.filter(DataBoardManager.user_source == user_source)
+        q2 = q2.filter(cls.visibility != public_value)
 
-        q = q1.union(q2)
-        q = q.order_by(DataBoard.visibility.desc(), DataBoard.title)
-
-        return q
+        return q1, q2
 
     def create_column(self, index, title, nb_cards=None, archive=False):
         return DataColumn.create_column(self, index, title, nb_cards, archive)

@@ -490,8 +490,9 @@ class UserBoards(object):
         return component.Component(b, model)
 
     def reload_boards(self):
-        self.templates = OrderedDict((b.id, b.title)
-                                      for b in board.Board.get_templates_for(self.user_id, self.user_source))
+        public, private = board.Board.get_templates_for(self.user_id, self.user_source)
+        self.templates = {'public': [(b.id, b.template_title) for b in public],
+                         'private': [(b.id, b.template_title) for b in private]}
         self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
                                                 for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
         self.my_boards = OrderedDict((b.id, self._get_board(b))
@@ -537,7 +538,11 @@ def render_userboards(self, h, comp, *args):
 
             if len(self.templates) > 1:
                 with h.select.action(template):
-                    h << [h.option(tpl, value=id_) for id_, tpl in self.templates.iteritems()]
+                    with h.optgroup(label=_(u'Public templates')):
+                        h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
+                    if self.templates['private']:
+                        with h.optgroup(label=_(u'My templates')):
+                            h << [h.option(tpl, value=id_) for id_, tpl in self.templates['private']]
             else:
                 id_, tpl = self.templates.items()[0]
                 template(id_)

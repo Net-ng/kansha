@@ -7,9 +7,10 @@
 # this distribution.
 # --
 
-from nagare import component, database, security
-
 import json
+import random
+
+from nagare import component, database, security
 
 from kansha import notifications
 from kansha.title import comp as title
@@ -149,6 +150,7 @@ class Checklists(CardExtension):
     def __init__(self, card):
         self.parent = card
         self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.data.checklists]
+        self.comp_id = str(random.randint(10000, 100000))
 
     @property
     def nb_items(self):

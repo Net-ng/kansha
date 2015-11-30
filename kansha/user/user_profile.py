@@ -462,18 +462,28 @@ class UserBoards(object):
         self.user_source = user.source
         self._services = services_service
         self.new_board = component.Component(board.NewBoard())
+        self.last_modified_boards = {}
+        self.my_boards = {}
+        self.guest_boards = {}
+        self.archived_boards = {}
+        self.all_boards = {}
+
         self.reload_boards()
 
     def _get_board(self, b, model=0):
-        b = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
-                           None,
-                           on_board_delete=self.reload_boards,
-                           on_board_archive=self.reload_boards,
-                           on_board_restore=self.reload_boards,
-                           on_board_leave=self.reload_boards,
-                           on_update_members=self.reload_boards,
-                           load_data=False)
-        return component.Component(b, model)
+        if b.id in self.all_boards:
+            bbo = self.all_boards[b.id]
+        else:
+            bbo = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
+                                 None,
+                                 on_board_delete=self.reload_boards,
+                                 on_board_archive=self.reload_boards,
+                                 on_board_restore=self.reload_boards,
+                                 on_board_leave=self.reload_boards,
+                                 on_update_members=self.reload_boards,
+                                 load_data=False)
+            self.all_boards[b.id] = bbo
+        return component.Component(bbo, model)
 
     def reload_boards(self):
         self.last_modified_boards = OrderedDict((b.id, self._get_board(b))

@@ -14,6 +14,7 @@ from nagare import component
 from kansha.toolbox import calendar_widget
 from kansha.services.components_repository import CardExtension
 
+
 class DueDate(CardExtension):
 
     def __init__(self, parent):
@@ -34,7 +35,6 @@ class DueDate(CardExtension):
 
     def new_card_position(self, value):
         self.set_value(value)
-
 
     def get_days_count(self):
         today = date.today()

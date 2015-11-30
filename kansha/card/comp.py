@@ -76,7 +76,7 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
-        extensions_classes = (
+        EXTENSIONS_CLASSES = (
             ('labels', label.CardLabels),
             ('description', description.CardDescription),
             ('checklists', checklist.Checklists),
@@ -89,7 +89,7 @@ class Card(object):
         )
         self.title = component.Component(CardTitle(self))
         self.card_extensions = [(name, component.Component(self._services(extension, self)))
-                                for name, extension in extensions_classes]
+                                for name, extension in EXTENSIONS_CLASSES]
 
     @property
     def data(self):

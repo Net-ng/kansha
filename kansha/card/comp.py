@@ -56,6 +56,16 @@ class Card(object):
         self.card_repo = card_extensions
         self.reload(data if data else self.data)
 
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_data.author = additional_data['author'].data
+        new_obj = self._services(Card, new_data.id, parent, self.card_repo, data=new_data)
+
+        # TODO extensions
+
+        return new_obj
+
+
     @property
     def must_reload_search(self):
         return self.board.must_reload_search

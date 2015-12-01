@@ -121,10 +121,10 @@ def render(self, h, comp, *args):
                 # Refresh the list
                 action2 = ajax.Update(render=lambda r: comp.render(r, model='list'),
                                       component_to_update='list' + self.comp_id)
-                with h.a(title=label.color, class_=' '.join(cls),).action(ajax.Updates(action1, action2)):
+                with h.a(title=label.get_color(), class_=' '.join(cls),).action(ajax.Updates(action1, action2)):
                     h << h.span(class_="card-label",
-                                style='background-color: %s' % label.color)
-                    h << h.span(label.title)
+                                style='background-color: %s' % label.get_color())
+                    h << h.span(label.get_title())
                     if label.id in self.labels:
                         h << h.i(class_='icon-checkmark')
     return h.root

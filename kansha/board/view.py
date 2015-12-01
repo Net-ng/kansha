@@ -23,7 +23,7 @@ from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                    VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
                    WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
-from .comp import (Board, Icon, NewBoard, BoardTitle,
+from .comp import (Board, Icon, BoardTitle,
                    BoardDescription, BoardMember)
 from nagare import i18n
 from nagare.ajax import py2js
@@ -47,8 +47,10 @@ def render_Board_menu(self, h, comp, *args):
             if security.has_permissions('edit', self):
                 h << self.add_list_overlay
                 h << self.edit_description_overlay
+                h << self.save_template_overlay
 
             h << h.a(self.icons['export']).action(self.export)
+
 
             h << h.a(self.icons['history']).action(
                 lambda: self.popin.call(
@@ -286,26 +288,6 @@ def render_Icon(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(NewBoard)
-@security.permissions('create_board')
-def render_NewBoard(self, h, comp, *args):
-    """Render board creator"""
-    title = var.Var()
-    buttons_id = h.generate_id()
-    user = security.get_user()
-    with h.form:
-        kw = {"onfocus": ("YAHOO.kansha.app.show('%s', true);"
-                          "YAHOO.util.Dom.addClass(this, 'expanded');"
-                          ) % buttons_id, }
-        h << h.input(type='text', placeholder=_(
-            'Create a new board'), class_='new-board-name', **kw).action(title)
-        with h.div(id=buttons_id, class_="buttons hidden"):
-            h << h.button(_('Add'), class_='btn btn-primary').action(lambda: self.create_board(comp, title(), user))
-            h << ' '
-            h << h.button(_('Cancel'), class_='btn').action(comp.answer)
-    return h.root
-
-
 @presentation.render_for(Board, 'calendar')
 def render_Board_columns(self, h, comp, *args):
     h.head.css_url('js/fullcalendar-2.2.6/fullcalendar.min.css')
@@ -366,6 +348,22 @@ def render_Board_columns(self, h, comp, *args):
 
             # Call columns resize
             h << h.script('YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();')
+    return h.root
+
+
+@presentation.render_for(Board, 'save_template')
+def render_Board_save_template(self, h, comp, *args):
+    shared = var.Var('me')
+    with h.form(class_='description-form'):
+        h << h.label(_(u'Save this board as a template'))
+        with h.select.action(shared):
+            h << h.option(_(u'For me only'), value='me').selected(shared)
+            h << h.option(_(u'For all users'), value='shared').selected(shared)
+        with h.div(class_='buttons'):
+            action = remote.Action(lambda: self.save_as_template(shared() == 'shared'))
+            h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(action)
+            h << ' '
+            h << h.button(_('Cancel'), class_='btn', onclick='YAHOO.kansha.app.hideOverlay();')
     return h.root
 
 

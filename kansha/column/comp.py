@@ -33,10 +33,9 @@ class Column(object):
         """
         self.db_id = id_
         self._data = data
-        data = data if data else self.data
         self.id = 'list_' + str(self.db_id)
         self.board = board
-        self.nb_card = var.Var(data.nb_max_cards)
+        self.nb_card = var.Var(self.data.nb_max_cards)
         self._services = services_service
         self.search_engine = search_engine
         self.card_extensions = card_extensions
@@ -45,7 +44,7 @@ class Column(object):
         self.title.on_answer(lambda v: self.title.call(model='edit'))
         self.card_counter = component.Component(CardsCounter(self))
         self.cards = [component.Component(self._services(card.Card, c.id, self, self.card_extensions, data=c))
-                      for c in data.cards]
+                      for c in self.data.cards]
         self.new_card = component.Component(
             card.NewCard(self)).on_answer(self.create_card)
 
@@ -54,6 +53,16 @@ class Column(object):
             lambda r: r.i(class_='icon-circle-down'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
+
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_obj = self._services(Column, new_data.id, None, self.card_extensions, self.search_engine, data=new_data)
+
+        for card in self.cards:
+            new_card = card().copy(new_obj, additional_data)
+            new_obj.cards.append(component.Component(new_card))
+
+        return new_obj
 
     def set_reload_search(self):
         self.board.set_reload_search()
@@ -222,12 +231,9 @@ class Column(object):
         """
         if text:
             if self.can_add_cards:
-                new_card = DataCard.create_card(self.data, text, security.get_user().data)
-                self.cards.append(component.Component(self._services(
-                                                        card.Card, new_card.id, self,
-                                                        self.card_extensions,
-                                                       ),
-                                                      'new'))
+                new_card = self.data.create_card(text, security.get_user().data)
+                card_obj = self._services(card.Card, new_card.id, self, self.card_extensions)
+                self.cards.append(component.Component(card_obj, 'new'))
                 values = {'column_id': self.id,
                           'column': self.title().text,
                           'card': new_card.title}
@@ -238,6 +244,7 @@ class Column(object):
                 self.search_engine.add_document(scard)
                 self.search_engine.commit()
                 self.set_reload_search()
+                return card_obj
             else:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
 
@@ -341,9 +348,9 @@ class NewColumn(object):
         In:
             - ``comp`` -- component
         """
-        nb_cards = int(self.nb_cards()) if self.nb_cards() else ''
-        id = self.board.create_column(self.index(), self.title(), nb_cards or None)
-        col_id = 'list_' + str(id)
+        nb_cards = int(self.nb_cards()) if self.nb_cards() else None
+        col = self.board.create_column(self.index(), self.title(), nb_cards or None)
+        col_id = 'list_' + str(col.id)
 
         return (
             "YAHOO.kansha.app.toggleMenu('boardNavbar');"

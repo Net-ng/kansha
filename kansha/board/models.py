@@ -12,10 +12,12 @@ import uuid
 import urllib
 
 from elixir import using_options
-from elixir import ManyToMany, ManyToOne, OneToMany
+from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
 from kansha.models import Entity
+from kansha.column.models import DataColumn
+from kansha.label.models import DataLabel
 from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
 from kansha.notifications import DataHistory
 from nagare.database import session
@@ -26,6 +28,7 @@ class DataBoard(Entity):
     """Board mapper
 
      - ``title`` -- board title
+     - ``is_template`` -- is this a real board or a template?
      - ``columns`` -- list of board columns
      - ``labels`` -- list of labels for cards
      - ``comments_allowed`` -- who can comment ? (0 nobody, 1 board members only , 2 all application users)
@@ -42,6 +45,7 @@ class DataBoard(Entity):
     """
     using_options(tablename='board')
     title = Field(Unicode(255))
+    is_template = Field(Boolean, default=False)
     columns = OneToMany('DataColumn', order_by="index",
                         cascade='delete')
     labels = OneToMany('DataLabel', order_by='index')
@@ -67,6 +71,29 @@ class DataBoard(Entity):
 
     weighting_cards = Field(Integer, default=0)
     weights = Field(Unicode(255), default=u'')
+
+    @property
+    def template_title(self):
+        if not self.managers or self.visibility == 0:
+            return self.title
+        return u'{0} ({1})'.format(self.title, self.managers[0].fullname)
+
+    def copy(self, parent):
+        new_data = DataBoard(title=self.title,
+                             description=self.description,
+                             background_image=self.background_image,
+                             background_position=self.background_position,
+                             title_color=self.title_color,
+                             comments_allowed=self.comments_allowed,
+                             votes_allowed=self.votes_allowed,
+                             weighting_cards=self.weighting_cards,
+                             weights=self.weights)
+        session.add(new_data)
+        session.flush()
+        return new_data
+
+    def get_label_by_title(self, title):
+        return (l for l in self.labels if l.title == title).next()
 
     def delete_members(self):
         for member in self.board_members:
@@ -97,16 +124,6 @@ class DataBoard(Entity):
         """
         super(DataBoard, self).__init__(*args, **kwargs)
         self.uri = unicode(uuid.uuid4())
-
-    def label_by_title(self, title):
-        """Return a label instance which match with title
-
-        In:
-         - ``title`` -- the title of the label to search for
-        Return:
-         - label instance
-        """
-        return (l for l in self.labels if l.title == title).next()
 
     @classmethod
     def get_by_id(cls, id):
@@ -192,6 +209,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(DataBoard.id.in_(q2))
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         return q
 
     @classmethod
@@ -200,6 +218,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardManager.user_username == user_username)
         q = q.filter(DataBoardManager.user_source == user_source)
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         q = q.order_by(DataBoard.title)
         return q
 
@@ -212,6 +231,7 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_username == user_username)
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == False)
         q = q.filter(~DataBoard.id.in_(q2))
         q = q.order_by(DataBoard.title)
         return q
@@ -222,5 +242,31 @@ class DataBoard(Entity):
         q = q.filter(DataBoardMember.user_username == user_username)
         q = q.filter(DataBoardMember.user_source == user_source)
         q = q.filter(cls.archived == True)
+        q = q.filter(cls.is_template == False)
         q = q.order_by(DataBoard.title)
         return q
+
+    @classmethod
+    def get_templates_for(cls, user_username, user_source, public_value):
+        q = cls.query
+        q = q.filter(cls.archived == False)
+        q = q.filter(cls.is_template == True)
+        q = q.order_by(cls.title)
+
+        q1 = q.filter(cls.visibility == public_value)
+
+        q2 = q.join(DataBoardManager)
+        q2 = q2.filter(DataBoardManager.user_username == user_username)
+        q2 = q2.filter(DataBoardManager.user_source == user_source)
+        q2 = q2.filter(cls.visibility != public_value)
+
+        return q1, q2
+
+    def create_column(self, index, title, nb_cards=None, archive=False):
+        return DataColumn.create_column(self, index, title, nb_cards, archive)
+
+    def create_label(self, title, color):
+        label = DataLabel(title=title, color=color)
+        self.labels.append(label)
+        session.flush()
+        return label

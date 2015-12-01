@@ -39,6 +39,7 @@ def upgrade():
     services.register('mail_sender', DummyMailSender())
 
     bm = BoardsManager('', '', '', {}, None, services)
+    bm.create_template_empty()
     bm.create_template_todo()
 
 

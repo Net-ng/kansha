@@ -14,6 +14,7 @@ from datetime import date, datetime, timedelta
 from glob import glob
 
 from nagare import database
+from nagare.i18n import _
 
 from .comp import Board, BOARD_PUBLIC
 from .models import DataBoard
@@ -59,15 +60,23 @@ class BoardsManager(object):
         return self._services(Board, data_board.id, self.app_title, self.app_banner, self.theme,
                               self.card_extensions, self.search_engine)
 
+    def create_template_empty(self):
+        '''Get a default empty template'''
+        board = DataBoard(title=u'Empty board', is_template=True)
+        board.visibility = BOARD_PUBLIC
+        for i, (title, color) in enumerate(DEFAULT_LABELS):
+            board.labels.append(DataLabel(title=title, color=color, index=i))
+        database.session.flush()
+        return self._get_board(board)
+
     def create_template_todo(self):
         '''Get a default Todo template'''
         board = DataBoard(title=u'Todo', is_template=True)
         board.visibility = BOARD_PUBLIC
-        for title, index in [(u'To Do', 0), (u'Doing', 1), (u'Done', 2)]:
+        for index, title in enumerate((u'To Do', u'Doing', u'Done')):
             board.create_column(index, title)
         for i, (title, color) in enumerate(DEFAULT_LABELS):
             board.labels.append(DataLabel(title=title, color=color, index=i))
-        database.session.add(board)
         database.session.flush()
         return self._get_board(board)
 

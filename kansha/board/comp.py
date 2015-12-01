@@ -168,11 +168,13 @@ class Board(object):
         additional_data['author'] = owner
 
         cols = [col() for col in self.columns if not col().is_archive]
-        for index, column in enumerate(cols):
+        index = 0
+        for column in cols:
             new_col = column.copy(new_obj, additional_data)
             new_obj.columns.append(component.Component(new_col))
+            index += 1
 
-        new_obj.archive_column = new_obj.create_column(index=index + 1, title=_(u'Archive'), archive=True)
+        new_obj.archive_column = new_obj.create_column(index=index, title=_(u'Archive'), archive=True)
 
         for lbl in self.labels:
             new_obj.labels.append(lbl.copy(new_obj, additional_data))

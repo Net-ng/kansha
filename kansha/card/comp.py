@@ -61,7 +61,8 @@ class Card(object):
         new_data.author = additional_data['author'].data
         new_obj = self._services(Card, new_data.id, parent, self.card_repo, data=new_data)
 
-        # TODO extensions
+        for extension in self.card_repo.values():
+            print extension
 
         return new_obj
 

@@ -32,6 +32,5 @@ class DataLabel(Entity):
                              color=self.color,
                              index=self.index,
                              board=parent)
-        session.add(new_data)
         session.flush()
         return new_data

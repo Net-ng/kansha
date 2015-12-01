@@ -33,6 +33,7 @@ def populate():
     services.register('mail_sender', DummyMailSender())
 
     bm = BoardsManager('', '', '', {}, None, services)
+    bm.create_template_empty()
     tpl = bm.create_template_todo()
     usermanager.UserManager().populate(bm, tpl)
 

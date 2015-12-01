@@ -44,8 +44,8 @@ class DataCard(Entity):
         new_data = DataCard(title=self.title,
                             description=self.description,
                             cover=self.cover,
-                            weight=self.weight)
-        session.add(new_data)
+                            weight=self.weight,
+                            column=parent)
         session.flush()
         return new_data
 

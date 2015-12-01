@@ -88,7 +88,6 @@ class DataBoard(Entity):
                              votes_allowed=self.votes_allowed,
                              weighting_cards=self.weighting_cards,
                              weights=self.weights)
-        session.add(new_data)
         session.flush()
         return new_data
 

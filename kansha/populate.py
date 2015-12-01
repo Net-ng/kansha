@@ -8,16 +8,33 @@
 # this distribution.
 #--
 
-from .user import usermanager
-from nagare import log
-import sys
 import os
+import sys
+
+from nagare import local, log, security
+
+from kansha.security import SecurityManager
+from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
+from kansha.services.services_repository import ServicesRepository
+from kansha.services.mail import DummyMailSender
+
+from .board.boardsmanager import BoardsManager
+from .user import usermanager
 
 
 def populate():
     """Populate database
     """
-    usermanager.UserManager().populate()
+    local.request = local.Thread()
+    security.set_manager(SecurityManager(''))
+
+    services = ServicesRepository()
+    services.register('assets_manager', DummyAssetsManager())
+    services.register('mail_sender', DummyMailSender())
+
+    bm = BoardsManager('', '', '', None, services)
+    tpl = bm.create_template_todo()
+    usermanager.UserManager().populate(bm, tpl)
 
     app_path = 'kansha'
     nagare_admin = os.path.join(os.path.dirname(sys.executable), 'nagare-admin')

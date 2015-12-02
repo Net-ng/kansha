@@ -354,10 +354,13 @@ textarea.expanded {
 
 .members .add {
     visibility: hidden;
-    margin-top: 2px;
-    width: 30px;
-    height: 30px;
     display: inline-block;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.card .members .count {
+    padding: 0 4px;
 }
 
 .card:hover .members .add,

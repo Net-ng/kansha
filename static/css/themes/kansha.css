@@ -499,10 +499,10 @@ i.icon {
     margin: 0
 }
 
-.members .more .count {
+.members .count {
     position: relative;
     left: -11px;
-    top: -1px;
+    top: 1px;
 }
 
 .unselectable {

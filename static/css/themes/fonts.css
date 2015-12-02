@@ -129,11 +129,11 @@
 
 @font-face {
 	font-family: 'icomoon';
-	src:url('../../fonts/icomoon.eot?eamo5d');
-	src:url('../../fonts/icomoon.eot?eamo5d#iefix') format('embedded-opentype'),
-		url('../../fonts/icomoon.ttf?eamo5d') format('truetype'),
-		url('../../fonts/icomoon.woff?eamo5d') format('woff'),
-		url('../../fonts/icomoon.svg?eamo5d#icomoon') format('svg');
+	src:url('../../fonts/icomoon.eot?iu7uxe');
+	src:url('../../fonts/icomoon.eot?iu7uxe#iefix') format('embedded-opentype'),
+		url('../../fonts/icomoon.ttf?iu7uxe') format('truetype'),
+		url('../../fonts/icomoon.woff?iu7uxe') format('woff'),
+		url('../../fonts/icomoon.svg?iu7uxe#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -162,11 +162,26 @@
 .icon-history:before {
 	content: "\e973";
 }
+.icon-box-add:before {
+	content: "\e97a";
+}
+.icon-box-remove:before {
+	content: "\e97b";
+}
+.icon-user-plus:before {
+	content: "\e97c";
+}
+.icon-user-minus:before {
+	content: "\e97d";
+}
 .icon-meter:before {
 	content: "\e979";
 }
 .icon-download3:before {
 	content: "\e974";
+}
+.icon-exit:before {
+	content: "\e97e";
 }
 .icon-checkbox-checked:before {
 	content: "\e976";

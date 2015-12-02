@@ -56,14 +56,15 @@ def render_SaveTemplateEditor(self, h, comp, *args):
         with h.div(class_='buttons'):
             h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(self.commit, comp)
             h << ' '
-            h << h.button(_('Cancel'), class_='btn').action(remote.Action(lambda comp=comp: self.close(comp)))
+            h << h.button(_('Cancel'), class_='btn').action(remote.Action(lambda: self.close(comp)))
     return h.root
 
 
 @presentation.render_for(SaveTemplateEditor, 'saved')
 def render_SaveTemplateEditor_saved(self, h, comp, *args):
-    close = remote.Action(lambda comp=comp: self.close(comp))
-    h << h.script('''YAHOO.kansha.app.onHideOverlay(function() { %s; });''' % close.generate_action(1, h))
+    close = remote.Action(lambda: self.close(comp))
+    close = h.input(type='radio').action(close).get('onclick')
+    h << h.script('''YAHOO.kansha.app.onHideOverlay(function() { %s; });''' % close)
     h << h.div(h.i(class_='icon-checkmark'), _(u'Template saved!'), class_='success')
     with h.div(class_='buttons'):
         h << h.a(_(u'OK'), class_='btn btn-primary', onclick='''YAHOO.kansha.app.hideOverlay()''')

@@ -8,22 +8,21 @@
 # this distribution.
 #--
 import json
-import os.path
 import time
+import os.path
 from datetime import date, datetime, timedelta
 from glob import glob
 
 from nagare import database
-from nagare.i18n import _
 
-from .comp import Board, BOARD_PUBLIC
-from .models import DataBoard
 from kansha.card.fts_schema import Card as FTSCard
 from kansha.card.models import DataCard
 from kansha.column.models import DataColumn
 from kansha.comment.models import DataComment
 from kansha.label.models import DataLabel
 from kansha.vote.models import DataVote
+from .comp import Board, BOARD_PUBLIC
+from .models import DataBoard
 
 
 DEFAULT_LABELS = (

@@ -276,6 +276,10 @@
             return false;
         },
 
+        onHideOverlay: function(callback) {
+            NS.app.overlay.beforeHideEvent.subscribe(callback);
+        },
+
         closeOverlay: function () {
             if (NS.app.hideOverlay()) {
                 NS.app.overlay.destroy();

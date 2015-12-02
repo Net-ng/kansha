@@ -7,6 +7,17 @@
  * this distribution.
  **/
 
+.success {
+    font-size: 15px;
+    padding: 10px 0;
+}
+
+.success i {
+    color: #93B70A;
+    margin-right: 5px;
+    font-size: 20px;
+}
+
 #calendar .fc-view-container {
     background: #eaeaea;
 }

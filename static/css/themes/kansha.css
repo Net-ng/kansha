@@ -85,7 +85,6 @@ label {
 
 /* Buttons */
 button, .btn {
-    min-width: 62px;
     width: auto;
     cursor: pointer;
     display: inline-block;

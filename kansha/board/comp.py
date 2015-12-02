@@ -30,6 +30,7 @@ from kansha.toolbox import popin, overlay
 from kansha.user import usermanager
 from kansha.user.comp import PendingUser
 from .models import DataBoard, DataBoardMember
+from .save_template import SaveTemplateTask
 
 # Board visibility
 BOARD_PRIVATE = 0
@@ -152,7 +153,8 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
-        self.save_template_comp = component.Component(self, 'save_template')
+        self.save_template_comp = None
+        self.reload_save_template_comp()
         self.save_template_overlay = component.Component(
             overlay.Overlay(lambda r: self.icons['save_template'],
                             lambda r: self.save_template_comp.render(r),
@@ -160,6 +162,10 @@ class Board(object):
         )
 
         self.must_reload_search = False
+
+    def reload_save_template_comp(self):
+        self.save_template_comp = component.Component(SaveTemplateTask(self))
+        self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
@@ -181,12 +187,13 @@ class Board(object):
 
         return new_obj
 
-    def save_as_template(self, shared):
+    def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
+        template.data.title = title
+        template.data.description = description
         template.data.is_template = True
         template.data.visibility = BOARD_PRIVATE if not shared else BOARD_PUBLIC
-        return 'YAHOO.kansha.app.hideOverlay();'
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

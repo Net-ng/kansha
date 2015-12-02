@@ -42,6 +42,14 @@ class ChecklistItem(object):
     def data(self):
         return DataChecklistItem.get(self.id)
 
+    @property
+    def index(self):
+        return self.data.index
+
+    @property
+    def checklist_id(self):
+        return self.data.checklist.id
+
     def get_title(self):
         return self.data.title
 
@@ -77,26 +85,35 @@ class Checklist(object):
         ).on_answer(self.set_title)
 
         self.new_item = component.Component(NewChecklistItem())
-        self.new_item.on_answer(self.add_item)
+        self.new_item.on_answer(self.add_item_from_str)
 
-    def reorder_items(self):
-        for i, item in enumerate(self.data.items):
-            item.index = i
-
-    def add_item(self, text):
+    def add_item_from_str(self, text):
         if text is None or not text.strip():
             return
-        item = DataChecklistItem(checklist=self.data, title=text.strip(), index=len(self.data.items))
-        database.session.flush()
-        item = component.Component(ChecklistItem(item.id, item))
+        data_item = self.data.add_item_from_str(text)
+        item = ChecklistItem(data_item.id, data_item)
+        self.add_item(item)
+
+    def add_item(self, item):
+        item = component.Component(item)
         self.items.append(item)
-        self.reorder_items()
         self.new_item().focus = True
 
-    def delete_item(self, index):
-        item = self.items.pop(index)()
-        item.data.delete()
-        self.reorder_items()
+    def remove_item(self, item):
+        self.items.pop(item.index)
+        self.data.remove_item(item.data)
+
+    def delete_item(self, item):
+        self.delete_index(item.index)
+
+    def insert_item(self, index, item):
+        self.data.insert_item(index, item.data)
+        item = component.Component(item)
+        self.items.insert(index, item)
+
+    def delete_index(self, index):
+        item = self.items.pop(index)
+        self.data.delete_item(item().data)
 
     def get_title(self):
         return self.data.title
@@ -106,6 +123,7 @@ class Checklist(object):
 
     def set_index(self, index):
         self.data.index = index
+        return self
 
     @property
     def total_items(self):
@@ -141,7 +159,9 @@ class Checklists(CardExtension):
 
     def __init__(self, card):
         self.parent = card
-        self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.get_datalists()]
+        cklists = [(clist.id, Checklist(clist.id, clist)) for clist in card.get_datalists()]
+        self.ck_cache = dict(cklists)
+        self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
 
     @property
@@ -154,6 +174,7 @@ class Checklists(CardExtension):
 
     def delete_checklist(self, index):
         cl = self.checklists.pop(index)()
+        del self.ck_cache[cl.id]
         for i in range(index, len(self.checklists)):
             self.checklists[i]().set_index(i)
         data = {'list': cl.get_title(), 'card': self.parent.get_title()}
@@ -169,34 +190,26 @@ class Checklists(CardExtension):
         clist = DataChecklist(card=self.parent.data)
         database.session.flush()
         ck = Checklist(clist.id, clist)
+        self.ck_cache[clist.id] = ck
         ck.set_index(len(self.checklists))
         self.checklists.append(component.Component(ck))
+        return ck
 
     def reorder(self, ids):
         """Reorder checklists
         In:
          - ``ids`` -- checklist ids
         """
-        new_order = []
-        i = 0
-        for cl_id in json.loads(ids):
-            id_ = int(cl_id.split('_')[-1])
-            for cl in self.checklists:
-                if cl().id == id_:
-                    cl().set_index(i)
-                    i += 1
-                    new_order.append(cl)
-        self.checklists = new_order
+        cl_ids = map(lambda x: int(x.split('_')[-1]), json.loads(ids))
+        self.checklists = [component.Component(self.ck_cache[cid].set_index(i))
+                           for i, cid in enumerate(cl_ids)]
 
     def reorder_items(self, data):
         data = json.loads(data)
         item_id = int(data['id'].split('_')[-1])
         checklist_id = int(data['target'].split('_')[-1])
-        item = DataChecklistItem.get(item_id)
-        checklist = DataChecklist.get(checklist_id)
-        source = item.checklist
-        item.checklist = None
-        checklist.items.insert(data['index'], item)
-        source.reorder_items()
-        checklist.reorder_items()
-        self.parent.reload()
+        item = ChecklistItem(item_id)
+        source = self.ck_cache[item.checklist_id]
+        checklist = self.ck_cache[checklist_id]
+        source.remove_item(item)
+        checklist.insert_item(data['index'], item)

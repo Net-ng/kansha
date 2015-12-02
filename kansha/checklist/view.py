@@ -79,6 +79,7 @@ def render_Checklists(self, h, comp, model):
                 cursor: "move",
                 connectWith: ".checklists .checklist .content ul",
                 dropOnEmpty: true,
+                handle: "i",
                 update: function(event, ui) {
                     var data = {
                         target: ui.item.closest('.checklist').attr('id'),
@@ -113,7 +114,7 @@ def render_Checklist(self, h, comp, model):
                 h << comp.render(h, 'progress')
             with h.ul:
                 for index, item in enumerate(self.items):
-                    h << h.li(item.on_answer(lambda v, index=index: self.delete_item(index)), id='checklist_item_%s' % item().id)
+                    h << h.li(item.on_answer(lambda v, index=index: self.delete_index(index)), id='checklist_item_%s' % item().id)
             h << self.new_item
     return h.root
 

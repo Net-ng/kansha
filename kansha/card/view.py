@@ -118,7 +118,7 @@ def render_card_delete(self, h, comp, model):
             h.a.action(comp.answer, 'delete').get('onclick')
         )
         h << h.button(
-            h.i(class_='icon-bin'),
+            h.i(class_='icon-trashcan'),
             _('Delete'),
             class_='btn delete',
             onclick=(

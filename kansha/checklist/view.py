@@ -23,7 +23,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-checkmark'),
                           class_='btn').action(lambda: comp.answer(text()))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
+            h << h.button(h.i(class_='icon-cancel'), class_='btn').action(comp.answer)
 
     if self.focus:
         h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
@@ -55,7 +55,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-checkmark'), class_='btn').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
+            h << h.button(h.i(class_='icon-cancel'), class_='btn').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -75,7 +75,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
         with h.div(class_='btn-group'):
             h << h.button(h.i(class_='icon-checkmark'), class_='btn').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
+            h << h.button(h.i(class_='icon-cancel'), class_='btn').action(comp.answer)
     h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
@@ -155,7 +155,7 @@ def render_Checklist(self, h, comp, model):
         with h.div(class_='title'):
             h << self.title
             if self.title.model != 'edit':
-                h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+                h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
@@ -181,5 +181,5 @@ def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
     h << h.span(self.title, class_='done' if self.done else '')
     if not self.title.model == 'edit':
-        h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+        h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
     return h.root

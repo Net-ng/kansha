@@ -108,7 +108,7 @@ class Board(object):
 
         def many_user_render(h, number):
             return h.span(
-                h.i(class_='ico-btn icon-user-nb'),
+                h.i(class_='ico-btn icon-user'),
                 h.span(number, class_='count'),
                 title=_("%s more...") % number)
 
@@ -122,14 +122,14 @@ class Board(object):
         self.comp_members = component.Component(self)
 
         # Icons for the toolbar
-        self.icons = {'add_list': component.Component(Icon("icon-plus", _("Add list"))),
-                      'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
-                      'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
-                      'export': component.Component(Icon("icon-download3", _("Export board"))),
-                      'save_template': component.Component(Icon("icon-floppy-disk", _("Save as template"))),
-                      'archive': component.Component(Icon("icon-bin", _("Archive board"))),
-                      'leave': component.Component(Icon("icon-exit", _("Leave this board"))),
-                      'history': component.Component(Icon("icon-history", _("Action log"))),
+        self.icons = {'add_list': component.Component(Icon('icon-plus', _('Add list'))),
+                      'edit_desc': component.Component(Icon('icon-pencil', _('Edit board description'))),
+                      'preferences': component.Component(Icon('icon-cog', _('Preferences'))),
+                      'export': component.Component(Icon('icon-download3', _('Export board'))),
+                      'save_template': component.Component(Icon('icon-floppy', _('Save as template'))),
+                      'archive': component.Component(Icon('icon-trashcan', _('Archive board'))),
+                      'leave': component.Component(Icon('icon-exit', _('Leave this board'))),
+                      'history': component.Component(Icon('icon-history', _("Action log"))),
                       }
 
         # Title component

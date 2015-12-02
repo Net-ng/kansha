@@ -114,6 +114,10 @@ i[class^="icon-"]:before {
 	text-decoration: none;
 }
 
+i.icon {
+    vertical-align: text-bottom;
+}
+
 .hidden {
     display: none;
     visibility: hidden;

@@ -59,11 +59,9 @@ class Card(object):
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_data.author = additional_data['author'].data
-        new_obj = self._services(Card, new_data.id, parent, self.card_repo, data=new_data)
-
-        for extension in self.card_repo.values():
-            print extension
-
+        new_obj = self._services(Card, new_data.id, parent, {}, data=new_data)
+        new_obj.card_extensions = [(name, component.Component(extension.copy(new_obj)))
+                                   for name, extension in self.card_extensions]
         return new_obj
 
 
@@ -354,7 +352,7 @@ class CardMembers(CardExtension):
     @staticmethod
     def many_user_render(h, number):
         return h.span(
-            h.i(class_='ico-btn icon-user-nb'),
+            h.i(class_='ico-btn icon-user'),
             h.span(number, class_='count'),
             title=_("%s more...") % number)
 

@@ -47,6 +47,9 @@ class Gallery(CardExtension):
         #self.crop_overlay = None
         self.comp_id = str(random.randint(10000, 100000))
 
+    def copy(self, parent, additional_data):
+        return self.__class__(parent, self.assets_manager)
+
     def _create_asset_c(self, data_asset):
         asset = Asset(data_asset, self.assets_manager)
         asset_thumb = component.Component(asset, 'thumb').on_answer(self.action)

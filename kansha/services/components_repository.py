@@ -16,7 +16,7 @@ class CardExtension(plugin.Plugin):
     def __init__(self, card):
         self.card = card
 
-    def copy(self, parent):
+    def copy(self, parent, additional_data):
         return self.__class__(parent)
 
     def delete(self):

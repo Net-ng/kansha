@@ -14,7 +14,7 @@ from nagare.i18n import _
 
 from kansha.card.comp import CardWeightEditor
 
-from .comp import Card, NewCard, CardTitle, CardMembers
+from .comp import Card, CardMembers, NewCard
 
 
 @presentation.render_for(Card, 'no_dnd')
@@ -54,9 +54,10 @@ def render(self, h, comp, *args):
             with h.div(class_='headers'):
                 h << [extension.render(h, 'header') for extension in extensions]
             with h.div(class_='covers'):
-                h << self.title.render(h, 'card-title')
+                with h.div(class_='title'):
+                    h << self.title.render(h, 'readonly')
                 h << [extension.render(h, 'cover') for extension in extensions]
-            with h.div(class_='card-footer'):
+            with h.div(class_='badges'):
                 h << [extension.render(h, 'badge') for extension in extensions]
 
     h << h.script(
@@ -82,7 +83,8 @@ def render(self, h, comp, *args):
                     '%s#id_%s' % (self.data.column.board.url, self.id)
                 )
             }
-            h << self.title.render(h, 'card-title')
+            with h.div(class_='title'):
+                h << self.title.render(h, 'readonly')
             # FIXME: unify with main card view.
     return h.root
 
@@ -97,8 +99,9 @@ def render_card_edit(self, h, comp, *args):
 
     with h.div(class_='card-edit-form'):
         with h.div(class_='header'):
-            self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
-            h << h.AsyncRenderer().div(self.title, component.Component(self.column, 'title'), class_="async-title")
+            with h.div(class_='title'):
+                h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
+                h << self.column.get_title()  # FIXME: no direct access to column
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
                 for name, extension in self.card_extensions:
@@ -335,13 +338,6 @@ def render_new_card_add(self, h, comp, *args):
 
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 
-    return h.root
-
-
-@presentation.render_for(CardTitle, 'card-title')
-def render_card_title(self, h, comp, *args):
-    """Render the title of the associated card"""
-    h << h.a(self.text)
     return h.root
 
 

@@ -7,17 +7,19 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-
 from collections import namedtuple, OrderedDict
-from nagare import component, security, var
+
+from nagare import component
+from nagare import editor
+from nagare import i18n
+from nagare import security
+from nagare import validator, var
 from nagare.i18n import _
 
 from kansha import notifications
 from kansha.menu import MenuEntry
-from ..label import comp as label
-from nagare import editor
-from nagare import validator
-from nagare import i18n
+from kansha.label import comp as label
+from kansha.title import comp as title
 
 
 class BoardConfig(object):
@@ -63,9 +65,10 @@ class BoardLabels(object):
         """
         self.board = board
         self.labels = []
-        for data in board.labels:
-            t = component.Component(label.LabelTitle(data))
-            l = component.Component(data, model='edit-color')
+        for lbl in board.labels:
+            t = component.Component(title.EditableTitle(lbl.get_title))
+            t.on_answer(lbl.set_title)
+            l = component.Component(lbl, model='edit-color')
             self.labels.append((t, l))
 
 

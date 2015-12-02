@@ -15,7 +15,7 @@ from cStringIO import StringIO
 
 from nagare import component, log, security
 from nagare.database import session
-from nagare.i18n import _, _L, format_date
+from nagare.i18n import _, format_date
 from webob import exc
 import xlwt
 
@@ -23,7 +23,6 @@ from kansha import exceptions, notifications, validator
 from kansha.authentication.database import forms
 from kansha.card import fts_schema
 from kansha.column import comp as column
-from kansha.description import comp as description
 from kansha.label import comp as label
 from kansha.title import comp as title
 from kansha.toolbox import popin, overlay
@@ -132,8 +131,8 @@ class Board(object):
                       }
 
         # Title component
-        self.title = component.Component(BoardTitle(self))
-        self.title.on_answer(lambda v: self.title.call(model='edit'))
+        self.title = component.Component(title.EditableTitle(self.get_title))
+        self.title.on_answer(self.set_title)
 
         # Add new column component
         self.new_column = component.Component(column.NewColumn(self))
@@ -375,8 +374,8 @@ class Board(object):
             dest = cols[data['dest']]
             card = orig.remove_card(data['card'])
             dest.insert_card(card, data['index'])
-            values = {'from': orig.title().text,
-                      'to': dest.title().text,
+            values = {'from': orig.get_title(),
+                      'to': dest.get_title(),
                       'card': card().data.title}
             notifications.add_history(self.data, card().data,
                                       security.get_user().data,
@@ -959,14 +958,6 @@ class Icon(object):
         self.title = title
 
 ################
-
-
-class BoardTitle(title.Title):
-
-    """Board title component
-    """
-    model = DataBoard
-    field_type = 'input'
 
 
 class BoardDescription(object):

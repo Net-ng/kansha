@@ -12,18 +12,18 @@
 }
 
 /* Board */
-.board .boardTitle {
+.board .board-title {
     color: #737373;
     font: normal 33px OpenSansLight;
 }
 
-.board .boardTitle a,
-.board .boardTitle a:hover {
+.board .board-title a,
+.board .board-title a:hover {
     color: #737373;
     text-decoration: none;
 }
 
-.board .boardTitle .title-form {
+.board .board-title .title-form {
     font-size: 24px;
 }
 
@@ -167,8 +167,8 @@ a.card-label:hover {
     color: #737373;
 }
 
-.card-edit-form .header .title-form input {
-    font-size: 125%;
+.card-edit-form .header .title-form {
+    font-size: 14px;
 }
 
 .card-edit-form .header .title {
@@ -393,14 +393,6 @@ div.history th {
     opacity: 0.6;
 }
 
-.checklists .checklist .title:hover .show_onhover {
-    color: #AAA;
-}
-
-.checklists .checklist .btn-group .btn:first-child {
-    border-left: 0;
-}
-
 .checklists .checklist i[class^="icon-checkbox-"] {
     font-size: 16px;
 }
@@ -530,7 +522,7 @@ div.history th {
         background-color: #eaeaea;
     }
 
-    .board .boardTitle {
+    .board .board-title {
         font-size: 25px
     }
 }
@@ -543,11 +535,11 @@ div.history th {
         border-radius: 0 0 10px 0;
     }
 
-    .board .boardTitle {
+    .board .board-title {
         font-size: 18px;
     }
 
-    .board .boardTitle .title-form {
+    .board .board-title .title-form {
         font-size: 16px;
     }
 }

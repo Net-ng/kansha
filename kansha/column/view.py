@@ -7,12 +7,12 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-import peak
 
-from nagare import presentation, security, var, ajax
+from nagare import ajax, presentation, security, var
 from nagare.i18n import _
-from .comp import Column, NewColumn, ColumnTitle, CardsCounter
-from ..toolbox import remote
+
+from .comp import CardsCounter, Column, NewColumn
+from kansha.toolbox import remote
 
 
 @presentation.render_for(Column)
@@ -96,16 +96,16 @@ def render_column_overlay(self, h, comp, *args):
 
 @presentation.render_for(Column, model='header')
 def render_column_header(self, h, comp, *args):
-    if self.card_counter.model != 'edit':
-        h << self.title
-    if self.title.model != 'edit':
-        h << self.card_counter
+    with h.div(class_='title'):
+        h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
+    h << self.card_counter
     return h.root
 
 
 @presentation.render_for(Column, model='title')
 def render_column_title(self, h, comp, *args):
-    h << self.title.render(h, 'no-edit')
+    with h.div(class_='title'):
+        h << self.title.render(h, 'readonly')
     return h.root
 
 
@@ -139,32 +139,6 @@ def render_column_body(self, h, comp, *args):
                 h << h.div(self.new_card)
 
     h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
-    return h.root
-
-
-@presentation.render_for(ColumnTitle)
-def render_ColumnTitle(self, h, comp, *args):
-    """Render the title of the associated object
-
-    Used by column title and card title on popin
-    """
-    with h.div(class_='title'):
-        kw = {}
-        if not security.has_permissions('edit', self):
-            kw['style'] = 'cursor: default'
-        a = h.a(self.text, title=self.text, **kw)
-        if security.has_permissions('edit', self):
-            a.action(comp.answer)
-        h << a
-    h << h.script(
-        'YAHOO.kansha.app.showCardsLimitEdit(%s)' % ajax.py2js(self.parent.id)
-    )
-    return h.root
-
-
-@presentation.render_for(ColumnTitle, model='no-edit')
-def render_ColumnTitle_no_edit(self, h, comp, *args):
-    h << h.div('(%s) ' % self.text, class_='in-list')
     return h.root
 
 

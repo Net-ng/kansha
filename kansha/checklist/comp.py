@@ -10,7 +10,7 @@
 import json
 import random
 
-from nagare import component, database, security
+from nagare import component, database, i18n, security
 
 from kansha import notifications
 from kansha.title import comp as title
@@ -25,23 +25,13 @@ class NewChecklistItem(object):
         self.focus = False
 
 
-class ChecklistTitle(title.Title):
-    model = DataChecklist
-    field_type = 'input'
-
-
-class ChecklistItemTitle(title.Title):
-    model = DataChecklistItem
-    field_type = 'input'
-
-
 class ChecklistItem(object):
 
     def __init__(self, id_, data=None):
         self.id = id_
         data = data if data is not None else self.data
-        self.title = component.Component(ChecklistItemTitle(self))
-        self.title.on_answer(lambda v: self.title.call(model='edit' if not self.title.model else None))
+        self.title = component.Component(title.EditableTitle(self.get_title, placeholder=i18n._(u'Enter task')))
+        self.title.on_answer(self.set_title)
         self.done = data.done
 
     @property
@@ -75,19 +65,11 @@ class Checklist(object):
         data = data if data is not None else self.data
         self.items = [component.Component(ChecklistItem(item.id, item)) for item in data.items]
 
-        self.title = component.Component(ChecklistTitle(self))
-        self.title.on_answer(self.handle_answer)
+        self.title = component.Component(title.EditableTitle(self.get_title, placeholder=i18n._(u'Enter title')))
+        self.title.on_answer(self.set_title)
 
         self.new_item = component.Component(NewChecklistItem())
         self.new_item.on_answer(self.add_item)
-
-    def handle_answer(self, v):
-        if v and self.title.model:
-            self.new_title(v)
-        self.title.call(model='edit' if not self.title.model else None)
-
-    def edit_title(self):
-        self.title.becomes(model='edit')
 
     def reorder_items(self):
         for i, item in enumerate(self.data.items):
@@ -179,7 +161,6 @@ class Checklists(CardExtension):
         clist = DataChecklist(card=self.parent.data)
         database.session.flush()
         ck = Checklist(clist.id, clist)
-        ck.edit_title()
         ck.set_index(len(self.checklists))
         self.checklists.append(component.Component(ck))
 

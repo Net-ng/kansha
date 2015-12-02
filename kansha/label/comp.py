@@ -129,10 +129,3 @@ class CardLabels(CardExtension):
             card.labels.append(DataLabel.get(label_id))
             self.labels.append(label_id)
             self.labels.sort()
-
-
-class LabelTitle(title.Title):
-
-    """Label title component
-    """
-    field_type = 'input'

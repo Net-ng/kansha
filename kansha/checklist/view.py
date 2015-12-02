@@ -10,7 +10,7 @@
 from nagare import presentation, security, var, ajax
 from nagare.i18n import _
 
-from comp import NewChecklistItem, ChecklistTitle, ChecklistItemTitle, Checklists, Checklist, ChecklistItem
+from comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 
 @presentation.render_for(NewChecklistItem)
@@ -20,63 +20,14 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
     with h.form(class_='new-item-form'):
         id_ = h.generate_id()
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
-        with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-checkmark'),
-                          class_='btn').action(lambda: comp.answer(text()))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
+        h << h.button(_(u'Save'),
+                      class_='btn btn-primary').action(lambda: comp.answer(text()))
+        h << ' '
+        h << h.button(_(u'Cancel'), class_='btn').action(comp.answer)
 
     if self.focus:
         h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
         self.focus = False
-    return h.root
-
-
-@presentation.render_for(ChecklistTitle)
-def render_ChecklistTitle(self, h, comp, *args):
-    """Render the title of the associated object"""
-    h << h.i(class_='icon-list')
-    kw = {}
-    kw['style'] = 'cursor: pointer;display: inline;'
-    kw['onclick'] = h.a.action(comp.answer).get('onclick').replace('return', "")
-    with h.div(class_='text-title', **kw):
-        content = self.text or h.span(_('Edit title'), class_='show_onhover')
-        h << content
-
-    return h.root
-
-
-@presentation.render_for(ChecklistTitle, model='edit')
-def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
-    """Render the title of the associated object"""
-    text = var.Var(self.text)
-    with h.form(class_='title-form'):
-        id_ = h.generate_id()
-        h << h.i(class_='icon-list')
-        h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
-        with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-checkmark'), class_='btn').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
-    h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
-    return h.root
-
-
-@presentation.render_for(ChecklistItemTitle)
-def render_ChecklistTitle(self, h, comp, *args):
-    """Render the title of the associated object"""
-    return h.a(self.text).action(comp.answer)
-
-
-@presentation.render_for(ChecklistItemTitle, model='edit')
-def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
-    """Render the title of the associated object"""
-    text = var.Var(self.text)
-    with h.form(class_='item-title-form'):
-        id_ = h.generate_id()
-        h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Checklist title')).action(text)
-        with h.div(class_='btn-group'):
-            h << h.button(h.i(class_='icon-checkmark'), class_='btn').action(lambda: comp.answer(self.change_text(text())))
-            h << h.button(h.i(class_='icon-cross'), class_='btn').action(comp.answer)
-    h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
     return h.root
 
 
@@ -153,9 +104,9 @@ def render_Checklists_badge(self, h, comp, model):
 def render_Checklist(self, h, comp, model):
     with h.div(id='checklist_%s' % self.id, class_='checklist'):
         with h.div(class_='title'):
-            h << self.title
-            if self.title.model != 'edit':
-                h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+            h << h.i(class_='icon-list')
+            h << self.title.render(h.AsyncRenderer())
+            h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
@@ -179,7 +130,6 @@ def render_Checklist_progress(self, h, comp, model):
 @presentation.render_for(ChecklistItem)
 def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
-    h << h.span(self.title, class_='done' if self.done else '')
-    if not self.title.model == 'edit':
-        h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+    h << h.span(self.title.render(h.AsyncRenderer()), class_='done' if self.done else '')
+    h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
     return h.root

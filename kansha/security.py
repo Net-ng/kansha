@@ -18,10 +18,10 @@ from nagare.security import form_auth, common
 from nagare import security
 
 from .user.usermanager import UserManager
-from .board.comp import Board, BoardTitle, BoardDescription
-from .card.comp import Card, CardTitle
-from .column.comp import Column, ColumnTitle, CardsCounter
-from .label.comp import Label, LabelTitle
+from .board.comp import Board, BoardDescription
+from .card.comp import Card
+from .column.comp import Column, CardsCounter
+from .label.comp import Label
 from .comment.comp import Comment
 from .user.usermanager import UserManager
 from .gallery.comp import Gallery
@@ -177,24 +177,6 @@ class Rules(common.Rules):
     @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Card)")
     def _(self, user, perm, card):
         return security.has_permissions('checklist', card.column)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, BoardTitle)")
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, CardTitle)")
-    def _(self, user, perm, title):
-        """Test if title is editable"""
-        return security.has_permissions('edit', title.parent)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, ColumnTitle)")
-    def _(self, user, perm, title):
-        """Test if title is editable"""
-        if title.parent.is_archive:
-            return False
-        return security.has_permissions('edit', title.parent)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, LabelTitle)")
-    def _(self, user, perm, title):
-        """Test if title is editable"""
-        return True
 
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Label)")
     def _(self, user, perm, subject):

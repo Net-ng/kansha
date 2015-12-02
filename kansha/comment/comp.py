@@ -132,7 +132,7 @@ class Comments(CardExtension):
                                   author=user.data, creation_date=datetime.datetime.utcnow())
             session.add(comment)
             session.flush()
-            data = {'comment': v.strip(), 'card': self.parent.title().text}
+            data = {'comment': v.strip(), 'card': self.parent.get_title()}
             notifications.add_history(self.parent.column.board.data, self.parent.data, security.get_user().data, u'card_add_comment', data)
             self.comments.insert(0, self._create_comment_component(comment))
 

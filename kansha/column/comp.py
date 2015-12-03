@@ -12,7 +12,7 @@ from nagare import ajax
 from nagare.i18n import _
 from nagare import component, var, security, i18n
 
-from kansha.title import comp as title
+from kansha import title
 from kansha.toolbox import popin, overlay
 from kansha import exceptions, notifications
 from kansha.card import (comp as card, fts_schema)

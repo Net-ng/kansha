@@ -18,7 +18,7 @@ from nagare import validator, var
 
 from kansha import notifications
 from kansha.menu import MenuEntry
-from kansha.title import comp as title
+from kansha import title
 
 
 class BoardConfig(object):
@@ -64,10 +64,10 @@ class BoardLabels(object):
         """
         self.board = board
         self.labels = []
-        for lbl in board.labels:
-            t = component.Component(title.EditableTitle(lbl.get_title))
-            t.on_answer(lbl.set_title)
-            l = component.Component(lbl, model='edit-color')
+        for label in board.labels:
+            t = component.Component(title.EditableTitle(label.get_title))
+            t.on_answer(label.set_title)
+            l = component.Component(label, model='edit-color')
             self.labels.append((t, l))
 
 

@@ -13,7 +13,7 @@ import random
 from nagare import component, database, i18n, security
 
 from kansha import notifications
-from kansha.title import comp as title
+from kansha import title
 from kansha.services.components_repository import CardExtension
 
 from .models import DataChecklist, DataChecklistItem

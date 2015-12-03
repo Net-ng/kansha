@@ -34,7 +34,16 @@ class SimpleAssetsManager(AssetsManager):
 
     def copy(self, file_id):
         data, metadata = self.load(file_id)
-        self.save(data, metadata=metadata)
+        new_file_id = self.save(data, metadata=metadata)
+
+        for size in ('thumb', 'medium', 'cover', 'large'):
+            try:
+                data, metadata = self.load(file_id, size)
+                self.save(data, metadata=metadata)
+            except IOError, e:
+                # File does not exist
+                pass
+        return new_file_id
 
     def _get_filename(self, file_id, size=None):
         filename = os.path.join(self.basedir, file_id)

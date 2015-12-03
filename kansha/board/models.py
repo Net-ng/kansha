@@ -81,7 +81,6 @@ class DataBoard(Entity):
     def copy(self, parent):
         new_data = DataBoard(title=self.title,
                              description=self.description,
-                             background_image=self.background_image,
                              background_position=self.background_position,
                              title_color=self.title_color,
                              comments_allowed=self.comments_allowed,

@@ -95,6 +95,17 @@ class CardLabels(CardExtension):
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                            lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
 
+    def copy(self, parent, additional_data):
+        new_extension = super(CardLabels, self).copy(parent, additional_data)
+        new_labels = dict(((label.data.color, label.data.title), label.id) for label in additional_data['labels'])
+        for label in self.data_labels:
+            label_id = new_labels.get((label.color, label.title))
+            if label_id is not None:
+                new_extension.activate(label_id)
+        del new_labels
+        return new_extension
+
+
     @property
     def data_labels(self):
         """Returns the DataLabel instances

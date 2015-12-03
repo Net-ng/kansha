@@ -369,28 +369,29 @@ def render_Board_save_template(self, h, comp, *args):
 @presentation.render_for(BoardDescription)
 def render_BoardDescription(self, h, comp, *args):
     """Render description component in edit mode"""
-    text = var.Var(self.text)
-    with h.form(class_='description-form'):
-        txt_id, btn_id = h.generate_id(), h.generate_id()
-        h << h.label(_(u'Description'), for_=txt_id)
-        ta = h.textarea(text(), id_=txt_id).action(text)
-        if not security.has_permissions('edit', self):
-            ta(disabled='disabled')
-        h << ta
-        with h.div(class_='buttons'):
-            if security.has_permissions('edit', self):
+    if self.success:
+        h << h.script('YAHOO.kansha.app.hideOverlay();')
+        self.success = False
+    else:
+        text = var.Var(self.description())
+        with h.form(class_='description-form'):
+            txt_id, btn_id = h.generate_id(), h.generate_id()
+            h << h.label(_(u'Description'), for_=txt_id)
+            ta = h.textarea(text(), id_=txt_id).action(text)
+            h << ta
+            with h.div(class_='buttons'):
                 h << h.button(_('Save'), class_='btn btn-primary',
-                              id=btn_id).action(remote.Action(lambda: self.change_text(text())))
+                              id=btn_id).action(self.set_description, comp, text)
                 h << ' '
                 h << h.button(
-                    _('Cancel'), class_='btn').action(remote.Action(lambda: self.change_text(None)))
+                    _('Cancel'), class_='btn').action(self.set_description, comp)
 
-        h.head.javascript(
-            h.generate_id(),
-            'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
-                ajax.py2js(txt_id), ajax.py2js(btn_id)
+            h.head.javascript(
+                h.generate_id(),
+                'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
+                    ajax.py2js(txt_id), ajax.py2js(btn_id)
+                )
             )
-        )
 
     return h.root
 

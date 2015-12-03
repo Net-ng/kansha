@@ -259,22 +259,6 @@ class Board(object):
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
                         for token in data.pending]
 
-    def set_description(self, desc):
-        """Changes board description
-
-        In:
-         - ``desc`` -- new board description
-        """
-        if desc is not None:
-            self.data.description = desc
-            self.description = component.Component(
-                BoardDescription(self)).on_answer(self.set_description)
-        return "YAHOO.kansha.app.hideOverlay();"
-
-    def get_description(self):
-        """ """
-        return self.data.description
-
     def set_title(self, title):
         """Set title
 

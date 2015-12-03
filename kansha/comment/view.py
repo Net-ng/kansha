@@ -114,5 +114,5 @@ def render_comments_badge(self, h, *args):
     if self.comments:
         with h.span(class_='badge'):
             label = _N('comment', 'comments', len(self.comments))
-            h << h.span(h.i(class_='icon-bubble'), ' ', len(self.comments), class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-comment'), ' ', len(self.comments), class_='label', data_tooltip=label)
     return h.root

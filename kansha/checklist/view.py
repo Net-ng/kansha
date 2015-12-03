@@ -45,6 +45,7 @@ def render_Checklists_button(self, h, comp, model):
 
 @presentation.render_for(Checklists)
 def render_Checklists(self, h, comp, model):
+    h.head.javascript_url('checklists/js/checklists.js')
     with h.div(id_='clist' + self.comp_id):
         if security.has_permissions('checklist', self.card):
 
@@ -66,30 +67,6 @@ def render_Checklists(self, h, comp, model):
             with h.div(class_='checklists', id=id_):
                 for index, clist in enumerate(self.checklists):
                     h << clist.on_answer(lambda v, index=index: self.delete_checklist(index))
-            h << h.script("""$(function() {
-            $("#" + %(id)s).sortable({
-              placeholder: "ui-state-highlight",
-              axis: "y",
-              handle: ".icon-list",
-              cursor: "move",
-              stop: function( event, ui ) { reorder_checklists($('.checklist').map(function() { return this.id }).get()) }
-            });
-            $(".checklists .checklist .content ul").sortable({
-                placeholder: "ui-state-highlight",
-                cursor: "move",
-                connectWith: ".checklists .checklist .content ul",
-                dropOnEmpty: true,
-                handle: "i",
-                update: function(event, ui) {
-                    var data = {
-                        target: ui.item.closest('.checklist').attr('id'),
-                        index: ui.item.index(),
-                        id: ui.item.attr('id')
-                    }
-                    reorder_checklists_items(data);
-                }
-            }).disableSelection();
-          })""" % {'id': ajax.py2js(id_)})
     return h.root
 
 

@@ -45,7 +45,7 @@ class SimpleAssetsManager(AssetsManager):
             data, metadata = self.load(file_id, 'cover')
             with open(self._get_filename(new_file_id, 'cover'), "w") as f:
                 f.write(data)
-        except OSError:
+        except IOError:
             # Cover not existing
             pass
 

@@ -10,20 +10,20 @@
 
 import json
 
-from nagare import ajax, component, presentation, security, var
 from nagare.i18n import _, _N
+from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
-from kansha.board.boardconfig import WeightsSequenceEditor
 from kansha.toolbox import overlay, popin, remote
+from kansha.board.boardconfig import WeightsSequenceEditor
 
-from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile, BoardWeights
+from .comp import (Board, BoardDescription, BoardMember,
+                   Icon)
 from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                    VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
                    WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
-from .comp import (Board, BoardDescription, BoardMember,
-                   Icon)
+from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile, BoardWeights
 
 
 @presentation.render_for(Board, model="menu")

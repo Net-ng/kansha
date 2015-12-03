@@ -16,7 +16,7 @@ from kansha import notifications
 from kansha.title import comp as title
 from kansha.services.components_repository import CardExtension
 
-from models import DataChecklist, DataChecklistItem
+from .models import DataChecklist, DataChecklistItem
 
 
 class NewChecklistItem(object):

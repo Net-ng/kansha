@@ -9,8 +9,8 @@
 # --
 import peak
 
-from nagare import presentation, var, security, component, ajax
 from nagare.i18n import _
+from nagare import ajax, presentation, security, var
 
 from kansha.card.comp import CardWeightEditor
 

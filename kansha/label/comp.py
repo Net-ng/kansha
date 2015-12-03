@@ -12,11 +12,11 @@ import random
 
 from nagare import component, var
 
-from kansha.title import comp as title
 from kansha.toolbox import overlay
 from kansha.services.components_repository import CardExtension
 
 from .models import DataLabel
+
 
 class Label(object):
 

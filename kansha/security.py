@@ -9,23 +9,20 @@
 #--
 from base64 import b64encode, b64decode
 
-from Crypto.Cipher import Blowfish
 from Crypto import Random
-
 from peak.rules import when
+from Crypto.Cipher import Blowfish
 
-from nagare.security import form_auth, common
 from nagare import security
+from nagare.security import form_auth, common
 
-from .user.usermanager import UserManager
-from .board.comp import Board, BoardDescription
 from .card.comp import Card
-from .column.comp import Column, CardsCounter
 from .label.comp import Label
 from .comment.comp import Comment
-from .user.usermanager import UserManager
 from .gallery.comp import Gallery
-
+from .user.usermanager import UserManager
+from .column.comp import Column, CardsCounter
+from .board.comp import Board, BoardDescription
 from .board.comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                          COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                          VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS)

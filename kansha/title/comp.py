@@ -9,7 +9,7 @@
 #--
 from nagare import component
 
-from .. import validator
+from kansha import validator
 
 
 class Title(object):

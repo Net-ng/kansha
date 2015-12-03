@@ -7,10 +7,10 @@
 # this distribution.
 #--
 
-from nagare import presentation, security, var, ajax
 from nagare.i18n import _
+from nagare import presentation, security, var, ajax
 
-from comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
+from .comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 
 @presentation.render_for(NewChecklistItem)

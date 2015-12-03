@@ -9,15 +9,15 @@
 #--
 
 from nagare import ajax
-from nagare import component, var, security, i18n
 from nagare.i18n import _
+from nagare import component, var, security, i18n
+
+from kansha.title import comp as title
+from kansha.toolbox import popin, overlay
+from kansha import exceptions, notifications
+from kansha.card import (comp as card, fts_schema)
 
 from .models import DataColumn
-from ..toolbox import popin, overlay
-from ..card import (comp as card, fts_schema)
-from ..title import comp as title
-from ..card.models import DataCard
-from .. import exceptions, notifications
 
 
 class Column(object):

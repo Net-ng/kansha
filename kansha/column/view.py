@@ -8,11 +8,12 @@
 # this distribution.
 #--
 
-from nagare import ajax, presentation, security, var
 from nagare.i18n import _
+from nagare import ajax, presentation, security, var
+
+from kansha.toolbox import remote
 
 from .comp import CardsCounter, Column, NewColumn
-from kansha.toolbox import remote
 
 
 @presentation.render_for(Column)

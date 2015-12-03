@@ -8,8 +8,8 @@
 # this distribution.
 #--
 
-from nagare import presentation, var
 from nagare.i18n import _
+from nagare import presentation, var
 
 from .comp import EditableTitle, Title
 

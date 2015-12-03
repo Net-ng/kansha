@@ -12,8 +12,8 @@ import random
 from cgi import FieldStorage
 from webob.exc import HTTPOk
 
-from nagare import component, security, var
 from nagare.i18n import _
+from nagare import component, security, var
 
 from kansha import notifications
 from kansha.toolbox import overlay

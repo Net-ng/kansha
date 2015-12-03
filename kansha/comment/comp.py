@@ -10,13 +10,12 @@
 
 import datetime
 
-from nagare import component, security
 from nagare.database import session
+from nagare import component, security
 
-from kansha.services.components_repository import CardExtension
-
-from kansha import notifications, validator
 from kansha.user import usermanager
+from kansha import notifications, validator
+from kansha.services.components_repository import CardExtension
 
 from .models import DataComment
 

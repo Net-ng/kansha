@@ -7,18 +7,17 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 
-from nagare import component
-from nagare import editor
 from nagare import i18n
-from nagare import security
-from nagare import validator, var
+from nagare import editor
 from nagare.i18n import _
+from nagare import security
+from nagare import component
+from nagare import validator, var
 
 from kansha import notifications
 from kansha.menu import MenuEntry
-from kansha.label import comp as label
 from kansha.title import comp as title
 
 

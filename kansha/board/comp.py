@@ -8,26 +8,27 @@
 # this distribution.
 # --
 
-import json
 import re
+import json
 import unicodedata
 from cStringIO import StringIO
 
-from nagare import component, log, security
+import xlwt
+from webob import exc
 from nagare.database import session
 from nagare.i18n import _, format_date
-from webob import exc
-import xlwt
+from nagare import component, log, security
 
-from kansha import exceptions, notifications, validator
-from kansha.authentication.database import forms
 from kansha.card import fts_schema
-from kansha.column import comp as column
+from kansha.user import usermanager
 from kansha.label import comp as label
 from kansha.title import comp as title
-from kansha.toolbox import popin, overlay
-from kansha.user import usermanager
+from kansha.column import comp as column
 from kansha.user.comp import PendingUser
+from kansha.toolbox import popin, overlay
+from kansha.authentication.database import forms
+from kansha import exceptions, notifications, validator
+
 from .models import DataBoard, DataBoardMember
 
 # Board visibility

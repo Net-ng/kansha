@@ -68,7 +68,7 @@ def render_download(self, h, comp, *args):
         v_file = var.Var()
         submit_id = h.generate_id("attach_submit")
         input_id = h.generate_id("attach_input")
-        h << h.label((h.i(class_='icon-file-text2'),
+        h << h.label((h.i(class_='icon-file'),
                       _("Add file")), class_='btn', for_=input_id)
         with h.form:
             h << h.script(
@@ -109,7 +109,7 @@ def render_gallery_badge(self, h, *args):
     if self.assets:
         with h.span(class_='badge'):
             label = _N('file', 'files', len(self.assets))
-            h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-file'), ' ', len(self.assets), class_='label', data_tooltip=label)
     return h.root
 
 

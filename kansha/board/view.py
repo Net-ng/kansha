@@ -696,7 +696,7 @@ def render_board_background_edit(self, h, comp, *args):
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
-                h << h.label((h.i(class_='icon-file-text2'),
+                h << h.label((h.i(class_='icon-file'),
                               _("Choose an image")), class_='btn', for_=input_id)
                 with h.form(class_='hidden'):
                     h << h.script(

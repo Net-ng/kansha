@@ -35,15 +35,19 @@ class SimpleAssetsManager(AssetsManager):
     def copy(self, file_id):
         data, metadata = self.load(file_id)
         new_file_id = self.save(data, metadata=metadata)
-
-        for size in ('thumb', 'medium', 'cover', 'large'):
-            try:
-                data, metadata = self.load(file_id, size)
-                self.save(data, metadata=metadata)
-            except IOError, e:
-                # File does not exist
-                pass
+        data, metadata = self.load(file_id)
+        self.save(data, new_file_id, metadata)
+        self.copy_cover(file_id, new_file_id)
         return new_file_id
+
+    def copy_cover(self, file_id, new_file_id):
+        try:
+            data, metadata = self.load(file_id, 'cover')
+            with open(self._get_filename(new_file_id, 'cover'), "w") as f:
+                f.write(data)
+        except OSError:
+            # Cover not existing
+            pass
 
     def _get_filename(self, file_id, size=None):
         filename = os.path.join(self.basedir, file_id)
@@ -84,7 +88,6 @@ class SimpleAssetsManager(AssetsManager):
 
             thumb = ImageOps.fit(img, thumb_size if thumb_size else self.thumb_size, Image.ANTIALIAS)
             thumb.save(self._get_filename(file_id, 'thumb'), img.format, quality=75, **kw)  # 'JPEG')
-
         return file_id
 
     def delete(self, file_id):

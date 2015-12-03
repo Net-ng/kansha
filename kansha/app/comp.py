@@ -133,6 +133,7 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.theme,
+                    self.card_extensions,
                     user.data,
                     self.search_engine
                 ),

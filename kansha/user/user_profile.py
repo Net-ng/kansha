@@ -30,7 +30,7 @@ LANGUAGES = {'en': _L('english'),
 
 class UserProfile(object):
 
-    def __init__(self, app_title, app_banner, theme, user, search_engine, services_service):
+    def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, services_service):
         """
         In:
          - ``user`` -- user (DataUser instance)
@@ -45,6 +45,7 @@ class UserProfile(object):
                 app_title,
                 app_banner,
                 theme,
+                card_extensions,
                 user,
             )
         )
@@ -438,7 +439,7 @@ def get_userform(app_title, app_banner, theme, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, theme, user, mail_sender_service, assets_manager_service, services_service):
+    def __init__(self, app_title, app_banner, theme, card_extensions, user, mail_sender_service, assets_manager_service, services_service):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -456,6 +457,7 @@ class UserBoards(object):
         self.app_title = app_title
         self.app_banner = app_banner
         self.theme = theme
+        self.card_extensions = card_extensions
         self.mail_sender = mail_sender_service
         self.assets_manager = assets_manager_service
         self.user_id = user.username
@@ -472,7 +474,7 @@ class UserBoards(object):
 
     def create_board(self, board_id, comp):
         b = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
-                           {}, None,
+                           self.card_extensions, None,
                            on_board_delete=self.reload_boards,
                            on_board_archive=self.reload_boards,
                            on_board_restore=self.reload_boards,

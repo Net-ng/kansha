@@ -24,6 +24,14 @@ class AssetsManager(Service):
             'baseurl': 'string'
         }
 
+    def copy(self, file_id):
+        '''Copy a file from its file_id
+
+        In:
+            - ``file_id`` -- file id of the source file
+        Return:
+            - copied file id'''
+
     def save(self, data, file_id=None, metadata={}):
         """Save data, metadata and return an id
 

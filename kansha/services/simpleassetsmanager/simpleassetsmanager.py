@@ -32,6 +32,10 @@ class SimpleAssetsManager(AssetsManager):
         self.baseurl = baseurl
         self.max_size = max_size
 
+    def copy(self, file_id):
+        data, metadata = self.load(file_id)
+        self.save(data, metadata=metadata)
+
     def _get_filename(self, file_id, size=None):
         filename = os.path.join(self.basedir, file_id)
         if size and size != 'large':

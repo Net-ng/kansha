@@ -62,9 +62,8 @@
     margin-bottom: 0;
 }
 
-.home .new-board-name {
-    max-width: 800px;
-    margin-bottom: 5px;
+.home .new-board select {
+    width: auto;
 }
 
 .home .boards ul.board-labels li {
@@ -115,6 +114,7 @@
 .board-labels .members .miniavatar {
     display: inline-block;
     overflow: hidden;
+    max-height: 28px;
 }
 
 .board-labels .members .more {
@@ -129,7 +129,6 @@
 
 .info-message {
     display: block;
-    top: -10px;
     position: relative;
 }
 

@@ -11,7 +11,7 @@ import random
 from datetime import datetime, timedelta
 
 from nagare.namespaces import xhtml
-from nagare import component, i18n
+from nagare import component, i18n, security
 
 from kansha.toolbox import autocomplete
 from .models import DataUser
@@ -79,9 +79,8 @@ class UserManager(object):
         return DataUser.get_confirmed_users()
 
     def create_user(self, username, password, fullname, email,
-                    source=u'application', picture=None, create_board=True):
-        from ..authentication.database import forms
-        from ..board.boardsmanager import BoardsManager
+                    source=u'application', picture=None):
+        from kansha.authentication.database import forms
         user = DataUser(username, password, fullname, email,
                         source, picture, language=i18n.get_locale().language)
         token_gen = forms.TokenGenerator(email, u'invite board')
@@ -89,43 +88,43 @@ class UserManager(object):
             if token_gen.check_token(token.token) and token.board:
                 user.add_board(token.board)
             token_gen.reset_token(token.token)
-        if create_board:
-            BoardsManager().create_board(u"Welcome Board", user, True)
         return user
 
-    def populate(self):
-        user1 = self.create_user(
-            u'user1', u'password', u'user 1', u'user1@net-ng.com')
-        user1.confirm_email()
+    def populate(self, boards_manager, template):
+        # Create users
+        users = []
+        for i in xrange(1, 4):
+            user = self.create_user(u'user%d' % i, u'password', u'user %d' % i, u'user%d@net-ng.com' % i)
+            user.confirm_email()
+            user_comp = User(user.username)
+            users.append(user_comp)
 
-        user2 = self.create_user(
-            u'user2', u'password', u'user 2', u'user2@net-ng.com')
-        user2.confirm_email()
+        keys = range(3)
 
-        user3 = self.create_user(
-            u'user3', u'password', u'user 3', u'user3@net-ng.com')
-        user3.confirm_email()
+        for i, user in enumerate(users):
+            security.set_user(user)
+            board = boards_manager.copy_board(template, user, False)
+            board.set_title(u'Welcome Board User%d' % i)
+            boards_manager.create_default_cards(board.data, user)
+            board.refresh()
 
-        user1.boards[0].title = u"Welcome Board User1"
-        user2.boards[0].title = u"Welcome Board User2"
-        user3.boards[0].title = u"Welcome Board User3"
-
-        # Share boards and cards for tests
-        user1.boards[0].members.extend([user2, user3])
-        user2.boards[0].members.append(user1)
-        user1.boards[0].columns[0].cards[3].members = [user1, user2]
-        user1.boards[0].columns[1].cards[2].members = [user1, user2, user3]
-        user1.boards[0].columns[1].cards[1].members = [user3]
-        user2.boards[0].columns[0].cards[1].members = [user1, user2]
+            # Share boards and cards for tests
+            others_keys = [k for k in keys if k != i]
+            for key in others_keys:
+                board.add_member(users[key])
+                board.columns[0]().cards[3]().add_member(users[key].data)
+                board.columns[0]().cards[1]().add_member(users[key].data)
+                board.columns[1]().cards[2]().add_member(users[key].data)
+                board.columns[1]().cards[0]().add_member(users[key].data)
 
         # Add comment from other user
-        for u1, u2 in ((user1, user2),
-                       (user2, user3),
-                       (user3, user1)):
-            from ..comment.models import DataComment
-            u1.boards[0].columns[0].cards[-1].comments.append(DataComment(comment=u"I agree.",
-                                                                          creation_date=datetime.utcnow(),
-                                                                          author=u2))
+        from kansha.comment.models import DataComment
+        for u1, u2 in ((users[0], users[1]),
+                       (users[1], users[2]),
+                       (users[2], users[1])):
+            u1.data.boards[0].columns[0].cards[-1].comments.append(DataComment(comment=u"I agree.",
+                                                                               creation_date=datetime.utcnow(),
+                                                                               author=u2.data))
 
 ###### TODO: Move the defintions below somewhere else ##########
 
@@ -161,14 +160,6 @@ class NewMember(object):
                 for u in self.autocomplete_method(value)]
 
 
-class AddMembers(object):
+# class AddMembers(NewMember):
 
-    def __init__(self, autocomplete_method):
-        self.text_id = 'add_members_' + str(random.randint(10000000, 99999999))
-        self.autocomplete = component.Component(
-            autocomplete.Autocomplete(self.text_id, self.autocompletion, delimiter=','))
-        self.autocomplete_method = autocomplete_method
-
-    def autocompletion(self, value, static_url):
-        h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring()) for u in self.autocomplete_method(value)]
+#     pass

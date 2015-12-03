@@ -150,7 +150,7 @@ textarea.expanded {
 }
 
 #lists > .span-auto {
-    max-width: 350px;
+    max-width: 440px;
     min-width: 250px;
 }
 
@@ -322,18 +322,22 @@ textarea.expanded {
     display: block;
 }
 
-.card .members {
-    width: 50%;
-    float: left;
+.members {
     min-height: 32px;
     margin-top: 5px;
+    display: inline-block;
+}
+
+.members .more {
+    display: inline-block;
+    margin-top: 2px;
 }
 
 .card-actions {
     width: 145px;
 }
 
-.card-contents {
+.card-edition {
     width: calc(100% - 175px);
 }
 
@@ -342,29 +346,30 @@ textarea.expanded {
     margin-right: 3px;
 }
 
-.card .members a,
-.card-actions .members a {
+.members a {
     width: auto;
-    float: left;
+    /*float: left;*/
     padding: 0
 }
 
-.card .members .add {
+.members .add {
     visibility: hidden;
+    margin-top: 2px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
 }
 
-.card .members.highlight .add,
-.card-actions .members.highlight .add {
+.card:hover .members .add,
+.card-actions:hover .members .add {
     visibility: visible;
 }
 
-.card .members .add a,
-.card-actions .members .add a {
+.members .add a {
     white-space: nowrap;
 }
 
-.card .members .miniavatar,
-.card-actions .members .miniavatar {
+.members .miniavatar {
     display: inline-block;
     overflow: hidden;
     margin-right: 5px;
@@ -468,10 +473,6 @@ textarea.expanded {
     height: 112px;
 }
 
-.card-edit-form .badges {
-    display: none
-}
-
 .card-edit-form .card-actions .btn {
     margin-bottom: 8px;
     width: 100%;
@@ -483,19 +484,14 @@ textarea.expanded {
 /* End editor */
 
 /* Badges */
-.badges {
-    width: 50%;
+.badge {
     float: right;
     min-height: 20px;
     margin-top: 5px;
+    margin-right: 15px;
+    margin-left: 0;
 }
 
-.badges > .label {
-    margin-right: 3px;
-    padding: 3px;
-    float: right;
-    width: auto;
-}
 /* End badges */
 
 /* Card overlays */
@@ -586,6 +582,11 @@ textarea.expanded {
 /* End card counter */
 
 /* Comments */
+
+.card-extension-comments {
+    margin-top: 1em;
+}
+
 .comment {
     margin-bottom: 5px;
     margin-left: -45px;
@@ -626,7 +627,7 @@ textarea.expanded {
     text-align: right;
 }
 
-.comment .delete {
+.comment-delete {
     margin-left: 5px;
 }
 /* End comments */

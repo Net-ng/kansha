@@ -12,10 +12,11 @@ import random
 
 from nagare import component, var
 
-from .models import DataLabel
-from ..toolbox import overlay
-from ..title import comp as title
+from kansha.title import comp as title
+from kansha.toolbox import overlay
+from kansha.services.components_repository import CardExtension
 
+from .models import DataLabel
 
 class Label(object):
 
@@ -34,6 +35,11 @@ class Label(object):
         self.id = data.id
         self._changed = var.Var(False)
 
+    def copy(self, parent, additional_data):
+        new_data = self.data.copy(parent.data)
+        new_obj = Label(new_data)
+        return new_obj
+
     @property
     def data(self):
         """Return the label from the database
@@ -42,6 +48,9 @@ class Label(object):
          - the DataLabel instance
         """
         return DataLabel.get(self.id)
+
+    def get_color(self):
+        return self.data.color
 
     def set_color(self, v):
         """Change the color of the label
@@ -52,6 +61,9 @@ class Label(object):
         self.data.color = v
         self._changed(True)
 
+    def get_title(self):
+        return self.data.title
+
     def set_title(self, title):
         """Set title
 
@@ -60,21 +72,15 @@ class Label(object):
         """
         self.data.title = title
 
-    def get_title(self):
-        """Get title
 
-        Return :
-            - the board title
-        """
-        return self.data.title
-
-
-class CardLabels(object):
+class CardLabels(CardExtension):
 
     """Card labels component
 
     This component represents all labels associated with a card
     """
+
+    LOAD_PRIORITY = 10
 
     def __init__(self, card):
         """Initialization
@@ -84,7 +90,7 @@ class CardLabels(object):
         """
         self.card = card
         self.comp_id = str(random.randint(10000, 100000))
-        self.labels = [l.id for l in card.data.labels]
+        self.labels = [l.id for l in card.get_datalabels()]
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                            lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))

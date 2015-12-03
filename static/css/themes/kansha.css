@@ -268,13 +268,12 @@ i[class^="icon-"]:before {
 
 .avatar {
     display: inline-block;
-    max-height: 32px;
-    max-width: 36px;
+    height: 28px;
 }
 
 .avatar img {
     max-width: 30px;
-    max-height: 28px;
+    height: 28px;
     display: block
 }
 /* End avatars */
@@ -402,7 +401,8 @@ i[class^="icon-"]:before {
 
 .overlay.board-labels-overlay .avatar {
     overflow: hidden;
-    white-space: nowrap
+    white-space: nowrap;
+    vertical-align: middle;
 }
 
 .overlay.board-labels-overlay h2 {
@@ -496,7 +496,7 @@ i[class^="icon-"]:before {
     margin: 0
 }
 
-.members .more .badge {
+.members .more .count {
     position: relative;
     left: -11px;
     top: -1px;
@@ -514,8 +514,6 @@ i[class^="icon-"]:before {
 /* Errors */
 .nagare-error-message {
     padding-left: 24px;
-    position: relative;
-    top: -10px
 }
 
 .list-title .nagare-error-message {

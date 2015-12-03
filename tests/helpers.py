@@ -95,8 +95,7 @@ def get_or_create_data_user(suffixe=''):
         user_test = usermanager.UserManager().create_user(
             u'usertest_%s' % suffixe,
             u'password', u'User Test %s' % suffixe,
-            u'user_test%s@net-ng.com' % suffixe,
-            create_board=False)
+            u'user_test%s@net-ng.com' % suffixe)
         session.add(user_test)
     return user_test
 
@@ -119,10 +118,6 @@ def create_services():
 def create_board():
     """Create boards with default columns and default cards
     """
-    user_test = get_or_create_data_user()
-    data_board = boardsmanager.BoardsManager().create_board(word(), user_test,
-                                                            True)
-    session.add(data_board)
-    session.flush()
+    user_test = create_user()
     _services = create_services()
-    return _services(board.Board, data_board.id, 'boards', '', '', None)
+    return boardsmanager.BoardsManager('', '', '', {}, None, _services).create_board(word(), user_test, True)

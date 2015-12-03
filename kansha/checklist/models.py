@@ -22,6 +22,14 @@ class DataChecklist(Entity):
     author = ManyToOne('DataUser')
     index = Field(Integer)
 
+    def copy(self, other):
+        self.title = other.title
+        self.index = other.index
+        for item in other.items:
+            self.items.append(DataChecklistItem(title=item.title,
+                                                index=item.index,
+                                                done=False))
+
     def __unicode__(self):
         titles = [item.title for item in self.items if item.title]
         if self.title:

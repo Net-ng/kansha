@@ -180,30 +180,19 @@ a.card-label:hover {
     color: #737373
 }
 
-.card-edit-form .description {
-    font: normal 14px OpenSansLight;
-}
 
-.card-edit-form .description p {
-    font: normal 14px OpenSansLight;
-}
 /* End editor */
 
 /* Badges */
-.badges i {
+.badge i {
     font-size: 13px;
 }
 
-.badges > .label {
-    border: 1px solid transparent;
-    border-radius: 3px;
+.badge > .label {
     color: #737373;
     font-size: 12px;
 }
 
-.badges.highlight > .label:hover {
-    color: black;
-}
 /* End badges */
 
 /* Card overlays */
@@ -252,11 +241,7 @@ a.card-label:hover {
 }
 
 .comment .fullname {
-    font: normal 14px OpenSansBold
-}
-
-.comment .right {
-    border-bottom: 1px solid #c0c0c0;
+    font-weight: bold;
 }
 
 .comment .contents img.medium {
@@ -275,9 +260,15 @@ a.card-label:hover {
     font-size: 90%;
 }
 
-.comment .delete {
-    font-size: 12px;
+.comment-delete {
+    display: none;
+    float: right;
 }
+
+.comment:hover .comment-delete {
+    display: inline-block;
+}
+
 /* End comments */
 
 /* Due dates */
@@ -453,7 +444,8 @@ div.history th {
 }
 
 .calendar .calendar-header select {
-    font: normal 12px OpenSansSemibold;
+    font-size: 12px;
+    font-weight: bold;
     border: 1px solid #eaeaea;
 }
 /* End calendar */

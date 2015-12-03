@@ -9,18 +9,20 @@
 #--
 
 import datetime
-import string
-import random
 import hashlib
+import random
+import string
 
-from elixir import using_options
 from elixir import ManyToOne, ManyToMany, OneToOne, OneToMany
 from elixir import Unicode, Integer, Field, DateTime, Boolean
-from sqlalchemy.dialects.mysql import VARCHAR
-from nagare import database
+from elixir import using_options
+
 from sqlalchemy import and_, func
 from sqlalchemy.orm import aliased
+from sqlalchemy.dialects.mysql import VARCHAR
 from sqlalchemy.ext.associationproxy import AssociationProxy
+
+from nagare import database
 
 from kansha.models import Entity
 
@@ -38,6 +40,16 @@ class DataToken(Entity):
         token = cls.get_by(username=username, action=action)
         if token:
             token.delete()
+
+    @classmethod
+    def new(cls, token, username, action):
+        obj = cls(
+            token=token,
+            username=username,
+            action=action,
+            date=datetime.datetime.now()
+        )
+        return obj
 
 
 class DataBoardMember(Entity):

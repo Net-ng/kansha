@@ -7,9 +7,10 @@
 # this distribution.
 # --
 
-from .comp import Gallery, Asset, AssetCropper
-from nagare import presentation, var, ajax, security
 from nagare.i18n import _, _N
+from nagare import presentation, var, ajax, security, component
+
+from .comp import Gallery, Asset, AssetCropper
 
 
 def render_image(self, h, comp, size, randomize=False, **kw):
@@ -38,21 +39,30 @@ CONTENT_TYPES = {'image/png': render_image,
 
 @presentation.render_for(Gallery)
 def render(self, h, comp, *args):
-    with h.div(class_='nbItems'):
-        h << h.script(u'YAHOO.kansha.app.closeModal();')
-        h << comp.render(h, model='badge')
-    with h.div(id="card-gallery"):
-        if security.has_permissions('edit', self):
-            for overlay in self.overlays:
-                h << overlay
-        else:
-            for asset in self.assets:
-                h << asset.render(h, model="anonymous")
+    with h.div(id='gal' + self.comp_id):
+        with h.div(class_='nbItems'):
+            h << h.script(u'YAHOO.kansha.app.closeModal(); YAHOO.kansha.app.hideOverlay();')
+            h << comp.render(h, model='badge')
+        with h.div(id="card-gallery"):
+            if security.has_permissions('edit', self):
+                for overlay in self.overlays:
+                    h << overlay
+            else:
+                for asset in self.assets:
+                    h << asset.render(h, model="anonymous")
 
     return h.root
 
 
-@presentation.render_for(Gallery, "download")
+@presentation.render_for(Gallery, 'cover')
+def render_cover(self, h, comp, model):
+    cover = self.get_cover()
+    if cover:
+        h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
+    return h.root
+
+
+@presentation.render_for(Gallery, "action")
 def render_download(self, h, comp, *args):
     if security.has_permissions('edit', self):
         v_file = var.Var()
@@ -84,8 +94,12 @@ def render_download(self, h, comp, *args):
                     ).decode('UTF-8')
                 }
             )
+            submit_action = ajax.Update(render=lambda r: comp.render(r, model=None),
+                     component_to_update='gal' + self.comp_id,
+                     action=lambda: self.add_assets(v_file()))
+
             h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
-            h << h.input(class_='hidden', id=submit_id, type="submit").action(lambda: self.add_assets(v_file()))
+            h << h.input(class_='hidden', id=submit_id, type="submit").action(submit_action)
     return h.root
 
 
@@ -93,8 +107,9 @@ def render_download(self, h, comp, *args):
 def render_gallery_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.assets:
-        label = _N('file', 'files', len(self.assets))
-        h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
+        with h.span(class_='badge'):
+            label = _N('file', 'files', len(self.assets))
+            h << h.span(h.i(class_='icon-file-text2'), ' ', len(self.assets), class_='label', data_tooltip=label)
     return h.root
 
 
@@ -124,23 +139,6 @@ def render_asset(self, h, comp, model, *args):
     meth = CONTENT_TYPES.get(metadata['content-type'], render_file)
     res.append(meth(self, h, comp, model, **kw))
     return res
-
-
-@presentation.render_for(Asset, model='flow')
-def render_asset_flow(self, h, comp, *args):
-    with h.div(class_='comment'):
-        with h.div(class_='left'):
-            h << self.author.render(h, model='avatar')
-        with h.div(class_='right'):
-            h << self.author.render(h, model='fullname')
-            h << _(' added a file ')
-            h << comp.render(h, 'creation_date')
-            with h.div(class_='contents'):
-                with h.p:
-                    h << h.SyncRenderer().a(comp.render(h, model='medium'),
-                                            href=self.assets_manager.get_image_url(self.filename),
-                                            target='_blank')
-    return h.root
 
 
 @presentation.render_for(Asset, 'menu')

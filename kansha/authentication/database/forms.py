@@ -38,7 +38,7 @@ class Header(object):
 def render_Header(self, h, comp, *args):
     """Head renderer"""
 
-    h.head << h.head.title(self.banner)
+    h.head << h.head.title(self.app_banner)
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
@@ -939,15 +939,13 @@ class TokenGenerator(object):
 
     def create_token(self):
         """Create a time-stamped token"""
+
         token = unicode(
             hashlib.sha512(str(time.time()) + self.username).hexdigest())
 
         DataToken.delete_by_username(self.username, self.action)
         # create new one
-        token_instance = DataToken(token=token,
-                                   username=self.username,
-                                   action=self.action,
-                                   date=datetime.now() + self.expiration_delay)
+        token_instance = DataToken.new(token, self.username, self.action)
         return token_instance
 
     def get_tokens(self):
@@ -958,7 +956,7 @@ class TokenGenerator(object):
     def check_token(self, token):
         """Check that the token is valid"""
         t = DataToken.get(token)
-        return t and datetime.now() <= t.date
+        return t and datetime.now() <= (t.date + self.expiration_delay)
 
     def reset_token(self, token):
         DataToken.get(token).delete()

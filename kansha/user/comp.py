@@ -137,7 +137,7 @@ class User(security_common.User):
          - ``board`` -- DataBoard instance to add
          - ``role`` -- user is member or manager
         """
-        self.data.add_board(board, role)
+        self.data.add_board(board.data, role)
 
     def is_manager(self, board):
         """Return True if user is manager of the board

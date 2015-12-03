@@ -43,6 +43,7 @@
     display: table;
     margin: auto;
     margin-top: 20px;
+    padding: 10px;
 }
 
 form {
@@ -209,4 +210,14 @@ input[type="password"] {
         width: 100%
     }
 
+}
+
+.nagare-error-field {
+    display: inline-block;
+    max-width: 250px;
+}
+
+.nagare-error-message {
+    position: relative;
+    top: -10px;
 }

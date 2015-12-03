@@ -8,13 +8,15 @@
 # this distribution.
 #--
 
-from nagare import database, presentation, security
+from nagare import database, security
+
+from kansha.services.components_repository import CardExtension
 
 from .models import DataVote
-from kansha.card.models import DataCard
 
+class Votes(CardExtension):
 
-class Votes(object):
+    LOAD_PRIORITY = 70
 
     """Vote component
     """

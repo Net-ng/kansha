@@ -14,7 +14,7 @@ from nagare.i18n import _
 from ..authentication.database import validators
 from ..toolbox import overlay, remote
 from .comp import User, PendingUser
-from .usermanager import AddMembers, NewMember
+from .usermanager import NewMember
 
 
 @presentation.render_for(User)
@@ -139,7 +139,7 @@ def render_User_friend(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(AddMembers)
+@presentation.render_for(NewMember, model='add_members')
 def render_AddMembers(self, h, comp, *args):
     value = var.Var('')
     submit_id = h.generate_id('form')
@@ -211,7 +211,7 @@ def render_PendingUser(self, h, comp, *args):
 def render_PendingUser_avatar(self, h, comp, model, *args):
     """Render a user's avatar"""
     with h.span(class_='avatar', title='%s' % (self.username)):
-        h << h.img(src='img/pendingmember.png', class_="pending")
+        h << h.i(class_='ico-btn icon-envelop')
     return h.root
 
 

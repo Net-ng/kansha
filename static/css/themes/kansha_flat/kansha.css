@@ -10,7 +10,7 @@
 /* General */
 body {
     background: #f5f5f5;
-    font-family: OpenSansLight;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif,icons;
     color: #5c5c5c;
 }
 a {
@@ -256,7 +256,6 @@ a:hover .ico-btn {
 
 .overlay,
 .yui-overlay {
-    font-family: OpenSansLight;
     border-radius: 5px;
     background: white;
 }
@@ -314,7 +313,7 @@ a:hover .ico-btn {
 }
 
 /* Members */
-.members .more .badge {
+.members .more .count {
     color: white;
     font-size: 11px;
     font-weight: bold;

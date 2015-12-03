@@ -101,15 +101,15 @@ class Comments(CardExtension):
     """Comments component
     """
 
-    def __init__(self, parent):
+    def __init__(self, card):
         """Initialization
 
         In:
             - ``parent`` -- the parent card
             - ``comments`` -- the comments of the card
         """
-        self.parent = parent
-        self.comments = [self._create_comment_component(data_comment) for data_comment in parent.get_comments()]
+        super(Comments, self).__init__(card)
+        self.comments = [self._create_comment_component(data_comment) for data_comment in card.get_comments()]
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete)
@@ -120,19 +120,19 @@ class Comments(CardExtension):
         In:
             - ``v`` -- the comment content
         """
-        security.check_permissions('comment', self.parent)
+        security.check_permissions('comment', self.card)
         if v is None:
             return
         v = v.strip()
         if v:
             v = validator.clean_text(v)
             user = security.get_user()
-            comment = DataComment(comment=v.strip(), card_id=self.parent.db_id,
+            comment = DataComment(comment=v.strip(), card_id=self.card.db_id,
                                   author=user.data, creation_date=datetime.datetime.utcnow())
             session.add(comment)
             session.flush()
-            data = {'comment': v.strip(), 'card': self.parent.get_title()}
-            notifications.add_history(self.parent.column.board.data, self.parent.data, security.get_user().data, u'card_add_comment', data)
+            data = {'comment': v.strip(), 'card': self.card.get_title()}
+            notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_comment', data)
             self.comments.insert(0, self._create_comment_component(comment))
 
     def delete(self, comp):

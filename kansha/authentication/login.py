@@ -10,8 +10,9 @@
 
 import datetime
 
-from nagare import presentation, component
 from nagare.i18n import _
+from nagare import presentation, component
+from nagare.namespaces.xhtml import absolute_url
 
 from kansha import VERSION
 
@@ -45,15 +46,16 @@ def render_Header(self, h, comp, *args):
 
 
 class Login(object):
-    def __init__(self, app_title, app_banner, theme, cfg, authentication_service, services_service):
+    def __init__(self, app_title, app_banner, favicon, theme, cfg, authentication_service, services_service):
         """Login components
 
         """
+
+        self.app_title = app_title
+        self.favicon = favicon
         logins = []
         for each in authentication_service:
             logins.append(services_service(authentication_service[each], app_title, app_banner, theme))
-
-        self.app_title = app_title
         self.logins = [component.Component(login) for login in logins]
         self.header = component.Component(
             Header(
@@ -66,6 +68,10 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render_Login(self, h, comp, *args):
+
+    favicon_url = absolute_url(self.favicon, h.head.static_url)
+    h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
+    h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
     h.head << h.head.title(self.app_title)
     with h.body(class_='body-login slots%s' % len(self.logins)):
         h << self.header

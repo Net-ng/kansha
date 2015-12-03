@@ -40,12 +40,13 @@ def run():
 class Kansha(object):
     """The Kansha root component"""
 
-    def __init__(self, app_title, app_banner, theme,
+    def __init__(self, app_title, app_banner, favicon, theme,
                  card_extensions, search, services_service):
         """Initialization
         """
         self.app_title = app_title
         self.app_banner = app_banner
+        self.favicon = favicon
         self.theme = theme
         self.card_extensions = card_extensions
         self.search_engine = search
@@ -137,25 +138,23 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, app_banner, theme, main_app,
-                 cfg, card_extensions, search, services_service):
-        self._services = services_service
+    def __init__(self, app_title, theme, config, card_extensions, search, services_service):
         self.app_title = app_title
-        self.app_banner = app_banner
         self.theme = theme
-        self.auth_cfg = cfg['authentication']
-        self.tpl_cfg = cfg['tpl_cfg']
+        self.search_engine = search
+        self._services = services_service
+        self.app_banner = config['pub_cfg']['banner']
+        self.favicon = config['pub_cfg']['favicon']
         self.app = services_service(
             Kansha,
             self.app_title,
             self.app_banner,
+            self.favicon,
             self.theme,
             card_extensions,
             search
         )
-        self.main_app = main_app
-        self.search_engine = search
-        self.cfg = cfg
+        self.config = config
 
     def go(self, comp):
         user = security.get_user()
@@ -166,8 +165,9 @@ class MainTask(component.Task):
                     login.Login,
                     self.app_title,
                     self.app_banner,
+                    self.favicon,
                     self.theme,
-                    self.cfg,
+                    self.config
                 )
             )
             user = security.get_user()
@@ -177,29 +177,6 @@ class MainTask(component.Task):
         # Logout
         if user is not None:
             security.get_manager().logout()
-
-
-class App(object):
-    def __init__(self, app_title, theme, config,
-                 search, services_service, card_extensions):
-        self._services = services_service
-        self.card_extensions = card_extensions
-        self.app_title = app_title
-        self.app_banner = config['pub_cfg']['banner']
-        self.favicon = config['pub_cfg']['favicon']
-        self.theme = theme
-        self.search_engine = search
-        self.task = component.Component(
-            services_service(
-                MainTask,
-                self.app_title,
-                self.app_banner,
-                self.theme,
-                self, config,
-                card_extensions,
-                search
-            )
-        )
 
 
 class WSGIApp(wsgi.WSGIApp):
@@ -254,7 +231,7 @@ class WSGIApp(wsgi.WSGIApp):
             'banner': conf['application']['banner'].decode('utf-8'),
             'favicon': conf['application']['favicon'].decode('utf-8')
         }
-        self.app_cfg = {
+        self.app_config = {
             'authentication': conf['authentication'],
             'tpl_cfg': tpl_cfg,
             'pub_cfg': pub_cfg
@@ -267,13 +244,14 @@ class WSGIApp(wsgi.WSGIApp):
                                            self)
 
     def create_root(self):
+        MainTask
         return super(WSGIApp, self).create_root(
             self.app_title,
             self.theme,
-            self.app_cfg,
+            self.app_config,
+            self.card_extensions,
             self.search_engine,
-            self._services,
-            self.card_extensions
+            self._services
         )
 
     def start_request(self, root, request, response):
@@ -418,4 +396,4 @@ def create_pipe(app, *args, **kw):
     return app
 
 
-app = WSGIApp(lambda *args: component.Component(App(*args)))
+app = WSGIApp(lambda *args: component.Component(MainTask(*args)))

@@ -10,15 +10,15 @@
 
 import datetime
 
-from nagare import ajax, component, presentation, security
 from nagare.i18n import _
 from nagare.namespaces.xhtml import absolute_url
+from nagare import ajax, component, presentation, security
 
 from kansha import VERSION
+from kansha.user import user_profile
+from kansha.user.usermanager import UserManager
 
-from ..user import user_profile
-from ..user.usermanager import UserManager
-from .comp import Kansha, App
+from .comp import Kansha
 
 
 def answer_on_menu(self, comp, user, v):
@@ -117,6 +117,11 @@ def render_Kansha_oip(self, h, comp, model):
 @presentation.render_for(Kansha)
 def render_kansha(self, h, comp, *args):
     """Main renderer"""
+
+    favicon_url = absolute_url(self.favicon, h.head.static_url)
+    h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
+    h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
+
     h << comp.render(h, model='yui-deps')
 
     h.head << h.head.meta(
@@ -162,26 +167,4 @@ def render_kansha(self, h, comp, *args):
 
     h.head.javascript_url('js/nagare.js')
 
-    return h.root
-
-
-@presentation.render_for(App, model="debug")
-def render_app_debug(self, h, comp, *args):
-    h.head.css_url(
-        ajax.YUI_INTERNAL_PREFIX + '/logger/assets/skins/sam/logger.css')
-    h.head.javascript_url(ajax.YUI_INTERNAL_PREFIX + '/logger/logger-min.js')
-    h << h.script('var myLogReader = new YAHOO.widget.LogReader("myLogger");')
-    h << h.div(id="myLogger")
-    return h.root
-
-
-@presentation.render_for(App)
-def render_app(self, h, comp, *args):
-    favicon_url = absolute_url(self.favicon, h.head.static_url)
-    h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
-    h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
-
-    h << self.task
-    if False:
-        h << comp.render(h, "debug")
     return h.root

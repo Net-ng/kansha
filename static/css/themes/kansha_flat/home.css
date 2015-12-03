@@ -10,7 +10,7 @@
 /*Home page*/
 
 .home .boards {
-    color: #737373;
+    color: inherit;
     font: 15px OpenSansLight;
 }
 

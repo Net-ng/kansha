@@ -13,13 +13,13 @@
 
 /* Board */
 .board .board-title {
-    color: #737373;
+    color: inherit;
     font: normal 33px OpenSansLight;
 }
 
 .board .board-title a,
 .board .board-title a:hover {
-    color: #737373;
+    color: inherit;
     text-decoration: none;
 }
 
@@ -29,7 +29,7 @@
 
 .board-title-color {
     border-radius: 3px;
-    background-color: #737373;
+    background-color: inherit;
     border: 1px solid #737373;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .list-header .list-actions i {
-    color: #737373;
+    color: inherit;
 }
 
 .list-header .title {
@@ -64,7 +64,7 @@
 .list-header .title a,
 .list .header .title a:hover,
 .list .header .title a:visited {
-    color: #737373;
+    color: inherit;
     text-decoration: none;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .list .list-footer .link-small {
-    color: #737373;
+    color: inherit;
     font: 15px OpenSansLight;
 }
 
@@ -164,7 +164,7 @@ a.card-label:hover {
 .card-edit-form .header .in-list {
     font-size: 18px;
     font-family: OpenSansLightItalic;
-    color: #737373;
+    color: inherit;
 }
 
 .card-edit-form .header .title-form {
@@ -173,7 +173,7 @@ a.card-label:hover {
 
 .card-edit-form .header .title {
     font-size: 30px;
-    color: #737373;
+    color: inherit;
 }
 
 .card-edit-form .header .title a {
@@ -189,7 +189,7 @@ a.card-label:hover {
 }
 
 .badge > .label {
-    color: #737373;
+    color: inherit;
     font-size: 12px;
 }
 
@@ -197,12 +197,12 @@ a.card-label:hover {
 
 /* Card overlays */
 .overlay.card-overlay {
-    color: #737373;
+    color: inherit;
 }
 
 .overlay.card-overlay h2 {
     border-bottom: 1px solid #eaeaea;
-    color: #737373;
+    color: inherit;
     font-size: 17px;
     font-weight: normal;
 }
@@ -213,7 +213,7 @@ a.card-label:hover {
 
 .overlay.card-overlay .name {
     font-size: 15px;
-    color: #737373;
+    color: inherit;
 }
 
 .overlay.card-overlay .name .email {
@@ -423,13 +423,13 @@ div.history th {
 }
 
 .calendar .calendar-content table tr td.today a {
-    color: #737373;
+    color: inherit;
     font-weight: bold;
 }
 
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
-    color: #737373;
+    color: inherit;
     background-color: #eaeaea;
     font-weight: bold;
     border-right: solid 1px lightgrey;
@@ -502,7 +502,7 @@ div.history th {
 
 /* Resync content */
 #resync h2 {
-    color: #737373;
+    color: inherit;
     font: normal 30px OpenSansLight;
 }
 /* End resync content */

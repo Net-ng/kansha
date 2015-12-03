@@ -191,7 +191,7 @@ def render_cardweighteditor(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'action_button')
 def render_cardweighteditor_button(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
+    h << h.a(h.i(class_='icon-star'), self.weight, class_='btn').action(
             comp.call, self, model='edit')
     return h.root
 
@@ -223,7 +223,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
     if self.weight.value:
         with h.span(class_='badge'):
             label = _('weight')
-            h << h.span(h.i(class_='icon-star-full'), ' ',
+            h << h.span(h.i(class_='icon-star'), ' ',
                         self.weight.value, class_='label',
                         data_tooltip=label)
     return h.root

@@ -33,7 +33,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 
 @presentation.render_for(Checklists, 'action')
 def render_Checklists_button(self, h, comp, model):
-    if security.has_permissions('checklist', self.parent):
+    if security.has_permissions('checklist', self.card):
         action = ajax.Update(render=lambda r: comp.render(r, model=None),
                              component_to_update='clist' + self.comp_id,
                              action=self.add_checklist)
@@ -45,22 +45,22 @@ def render_Checklists_button(self, h, comp, model):
 
 @presentation.render_for(Checklists)
 def render_Checklists(self, h, comp, model):
-    with h.div(id_='clist'+self.comp_id):
-        if security.has_permissions('checklist', self.parent):
+    with h.div(id_='clist' + self.comp_id):
+        if security.has_permissions('checklist', self.card):
 
             # On drag and drop
-            action = ajax.Update(action=self.reorder)
-            action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
+            action = h.a.action(ajax.Update(action=self.reorder, with_request=True)).get('onclick').replace('return', '')
+            action = action.replace('")', '&data="+ YAHOO.lang.JSON.stringify(data))')
             h.head.javascript(h.generate_id(), '''function reorder_checklists(data) {
-                nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
-            }''' % ajax.py2js(action))
+                %s;
+            }''' % action)
 
             # On items drag and drop
-            action = ajax.Update(action=self.reorder_items)
-            action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
+            action = h.a.action(ajax.Update(action=self.reorder_items, with_request=True)).get('onclick').replace('return', '')
+            action = action.replace('")', '&data="+ YAHOO.lang.JSON.stringify(data))')
             h.head.javascript(h.generate_id(), '''function reorder_checklists_items(data) {
-                    nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
-                }''' % ajax.py2js(action))
+                    %s;
+                }''' % action)
 
             id_ = h.generate_id()
             with h.div(class_='checklists', id=id_):
@@ -97,7 +97,7 @@ def render_Checklists(self, h, comp, model):
 def render_Checklists_badge(self, h, comp, model):
     if self.checklists:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
+            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, ' / ', self.total_items, class_='label')
     return h.root
 
 

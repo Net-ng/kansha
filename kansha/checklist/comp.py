@@ -158,7 +158,7 @@ class Checklists(CardExtension):
     LOAD_PRIORITY = 30
 
     def __init__(self, card):
-        self.parent = card
+        super(Checklists, self).__init__(card)
         cklists = [(clist.id, Checklist(clist.id, clist)) for clist in card.get_datalists()]
         self.ck_cache = dict(cklists)
         self.checklists = [component.Component(clist) for __, clist in cklists]
@@ -177,17 +177,17 @@ class Checklists(CardExtension):
         del self.ck_cache[cl.id]
         for i in range(index, len(self.checklists)):
             self.checklists[i]().set_index(i)
-        data = {'list': cl.get_title(), 'card': self.parent.get_title()}
+        data = {'list': cl.get_title(), 'card': self.card.get_title()}
         cl.data.delete()
         if data['list']:
-            notifications.add_history(self.parent.column.board.data,
-                                      self.parent.data,
+            notifications.add_history(self.card.column.board.data,
+                                      self.card.data,
                                       security.get_user().data,
                                       u'card_delete_list',
                                       data)
 
     def add_checklist(self):
-        clist = DataChecklist(card=self.parent.data)
+        clist = DataChecklist(card=self.card.data)
         database.session.flush()
         ck = Checklist(clist.id, clist)
         self.ck_cache[clist.id] = ck
@@ -195,17 +195,18 @@ class Checklists(CardExtension):
         self.checklists.append(component.Component(ck))
         return ck
 
-    def reorder(self, ids):
+    def reorder(self, request, _resp):
         """Reorder checklists
         In:
          - ``ids`` -- checklist ids
         """
+        ids = request.GET['data']
         cl_ids = map(lambda x: int(x.split('_')[-1]), json.loads(ids))
         self.checklists = [component.Component(self.ck_cache[cid].set_index(i))
                            for i, cid in enumerate(cl_ids)]
 
-    def reorder_items(self, data):
-        data = json.loads(data)
+    def reorder_items(self, request, _resp):
+        data = json.loads(request.GET['data'])
         item_id = int(data['id'].split('_')[-1])
         checklist_id = int(data['target'].split('_')[-1])
         item = ChecklistItem(item_id)

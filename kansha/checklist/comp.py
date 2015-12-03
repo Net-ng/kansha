@@ -30,8 +30,12 @@ class ChecklistItem(object):
     def __init__(self, id_, data=None):
         self.id = id_
         data = data if data is not None else self.data
-        self.title = component.Component(title.EditableTitle(self.get_title, placeholder=i18n._(u'Enter task')))
-        self.title.on_answer(self.set_title)
+        self.title = component.Component(
+            title.EditableTitle(
+                self.get_title,
+                placeholder=i18n._(u'Enter task')
+            )
+        ).on_answer(self.set_title)
         self.done = data.done
 
     @property
@@ -65,8 +69,12 @@ class Checklist(object):
         data = data if data is not None else self.data
         self.items = [component.Component(ChecklistItem(item.id, item)) for item in data.items]
 
-        self.title = component.Component(title.EditableTitle(self.get_title, placeholder=i18n._(u'Enter title')))
-        self.title.on_answer(self.set_title)
+        self.title = component.Component(
+            title.EditableTitle(
+                self.get_title,
+                placeholder=i18n._(u'Enter title')
+            )
+        ).on_answer(self.set_title)
 
         self.new_item = component.Component(NewChecklistItem())
         self.new_item.on_answer(self.add_item)

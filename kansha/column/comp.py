@@ -40,8 +40,8 @@ class Column(object):
         self.search_engine = search_engine
         self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
-        self.title = component.Component(title.EditableTitle(self.get_title))
-        self.title.on_answer(self.set_title)
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
         self.cards = [component.Component(self._services(card.Card, c.id, self, self.card_extensions, data=c))
                       for c in self.data.cards]

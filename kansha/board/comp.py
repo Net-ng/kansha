@@ -132,8 +132,8 @@ class Board(object):
                       }
 
         # Title component
-        self.title = component.Component(title.EditableTitle(self.get_title))
-        self.title.on_answer(self.set_title)
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
         # Add new column component
         self.new_column = component.Component(column.NewColumn(self))

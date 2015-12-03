@@ -80,8 +80,8 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
-        self.title = component.Component(title.EditableTitle(self.get_title))
-        self.title.on_answer(self.set_title)
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_extensions = [(name, component.Component(self._services(extension, self)))
                                 for name, extension in self.card_repo.items()]
 

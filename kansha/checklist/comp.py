@@ -154,6 +154,21 @@ class Checklists(CardExtension):
         self.checklists = [component.Component(Checklist(clist.id, clist)) for clist in card.get_datalists()]
         self.comp_id = str(random.randint(10000, 100000))
 
+    def copy(self, parent, additional_data):
+        new_extension = super(Checklists, self).copy(parent, additional_data)
+        for index, checklist in enumerate(self.checklists):
+            checklist = checklist()
+            new_data_checklist = DataChecklist(card=parent.data,
+                                               title=checklist.data.title)
+            database.session.flush()
+            new_checklist = Checklist(new_data_checklist.id, new_data_checklist)
+            new_checklist.set_index(index)
+            for item in checklist.items:
+                item = item()
+                new_checklist.add_item(item.data.title)
+            new_extension.checklists.append(component.Component(new_checklist))
+        return new_extension
+
     @property
     def nb_items(self):
         return sum([cl().nb_items for cl in self.checklists])

@@ -10,23 +10,20 @@
 
 import json
 
-from nagare import presentation, security, ajax, component, var
-from nagare.i18n import _
+from nagare.i18n import _, _N
+from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
+from kansha.toolbox import overlay, popin, remote
 from kansha.board.boardconfig import WeightsSequenceEditor
-from kansha.toolbox import overlay
 
-from ..toolbox import popin, remote
-from .boardconfig import BoardLabels, BoardProfile, BoardConfig, BoardBackground, BoardWeights
+from .comp import (Board, BoardDescription, BoardMember,
+                   Icon)
 from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                    VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
                    WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
-from .comp import (Board, Icon, BoardTitle,
-                   BoardDescription, BoardMember)
-from nagare import i18n
-from nagare.ajax import py2js
+from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile, BoardWeights
 
 
 @presentation.render_for(Board, model="menu")
@@ -101,7 +98,8 @@ def render_Board(self, h, comp, *args):
     h.head.javascript_url('js/debounce.js')
     h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
     h.head.javascript('searchinput', '''jQuery(document).ready(function ($) { $('#search').searchInput(); });''')
-    h << self.title.render(h, 'tabname')
+    title = '%s - %s' % (self.get_title(), self.app_title)
+    h.head << h.head.title(title)
     security.check_permissions('view', self)
     if security.has_permissions('edit', self):
         h << comp.render(h, "menu")
@@ -121,7 +119,8 @@ def render_Board(self, h, comp, *args):
 
     with h.div(class_='board', style=style):
         with h.div(class_='header'):
-            h << self.title.render(h.AsyncRenderer())
+            with h.div(class_='board-title'):
+                h << self.title.render(h.AsyncRenderer(), None if security.has_permissions('edit', self) else 'readonly')
             h << comp.render(h, 'switch')
         with h.div(class_='bbody'):
             h << comp.render(h.AsyncRenderer(), self.model)
@@ -140,10 +139,10 @@ def render_Board_num_matches(self, h, comp, *args):
     if self.card_matches:
 
         if None in self.card_matches:
-            h << h.span(i18n._(u'No matches'), class_='nomatches')
+            h << h.span(_(u'No matches'), class_='nomatches')
         else:
             n = len(self.card_matches)
-            h << (i18n._N(u'%d match', u'%d matches', n) % n)
+            h << (_N(u'%d match', u'%d matches', n) % n)
     else:
         h << u' '
     return h.root
@@ -302,7 +301,7 @@ def render_Board_columns(self, h, comp, *args):
         with h.div(class_='clearfix', id='viewport'):
             h << h.div(id='calendar')
             display_week_numbers = security.get_user().display_week_numbers
-            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % py2js(display_week_numbers))
+            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % ajax.py2js(display_week_numbers))
     for column in self.columns:
         h << column.render(h, 'calendar')
     return h.root
@@ -364,27 +363,6 @@ def render_Board_save_template(self, h, comp, *args):
             h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(action)
             h << ' '
             h << h.button(_('Cancel'), class_='btn', onclick='YAHOO.kansha.app.hideOverlay();')
-    return h.root
-
-
-@presentation.render_for(BoardTitle)
-def render_BoardTitle(self, h, comp, *args):
-    """Render the title of the associated object"""
-    kw = {'onmouseover': "YAHOO.kansha.app.tooltip(this, %s)" % json.
-          dumps(self.parent.get_description())}
-    with h.div(class_='boardTitle', id='board-title', **kw):
-        a = h.a(self.text, style="color:%s" % self.parent.title_color)
-        if security.has_permissions('edit', self):
-            a.action(comp.answer)
-        h << a
-    return h.root
-
-
-@presentation.render_for(BoardTitle, model='edit')
-def render_BoardTitle_edit(next_method, self, h, comp, *args):
-    """Render the title of the associated object"""
-    with h.div(class_='boardTitle'):
-        next_method(self, h, comp, *args)
     return h.root
 
 
@@ -462,8 +440,7 @@ def render_BoardLabels_edit(self, h, comp, *args):
             for title, label in self.labels:
                 with h.li:
                     with h.div(class_='label-title'):
-                        h << title.on_answer(lambda a, title=title: title.
-                                             call(model='edit')).render(h.AsyncRenderer())
+                        h << title.render(h.AsyncRenderer())
                     with h.div(class_='label-color'):
                         h << label
     return h.root
@@ -527,7 +504,7 @@ def render_boardweights_edit(self, h, comp, *args):
                             ).decode('UTF-8')
                         }
                     ),
-                    title=i18n._('Card weights can be any integer')
+                    title=_('Card weights can be any integer')
                 )
 
                 h << h.button(
@@ -548,11 +525,11 @@ def render_boardweights_edit(self, h, comp, *args):
                             ).decode('UTF-8')
                         }
                     ),
-                    title=i18n._('Choosen within a sequence of integers')
+                    title=_('Choosen within a sequence of integers')
                 )
 
         if self.board.weighting_cards == WEIGHTING_LIST:
-            h << h.p(i18n._('Enter a sequence of integers'))
+            h << h.p(_('Enter a sequence of integers'))
             h << self._weights_editor
 
     return h.root

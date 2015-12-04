@@ -81,7 +81,7 @@ def render_comment_label_form(self, h, comp, *args):
 @presentation.render_for(Comments, model='form')
 def render_comments_form(self, h, comp, *args):
     """Add a comment to the current card"""
-    if security.has_permissions('comment', self.parent):
+    if security.has_permissions('comment', self.card):
         text = var.Var()
         with h.form:
             txt_id, buttons_id = h.generate_id(), h.generate_id()

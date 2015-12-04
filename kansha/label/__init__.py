@@ -7,4 +7,5 @@
 # this distribution.
 #--
 
-import view
+from .comp import Label, CardLabels
+from . import view

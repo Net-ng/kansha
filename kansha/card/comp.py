@@ -10,13 +10,13 @@
 
 import dateutil.parser
 
-from nagare import (component, log, security, editor, validator)
 from nagare.i18n import _
+from nagare import (component, log, security, editor, validator)
 
-from kansha import exceptions, notifications
-from kansha.title import comp as title
 from kansha.toolbox import overlay
 from kansha.user import usermanager
+from kansha import title
+from kansha import exceptions, notifications
 from kansha.services.components_repository import CardExtension
 
 from .models import DataCard
@@ -80,7 +80,8 @@ class Card(object):
     def reload(self, data=None):
         """Refresh the sub components
         """
-        self.title = component.Component(CardTitle(self))
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_extensions = [(name, component.Component(self._services(extension, self)))
                                 for name, extension in self.card_repo.items()]
 
@@ -271,13 +272,6 @@ class Card(object):
 
 
 ############### Extension components ###################
-
-class CardTitle(title.Title):
-
-    """Card title component
-    """
-    model = DataCard
-    field_type = 'input'
 
 
 class CardWeightEditor(editor.Editor, CardExtension):

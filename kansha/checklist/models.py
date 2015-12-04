@@ -46,10 +46,6 @@ class DataChecklist(Entity):
             titles.insert(0, self.title)
         return u'\n'.join(titles)
 
-    def reorder_items(self):
-        for i, item in enumerate(self.items):
-            item.index = i
-
     def add_item_from_str(self, text):
         item = DataChecklistItem.new_from_str(text)
         return self.add_item(item)

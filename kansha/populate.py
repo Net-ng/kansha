@@ -32,10 +32,10 @@ def populate():
     services.register('assets_manager', DummyAssetsManager())
     services.register('mail_sender', DummyMailSender())
 
-    bm = BoardsManager('', '', '', {}, None, services)
-    bm.create_template_empty()
-    tpl = bm.create_template_todo()
-    usermanager.UserManager().populate(bm, tpl)
+    boards_manager = BoardsManager('', '', '', {}, None, services)
+    boards_manager.create_template_empty()
+    tpl = boards_manager.create_template_todo()
+    usermanager.UserManager().populate(boards_manager, tpl)
 
     app_path = 'kansha'
     nagare_admin = os.path.join(os.path.dirname(sys.executable), 'nagare-admin')

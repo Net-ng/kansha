@@ -20,13 +20,12 @@ from .comp import Card, CardMembers, NewCard
 @presentation.render_for(Card, 'no_dnd')
 def render_card_no_dnd(self, h, comp, *args):
     """No DnD wrapping of the card"""
-    h << comp.render(h.AsyncRenderer())
-    return h.root
+    return comp.render(h.AsyncRenderer())
 
 
 @presentation.render_for(Card, 'new')
 def render_card_new(self, h, comp, *args):
-    h << comp.becomes(self, None)
+    h << comp.becomes(model=None)
     h << h.script(
         "card = YAHOO.util.Dom.get(%s);"
         "list = YAHOO.util.Dom.getAncestorByClassName(card, 'list-body');"
@@ -260,11 +259,8 @@ def render_card_members(self, h, comp, *args):
 
 @presentation.render_for(CardMembers, 'badge')
 def render_members_badge(self, h, comp, model):
-    if security.has_permissions('edit', self.card):
-        h << comp.render(h, 'action')
-    else:
-        h << comp.render(h, 'members_read_only')
-    return h.root
+    model = 'action' if security.has_permissions('edit', self.card) else 'members_read_only'
+    return comp.render(h, model)
 
 
 @presentation.render_for(CardMembers, model='members_read_only')
@@ -277,7 +273,7 @@ def render_card_members_read_only(self, h, comp, *args):
     """
     with h.div(class_='members'):
         for m in self.members[:self.max_shown_members]:
-            member = m.render(h, "avatar")
+            member = m.render(h, 'avatar')
             member.attrib.update({'class': 'miniavatar unselectable'})
             h << member
         if len(self.members) > self.max_shown_members:
@@ -285,7 +281,7 @@ def render_card_members_read_only(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardMembers, "members_list_overlay")
+@presentation.render_for(CardMembers, 'members_list_overlay')
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
@@ -298,16 +294,16 @@ def render_members_members_list_overlay(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardMembers, "add_member_overlay")
+@presentation.render_for(CardMembers, 'add_member_overlay')
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Add members'))
     if self.favorites:
-        with h.div(class_="favorites"):
+        with h.div(class_='favorites'):
             h << h.h3(_('Suggestions'))
             with h.ul:
                 h << h.li(self.favorites)
-    with h.div(class_="members search"):
+    with h.div(class_='members search'):
         h << self.new_member
     return h.root
 
@@ -358,9 +354,9 @@ def render_new_card_add(self, h, comp, *args):
 
 @peak.rules.when(ajax.py2js, (Card,))
 def py2js(value, h):
+    ret = None
     due_date = ajax.py2js(value.due_date(), h)
     if due_date:
-        return u'{title:%s, editable:true, allDay: true, start: %s}' % (
+        ret = u'{title:%s, editable:true, allDay: true, start: %s}' % (
             ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)
-    else:
-        return None
+    return ret

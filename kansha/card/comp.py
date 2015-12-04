@@ -164,7 +164,7 @@ class Card(object):
         return added
 
     def remove_member(self, data_member):
-        self.data.data.members.remove(data_member)
+        self.data.members.remove(data_member)
 
     @property
     def members(self):

@@ -291,7 +291,7 @@ def render_members_members_list_overlay(self, h, comp, *args):
     h << h.h2(_('All members'))
     with h.form:
         with h.div(class_="members"):
-            if security.has_permissions('edit', self):
+            if security.has_permissions('edit', self.card):
                 h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
             else:
                 h << [m.render(h, "avatar") for m in self.members]

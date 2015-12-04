@@ -370,25 +370,12 @@ class CardMembers(CardExtension):
         """
         members = []
         # Get all users with emails
-        for email in emails:
-            new_member = usermanager.UserManager.get_by_email(email)
-            if new_member:
-                members.append(new_member)
-        self._add_members(members)
-        return "YAHOO.kansha.reload_cards['%s']();YAHOO.kansha.app.hideOverlay();" % self.card.id
-
-    def _add_members(self, new_data_members):
-        """Add members to a card
-
-        In:
-            - ``new_data_members`` -- all UserData instance to attach to card
-        Return:
-            - list of new DataMembers added
-        """
-        for new_data_member in new_data_members:
+        members = filter(None, map(usermanager.UserManager.get_by_email, emails))
+        for new_data_member in members:
             self.add_member(new_data_member)
             #values = {'user_id': new_data_member.username, 'user': new_data_member.fullname, 'card': self.data.title}
             #notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_add_member', values)
+        return "YAHOO.kansha.reload_cards['%s']();YAHOO.kansha.app.hideOverlay();" % self.card.id
 
     def add_member(self, new_data_member):
         """Attach new member to card

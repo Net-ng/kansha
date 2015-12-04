@@ -369,8 +369,6 @@ class CardMembers(CardExtension):
             - JS code, reload card and hide overlay
         """
         members = []
-        if isinstance(emails, (str, unicode)):
-            emails = [e.strip() for e in emails.split(',') if e.strip() != '']
         # Get all users with emails
         for email in emails:
             new_member = usermanager.UserManager.get_by_email(email)

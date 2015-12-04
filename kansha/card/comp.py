@@ -392,13 +392,13 @@ class CardMembers(CardExtension):
     def remove_member(self, username):
         """Remove member username from card member"""
         data_member = usermanager.UserManager.get_by_username(username)
-        if data_member:
-            log.debug('Removing %s from card %s' % (username, self.card.id))
-            self.card.remove_member(data_member)
-            for member in self.members:
-                if member().username == username:
-                    self.members.remove(member)
-                    #values = {'user_id': member().username, 'user': member().data.fullname, 'card': data.title}
-                    #notifications.add_history(self.column.board.data, data, security.get_user().data, u'card_remove_member', values)
-        else:
+        if not data_member:
             raise exceptions.KanshaException(_("User not found : %s" % username))
+
+        log.debug('Removing %s from card %s' % (username, self.card.id))
+        self.card.remove_member(data_member)
+        for member in self.members:
+            if member().username == username:
+                self.members.remove(member)
+                #values = {'user_id': member().username, 'user': member().data.fullname, 'card': data.title}
+                #notifications.add_history(self.column.board.data, data, security.get_user().data, u'card_remove_member', values)

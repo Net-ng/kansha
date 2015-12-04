@@ -9,15 +9,15 @@
 #--
 
 from nagare import ajax
-from nagare import component, var, security, i18n
 from nagare.i18n import _
+from nagare import component, var, security, i18n
+
+from kansha import title
+from kansha.toolbox import popin, overlay
+from kansha import exceptions, notifications
+from kansha.card import (comp as card, fts_schema)
 
 from .models import DataColumn
-from ..toolbox import popin, overlay
-from ..card import (comp as card, fts_schema)
-from ..title import comp as title
-from ..card.models import DataCard
-from .. import exceptions, notifications
 
 
 class Column(object):
@@ -40,8 +40,8 @@ class Column(object):
         self.search_engine = search_engine
         self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
-        self.title = component.Component(ColumnTitle(self))
-        self.title.on_answer(lambda v: self.title.call(model='edit'))
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
         self.cards = [component.Component(self._services(card.Card, c.id, self, self.card_extensions, data=c))
                       for c in self.data.cards]
@@ -235,7 +235,7 @@ class Column(object):
                 card_obj = self._services(card.Card, new_card.id, self, self.card_extensions)
                 self.cards.append(component.Component(card_obj, 'new'))
                 values = {'column_id': self.id,
-                          'column': self.title().text,
+                          'column': self.get_title(),
                           'card': new_card.title}
                 notifications.add_history(self.board.data, new_card,
                                           security.get_user().data,
@@ -255,7 +255,7 @@ class Column(object):
             - ``c`` -- card to delete
         """
         self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.title().text, 'card': c.title().text}
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
         notifications.add_history(self.board.data, c.data,
                                   security.get_user().data,
                                   u'card_delete', values)
@@ -275,7 +275,7 @@ class Column(object):
             - ``c`` -- card to delete
         """
         self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.title().text, 'card': c.title().text}
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
         notifications.add_history(self.board.data, c.data, security.get_user().data, u'card_archive', values)
         self.board.archive_card(c)
 
@@ -359,14 +359,6 @@ class NewColumn(object):
                 ajax.py2js(col_id), ajax.py2js(nb_cards or 0)
             )
         )
-
-
-class ColumnTitle(title.Title):
-
-    """Column title component
-    """
-    model = DataColumn
-    field_type = 'input'
 
 
 class CardsCounter(object):

@@ -12,11 +12,11 @@ import random
 
 from nagare import component, var
 
-from kansha.title import comp as title
 from kansha.toolbox import overlay
 from kansha.services.components_repository import CardExtension
 
 from .models import DataLabel
+
 
 class Label(object):
 
@@ -140,10 +140,3 @@ class CardLabels(CardExtension):
             card.labels.append(DataLabel.get(label_id))
             self.labels.append(label_id)
             self.labels.sort()
-
-
-class LabelTitle(title.Title):
-
-    """Label title component
-    """
-    field_type = 'input'

@@ -44,20 +44,20 @@ class BoardsManager(object):
         self.search_engine = search_engine
         self._services = services_service
 
-        def get_by_id(self, id_):
-            board = None
-            if Board.exists(id=id_):
-                return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
-                                      self.card_extensions, self.search_engine)
-            return board
+    def get_by_id(self, id_):
+        board = None
+        if Board.exists(id=id_):
+            return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
+                                  self.card_extensions, self.search_engine)
+        return board
 
-        def get_by_uri(self, uri):
-            board = None
-            if Board.exists(uri=uri):
-                id_ = Board.get_id_by_uri(uri)
-                return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
-                                      self.card_extensions, self.search_engine)
-            return board
+    def get_by_uri(self, uri):
+        board = None
+        if Board.exists(uri=uri):
+            id_ = Board.get_id_by_uri(uri)
+            return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
+                                  self.card_extensions, self.search_engine)
+        return board
 
     def _get_board(self, data_board):
         '''Build a board object'''

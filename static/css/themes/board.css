@@ -111,7 +111,7 @@ textarea.expanded {
     width: 100%;
 }
 
-.board .boardTitle {
+.board .board-title {
     display: inline-block;
     padding: 10px 10px;
     margin-left: 400px;
@@ -119,15 +119,15 @@ textarea.expanded {
     width: calc(100% - 400px - 350px);
 }
 
-.board .boardTitle a,
-.board .boardTitle a:hover {
+.board .board-title a,
+.board .board-title a:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
     overflow: hidden;
 }
 
-.board .boardTitle .title-form input {
+.board .board-title .title-form input {
     width: 440px;
     margin-right: 5px;
 }
@@ -435,10 +435,6 @@ textarea.expanded {
 .card-edit-form .header {
     padding: 10px 0 2px 0;
     margin-bottom: 10px;
-}
-
-.card-edit-form .header .async-title > div {
-    display: inline;
 }
 
 .card-edit-form .header .in-list {
@@ -807,14 +803,6 @@ div.history th {
     cursor: move;
 }
 
-.checklists .checklist .title .show_onhover {
-    display: none;
-}
-
-.checklists .checklist .title:hover .show_onhover {
-    display: inline;
-}
-
 .checklists .checklist .btn {
     min-width: 0;
     height: 26px
@@ -831,10 +819,7 @@ div.history th {
 
 .checklists .checklist input {
     border-radius: 3px 0 0 3px;
-}
-
-.checklists .checklist .btn-group .btn:first-child {
-    border-radius: 0;
+    margin-right: 5px;
 }
 
 .checklists .checklist li {
@@ -847,20 +832,20 @@ div.history th {
     margin-right: 5px
 }
 
-.checklists .checklist .done {
+.checklists .checklist .done a {
     text-decoration: line-through
 }
 
 .checklists .checklist .title input {
-    width: 322px
+    width: 222px
 }
 
 .checklists .checklist li input {
-    width: 310px
+    width: 210px
 }
 
 .checklists .checklist .new-item-form input {
-    width: 346px
+    width: 246px
 }
 
 .checklists .checklist .content {
@@ -1053,7 +1038,7 @@ div.history th {
         margin-bottom: 5px
     }
 
-    .board .boardTitle {
+    .board .board-title {
         margin-top: 50px;
         margin-left: 50px;
         width: calc(100% - 50px);
@@ -1140,7 +1125,7 @@ div.history th {
         margin-bottom: 0
     }
 
-    .board .boardTitle {
+    .board .board-title {
         margin-top: 50px;
         margin-left: 20px;
     }
@@ -1185,7 +1170,7 @@ div.history th {
         overflow: hidden
     }
 
-    .board .boardTitle {
+    .board .board-title {
         margin-left: 0;
         width: 100%;
     }
@@ -1198,7 +1183,7 @@ div.history th {
         left: 195px;
     }
 
-    .board .boardTitle .title-form input {
+    .board .board-title .title-form input {
         width: calc(100% - 150px);
     }
 }

@@ -7,42 +7,36 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from nagare import component
 
-from .. import validator
+from kansha import validator
 
 
 class Title(object):
-    """Title component.
+    def __init__(self, title, class_='title', height=None, placeholder=''):
+        self.title = title
+        self.class_ = class_
+        self.height = height
+        self.placeholder = placeholder
 
-    ``class variables``:
-      - field_type  -- type of input
-    """
-    # Render mode in edit mode
-    field_type = 'textarea'
-
-    def __init__(self, parent):
-        """Initialization
-
-        In:
-          - ``parent`` -- parent of title
-        """
-        self.parent = parent
-        self.text = parent.get_title() or u''
-
-    def change_text(self, text):
-        """Change the title of our wrapped object
-
-        In:
-            - ``text`` -- the new title
-        Return:
-            - the new title
-
-        """
-        if text is None:
-            return
-        text = text.strip()
+    def set_title(self, comp, title):
+        text = title() and title().strip()
         if text:
             text = validator.clean_text(text)
-            self.text = text
-            self.parent.set_title(text)
-            return text
+
+        comp.answer(text)
+
+
+class EditableTitle(component.Task):
+    def __init__(self, title, cls=Title, *args, **kw):
+        self.title = component.Component(cls(title, *args, **kw))
+
+    def set_title(self, title):
+        self.title().title = title
+
+    def go(self, comp):
+        while True:
+            comp.call(self.title)
+            new_title = comp.call(self.title, model='edit')
+            if new_title is not None:
+                comp.answer(new_title)

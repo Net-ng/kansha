@@ -12,8 +12,8 @@ import random
 from cgi import FieldStorage
 from webob.exc import HTTPOk
 
-from nagare import component, security, var
 from nagare.i18n import _
+from nagare import component, security, var
 
 from kansha import notifications
 from kansha.toolbox import overlay
@@ -82,7 +82,7 @@ class Gallery(CardExtension):
         validators.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
         fileid = self.assets_manager.save(new_file.file.read(),
                                           metadata={'filename': new_file.filename, 'content-type': new_file.type})
-        data = {'file': new_file.filename, 'card': self.card.title().text}
+        data = {'file': new_file.filename, 'card': self.card.get_title()}
         notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_file', data)
         return self._create_asset_c(self.data.add_asset(fileid))
 

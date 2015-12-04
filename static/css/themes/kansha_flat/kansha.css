@@ -11,7 +11,7 @@
 body {
     background: #f5f5f5;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif,icons;
-    color: #5c5c5c;
+    color: #737373;
 }
 a {
     color: #636363;
@@ -139,7 +139,7 @@ button.delete[disabled]{
 
 .ico-btn {
     font-size: 28px;
-    color: #737373;
+    color: inherit;
 }
 
 a:hover .ico-btn {
@@ -161,7 +161,7 @@ a:hover .ico-btn {
 
 /*Error page*/
 #errorPage {
-    color: #737373;
+    color: inherit;
 }
 
 #errorPage #status {
@@ -261,7 +261,7 @@ a:hover .ico-btn {
 }
 
 .overlay .favorites h3 {
-    color: #737373;
+    color: inherit;
     font: normal 15px OpenSansLight
 }
 
@@ -274,12 +274,12 @@ a:hover .ico-btn {
 }
 
 .overlay.board-labels-overlay {
-    color: #737373;
+    color: inherit;
 }
 
 .overlay.board-labels-overlay h2 {
     border-bottom: 1px solid #eaeaea;
-    color: #737373;
+    color: inherit;
     font-size: 17px;
     font-weight: normal;
 }
@@ -295,7 +295,7 @@ a:hover .ico-btn {
 
 .overlay.board-labels-overlay .name {
     font-size: 15px;
-    color: #737373;
+    color: inherit;
 }
 
 .overlay.card-edit-form-overlay .card-label-choose.active .card-label {

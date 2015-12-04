@@ -146,19 +146,19 @@ class Card(object):
 
     # Members
 
-    def get_authorized_users(self):
+    def get_available_users(self):
         """Return user's which are authorized to be add on this card
 
         Return:
             - a set of user (UserData instance)
         """
-        return set(self.column.get_authorized_users()) | set(self.column.get_pending_users()) - set(self.data.members)
+        return set(self.column.get_available_users()) | set(self.column.get_pending_users()) - set(self.data.members)
 
     def add_member(self, new_data_member):
         data = self.data
         added = False
         if (new_data_member not in data.members and
-                new_data_member in self.get_authorized_users()):
+                new_data_member in self.get_available_users()):
             data.members.append(new_data_member)
             added = True
         return added
@@ -341,7 +341,7 @@ class CardMembers(CardExtension):
 
     def autocomplete_method(self, value):
         """ """
-        return [u for u in usermanager.UserManager.search(value) if u in self.card.get_authorized_users()]
+        return [u for u in usermanager.UserManager.search(value) if u in self.card.get_available_users()]
 
     @staticmethod
     def many_user_render(h, number):

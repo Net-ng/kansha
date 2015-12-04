@@ -147,9 +147,9 @@ class Column(object):
             if isinstance(c(), card.Card):
                 c().remove_board_member(member)
 
-    def get_authorized_users(self):
+    def get_available_users(self):
         """Return users authorized to be add on this column"""
-        return set(self.board.get_authorized_users())
+        return set(self.board.get_available_users())
 
     def get_pending_users(self):
         return set(self.board.get_pending_users())

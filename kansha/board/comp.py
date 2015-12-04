@@ -848,7 +848,7 @@ class Board(object):
                 most_used_users[username] = most_used_users.get(username, 0) + column_most_used_users[username]
         return most_used_users
 
-    def get_authorized_users(self):
+    def get_available_users(self):
         """Return list of member
 
         Return:

@@ -340,20 +340,14 @@ class CardMembers(CardExtension):
         self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in card.members]
 
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: self.many_user_render(r, len(card.members) - self.max_shown_members),
-                                                                   lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
-                                                                   dynamic=False, cls='card-overlay'))
+        self.see_all_members = component.Component(
+            overlay.Overlay(lambda r: component.Component(self).render(r, model='more_users'),
+                            lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
+                            dynamic=False, cls='card-overlay'))
 
     def autocomplete_method(self, value):
         """ """
         return [u for u in usermanager.UserManager.search(value) if u in self.card.get_available_users()]
-
-    @staticmethod
-    def many_user_render(h, number):
-        return h.span(
-            h.i(class_='ico-btn icon-user-nb'),
-            h.span(number, class_='count'),
-            title=_("%s more...") % number)
 
     @property
     def favorites(self):

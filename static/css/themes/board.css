@@ -15,6 +15,14 @@ textarea.expanded {
     margin: 5px 0;
 }
 
+.loading {
+    padding: 10px;
+}
+
+.loading img {
+    margin-right: 10px;
+}
+
 /* Fix incopatibility between Knacss and fullcalendar */
 #calendar .fc-day-grid {
     flex: initial;

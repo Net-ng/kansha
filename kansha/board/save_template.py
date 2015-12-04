@@ -8,31 +8,37 @@
 # this distribution.
 #--
 
-from nagare import component, editor, presentation, validator as nagare_validator
+from nagare import ajax, component, editor, presentation, validator as nagare_validator
 from nagare.i18n import _
 
 from kansha import validator
 from kansha.toolbox import remote
 
 
-class SaveTemplateEditor(editor.Editor):
+class SaveTemplateEditor(object):
     def __init__(self, board):
+        self.board = board
         self.title = editor.Property(board.title().text)
         self.title.validate(lambda v: nagare_validator.StringValidator(v).not_empty())
         self.description = editor.Property(board.description().text)
         self.shared = editor.Property(False).validate(validator.BoolValidator)
 
+    def is_validated(self):
+        return all(getattr(self, name).error is None for name in ('title', 'shared'))
+
     def cancel(self, comp):
-        comp.answer(None)
+        comp.answer(False)
 
     def commit(self, comp):
-        if self.is_validated(('title', 'shared')):
-            comp.answer((self.title.value, self.description.value, self.shared.value))
+        if self.is_validated():
+            comp.answer(True)
 
     def close(self, comp):
-        comp.answer()
+        comp.answer(False)
         return 'YAHOO.kansha.app.hideOverlay()'
 
+    def save(self):
+        self.board.save_as_template(self.title.value, self.description.value, self.shared.value)
 
 @presentation.render_for(SaveTemplateEditor)
 def render_SaveTemplateEditor(self, h, comp, *args):
@@ -60,14 +66,27 @@ def render_SaveTemplateEditor(self, h, comp, *args):
     return h.root
 
 
+@presentation.render_for(SaveTemplateEditor, 'loading')
+def render_SaveTemplateEditor_loading(self, h, comp, *args):
+    with h.div(class_='loading'):
+        h << h.img(src='img/ajax-loader.gif')
+        h << _(u'Please wait while board is saved...')
+
+    update = ajax.Update(action=lambda *args: self.save(), render='saved')
+    h << h.script(h.input(type='radio').action(update).get('onclick'))
+
+    return h.root
+
 @presentation.render_for(SaveTemplateEditor, 'saved')
 def render_SaveTemplateEditor_saved(self, h, comp, *args):
     close = remote.Action(lambda: self.close(comp))
     close = h.input(type='radio').action(close).get('onclick')
     h << h.script('''YAHOO.kansha.app.onHideOverlay(function() { %s; });''' % close)
-    h << h.div(h.i(class_='icon-checkmark'), _(u'Template saved!'), class_='success')
-    with h.div(class_='buttons'):
-        h << h.a(_(u'OK'), class_='btn btn-primary', onclick='''YAHOO.kansha.app.hideOverlay()''')
+    with h.div(class_='success'):
+        h << h.i(class_='icon-checkmark')
+        h << _(u'Template saved!')
+        with h.div(class_='buttons'):
+            h << h.a(_(u'OK'), class_='btn btn-primary', onclick='''YAHOO.kansha.app.hideOverlay()''')
     return h.root
 
 
@@ -78,8 +97,6 @@ class SaveTemplateTask(component.Task):
     def go(self, comp):
         editor = component.Component(SaveTemplateEditor(self.board))
         ret = comp.call(editor)
-        if ret is not None:
-            title, description, shared = ret
-            self.board.save_as_template(title, description, shared)
-            comp.call(editor, 'saved')
+        if ret:
+            comp.call(editor, 'loading')
         comp.answer()

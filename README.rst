@@ -1,15 +1,12 @@
 KANSHA
 ======
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/Net-ng/kansha
-   :target: https://gitter.im/Net-ng/kansha?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
 |docs|
 |pypiv|
 |travis|
 |coverage|
 |climate|
+|gitter|
 
 ..
     |requires|
@@ -72,3 +69,7 @@ Join us!
 .. |pypiv| image:: https://img.shields.io/pypi/dw/kansha.svg
      :target: https://pypi.python.org/pypi/kansha/
      :alt: PyPI entry
+
+.. |gitter| image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/Net-ng/kansha
+   :target: https://gitter.im/Net-ng/kansha?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge

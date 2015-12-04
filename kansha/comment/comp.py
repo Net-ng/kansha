@@ -19,6 +19,7 @@ from kansha.services.components_repository import CardExtension
 
 from .models import DataComment
 
+
 class Comment(object):
 
     """Comment component"""
@@ -127,7 +128,7 @@ class Comments(CardExtension):
         if v:
             v = validator.clean_text(v)
             user = security.get_user()
-            comment = DataComment(comment=v.strip(), card_id=self.card.db_id,
+            comment = DataComment(comment=v, card_id=self.card.db_id,
                                   author=user.data, creation_date=datetime.datetime.utcnow())
             session.add(comment)
             session.flush()

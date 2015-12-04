@@ -112,7 +112,7 @@ class Comments(CardExtension):
         self.comments = [self._create_comment_component(data_comment) for data_comment in card.get_comments()]
 
     def _create_comment_component(self, data_comment):
-        return component.Component(Comment(data_comment)).on_answer(self.delete)
+        return component.Component(Comment(data_comment)).on_answer(self.delete_comment)
 
     def add(self, v):
         """Add a new comment to the card
@@ -135,7 +135,7 @@ class Comments(CardExtension):
             notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_comment', data)
             self.comments.insert(0, self._create_comment_component(comment))
 
-    def delete(self, comp):
+    def delete_comment(self, comp):
         """Delete a comment.
 
         In:

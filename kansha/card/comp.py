@@ -330,7 +330,7 @@ class CardMembers(CardExtension):
         Card is a card business object.
         """
 
-        self.card = card
+        super(CardMembers, self).__init__(card)
 
         # members part of the card
         self.overlay_add_members = component.Component(

@@ -164,8 +164,7 @@ class Card(object):
         return added
 
     def remove_member(self, data_member):
-        data = self.data
-        data.members.remove(data_member)
+        self.data.data.members.remove(data_member)
 
     @property
     def members(self):
@@ -182,10 +181,15 @@ class Card(object):
             - list of favorites (usernames)
         """
         # to be optimized later if still exists
+        member_usernames = set(member.username for member in self.members)
+        # FIXME: don't reference parent
+        board_user_stats = [(nb_cards, username) for username, nb_cards in self.column.favorites.iteritems()]
+        board_user_stats.sort(reverse=True)
+        # Take the 5 most popular that are not already affected to this card
         self._favorites = [username
-                           for (username, _) in sorted(self.column.favorites.items(), key=lambda e:-e[1])[:5]
-                           if username not in [member.username for member in self.members]]
-        return self._favorites
+                           for (__, username) in board_user_stats
+                           if username not in member_usernames]
+        return self._favorites[:5]
 
     def remove_board_member(self, member):
         """Member removed from board

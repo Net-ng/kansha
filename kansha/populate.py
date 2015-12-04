@@ -34,10 +34,5 @@ def populate():
 
     boards_manager = BoardsManager('', '', '', {}, None, services)
     boards_manager.create_template_empty()
-    tpl = boards_manager.create_template_todo()
-    usermanager.UserManager().populate(boards_manager, tpl)
-
-    app_path = 'kansha'
-    nagare_admin = os.path.join(os.path.dirname(sys.executable), 'nagare-admin')
-    batch_file = os.path.join(app_path, 'batch', 'populate_demo_images.py')
-    log.info('Run ``%s batch %s %s`` if you want to create demo images.' % (nagare_admin, app_path, batch_file))
+    boards_manager.create_template_todo()
+    usermanager.UserManager().populate()

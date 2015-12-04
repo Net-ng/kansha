@@ -29,7 +29,7 @@ class DataColumn(Entity):
     index = Field(Integer)
     nb_max_cards = Field(Integer)
     archive = Field(Boolean, default=False)
-    cards = OneToMany('DataCard', order_by='index', cascade='delete',
+    cards = OneToMany('DataCard', order_by='index',  # cascade='delete',
                       collection_class=ordering_list('index'))
     board = ManyToOne('DataBoard', colname='board_id')
 
@@ -63,12 +63,8 @@ class DataColumn(Entity):
         return col
 
     def create_card(self, title, user):
-        card = DataCard(title=title, author=user, column=self, creation_date=datetime.now(), index=None)
-        print '-', card.index
+        card = DataCard(title=title, author=user, creation_date=datetime.now())
         self.cards.append(card)
-        self.cards.reorder()  # not automatic after append
-        #session.flush()
-        print card.index
         return card
 
     @classmethod

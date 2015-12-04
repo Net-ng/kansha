@@ -289,3 +289,14 @@ class BoardTest(unittest.TestCase):
         board.archive_board()
         self.assertIn(board.data, board_module.Board.get_archived_boards_for(user.data.username, user.data.source).all())
         self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())
+
+    def test_get_by(self):
+        '''Test get_by_uri and get_by_id methods'''
+        helpers.set_dummy_context()
+        orig_board = helpers.create_board()
+        board = self.boards_manager.get_by_id(orig_board.id)
+        self.assertEqual(orig_board.data.id, board.data.id)
+        self.assertEqual(orig_board.data.title, board.data.title)
+        board = self.boards_manager.get_by_uri(orig_board.data.uri)
+        self.assertEqual(orig_board.data.id, board.data.id)
+        self.assertEqual(orig_board.data.title, board.data.title)

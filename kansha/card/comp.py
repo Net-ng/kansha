@@ -312,10 +312,11 @@ class CardWeightEditor(editor.Editor, CardExtension):
         return self.target.board
 
     def commit(self):
+        success = False
         if self.is_validated(self.fields):
             super(CardWeightEditor, self).commit(self.fields)
-            return True
-        return False
+            success = True
+        return success
 
 
 class CardMembers(CardExtension):

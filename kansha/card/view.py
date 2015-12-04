@@ -40,7 +40,7 @@ def render_card_new(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card"""
 
-    extensions = [extension for name, extension in self.card_extensions]
+    extensions = [extension for name, extension in self.extensions]
 
     card_id = h.generate_id()
 
@@ -104,12 +104,12 @@ def render_card_edit(self, h, comp, *args):
                 h << self.column.get_title()  # FIXME: no direct access to column
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
-                for name, extension in self.card_extensions:
+                for name, extension in self.extensions:
                     h << h.div(extension.render(h.AsyncRenderer()), class_=name)
             with h.div(class_='card-actions'):
                 with h.form:
                     h << comp.render(h, 'delete-action')
-                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.card_extensions]
+                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
     return h.root
 
 

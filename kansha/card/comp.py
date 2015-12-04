@@ -13,9 +13,9 @@ import dateutil.parser
 from nagare.i18n import _
 from nagare import (component, log, security, editor, validator)
 
+from kansha import title
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha import title
 from kansha import exceptions, notifications
 from kansha.services.components_repository import CardExtension
 
@@ -52,19 +52,18 @@ class Card(object):
         self.column = column
         self._services = services_service
         self._data = data
-        self.card_extensions = tuple()
-        self.card_repo = card_extensions
-        self.reload(data if data else self.data)
+        self.extensions = ()
+        self.card_extensions = card_extensions
+        self.refresh()
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_data.author = additional_data['author'].data
-        new_obj = self._services(Card, new_data.id, parent, self.card_repo, data=new_data)
+        new_obj = self._services(Card, new_data.id, parent, self.card_extensions, data=new_data)
 
         # TODO extensions
 
         return new_obj
-
 
     @property
     def must_reload_search(self):
@@ -77,13 +76,13 @@ class Card(object):
     def board(self):
         return self.column.board
 
-    def reload(self, data=None):
+    def refresh(self):
         """Refresh the sub components
         """
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.card_extensions = [(name, component.Component(self._services(extension, self)))
-                                for name, extension in self.card_repo.items()]
+        self.extensions = [(name, component.Component(self._services(extension, self)))
+                                for name, extension in self.card_extensions.items()]
 
     @property
     def data(self):
@@ -117,9 +116,9 @@ class Card(object):
 
     def delete(self):
         """Delete itself"""
-        for __, extension in self.card_extensions:
+        for __, extension in self.extensions:
             extension().delete()
-        DataCard.delete_card(self.data)
+        self.data.delete()
 
     def move_card(self, card_index, column):
         """Move card
@@ -138,7 +137,7 @@ class Card(object):
         Dropped on new date (calendar view).
         """
         start = dateutil.parser.parse(request.GET['start']).date()
-        for __, extension in self.card_extensions:
+        for __, extension in self.extensions:
             extension().new_card_position(start)
 
     ################################
@@ -198,7 +197,7 @@ class Card(object):
             - ``member`` -- Board Member instance to remove
         """
         self.data.remove_board_member(member)
-        self.reload()  # brute force solution until we have proper communication between extensions
+        self.refresh()  # brute force solution until we have proper communication between extensions
 
     # Cover methods
 

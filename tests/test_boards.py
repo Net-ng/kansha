@@ -37,9 +37,7 @@ class BoardTest(unittest.TestCase):
         """Create a new board"""
         helpers.set_dummy_context()
         self.assertEqual(DataBoard.query.count(), 0)
-        user = helpers.create_user()
-        helpers.set_context(user)
-        self.boards_manager.create_board(helpers.word(), user)
+        helpers.create_board()
         self.assertEqual(DataBoard.query.filter_by(is_template=False).count(), 1)
 
     def test_add_column_ok(self):

@@ -6,11 +6,21 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from datetime import date, datetime
+from glob import glob
+import json
+import os
 import sys
+import time
 
 from nagare import database
+
+from kansha.board.models import DataBoard
+from kansha.card.models import DataCard
+from kansha.column.models import DataColumn
+from kansha.comment.models import DataComment
+from kansha.label.models import DataLabel
 from kansha.user.models import DataUser
-from kansha.board.boardsmanager import BoardsManager
 
 
 DEFAULT_LABELS = (
@@ -22,6 +32,48 @@ DEFAULT_LABELS = (
     (u'Violet', u'#8C28BD')
 )
 
+
+def create_boards_from_templates(user, folder):
+    for template_filename in glob(os.path.join(folder, '*.btpl')):
+        template = json.loads(open(template_filename).read())
+        board = DataBoard(title=template['title'])
+        labels_def = template.get('tags', DEFAULT_LABELS)
+        for i, (title, color) in enumerate(labels_def):
+            __ = DataLabel(title=title,
+                           color=color,
+                           index=i,
+                           board=board)
+        database.session.flush()
+        for i, col in enumerate(template.get('columns', [])):
+            cards = col.pop('cards', [])
+            col = DataColumn(title=col['title'],
+                             index=i,
+                             board=board)
+            for j, card in enumerate(cards):
+                comments = card.pop('comments', [])
+                labels = card.pop('tags', [])
+                due_date = card.pop('due_date', None)
+                if due_date:
+                    due_date = time.strptime(due_date, '%Y-%m-%d')
+                    due_date = date(*due_date[:3])
+                card = DataCard(title=card['title'],
+                                description=card.get('description', u''),
+                                author=user,
+                                due_date=due_date,
+                                creation_date=datetime.utcnow(),
+                                column=col,
+                                index=j,
+                                labels=[board.labels[i] for i in labels])
+                for comment in comments:
+                    DataComment(comment=comment,
+                                author=user,
+                                creation_date=datetime.utcnow(),
+                                card=card)
+        board.members.append(user)
+        board.managers.append(user)
+        database.session.flush()
+
+
 if len(sys.argv) != 3:
     print 'Usage: %s email template_folder' % sys.argv[0]
 
@@ -31,5 +83,5 @@ if not user:
     sys.exit(0)
 
 folder = sys.argv[2]
-BoardsManager.create_boards_from_templates(user, folder)
+create_boards_from_templates(user, folder)
 database.session.commit()

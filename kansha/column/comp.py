@@ -75,7 +75,7 @@ class Column(object):
         elif data[0] == 'purge':
             for card in self.cards:
                 self.delete_card(card())
-            self.reload()
+            self.refresh()
         self.set_reload_search()
 
     @property
@@ -119,20 +119,20 @@ class Column(object):
         """
         return self.board.favorites
 
-    def get_most_used_users(self):
+    def get_member_stats(self):
         """Return the most used users in this column
 
         Return:
             - a dictionary {'username', 'nb used'}
         """
-        most_used_users = {}
+        member_stats = {}
         for c in self.cards:
             # Test if c() is a Card instance and not Popin instance
             if isinstance(c(), card.Card):
                 for m in c().members:
                     username = m.username
-                    most_used_users[username] = most_used_users.get(username, 0) + 1
-        return most_used_users
+                    member_stats[username] = member_stats.get(username, 0) + 1
+        return member_stats
 
     def remove_board_member(self, member):
         """Remove member from board
@@ -263,7 +263,7 @@ class Column(object):
         self.search_engine.commit()
         c.delete()
 
-    def reload(self):
+    def refresh(self):
         self.cards = [component.Component(
             self._services(card.Card, c.id, self, self.card_extensions, data=c)
             ) for c in self.data.cards]

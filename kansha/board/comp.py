@@ -163,6 +163,18 @@ class Board(object):
 
         self.must_reload_search = False
 
+    @classmethod
+    def get_id_by_uri(cls, uri):
+        board = DataBoard.get_by_uri(uri)
+        board_id = None
+        if board is not None:
+            board_id = board.id
+        return board_id
+
+    @classmethod
+    def exists(cls, **kw):
+        return DataBoard.exists(**kw)
+
     def reload_save_template_comp(self):
         self.save_template_comp = component.Component(SaveTemplateTask(self))
         self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())

@@ -85,11 +85,20 @@ class BoardsManager(object):
         new_board.data.is_template = board_to_template
         return new_board
 
-    def get_by_id(self, id):
-        return DataBoard.get(id)
+    def get_by_id(self, id_):
+        board = None
+        if Board.exists(id=id_):
+            return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
+                                  self.card_extensions, self.search_engine)
+        return board
 
     def get_by_uri(self, uri):
-        return DataBoard.get_by_uri(uri)
+        board = None
+        if Board.exists(uri=uri):
+            id_ = Board.get_id_by_uri(uri)
+            return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
+                                  self.card_extensions, self.search_engine)
+        return board
 
     @staticmethod
     def index_user_cards(user, search_engine):

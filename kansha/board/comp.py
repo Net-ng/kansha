@@ -211,6 +211,7 @@ class Board(object):
         template.data.description = description
         template.data.is_template = True
         template.data.visibility = BOARD_PRIVATE if not shared else BOARD_PUBLIC
+        return template
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

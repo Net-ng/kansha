@@ -268,3 +268,32 @@ class DataBoard(Entity):
         self.labels.append(label)
         session.flush()
         return label
+
+
+# Populate
+DEFAULT_LABELS = (
+    (u'Green', u'#22C328'),
+    (u'Red', u'#CC3333'),
+    (u'Blue', u'#3366CC'),
+    (u'Yellow', u'#D7D742'),
+    (u'Orange', u'#DD9A3C'),
+    (u'Purple', u'#8C28BD')
+)
+
+
+def create_template_empty():
+    board = DataBoard(title=u'Empty board', is_template=True, visibility=1)
+    for title, color in DEFAULT_LABELS:
+        board.create_label(title=title, color=color)
+    session.flush()
+    return board
+
+
+def create_template_todo():
+    board = DataBoard(title=u'Todo', is_template=True, visibility=1)
+    for index, title in enumerate((u'To Do', u'Doing', u'Done')):
+        board.create_column(index, title)
+    for title, color in DEFAULT_LABELS:
+        board.create_label(title=title, color=color)
+    session.flush()
+    return board

@@ -25,6 +25,7 @@ from nagare import local, security
 from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
 from kansha.services.services_repository import ServicesRepository
 from kansha.services.mail import DummyMailSender
+from kansha.board import models as board_models
 from kansha.card.models import DataCard
 from kansha.vote.models import DataVote
 from kansha.board import boardsmanager
@@ -125,7 +126,8 @@ def create_board():
     user = create_user()
     services = create_services()
     boards_manager = boardsmanager.BoardsManager('', '', '', {}, None, services)
-    template = boards_manager.create_template_todo()
+    template = board_models.create_template_todo()
+    template = boards_manager.get_by_id(template.id)
     board = boards_manager.copy_board(template, user, False)
     create_default_cards(board.data, user)
     user.add_board(board, "manager")

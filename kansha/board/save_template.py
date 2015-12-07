@@ -18,7 +18,7 @@ from kansha.toolbox import remote
 class SaveTemplateEditor(object):
     def __init__(self, board):
         self.board = board
-        self.title = editor.Property(board.title().text)
+        self.title = editor.Property(board.get_title())
         self.title.validate(lambda v: nagare_validator.StringValidator(v).not_empty())
         self.description = editor.Property(board.description().text)
         self.shared = editor.Property(False).validate(validator.BoolValidator)

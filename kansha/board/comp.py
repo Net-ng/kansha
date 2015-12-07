@@ -450,7 +450,7 @@ class Board(object):
             - ``c`` -- card to archive
         """
         c.move_card(0, self.archive_column)
-        self.archive_column.reload()
+        self.archive_column.refresh()
 
     @property
     def weighting_cards(self):
@@ -831,9 +831,9 @@ class Board(object):
         Return:
             - a dictionary {'username', 'nb used'}
         """
-        return self.get_most_used_users()
+        return self.get_member_stats()
 
-    def get_most_used_users(self):
+    def get_member_stats(self):
         """Return the most used users in this column.
 
         Ask most used users to columns
@@ -841,12 +841,12 @@ class Board(object):
         Return:
             - a dictionary {'username', 'nb used'}
         """
-        most_used_users = {}
+        member_stats = {}
         for c in self.columns:
-            column_most_used_users = c().get_most_used_users()
-            for username in column_most_used_users:
-                most_used_users[username] = most_used_users.get(username, 0) + column_most_used_users[username]
-        return most_used_users
+            column_member_stats = c().get_member_stats()
+            for username in column_member_stats:
+                member_stats[username] = member_stats.get(username, 0) + column_member_stats[username]
+        return member_stats
 
     def get_authorized_users(self):
         """Return list of member

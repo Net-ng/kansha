@@ -38,7 +38,6 @@ class DataColumn(Entity):
                               index=self.index,
                               nb_max_cards=self.nb_max_cards,
                               board=parent)
-        session.add(new_data)
         session.flush()
         return new_data
 

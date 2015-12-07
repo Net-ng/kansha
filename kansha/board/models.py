@@ -81,14 +81,12 @@ class DataBoard(Entity):
     def copy(self, parent):
         new_data = DataBoard(title=self.title,
                              description=self.description,
-                             background_image=self.background_image,
                              background_position=self.background_position,
                              title_color=self.title_color,
                              comments_allowed=self.comments_allowed,
                              votes_allowed=self.votes_allowed,
                              weighting_cards=self.weighting_cards,
                              weights=self.weights)
-        session.add(new_data)
         session.flush()
         return new_data
 
@@ -270,3 +268,38 @@ class DataBoard(Entity):
         self.labels.append(label)
         session.flush()
         return label
+
+    def save_as_template(self, title, description, visibility):
+        self.title = title
+        self.description = description
+        self.is_template = True
+        self.visibility = visibility
+
+
+# Populate
+DEFAULT_LABELS = (
+    (u'Green', u'#22C328'),
+    (u'Red', u'#CC3333'),
+    (u'Blue', u'#3366CC'),
+    (u'Yellow', u'#D7D742'),
+    (u'Orange', u'#DD9A3C'),
+    (u'Purple', u'#8C28BD')
+)
+
+
+def create_template_empty():
+    board = DataBoard(title=u'Empty board', is_template=True, visibility=1)
+    for title, color in DEFAULT_LABELS:
+        board.create_label(title=title, color=color)
+    session.flush()
+    return board
+
+
+def create_template_todo():
+    board = DataBoard(title=u'Todo', is_template=True, visibility=1)
+    for index, title in enumerate((u'To Do', u'Doing', u'Done')):
+        board.create_column(index, title)
+    for title, color in DEFAULT_LABELS:
+        board.create_label(title=title, color=color)
+    session.flush()
+    return board

@@ -37,6 +37,7 @@ def answer_on_menu(self, comp, user, v):
             self.app_title,
             self.app_banner,
             self.theme,
+            self.card_extensions,
             user.data,
             self.search_engine
         )

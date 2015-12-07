@@ -30,6 +30,7 @@ from kansha.authentication.database import forms
 from kansha import exceptions, notifications, validator
 
 from .models import DataBoard, DataBoardMember
+from .templates import SaveTemplateTask
 
 # Board visibility
 BOARD_PRIVATE = 0
@@ -98,7 +99,7 @@ class Board(object):
 
         # Member part
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
+            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user'), r.span(_(u'+'), class_='count')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'),
                             dynamic=True, cls='board-labels-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method))
@@ -107,7 +108,7 @@ class Board(object):
 
         def many_user_render(h, number):
             return h.span(
-                h.i(class_='ico-btn icon-user-nb'),
+                h.i(class_='ico-btn icon-user'),
                 h.span(number, class_='count'),
                 title=_("%s more...") % number)
 
@@ -121,14 +122,14 @@ class Board(object):
         self.comp_members = component.Component(self)
 
         # Icons for the toolbar
-        self.icons = {'add_list': component.Component(Icon("icon-plus", _("Add list"))),
-                      'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
-                      'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
-                      'export': component.Component(Icon("icon-download3", _("Export board"))),
-                      'save_template': component.Component(Icon("icon-floppy-disk", _("Save as template"))),
-                      'archive': component.Component(Icon("icon-bin", _("Archive board"))),
-                      'leave': component.Component(Icon("icon-exit", _("Leave this board"))),
-                      'history': component.Component(Icon("icon-history", _("Action log"))),
+        self.icons = {'add_list': component.Component(Icon('icon-plus', _('Add list'))),
+                      'edit_desc': component.Component(Icon('icon-pencil', _('Edit board description'))),
+                      'preferences': component.Component(Icon('icon-cog', _('Preferences'))),
+                      'export': component.Component(Icon('icon-download3', _('Export board'))),
+                      'save_template': component.Component(Icon('icon-floppy', _('Save as template'))),
+                      'archive': component.Component(Icon('icon-trashcan', _('Archive board'))),
+                      'leave': component.Component(Icon('icon-exit', _('Leave this board'))),
+                      'history': component.Component(Icon('icon-history', _("Action log"))),
                       }
 
         # Title component
@@ -152,7 +153,8 @@ class Board(object):
                             lambda r: self.description.render(r),
                             title=_("Edit board description"), dynamic=True))
 
-        self.save_template_comp = component.Component(self, 'save_template')
+        self.save_template_comp = None
+        self.reload_save_template_comp()
         self.save_template_overlay = component.Component(
             overlay.Overlay(lambda r: self.icons['save_template'],
                             lambda r: self.save_template_comp.render(r),
@@ -161,30 +163,50 @@ class Board(object):
 
         self.must_reload_search = False
 
+    @classmethod
+    def get_id_by_uri(cls, uri):
+        board = DataBoard.get_by_uri(uri)
+        board_id = None
+        if board is not None:
+            board_id = board.id
+        return board_id
+
+    @classmethod
+    def exists(cls, **kw):
+        return DataBoard.exists(**kw)
+
+    def reload_save_template_comp(self):
+        self.save_template_comp = component.Component(SaveTemplateTask(self))
+        self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())
+
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
+        if self.data.background_image:
+            new_data.background_image = self.assets_manager.copy(self.data.background_image)
         new_obj = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_data=False)
         new_obj.add_member(owner, 'manager')
         additional_data['author'] = owner
 
+        additional_data['labels'] = []
+        for lbl in self.labels:
+            new_label = lbl.copy(new_obj, additional_data)
+            additional_data['labels'].append(new_label)
+            new_obj.labels.append(new_label)
+
         cols = [col() for col in self.columns if not col().is_archive]
-        for index, column in enumerate(cols):
+        for column in cols:
             new_col = column.copy(new_obj, additional_data)
             new_obj.columns.append(component.Component(new_col))
 
-        new_obj.archive_column = new_obj.create_column(index=index + 1, title=_(u'Archive'), archive=True)
-
-        for lbl in self.labels:
-            new_obj.labels.append(lbl.copy(new_obj, additional_data))
+        new_obj.archive_column = new_obj.create_column(index=len(cols), title=_(u'Archive'), archive=True)
 
         return new_obj
 
-    def save_as_template(self, shared):
+    def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
-        template.data.is_template = True
-        template.data.visibility = BOARD_PRIVATE if not shared else BOARD_PUBLIC
-        return 'YAHOO.kansha.app.hideOverlay();'
+        template.data.save_as_template(title, description, BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        return template
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

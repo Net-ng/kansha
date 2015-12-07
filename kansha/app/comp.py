@@ -56,7 +56,6 @@ class Kansha(object):
         self.user_menu = component.Component(None)
         self.content = component.Component(None).on_answer(self.select_board)
         self.user_manager = UserManager()
-        self.default_board_id = None
         self.boards_manager = self._services(BoardsManager, self.app_title, self.app_banner, self.theme, card_extensions, self.search_engine)
 
     def initialization(self):
@@ -69,12 +68,18 @@ class Kansha(object):
          - app initialized
         """
         self.user_menu = component.Component(security.get_user())
-        if security.get_user():
-            if self.default_board_id:
-                self.select_board(self.default_board_id)
-            else:
-                self.select_last_board()
+        if security.get_user() and self.content() is None:
+            self.select_last_board()
         return self
+
+    def _select_board(self, board):
+        board.on_board_archive = self.select_last_board
+        board.on_board_leave = self.select_last_board
+        self.content.becomes(board)
+        # if user is logged, update is last board
+        user = security.get_user()
+        if user:
+            user.set_last_board(board)
 
     def select_board(self, id_):
         """Selected a board by id
@@ -84,24 +89,9 @@ class Kansha(object):
         """
         if not id_:
             return
-        if self.boards_manager.get_by_id(id_):
-            self.content.becomes(
-                self._services(
-                    board.Board,
-                    id_,
-                    self.app_title,
-                    self.app_banner,
-                    self.theme,
-                    self.card_extensions,
-                    self.search_engine,
-                    on_board_archive=self.select_last_board,
-                    on_board_leave=self.select_last_board
-                )
-            )
-            # if user is logged, update is last board
-            user = security.get_user()
-            if user:
-                user.set_last_board(self.content())
+        board = self.boards_manager.get_by_id(id_)
+        if board is not None and not board.archive:
+            self._select_board(board)
         else:
             raise exceptions.BoardNotFound()
 
@@ -111,8 +101,13 @@ class Kansha(object):
         In:
           - ``uri`` -- the uri of the board
         """
-        b = self.boards_manager.get_by_uri(uri)
-        self.default_board_id = b.id if (b and not b.archived) else None
+        if not uri:
+            return
+        board = self.boards_manager.get_by_uri(uri)
+        if board is not None and not board.archive:
+            self._select_board(board)
+        else:
+            raise exceptions.BoardNotFound()
 
     def select_last_board(self):
         """Selects the last used board if it's possible
@@ -130,6 +125,7 @@ class Kansha(object):
                     self.app_title,
                     self.app_banner,
                     self.theme,
+                    self.card_extensions,
                     user.data,
                     self.search_engine
                 ),
@@ -244,7 +240,6 @@ class WSGIApp(wsgi.WSGIApp):
                                            self)
 
     def create_root(self):
-        MainTask
         return super(WSGIApp, self).create_root(
             self.app_title,
             self.theme,

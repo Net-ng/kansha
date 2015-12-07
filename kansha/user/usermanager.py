@@ -90,41 +90,11 @@ class UserManager(object):
             token_gen.reset_token(token.token)
         return user
 
-    def populate(self, boards_manager, template):
+    def populate(self):
         # Create users
-        users = []
         for i in xrange(1, 4):
             user = self.create_user(u'user%d' % i, u'password', u'user %d' % i, u'user%d@net-ng.com' % i)
             user.confirm_email()
-            user_comp = User(user.username)
-            users.append(user_comp)
-
-        keys = range(3)
-
-        for i, user in enumerate(users):
-            security.set_user(user)
-            board = boards_manager.copy_board(template, user, False)
-            board.set_title(u'Welcome Board User%d' % i)
-            boards_manager.create_default_cards(board.data, user)
-            board.refresh()
-
-            # Share boards and cards for tests
-            others_keys = [k for k in keys if k != i]
-            for key in others_keys:
-                board.add_member(users[key])
-                board.columns[0]().cards[3]().add_member(users[key].data)
-                board.columns[0]().cards[1]().add_member(users[key].data)
-                board.columns[1]().cards[2]().add_member(users[key].data)
-                board.columns[1]().cards[0]().add_member(users[key].data)
-
-        # Add comment from other user
-        from kansha.comment.models import DataComment
-        for u1, u2 in ((users[0], users[1]),
-                       (users[1], users[2]),
-                       (users[2], users[1])):
-            u1.data.boards[0].columns[0].cards[-1].comments.append(DataComment(comment=u"I agree.",
-                                                                               creation_date=datetime.utcnow(),
-                                                                               author=u2.data))
 
 ###### TODO: Move the defintions below somewhere else ##########
 

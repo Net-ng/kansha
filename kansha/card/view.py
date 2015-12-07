@@ -120,7 +120,7 @@ def render_card_delete(self, h, comp, model):
             h.a.action(comp.answer, 'delete').get('onclick')
         )
         h << h.button(
-            h.i(class_='icon-bin'),
+            h.i(class_='icon-trashcan'),
             _('Delete'),
             class_='btn delete',
             onclick=(
@@ -193,7 +193,7 @@ def render_cardweighteditor(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'action_button')
 def render_cardweighteditor_button(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star-full'), self.weight, class_='btn').action(
+    h << h.a(h.i(class_='icon-star'), self.weight, class_='btn').action(
             comp.call, self, model='edit')
     return h.root
 
@@ -231,7 +231,7 @@ def render_cardweighteditor_edit(self, h, comp, *args):
     if self.weight.value:
         with h.span(class_='badge'):
             label = _('weight')
-            h << h.span(h.i(class_='icon-star-full'), ' ',
+            h << h.span(h.i(class_='icon-star'), ' ',
                         self.weight.value, class_='label',
                         data_tooltip=label)
     return h.root
@@ -318,7 +318,7 @@ def render_members_add_member_overlay(self, h, comp, *args):
 def render_members_many_user(self, h, comp, *args):
     number = len(self.card.members) - self.max_shown_members
     return h.span(
-        h.i(class_='ico-btn icon-user-nb'),
+        h.i(class_='ico-btn icon-user'),
         h.span(number, class_='count'),
         title=_('%s more...') % number)
 

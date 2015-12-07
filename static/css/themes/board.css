@@ -15,6 +15,14 @@ textarea.expanded {
     margin: 5px 0;
 }
 
+.loading {
+    padding: 10px;
+}
+
+.loading img {
+    margin-right: 10px;
+}
+
 /* Fix incopatibility between Knacss and fullcalendar */
 #calendar .fc-day-grid {
     flex: initial;
@@ -290,9 +298,7 @@ textarea.expanded {
     overflow: auto;
     position: relative;
     min-height: 50px;
-    height: calc(100% - 70px);
-    height: -moz-calc(100% - 70px);
-    height: -webkit-calc(100% - 70px);
+    height: calc(100% - 78px);
 }
 
 .list-body h4 {
@@ -354,10 +360,13 @@ textarea.expanded {
 
 .members .add {
     visibility: hidden;
-    margin-top: 2px;
-    width: 30px;
-    height: 30px;
     display: inline-block;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.card .members .count {
+    padding: 0 4px;
 }
 
 .card:hover .members .add,
@@ -801,7 +810,7 @@ div.history th {
 
 .checklists .checklist .btn {
     min-width: 0;
-    height: 29px
+    height: 26px
 }
 
 .checklists .checklist .new-item-form .btn,

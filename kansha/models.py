@@ -18,3 +18,7 @@ from kansha import pickle
 
 class Entity(EntityBase, pickle.UnpicklableMixin):
     __metaclass__ = EntityMeta
+
+    @classmethod
+    def exists(cls, **kw):
+        return cls.query.filter_by(**kw).count() > 0

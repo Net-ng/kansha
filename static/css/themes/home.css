@@ -104,7 +104,8 @@
 
 .board-labels .members .add {
     display: none;
-    overflow: hidden
+    overflow: hidden;
+    margin-right: -15px;
 }
 
 .board-labels .members.highlight .add {
@@ -118,7 +119,7 @@
 }
 
 .board-labels .members .more {
-    margin-right: -5px
+    margin-right: -15px
 }
 
 .board-labels .members .more > a {

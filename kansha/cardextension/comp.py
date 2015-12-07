@@ -19,5 +19,8 @@ class CardExtension(plugin.Plugin):
     def delete(self):
         pass
 
+    def copy(self, parent, additional_data):
+            return self.__class__(parent)
+
     def new_card_position(self, value):
         pass

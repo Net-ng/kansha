@@ -37,9 +37,7 @@ class BoardTest(unittest.TestCase):
         """Create a new board"""
         helpers.set_dummy_context()
         self.assertEqual(DataBoard.query.count(), 0)
-        user = helpers.create_user()
-        helpers.set_context(user)
-        self.boards_manager.create_board(helpers.word(), user)
+        helpers.create_board()
         self.assertEqual(DataBoard.query.filter_by(is_template=False).count(), 1)
 
     def test_add_column_ok(self):
@@ -184,6 +182,29 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(board.data.comments_allowed, 1)
         self.assertEqual(board.data.votes_allowed, 0)
 
+    def test_save_as_template(self):
+        title = helpers.word()
+        description = helpers.word()
+        helpers.set_dummy_context()
+        board = helpers.create_board()
+        user = helpers.create_user()
+        helpers.set_context(user)
+        template = board.save_as_template(title, description, False)
+        self.assertEqual(template.data.title, title)
+        self.assertEqual(template.data.description, description)
+        self.assertTrue(template.data.is_template)
+        self.assertEqual(template.data.visibility, board_module.BOARD_PRIVATE)
+        template = board.save_as_template(title, description, True)
+        self.assertEqual(template.data.visibility, board_module.BOARD_PUBLIC)
+
+    def test_switch_view(self):
+        board = helpers.create_board()
+        self.assertEqual(board.model, 'columns')
+        board.switch_view()
+        self.assertEqual(board.model, 'calendar')
+        board.switch_view()
+        self.assertEqual(board.model, 'columns')
+
     def test_has_member_1(self):
         """Test has member 1"""
         helpers.set_dummy_context()
@@ -291,3 +312,14 @@ class BoardTest(unittest.TestCase):
         board.archive_board()
         self.assertIn(board.data, board_module.Board.get_archived_boards_for(user.data.username, user.data.source).all())
         self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())
+
+    def test_get_by(self):
+        '''Test get_by_uri and get_by_id methods'''
+        helpers.set_dummy_context()
+        orig_board = helpers.create_board()
+        board = self.boards_manager.get_by_id(orig_board.id)
+        self.assertEqual(orig_board.data.id, board.data.id)
+        self.assertEqual(orig_board.data.title, board.data.title)
+        board = self.boards_manager.get_by_uri(orig_board.data.uri)
+        self.assertEqual(orig_board.data.id, board.data.id)
+        self.assertEqual(orig_board.data.title, board.data.title)

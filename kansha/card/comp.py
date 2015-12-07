@@ -59,10 +59,9 @@ class Card(object):
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_data.author = additional_data['author'].data
-        new_obj = self._services(Card, new_data.id, parent, self.card_extensions, data=new_data)
-
-        # TODO extensions
-
+        new_obj = self._services(Card, new_data.id, parent, {}, data=new_data)
+        new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
+                                   for name, extension in self.extensions]
         return new_obj
 
     @property
@@ -334,7 +333,7 @@ class CardMembers(CardExtension):
 
         # members part of the card
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
+            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user'), r.span(_(u'+'), class_='count')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members')
         self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))

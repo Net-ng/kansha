@@ -44,6 +44,7 @@ def render_Board_menu(self, h, comp, *args):
             if security.has_permissions('edit', self):
                 h << self.add_list_overlay
                 h << self.edit_description_overlay
+            if security.has_permissions('manage', self):
                 h << self.save_template_overlay
 
             h << h.a(self.icons['export']).action(self.export)
@@ -225,7 +226,7 @@ def render_Board_archived_item(self, h, comp, *args):
 
         if security.has_permissions('manage', self):
             onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-bin'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
+            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
             h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
     return h.root
 
@@ -689,7 +690,7 @@ def render_board_background_edit(self, h, comp, *args):
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
-                h << h.label((h.i(class_='icon-file-text2'),
+                h << h.label((h.i(class_='icon-file'),
                               _("Choose an image")), class_='btn', for_=input_id)
                 with h.form(class_='hidden'):
                     h << h.script(

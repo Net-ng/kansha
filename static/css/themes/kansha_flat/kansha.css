@@ -315,10 +315,18 @@ a:hover .ico-btn {
 }
 
 /* Members */
-.members .more .count {
+.members .count {
     color: white;
     font-size: 11px;
     font-weight: bold;
+    background-color: #737373;
+    border-radius: 10px;
+    border: 2px solid white;
+    padding: 0px 5px 0 3px;
+}
+
+.members .count:hover {
+    background-color: #5C5C5C;
 }
 
 .pending {

@@ -15,17 +15,22 @@
 # Any reproduction modification or use without prior written
 # approval from PagesJaunes is strictly forbidden.
 #=-
+from datetime import datetime, timedelta
 import random
 import string
+
 from nagare.database import session
 from nagare import local, security
-from kansha.board import boardsmanager
-from kansha.board import comp as board
-from kansha.user import usermanager
-from kansha.security import SecurityManager
+
 from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
 from kansha.services.services_repository import ServicesRepository
 from kansha.services.mail import DummyMailSender
+from kansha.board import models as board_models
+from kansha.card.models import DataCard
+from kansha.vote.models import DataVote
+from kansha.board import boardsmanager
+from kansha.security import SecurityManager
+from kansha.user import usermanager
 
 
 def setup_db(metadata):
@@ -118,6 +123,47 @@ def create_services():
 def create_board():
     """Create boards with default columns and default cards
     """
-    user_test = create_user()
-    _services = create_services()
-    return boardsmanager.BoardsManager('', '', '', {}, None, _services).create_board(word(), user_test, True)
+    user = create_user()
+    services = create_services()
+    boards_manager = boardsmanager.BoardsManager('', '', '', {}, None, services)
+    template = board_models.create_template_todo()
+    template = boards_manager.get_by_id(template.id)
+    board = boards_manager.copy_board(template, user, False)
+    create_default_cards(board.data, user)
+    user.add_board(board, "manager")
+    board.set_title(word())
+    board.load_data()
+    return board
+
+
+def create_default_cards(board, user):
+    user = user.data
+    green = board.get_label_by_title(u'Green')
+    red = board.get_label_by_title(u'Red')
+    column_1 = board.columns[0]
+    cards = [DataCard(title=u"Welcome to your board!", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
+             DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Use color-coded labels for organization",
+                      labels=[green, red], author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Make as many lists as you need!",
+                      votes=[DataVote(user=user)], author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Try dragging cards anywhere.", author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Finished with a card? Delete it.", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(-2)),
+             ]
+    for i, c in enumerate(cards):
+        c.index = i
+    column_1.cards = cards
+    column_1.nb_max_cards = len(cards)
+
+    column_2 = board.columns[1]
+    cards = [DataCard(title=u'This is a card.', author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Click on a card to see what's behind it.", author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"You can add files to a card.", author=user, creation_date=datetime.utcnow()),
+             DataCard(
+                 title=u'To learn more tricks, check out the manual.', author=user, creation_date=datetime.utcnow()),
+             DataCard(title=u"Use as many boards as you want.", author=user, creation_date=datetime.utcnow())]
+    for i, c in enumerate(cards):
+        c.index = i
+    column_2.cards = cards
+    column_2.nb_max_cards = len(cards) + 2
+    session.refresh(board)

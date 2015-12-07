@@ -85,7 +85,6 @@ label {
 
 /* Buttons */
 button, .btn {
-    min-width: 62px;
     width: auto;
     cursor: pointer;
     display: inline-block;
@@ -113,6 +112,10 @@ button:disabled { cursor: inherit }
 i[class^="icon-"]:before {
 	display: inline-block;
 	text-decoration: none;
+}
+
+i.icon {
+    vertical-align: text-bottom;
 }
 
 .hidden {
@@ -501,10 +504,10 @@ i[class^="icon-"]:before {
     margin: 0
 }
 
-.members .more .count {
+.members .count {
     position: relative;
     left: -11px;
-    top: -1px;
+    top: 1px;
 }
 
 .unselectable {

@@ -18,8 +18,8 @@ from nagare import component, security, var
 from kansha import notifications
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha.authentication.database import validators
 from kansha.cardextension import CardExtension
+from kansha.authentication.database import validators
 
 from .models import DataGallery, DataAsset
 

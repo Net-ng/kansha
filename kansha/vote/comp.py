@@ -10,7 +10,7 @@
 
 from nagare import database, security
 
-from kansha.services.components_repository import CardExtension
+from kansha.cardextension import CardExtension
 
 from .models import DataVote
 

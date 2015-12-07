@@ -62,7 +62,6 @@ class Card(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_data.author = additional_data['author'].data
         new_obj = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
         new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
                                    for name, extension in self.extensions]

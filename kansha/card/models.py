@@ -34,7 +34,7 @@ class DataCard(Entity):
     checklists = OneToMany('DataChecklist', order_by="index")
     members = ManyToMany('DataUser')
     cover = OneToOne('DataAsset', inverse="cover")
-    author = ManyToOne('DataUser', inverse="my_cards")
+    # author = ManyToOne('DataUser', inverse="my_cards")
     creation_date = Field(DateTime)
     due_date = Field(Date)
     weight = Field(Unicode(255), default=u'')
@@ -48,17 +48,16 @@ class DataCard(Entity):
         return new_data
 
     @classmethod
-    def create_card(cls, column, title, user):
+    def create_card(cls, column, title):
         """Create new column
 
         In:
             - ``column`` -- DataColumn, father of the column
             - ``title`` -- title of the card
-            - ``user`` -- DataUser, author of the card
         Return:
             - created DataCard instance
         """
-        new_card = cls(title=title, author=user,
+        new_card = cls(title=title,
                        creation_date=datetime.datetime.utcnow())
         column.cards.append(new_card)
         return new_card

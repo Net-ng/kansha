@@ -62,7 +62,7 @@ class DataColumn(Entity):
         return col
 
     def create_card(self, title, user):
-        card = DataCard(title=title, author=user, creation_date=datetime.now())
+        card = DataCard(title=title, creation_date=datetime.now())
         self.cards.append(card)
         return card
 

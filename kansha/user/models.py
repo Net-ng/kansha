@@ -99,7 +99,6 @@ class DataUser(Entity):
         creator=lambda board: DataBoardManager(board=board))
     last_board = OneToOne('DataBoard', inverse='last_users')
     cards = ManyToMany('DataCard', inverse='members', lazy='dynamic')
-    my_cards = OneToMany('DataCard', inverse='author')
     history = OneToMany('DataHistory')
     votes = OneToMany('DataVote')
 

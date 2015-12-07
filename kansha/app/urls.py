@@ -11,31 +11,31 @@
 from nagare import presentation, security, log, component
 from nagare.i18n import _
 
-from .. import models
-from .comp import App, WSGIApp
-from ..exceptions import NotFound
-from ..authentication.database import forms
-from ..user.usermanager import UserManager
-from ..gallery import comp as gallery, models as gallery_models
+from kansha import models
+from kansha.exceptions import NotFound
+from kansha.authentication.database import forms
+from kansha.user.usermanager import UserManager
+from kansha.gallery import comp as gallery, models as gallery_models
 
+from .comp import MainTask, WSGIApp
 
 def logout():
     if security.get_user() is not None:
         security.get_manager().logout()
 
 
-@presentation.init_for(App, "len(url) == 2")
+@presentation.init_for(MainTask, "len(url) == 2")
 def init_app__board(self, url, comp, http_method, request):
-    kansha = self.task().app
+    kansha = self.app
     kansha.select_board_by_uri(url[1])
 
 
-@presentation.init_for(App, "url[0] == 'logout'")
+@presentation.init_for(MainTask, "url[0] == 'logout'")
 def init_app__logout(self, url, comp, http_method, request):
     logout()
 
 
-@presentation.init_for(App)
+@presentation.init_for(MainTask)
 def init_app(self, url, comp, http_method, request):
     """
     Forward everything to the MainTask to maintain compatibility and catch
@@ -45,7 +45,7 @@ def init_app(self, url, comp, http_method, request):
     raise NotFound()
 
 
-@presentation.init_for(App, "len(url) == 3 and url[0] == 'register'")
+@presentation.init_for(MainTask, "len(url) == 3 and url[0] == 'register'")
 def init_app__register(self, url, comp, http_method, request):
     register = self._services(
         forms.RegistrationTask,
@@ -57,7 +57,7 @@ def init_app__register(self, url, comp, http_method, request):
     comp.becomes(register).on_answer(lambda v: logout())
 
 
-@presentation.init_for(App, "len(url) == 3 and url[0] == 'new_mail'")
+@presentation.init_for(MainTask, "len(url) == 3 and url[0] == 'new_mail'")
 def init_app__new_mail(self, url, comp, http_method, request):
     username, token = (url[1], url[2])
     get_user = lambda: UserManager.get_by_username(username)
@@ -94,7 +94,7 @@ def init_app__new_mail(self, url, comp, http_method, request):
         )
 
 
-@presentation.init_for(App, "len(url) == 3 and url[0] == 'reset'")
+@presentation.init_for(MainTask, "len(url) == 3 and url[0] == 'reset'")
 def init_app__reset(self, url, comp, http_method, request):
     reset = self._services(
         forms.PasswordResetTask,
@@ -106,7 +106,7 @@ def init_app__reset(self, url, comp, http_method, request):
     comp.becomes(reset).on_answer(lambda v: logout())
 
 
-@presentation.init_for(App, "len(url) >= 3 and url[0] == 'services'")
+@presentation.init_for(MainTask, "len(url) >= 3 and url[0] == 'services'")
 def init_app__assets(self, url, comp, http_method, request):
     if url[1] in self._services:
         component.Component(self._services[url[1]]).init(url[2:], http_method, request)

@@ -13,9 +13,11 @@ from datetime import datetime
 from elixir import using_options
 from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean
+from sqlalchemy.ext.orderinglist import ordering_list
+
 from nagare.database import session
 
-from ..card.models import DataCard
+from kansha.card.models import DataCard
 from kansha.models import Entity
 
 
@@ -27,7 +29,8 @@ class DataColumn(Entity):
     index = Field(Integer)
     nb_max_cards = Field(Integer)
     archive = Field(Boolean, default=False)
-    cards = OneToMany('DataCard', order_by='index', cascade='delete')
+    cards = OneToMany('DataCard', order_by='index',  # cascade='delete',
+                      collection_class=ordering_list('index'))
     board = ManyToOne('DataBoard', colname='board_id')
 
     def copy(self, parent):
@@ -60,9 +63,8 @@ class DataColumn(Entity):
         return col
 
     def create_card(self, title, user):
-        card = DataCard(title=title, author=user, column=self, creation_date=datetime.now())
-        session.add(card)
-        session.flush()
+        card = DataCard(title=title, author=user, creation_date=datetime.now())
+        self.cards.append(card)
         return card
 
     @classmethod
@@ -83,10 +85,6 @@ class DataColumn(Entity):
         q = q.filter(cls.index >= index)
         q = q.filter(cls.board == board)
         q.update({'index': cls.index - 1})
-
-    def reorder(self):
-        for i, card in enumerate(self.cards):
-            card.index = i
 
     def get_cards_count(self):
         q = DataCard.query.filter(DataCard.column_id == self.id)

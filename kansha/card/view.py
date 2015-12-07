@@ -20,13 +20,12 @@ from .comp import Card, CardMembers, NewCard
 @presentation.render_for(Card, 'no_dnd')
 def render_card_no_dnd(self, h, comp, *args):
     """No DnD wrapping of the card"""
-    h << comp.render(h.AsyncRenderer())
-    return h.root
+    return comp.render(h.AsyncRenderer())
 
 
 @presentation.render_for(Card, 'new')
 def render_card_new(self, h, comp, *args):
-    h << comp.becomes(self, None)
+    h << comp.becomes(model=None)
     h << h.script(
         "card = YAHOO.util.Dom.get(%s);"
         "list = YAHOO.util.Dom.getAncestorByClassName(card, 'list-body');"
@@ -40,7 +39,7 @@ def render_card_new(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card"""
 
-    extensions = [extension for name, extension in self.card_extensions]
+    extensions = [extension for name, extension in self.extensions]
 
     card_id = h.generate_id()
 
@@ -104,12 +103,12 @@ def render_card_edit(self, h, comp, *args):
                 h << self.column.get_title()  # FIXME: no direct access to column
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
-                for name, extension in self.card_extensions:
+                for name, extension in self.extensions:
                     h << h.div(extension.render(h.AsyncRenderer()), class_=name)
             with h.div(class_='card-actions'):
                 with h.form:
                     h << comp.render(h, 'delete-action')
-                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.card_extensions]
+                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
     return h.root
 
 
@@ -199,24 +198,30 @@ def render_cardweighteditor_button(self, h, comp, *args):
     return h.root
 
 
+def answer(editor, comp):
+    if editor.commit():
+        comp.answer()
+
+
 @presentation.render_for(CardWeightEditor, 'edit')
 def render_cardweighteditor_edit(self, h, comp, *args):
-    def answer():
-        if self.commit():
-            comp.answer()
 
     if self.board.weighting_cards == self.WEIGHTING_FREE:
+        id_ = h.generate_id('weight')
         with h.form:
-            h << h.input(value=self.weight(), type='text').action(self.weight).error(self.weight.error)
-            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
-
+            h << h.input(
+                value=self.weight(),
+                type='text',
+                id_=id_).action(self.weight).error(self.weight.error)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
+            h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
     elif self.board.weighting_cards == self.WEIGHTING_LIST:
         with h.form:
             with h.div(class_='btn select'):
                 with h.select.action(self.weight):
                     for value in self.board.weights.split(','):
                         h << h.option(value, value=value).selected(self.weight)
-            h << h.button(_('Save'), class_='btn btn-primary').action(answer)
+            h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
 
     return h.root
 
@@ -254,11 +259,8 @@ def render_card_members(self, h, comp, *args):
 
 @presentation.render_for(CardMembers, 'badge')
 def render_members_badge(self, h, comp, model):
-    if security.has_permissions('edit', self.card):
-        h << comp.render(h, 'action')
-    else:
-        h << comp.render(h, 'members_read_only')
-    return h.root
+    model = 'action' if security.has_permissions('edit', self.card) else 'members_read_only'
+    return comp.render(h, model)
 
 
 @presentation.render_for(CardMembers, model='members_read_only')
@@ -271,7 +273,7 @@ def render_card_members_read_only(self, h, comp, *args):
     """
     with h.div(class_='members'):
         for m in self.members[:self.max_shown_members]:
-            member = m.render(h, "avatar")
+            member = m.render(h, 'avatar')
             member.attrib.update({'class': 'miniavatar unselectable'})
             h << member
         if len(self.members) > self.max_shown_members:
@@ -279,13 +281,13 @@ def render_card_members_read_only(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(CardMembers, "members_list_overlay")
+@presentation.render_for(CardMembers, 'members_list_overlay')
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
     with h.form:
         with h.div(class_="members"):
-            if security.has_permissions('edit', self):
+            if security.has_permissions('edit', self.card):
                 h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
             else:
                 h << [m.render(h, "avatar") for m in self.members]
@@ -297,19 +299,28 @@ def _add_members(member_ext, members):
     return "YAHOO.kansha.reload_cards['%s']();YAHOO.kansha.app.hideOverlay();" % member_ext.card.id
 
 
-@presentation.render_for(CardMembers, "add_member_overlay")
+@presentation.render_for(CardMembers, 'add_member_overlay')
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Add members'))
     if self.favorites:
-        with h.div(class_="favorites"):
+        with h.div(class_='favorites'):
             h << h.h3(_('Suggestions'))
             with h.ul:
                 for favorite in self.favorites:
                     h << h.li(favorite.on_answer(lambda members: _add_members(self, members)))
-    with h.div(class_="members search"):
+    with h.div(class_='members search'):
         h << self.new_member.on_answer(lambda members: _add_members(self, members))
     return h.root
+
+
+@presentation.render_for(CardMembers, 'more_users')
+def render_members_many_user(self, h, comp, *args):
+    number = len(self.card.members) - self.max_shown_members
+    return h.span(
+        h.i(class_='ico-btn icon-user-nb'),
+        h.span(number, class_='count'),
+        title=_('%s more...') % number)
 
 
 #####
@@ -350,8 +361,8 @@ def render_new_card_add(self, h, comp, *args):
 @peak.rules.when(ajax.py2js, (Card,))
 def py2js(value, h):
     due_date = ajax.py2js(value.due_date(), h)
-    if due_date:
-        return u'{title:%s, editable:true, allDay: true, start: %s}' % (
-            ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)
-    else:
+    if not due_date:
         return None
+
+    return u'{title:%s, editable:true, allDay: true, start: %s}' % (
+            ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)

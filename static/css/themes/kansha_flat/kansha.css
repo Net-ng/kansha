@@ -267,10 +267,12 @@ a:hover .ico-btn {
 
 .overlay .members.search .yui-ac-bd li.yui-ac-highlight {
     background: #EAEAEA;
+    color: inherit;
 }
 
 .overlay .members.search .yui-ac-bd li:hover {
-    background: #eaeaea;
+    background: #EAEAEA;
+    color: inherit;
 }
 
 .overlay.board-labels-overlay {

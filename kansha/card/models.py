@@ -71,27 +71,6 @@ class DataCard(Entity):
         return new_card
 
     @classmethod
-    def delete_card(cls, card):
-        """Delete card
-
-        Delete a given card and re-index other cards
-
-        In:
-            - ``card`` -- DataCard instance to delete
-        """
-        index = card.index
-        column = card.column
-        card.delete()
-        session.flush()
-        # legacy databases may be broken…
-        if index is None:
-            return
-        q = cls.query
-        q = q.filter(cls.index >= index)
-        q = q.filter(cls.column == column)
-        q.update({'index': cls.index - 1})
-
-    @classmethod
     def get_all(cls):
         query = cls.query.options(subqueryload('labels'), subqueryload('comments'))
         return query

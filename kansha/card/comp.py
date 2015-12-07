@@ -13,9 +13,9 @@ import dateutil.parser
 from nagare.i18n import _
 from nagare import (component, log, security, editor, validator)
 
+from kansha import title
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha import title
 from kansha import exceptions, notifications
 from kansha.cardextension import CardExtension
 
@@ -52,19 +52,18 @@ class Card(object):
         self.column = column
         self._services = services_service
         self._data = data
-        self.card_extensions = tuple()
-        self.card_repo = card_extensions
-        self.reload(data if data else self.data)
+        self.extensions = ()
+        self.card_extensions = card_extensions
+        self.refresh()
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_data.author = additional_data['author'].data
-        new_obj = self._services(Card, new_data.id, parent, self.card_repo, data=new_data)
+        new_obj = self._services(Card, new_data.id, parent, self.card_extensions, data=new_data)
 
         # TODO extensions
 
         return new_obj
-
 
     @property
     def must_reload_search(self):
@@ -77,13 +76,13 @@ class Card(object):
     def board(self):
         return self.column.board
 
-    def reload(self, data=None):
+    def refresh(self):
         """Refresh the sub components
         """
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.card_extensions = [(name, component.Component(self._services(extension, self)))
-                                for name, extension in self.card_repo.items()]
+        self.extensions = [(name, component.Component(self._services(extension, self)))
+                                for name, extension in self.card_extensions.items()]
 
     @property
     def data(self):
@@ -117,9 +116,9 @@ class Card(object):
 
     def delete(self):
         """Delete itself"""
-        for __, extension in self.card_extensions:
+        for __, extension in self.extensions:
             extension().delete()
-        DataCard.delete_card(self.data)
+        self.data.delete()
 
     def move_card(self, card_index, column):
         """Move card
@@ -138,7 +137,7 @@ class Card(object):
         Dropped on new date (calendar view).
         """
         start = dateutil.parser.parse(request.GET['start']).date()
-        for __, extension in self.card_extensions:
+        for __, extension in self.extensions:
             extension().new_card_position(start)
 
     ################################
@@ -147,26 +146,25 @@ class Card(object):
 
     # Members
 
-    def get_authorized_users(self):
+    def get_available_users(self):
         """Return user's which are authorized to be add on this card
 
         Return:
             - a set of user (UserData instance)
         """
-        return set(self.column.get_authorized_users()) | set(self.column.get_pending_users()) - set(self.data.members)
+        return set(self.column.get_available_users()) | set(self.column.get_pending_users()) - set(self.data.members)
 
     def add_member(self, new_data_member):
         data = self.data
         added = False
         if (new_data_member not in data.members and
-                new_data_member in self.get_authorized_users()):
+                new_data_member in self.get_available_users()):
             data.members.append(new_data_member)
             added = True
         return added
 
     def remove_member(self, data_member):
-        data = self.data
-        data.members.remove(data_member)
+        self.data.members.remove(data_member)
 
     @property
     def members(self):
@@ -183,10 +181,15 @@ class Card(object):
             - list of favorites (usernames)
         """
         # to be optimized later if still exists
+        member_usernames = set(member.username for member in self.members)
+        # FIXME: don't reference parent
+        board_user_stats = [(nb_cards, username) for username, nb_cards in self.column.favorites.iteritems()]
+        board_user_stats.sort(reverse=True)
+        # Take the 5 most popular that are not already affected to this card
         self._favorites = [username
-                           for (username, _) in sorted(self.column.favorites.items(), key=lambda e:-e[1])[:5]
-                           if username not in [member.username for member in self.members]]
-        return self._favorites
+                           for (__, username) in board_user_stats
+                           if username not in member_usernames]
+        return self._favorites[:5]
 
     def remove_board_member(self, member):
         """Member removed from board
@@ -198,7 +201,7 @@ class Card(object):
             - ``member`` -- Board Member instance to remove
         """
         self.data.remove_board_member(member)
-        self.reload()  # brute force solution until we have proper communication between extensions
+        self.refresh()  # brute force solution until we have proper communication between extensions
 
     # Cover methods
 
@@ -309,10 +312,11 @@ class CardWeightEditor(editor.Editor, CardExtension):
         return self.target.board
 
     def commit(self):
+        success = False
         if self.is_validated(self.fields):
             super(CardWeightEditor, self).commit(self.fields)
-            return True
-        return False
+            success = True
+        return success
 
 
 class CardMembers(CardExtension):
@@ -326,7 +330,7 @@ class CardMembers(CardExtension):
         Card is a card business object.
         """
 
-        self.card = card
+        super(CardMembers, self).__init__(card)
 
         # members part of the card
         self.overlay_add_members = component.Component(
@@ -336,20 +340,14 @@ class CardMembers(CardExtension):
         self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in card.members]
 
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: self.many_user_render(r, len(card.members) - self.max_shown_members),
-                                                                   lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
-                                                                   dynamic=False, cls='card-overlay'))
+        self.see_all_members = component.Component(
+            overlay.Overlay(lambda r: component.Component(self).render(r, model='more_users'),
+                            lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
+                            dynamic=False, cls='card-overlay'))
 
     def autocomplete_method(self, value):
         """ """
-        return [u for u in usermanager.UserManager.search(value) if u in self.card.get_authorized_users()]
-
-    @staticmethod
-    def many_user_render(h, number):
-        return h.span(
-            h.i(class_='ico-btn icon-user-nb'),
-            h.span(number, class_='count'),
-            title=_("%s more...") % number)
+        return [u for u in usermanager.UserManager.search(value) if u in self.card.get_available_users()]
 
     @property
     def favorites(self):
@@ -371,24 +369,9 @@ class CardMembers(CardExtension):
             - JS code, reload card and hide overlay
         """
         members = []
-        if isinstance(emails, (str, unicode)):
-            emails = [e.strip() for e in emails.split(',') if e.strip() != '']
         # Get all users with emails
-        for email in emails:
-            new_member = usermanager.UserManager.get_by_email(email)
-            if new_member:
-                members.append(new_member)
-        self._add_members(members)
-
-    def _add_members(self, new_data_members):
-        """Add members to a card
-
-        In:
-            - ``new_data_members`` -- all UserData instance to attach to card
-        Return:
-            - list of new DataMembers added
-        """
-        for new_data_member in new_data_members:
+        members = filter(None, map(usermanager.UserManager.get_by_email, emails))
+        for new_data_member in members:
             self.add_member(new_data_member)
             #values = {'user_id': new_data_member.username, 'user': new_data_member.fullname, 'card': self.data.title}
             #notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_add_member', values)
@@ -408,13 +391,13 @@ class CardMembers(CardExtension):
     def remove_member(self, username):
         """Remove member username from card member"""
         data_member = usermanager.UserManager.get_by_username(username)
-        if data_member:
-            log.debug('Removing %s from card %s' % (username, self.card.id))
-            self.card.remove_member(data_member)
-            for member in self.members:
-                if member().username == username:
-                    self.members.remove(member)
-                    #values = {'user_id': member().username, 'user': member().data.fullname, 'card': data.title}
-                    #notifications.add_history(self.column.board.data, data, security.get_user().data, u'card_remove_member', values)
-        else:
+        if not data_member:
             raise exceptions.KanshaException(_("User not found : %s" % username))
+
+        log.debug('Removing %s from card %s' % (username, self.card.id))
+        self.card.remove_member(data_member)
+        for member in self.members:
+            if member().username == username:
+                self.members.remove(member)
+                #values = {'user_id': member().username, 'user': member().data.fullname, 'card': data.title}
+                #notifications.add_history(self.column.board.data, data, security.get_user().data, u'card_remove_member', values)

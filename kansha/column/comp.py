@@ -147,9 +147,9 @@ class Column(object):
             if isinstance(c(), card.Card):
                 c().remove_board_member(member)
 
-    def get_authorized_users(self):
+    def get_available_users(self):
         """Return users authorized to be add on this column"""
-        return set(self.board.get_authorized_users())
+        return set(self.board.get_available_users())
 
     def get_pending_users(self):
         return set(self.board.get_pending_users())
@@ -184,12 +184,8 @@ class Column(object):
         data_column = self.data
         card = data_column.cards.pop(card_index)
         data_column.cards.insert(index, card)
-        self.reorder()
         card = self.cards.pop(card_index)
         self.cards.insert(index, card)
-
-    def reorder(self):
-        self.data.reorder()
 
     def remove_card(self, card_id):
         found = False
@@ -200,7 +196,6 @@ class Column(object):
         if not found:
             raise ValueError(u'Card has been deleted or does not belong to this list anymore')
         removed_card = self.cards.pop(card_index)
-        self.reorder()
         return removed_card
 
     def insert_card(self, card, index):
@@ -210,7 +205,6 @@ class Column(object):
         c = data_column.cards
         c.remove(card().data)
         c.insert(index, card().data)
-        self.reorder()
 
     def get_available_labels(self):
         return self.board.labels
@@ -291,7 +285,7 @@ class Column(object):
         scard = fts_schema.Card.from_model(c().data)
         self.search_engine.update_document(scard)
         self.search_engine.commit()
-        c().reload()
+        c().refresh()
         self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):

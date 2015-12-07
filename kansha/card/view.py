@@ -292,6 +292,11 @@ def render_members_members_list_overlay(self, h, comp, *args):
     return h.root
 
 
+def _add_members(member_ext, members):
+    member_ext.add_members(members)
+    return "YAHOO.kansha.reload_cards['%s']();YAHOO.kansha.app.hideOverlay();" % member_ext.card.id
+
+
 @presentation.render_for(CardMembers, "add_member_overlay")
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
@@ -300,9 +305,10 @@ def render_members_add_member_overlay(self, h, comp, *args):
         with h.div(class_="favorites"):
             h << h.h3(_('Suggestions'))
             with h.ul:
-                h << h.li(self.favorites)
+                for favorite in self.favorites:
+                    h << h.li(favorite.on_answer(lambda members: _add_members(self, members)))
     with h.div(class_="members search"):
-        h << self.new_member
+        h << self.new_member.on_answer(lambda members: _add_members(self, members))
     return h.root
 
 

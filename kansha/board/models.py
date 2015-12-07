@@ -269,12 +269,6 @@ class DataBoard(Entity):
         session.flush()
         return label
 
-    def save_as_template(self, title, description, visibility):
-        self.title = title
-        self.description = description
-        self.is_template = True
-        self.visibility = visibility
-
 
 # Populate
 DEFAULT_LABELS = (

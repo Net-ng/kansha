@@ -35,7 +35,6 @@ class SimpleAssetsManager(AssetsManager):
     def copy(self, file_id):
         data, metadata = self.load(file_id)
         new_file_id = self.save(data, metadata=metadata)
-        data, metadata = self.load(file_id)
         self.save(data, new_file_id, metadata)
         self.copy_cover(file_id, new_file_id)
         return new_file_id

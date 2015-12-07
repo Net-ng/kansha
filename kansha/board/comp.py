@@ -205,7 +205,10 @@ class Board(object):
     def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
-        template.data.save_as_template(title, description, BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        template.mark_as_template()
+        template.set_title(title)
+        template.set_description(description)
+        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
         return template
 
     def switch_view(self):
@@ -296,6 +299,12 @@ class Board(object):
             - the board title
         """
         return self.data.title
+
+    def set_visibility(self, visibility):
+        self.data.visibility = visibility
+
+    def mark_as_template(self):
+        self.data.is_template = True
 
     def count_columns(self):
         """Return the number of columns

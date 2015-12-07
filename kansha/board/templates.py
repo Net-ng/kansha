@@ -33,12 +33,14 @@ class SaveTemplateEditor(object):
         if self.is_validated():
             comp.answer(True)
 
-    def close(self, comp):
-        comp.answer(False)
-        return 'YAHOO.kansha.app.hideOverlay()'
-
     def save(self):
         self.board.save_as_template(self.title.value, self.description.value, self.shared.value)
+
+
+def close_overlay(comp):
+    comp.answer(False)
+    return 'YAHOO.kansha.app.hideOverlay()'
+
 
 @presentation.render_for(SaveTemplateEditor)
 def render_SaveTemplateEditor(self, h, comp, *args):
@@ -62,7 +64,7 @@ def render_SaveTemplateEditor(self, h, comp, *args):
         with h.div(class_='buttons'):
             h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(self.commit, comp)
             h << ' '
-            h << h.button(_('Cancel'), class_='btn').action(remote.Action(lambda: self.close(comp)))
+            h << h.button(_('Cancel'), class_='btn').action(remote.Action(lambda: close_overlay(comp)))
     return h.root
 
 
@@ -79,7 +81,7 @@ def render_SaveTemplateEditor_loading(self, h, comp, *args):
 
 @presentation.render_for(SaveTemplateEditor, 'saved')
 def render_SaveTemplateEditor_saved(self, h, comp, *args):
-    close = remote.Action(lambda: self.close(comp))
+    close = remote.Action(lambda: close_overlay(comp))
     close = h.input(type='radio').action(close).get('onclick')
     h << h.script('''YAHOO.kansha.app.onHideOverlay(function() { %s; });''' % close)
     with h.div(class_='success'):

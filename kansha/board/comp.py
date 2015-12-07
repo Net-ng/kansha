@@ -30,7 +30,7 @@ from kansha.authentication.database import forms
 from kansha import exceptions, notifications, validator
 
 from .models import DataBoard, DataBoardMember
-from .save_template import SaveTemplateTask
+from .templates import SaveTemplateTask
 
 # Board visibility
 BOARD_PRIVATE = 0

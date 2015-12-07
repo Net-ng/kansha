@@ -194,23 +194,18 @@ class Board(object):
             new_obj.labels.append(new_label)
 
         cols = [col() for col in self.columns if not col().is_archive]
-        index = 0
         for column in cols:
             new_col = column.copy(new_obj, additional_data)
             new_obj.columns.append(component.Component(new_col))
-            index += 1
 
-        new_obj.archive_column = new_obj.create_column(index=index, title=_(u'Archive'), archive=True)
+        new_obj.archive_column = new_obj.create_column(index=len(cols), title=_(u'Archive'), archive=True)
 
         return new_obj
 
     def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
-        template.data.title = title
-        template.data.description = description
-        template.data.is_template = True
-        template.data.visibility = BOARD_PRIVATE if not shared else BOARD_PUBLIC
+        template.data.save_as_template(title, description, BOARD_PRIVATE if not shared else BOARD_PUBLIC)
         return template
 
     def switch_view(self):

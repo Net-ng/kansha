@@ -13,7 +13,7 @@ import random
 from nagare import component, var
 
 from kansha.toolbox import overlay
-from kansha.services.components_repository import CardExtension
+from kansha.cardextension import CardExtension
 
 from .models import DataLabel
 
@@ -88,7 +88,7 @@ class CardLabels(CardExtension):
         In:
           - ``card`` -- the card object (Card instance)
         """
-        self.card = card
+        super(CardLabels, self).__init__(card)
         self.comp_id = str(random.randint(10000, 100000))
         self.labels = [l.id for l in card.get_datalabels()]
         self._comp = component.Component(self)

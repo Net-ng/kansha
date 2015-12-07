@@ -7,18 +7,18 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from nagare.i18n import _, _N, format_datetime
+from nagare import ajax, presentation, security, var
 
 from .comp import Comments, Comment, Commentlabel
-from nagare import ajax, presentation, security, var
-from nagare.i18n import _, _N, format_datetime
 
 
 @presentation.render_for(Comments)
 def render(self, h, comp, *args):
     """Render card comments"""
     with h.div(class_='card-extension-comments'):
-        h << h.div(comp.render(h, "badge"), class_="nbItems")
-        h << comp.on_answer(self.add).render(h, "form") << h.hr
+        h << h.div(comp.render(h, "badge"), class_='nbItems')
+        h << comp.on_answer(self.add).render(h, 'form') << h.hr
         h << self.comments
 
     return h.root

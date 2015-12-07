@@ -17,7 +17,7 @@ from kansha.toolbox import overlay
 from kansha.user import usermanager
 from kansha import title
 from kansha import exceptions, notifications
-from kansha.services.components_repository import CardExtension
+from kansha.cardextension import CardExtension
 
 from .models import DataCard
 
@@ -332,7 +332,7 @@ class CardMembers(CardExtension):
         self.overlay_add_members = component.Component(
             overlay.Overlay(lambda r: r.i(class_='ico-btn icon-user-plus'),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
-        self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members').on_answer(self.add_members)
+        self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members')
         self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
                         for member in card.members]
 
@@ -358,7 +358,7 @@ class CardMembers(CardExtension):
         Return:
             - list of favorites (User instances) wrappend on component
         """
-        self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend").on_answer(self.add_members)
+        self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend")
                            for username in self.card.favorites]
         return self._favorites
 
@@ -379,7 +379,6 @@ class CardMembers(CardExtension):
             if new_member:
                 members.append(new_member)
         self._add_members(members)
-        return "YAHOO.kansha.reload_cards['%s']();YAHOO.kansha.app.hideOverlay();" % self.card.id
 
     def _add_members(self, new_data_members):
         """Add members to a card

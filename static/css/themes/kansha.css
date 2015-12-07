@@ -358,6 +358,15 @@ i[class^="icon-"]:before {
     padding: 0
 }
 
+.overlay .favorites li {
+    display: inline;
+}
+
+.overlay .favorites li a:hover {
+    background: none !important;
+    padding-left: 0
+}
+
 .overlay .members.search .yui-ac-input {
     width: calc(100% - 80px)
 }
@@ -387,10 +396,6 @@ i[class^="icon-"]:before {
     float: left
 }
 
-.overlay .favorites li a:hover {
-    background: none !important;
-    padding-left: 0
-}
 .overlay.board-labels-overlay .search {
     position: static
 }

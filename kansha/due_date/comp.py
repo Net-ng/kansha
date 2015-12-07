@@ -12,27 +12,27 @@ from datetime import date
 from nagare import component
 
 from kansha.toolbox import calendar_widget
-from kansha.services.components_repository import CardExtension
+from kansha.cardextension import CardExtension
 
 
 class DueDate(CardExtension):
 
     LOAD_PRIORITY = 60
 
-    def __init__(self, parent):
+    def __init__(self, card):
         """Initialization
 
         In:
-            - ``parent`` -- the object parent
+            - ``card`` -- the object card
         """
-        self.parent = parent
-        self.value = parent.due_date
+        super(DueDate, self).__init__(card)
+        self.value = card.due_date
         self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
         self.calendar = component.Component(self.calendar)
 
     def set_value(self, value):
         '''Set the value to a new date (or None)'''
-        self.parent.due_date = value
+        self.card.due_date = value
         self.value = value
 
     def new_card_position(self, value):

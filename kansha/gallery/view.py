@@ -45,11 +45,10 @@ def render(self, h, comp, *args):
             h << comp.render(h, model='badge')
         with h.div(id="card-gallery"):
             if security.has_permissions('edit', self):
-                for overlay in self.overlays:
-                    h << overlay
+                h << self.overlays
             else:
                 for asset in self.assets:
-                    h << asset.render(h, model="anonymous")
+                    h << asset.render(h, model='anonymous')
 
     return h.root
 

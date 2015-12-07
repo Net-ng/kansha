@@ -8,8 +8,8 @@
 # this distribution.
 #--
 
-from nagare import presentation, var, security, ajax
 from nagare.i18n import _
+from nagare import presentation, var, security, ajax
 
 from .comp import CardDescription
 

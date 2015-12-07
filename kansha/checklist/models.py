@@ -8,7 +8,16 @@
 # this distribution.
 #--
 
-from elixir import using_options, Field, OneToMany, ManyToOne, Integer, Unicode, Boolean
+from elixir import Boolean
+from elixir import Field
+from elixir import Integer
+from elixir import ManyToOne
+from elixir import OneToMany
+from elixir import Unicode
+from elixir import using_options
+from sqlalchemy.ext.orderinglist import ordering_list
+
+from nagare import database
 
 from kansha.models import Entity
 
@@ -17,7 +26,8 @@ class DataChecklist(Entity):
     using_options(tablename='checklists')
 
     title = Field(Unicode(255))
-    items = OneToMany('DataChecklistItem', order_by='index', inverse='checklist')
+    items = OneToMany('DataChecklistItem', order_by='index', inverse='checklist',
+                      collection_class=ordering_list('index'))
     card = ManyToOne('DataCard')
     author = ManyToOne('DataUser')
     index = Field(Integer)
@@ -36,10 +46,23 @@ class DataChecklist(Entity):
             titles.insert(0, self.title)
         return u'\n'.join(titles)
 
-    def reorder_items(self):
-        for i, item in enumerate(self.items):
-            item.index = i
+    def add_item_from_str(self, text):
+        item = DataChecklistItem.new_from_str(text)
+        return self.add_item(item)
 
+    def add_item(self, item):
+        self.items.append(item)
+        return item
+
+    def insert_item(self, index, item):
+        self.items.insert(index, item)
+
+    def remove_item(self, item):
+        self.items.remove(item)
+
+    def delete_item(self, item):
+        self.remove_item(item)
+        item.delete()
 
 
 class DataChecklistItem(Entity):
@@ -49,3 +72,9 @@ class DataChecklistItem(Entity):
     title = Field(Unicode(255))
     done = Field(Boolean)
     checklist = ManyToOne('DataChecklist')
+
+    @classmethod
+    def new_from_str(cls, text):
+        item = cls(title=text.strip())
+        database.session.flush()
+        return item

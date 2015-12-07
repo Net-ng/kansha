@@ -33,7 +33,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 
 @presentation.render_for(Checklists, 'action')
 def render_Checklists_button(self, h, comp, model):
-    if security.has_permissions('checklist', self.parent):
+    if security.has_permissions('checklist', self.card):
         action = ajax.Update(render=lambda r: comp.render(r, model=None),
                              component_to_update='clist' + self.comp_id,
                              action=self.add_checklist)
@@ -45,50 +45,28 @@ def render_Checklists_button(self, h, comp, model):
 
 @presentation.render_for(Checklists)
 def render_Checklists(self, h, comp, model):
-    with h.div(id_='clist'+self.comp_id):
-        if security.has_permissions('checklist', self.parent):
+    h.head.javascript_url('checklists/js/checklists.js')
+    with h.div(id_='clist' + self.comp_id):
+        if security.has_permissions('checklist', self.card):
 
             # On drag and drop
-            action = ajax.Update(action=self.reorder)
-            action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
+            action = h.a.action(ajax.Update(action=self.reorder, with_request=True)).get('onclick').replace('return', '')
+            action = action.replace('")', '&data="+ YAHOO.lang.JSON.stringify(data))')
             h.head.javascript(h.generate_id(), '''function reorder_checklists(data) {
-                nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
-            }''' % ajax.py2js(action))
+                %s;
+            }''' % action)
 
             # On items drag and drop
-            action = ajax.Update(action=self.reorder_items)
-            action = '%s;_a;%s=' % (h.add_sessionid_in_url(sep=';'), action._generate_replace(1, h))
+            action = h.a.action(ajax.Update(action=self.reorder_items, with_request=True)).get('onclick').replace('return', '')
+            action = action.replace('")', '&data="+ YAHOO.lang.JSON.stringify(data))')
             h.head.javascript(h.generate_id(), '''function reorder_checklists_items(data) {
-                    nagare_getAndEval(%s + YAHOO.lang.JSON.stringify(data));
-                }''' % ajax.py2js(action))
+                    %s;
+                }''' % action)
 
             id_ = h.generate_id()
             with h.div(class_='checklists', id=id_):
                 for index, clist in enumerate(self.checklists):
                     h << clist.on_answer(lambda v, index=index: self.delete_checklist(index))
-            h << h.script("""$(function() {
-            $("#" + %(id)s).sortable({
-              placeholder: "ui-state-highlight",
-              axis: "y",
-              handle: ".icon-list",
-              cursor: "move",
-              stop: function( event, ui ) { reorder_checklists($('.checklist').map(function() { return this.id }).get()) }
-            });
-            $(".checklists .checklist .content ul").sortable({
-                placeholder: "ui-state-highlight",
-                cursor: "move",
-                connectWith: ".checklists .checklist .content ul",
-                dropOnEmpty: true,
-                update: function(event, ui) {
-                    var data = {
-                        target: ui.item.closest('.checklist').attr('id'),
-                        index: ui.item.index(),
-                        id: ui.item.attr('id')
-                    }
-                    reorder_checklists_items(data);
-                }
-            }).disableSelection();
-          })""" % {'id': ajax.py2js(id_)})
     return h.root
 
 
@@ -96,7 +74,7 @@ def render_Checklists(self, h, comp, model):
 def render_Checklists_badge(self, h, comp, model):
     if self.checklists:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, u' / ', self.total_items, class_='label')
+            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, ' / ', self.total_items, class_='label')
     return h.root
 
 
@@ -113,7 +91,7 @@ def render_Checklist(self, h, comp, model):
                 h << comp.render(h, 'progress')
             with h.ul:
                 for index, item in enumerate(self.items):
-                    h << h.li(item.on_answer(lambda v, index=index: self.delete_item(index)), id='checklist_item_%s' % item().id)
+                    h << h.li(item.on_answer(lambda v, index=index: self.delete_index(index)), id='checklist_item_%s' % item().id)
             h << self.new_item
     return h.root
 

@@ -815,7 +815,7 @@ div.history th {
 
 .checklists .checklist li {
     line-height: 20px;
-    list-style-type: disc;
+    margin-left: 10px;
     list-style-position: inside;
 }
 

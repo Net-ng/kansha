@@ -8,13 +8,14 @@
 # this distribution.
 #--
 
-from nagare import presentation, component, ajax, var
 from nagare.i18n import _
+from nagare import presentation, component, ajax, var
 
-from ..authentication.database import validators
-from ..toolbox import overlay, remote
-from .comp import User, PendingUser
+from kansha.toolbox import overlay, remote
+from kansha.authentication.database import validators
+
 from .usermanager import NewMember
+from .comp import User, PendingUser
 
 
 @presentation.render_for(User)

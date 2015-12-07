@@ -98,8 +98,9 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/%s/board.css' % self.theme)
 
     with h.div(class_='row', id_='lists'):
-        i = 1
-        for main_group, cards in groupby(self.cards, key=self.KEYS[self.order_by[0]][1]):
+        for i, (main_group, cards) in enumerate(groupby(self.cards, key=self.KEYS[self.order_by[0]][1])):
+            if i % 4 == 0:
+                h << h.br
             subgroup = None
             sg_title = self.KEYS[self.order_by[1]][1]
             with h.div(class_='span-auto list'):
@@ -119,7 +120,4 @@ def render(self, h, comp, *args):
                             h << h.h4(subgroup)
                         h << card.render(h, 'readonly')
                 h << h.div(class_='list-footer hidden')
-            if i % 4 == 0:
-                h << h.br
-            i += 1
     return h.root

@@ -143,7 +143,7 @@ class Board(object):
                             title=_("Add list"), dynamic=True))
 
         # Edit description component
-        self.description = component.Component(BoardDescription(self))
+        self.description = component.Component(BoardDescription(self.get_description))
         self.description.on_answer(self.set_description)
 
         # Wraps edit description in an overlay
@@ -258,22 +258,6 @@ class Board(object):
                          for member in data.managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
                         for token in data.pending]
-
-    def set_description(self, desc):
-        """Changes board description
-
-        In:
-         - ``desc`` -- new board description
-        """
-        if desc is not None:
-            self.data.description = desc
-            self.description = component.Component(
-                BoardDescription(self)).on_answer(self.set_description)
-        return "YAHOO.kansha.app.hideOverlay();"
-
-    def get_description(self):
-        """ """
-        return self.data.description
 
     def set_title(self, title):
         """Set title
@@ -619,6 +603,7 @@ class Board(object):
     def votes_allowed(self):
         return self.data.votes_allowed
 
+    # Callbacks for BoardDescription component
     def get_description(self):
         return self.data.description
 
@@ -963,44 +948,31 @@ class Icon(object):
 
 class BoardDescription(object):
 
-    """Description component for boards
+    """Description component
     """
 
-    def __init__(self, parent):
+    def __init__(self, description):
         """Initialization
 
         In:
-            - ``parent`` -- the object parent
+            - ``description`` -- callable that returns the description.
         """
-        self.parent = parent
-        self.text = parent.get_description()
+        self.description = description
+        self.success = False
 
-    def change_text(self, text):
-        """Changes text description.
-
-        Return JS to execute.
-        TODO reload tooltip description of the board
-
-        In:
-            - ``text`` -- the text of the description
-        Return:
-            - part of JS to execute to hide the overlay
+    def filter_text(self, text_var):
+        """Return filtered content of text Var
         """
+        text = text_var() and text_var().strip()
+        if text:
+            text = validator.clean_text(text)
+
+        return text
+
+    def set_description(self, comp, text=None):
         if text is not None:
-            text = text.strip()
-
-            if text:
-                text = validator.clean_text(text)
-
-            self.text = text
-            self.parent.set_description(text)
-        return 'YAHOO.kansha.app.hideOverlay();'
-
-    def __nonzero__(self):
-        """Return False if the description if empty
-        """
-        return bool(self.text)
-
+            comp.answer(self.filter_text(text))
+        self.success = True
 
 
 class BoardMember(object):

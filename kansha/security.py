@@ -18,11 +18,11 @@ from nagare.security import form_auth, common
 
 from .card.comp import Card
 from .label.comp import Label
+from .board.comp import Board
 from .comment.comp import Comment
 from .gallery.comp import Gallery
 from .user.usermanager import UserManager
 from .column.comp import Column, CardsCounter
-from .board.comp import Board, BoardDescription
 from .board.comp import (BOARD_PRIVATE, BOARD_PUBLIC,
                          COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                          VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS)
@@ -106,11 +106,6 @@ class Rules(common.Rules):
     def _(self, user, perm, board):
         """Test if users is one of the board's members"""
         return board.has_member(user)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, BoardDescription)")
-    def _(self, user, perm, description):
-        """Test if description is editable"""
-        return security.has_permissions('edit', description.parent)
 
     @when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Board)")
     def _(self, user, perm, board):

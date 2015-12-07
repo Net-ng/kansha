@@ -7,31 +7,10 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-from nagare import presentation
-from nagare.services import plugin, plugins
 
-class CardExtension(plugin.Plugin):
-    CATEGORY = 'card-extension'
-
-    def __init__(self, card):
-        self.card = card
-
-    def delete(self):
-        pass
-
-    def new_card_position(self, value):
-        pass
+from nagare.services import plugins
 
 
 class CardExtensions(plugins.Plugins):
     ENTRY_POINTS = 'kansha.card.extensions'
     CONFIG_SECTION = 'card_extensions'
-
-
-@presentation.render_for(CardExtension)
-@presentation.render_for(CardExtension, 'cover')
-@presentation.render_for(CardExtension, 'badge')
-@presentation.render_for(CardExtension, 'header')
-@presentation.render_for(CardExtension, 'action')
-def render(*args):
-    return ''

@@ -7,4 +7,4 @@
 # this distribution.
 #--
 
-import view
+from . import view

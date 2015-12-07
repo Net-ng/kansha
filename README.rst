@@ -16,7 +16,7 @@ Kansha is an open source web application to manage and share collaborative scrum
 Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
 
 
-.. image:: doc/_static/satory_project.png
+.. image:: https://github.com/Net-ng/kansha/raw/master/doc/_static/satory_project.png
    :target: http://demo.kansha.org
 
 Quickstart

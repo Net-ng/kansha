@@ -47,7 +47,6 @@ def answer_on_menu(self, comp, user, v):
 @presentation.render_for(Kansha, model='menu')
 def render_kansha_menu(self, h, comp, *args):
     """Main menu part"""
-    kw = {'onclick': "YAHOO.kansha.app.toggleMenu('mainNavbar')"}
     with h.div(class_='navbar', id='mainNavbar'):
         with h.div(class_='navActions', id='mainActions'):
             # If login, display logout button
@@ -61,7 +60,7 @@ def render_kansha_menu(self, h, comp, *args):
                     h << h.a("login", href=h.request.application_url)
 
         # Tab part
-        with h.div(class_="tab collapse", **kw):
+        with h.div(class_="tab collapse"):
             h << self.title.render(h.AsyncRenderer())
     return h.root
 

@@ -147,43 +147,6 @@
             });
         },
 
-        /**
-         * Animate menu function
-         */
-        toggleMenu: function (navId) {
-            var nextMarginTop = 0;
-            var tab = ECN('tab', 'div', navId);
-            var zone = ECN('navActions', '', navId)[0];
-            if (Dom.hasClass(tab, 'expand')[0]) {
-                nextMarginTop = -zone.clientHeight;
-                Dom.setStyle(navId, 'z-index', 25);
-                Dom.replaceClass(tab, 'tab expand', 'tab collapse');
-                Dom.setStyle('mask', 'display', 'none');
-            } else {
-                Dom.setStyle(navId, 'z-index', 30);
-                Dom.replaceClass(tab, 'tab collapse', 'tab expand');
-                Dom.setStyle('mask', 'display', 'block');
-                // Method must be called once
-                var caller = arguments[0];
-                var onMaskClick = function () {
-                    YAHOO.kansha.app.toggleMenu(caller);
-                    Event.removeListener('mask', 'click', onMaskClick);
-                };
-                Event.addListener('mask', 'click', onMaskClick);
-            }
-
-            var attributes = {'margin-top': { to: nextMarginTop - 3 }};
-            var anim_nav = new Anim(navId, attributes, 0.2);
-            anim_nav.animate();
-        },
-
-        initToggleKansha: function () {
-            YAHOO.util.Dom.batch(ECN('navbar', 'div'), function (e) {
-                var zone = ECN('navActions', '', e)[0];
-                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight - 3 + 'px');
-            });
-        },
-
         initTooltips: function () {
             var nodes = Selector.query('*[data-tooltip]');
             NS.uniqueTooltip = NS.app.tooltip(nodes, ' ');
@@ -766,5 +729,4 @@
 }());
 
 YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.init);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initToggleKansha);
 YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initTooltips);

@@ -82,8 +82,7 @@ def render_Board_menu(self, h, comp, *args):
                     )
                 ).action(self.leave)
 
-        kw = {'onclick': "YAHOO.kansha.app.toggleMenu('boardNavbar')"}
-        with h.div(class_="tab collapse", **kw):
+        with h.div(class_="tab collapse"):
             h << h.a('Board', title='Board', id="boardTab")
     return h.root
 

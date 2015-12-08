@@ -327,7 +327,7 @@ class WSGIApp(wsgi.WSGIApp):
 
         for board in boards.itervalues():
             if not board['board'].archived:
-                events = notifications.get_events(board['board'], hours)
+                events = services.ActionLog.get_events_for_data(board['board'], hours)
                 for subscriber in board['subscribers']:
                     data = notifications.filter_events(events, subscriber)
                     if not data:
@@ -338,7 +338,7 @@ class WSGIApp(wsgi.WSGIApp):
                                                                                   subscriber.member, hours, url, data)
                     mail_sender.send(subject, [subscriber.member.email], content, content_html)
         if self.activity_monitor:
-            events = notifications.get_events(None, hours)
+            events = services.ActionLog.get_events_for_data(None, hours)
             new_users = UserManager.get_all_users(hours)
             # for event in events:
             #     print event.board.title, notifications.render_event(event)

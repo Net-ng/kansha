@@ -19,10 +19,11 @@ from nagare.database import session
 from nagare.i18n import _, format_date
 from nagare import component, log, security
 
+from kansha import title
 from kansha.card import fts_schema
 from kansha.user import usermanager
+from kansha.services import ActionLog
 from kansha.label import comp as label
-from kansha import title
 from kansha.column import comp as column
 from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
@@ -86,6 +87,8 @@ class Board(object):
         self.search_engine = search_engine
         self._services = services_service
         self.card_extensions = card_extensions
+
+        self.action_log = ActionLog(self)
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())

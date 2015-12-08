@@ -103,7 +103,7 @@ class Kansha(object):
         if not uri:
             return
         board = self.boards_manager.get_by_uri(uri)
-        if board is not None and not board.archive:
+        if board is not None and not board.archived:
             self._select_board(board)
         else:
             raise exceptions.BoardNotFound()

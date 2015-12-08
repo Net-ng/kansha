@@ -18,7 +18,6 @@
         NS = YAHOO.namespace('kansha');
     // methods to refresh cards
     NS.reload_cards = {};
-    NS.uniqueTooltip = null;
 
     NS.app = {
         panel: undefined,
@@ -93,15 +92,6 @@
             func(node, 'hidden');
         },
 
-        toggleDisplay: function (el) {
-            var node = Dom.get(el);
-            if (YAHOO.util.Dom.hasClass(node, ['hidden'])) {
-                Dom.removeClass(node, 'hidden');
-            } else {
-                Dom.addClass(node, 'hidden');
-            }
-        },
-
         /**
          * Basic highlight function
          */
@@ -145,27 +135,6 @@
             root.find('a').click(function (e) {
                 e.stopPropagation();
             });
-        },
-
-        initTooltips: function () {
-            var nodes = Selector.query('*[data-tooltip]');
-            NS.uniqueTooltip = NS.app.tooltip(nodes, ' ');
-            NS.uniqueTooltip.contextTriggerEvent.subscribe(function (type, args) {
-                var context = args[0];
-                this.cfg.setProperty('text', Dom.getAttribute(context, 'data-tooltip'));
-            });
-        },
-
-        /**
-         * Basic tooltip function
-         */
-        tooltip: function (ctx, txt) {
-            var ttp = new YAHOO.widget.Tooltip(txt, {context: ctx,
-                text: txt,
-                zIndex: 2000,
-                effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.20 }
-            });
-            return ttp;
         },
 
         /**
@@ -729,4 +698,3 @@
 }());
 
 YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.init);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initTooltips);

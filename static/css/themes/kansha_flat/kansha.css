@@ -216,7 +216,7 @@ a:hover .ico-btn {
     border-top: none;
 }
 
-.nav-menu .title:hover {
+.nav-menu:hover .title {
     color: #5C5C5C;
 }
 

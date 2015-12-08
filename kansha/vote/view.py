@@ -37,10 +37,8 @@ def render_Votes_badge(self, h, *args):
     """
     if self.votes:
         with h.span(class_='badge'):
-            label = _N('vote', 'votes', len(self.votes))
-            label = u'%s %s' % (len(self.votes), label)
             id_ = h.generate_id()
-            link = h.a(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label', id=id_, data_tooltip=label)
+            link = h.a(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label', id=id_)
             # Test if user can vote
             if security.has_permissions('vote', self.parent):
                 link.action(self.vote)

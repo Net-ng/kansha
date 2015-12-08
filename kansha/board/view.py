@@ -193,7 +193,7 @@ def render_Board_item(self, h, comp, *args):
     with h.li:
         link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
         if self.data.description:
-            link.set('data-tooltip', self.data.description)
+            link.set('title', self.data.description)
         h << link
         h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'members', false);
                                 YAHOO.kansha.app.highlight(this, 'archive', false);
@@ -782,7 +782,7 @@ def render_board_background_title_color_edit(self, h, comp, *args):
 @presentation.render_for(BoardBackground, model='title-color')
 def render_board_background_title_color(self, h, comp, *args):
     style = 'background-color:%s' % (self.board.title_color or u'')
-    h << h.span(class_='board-title-color', style=style, data_tooltip=json.dumps(self.board.data.id))
+    h << h.span(class_='board-title-color', style=style)
     return h.root
 
 

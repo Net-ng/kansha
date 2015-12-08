@@ -19,7 +19,7 @@ from kansha.models import Entity
 from kansha.column.models import DataColumn
 from kansha.label.models import DataLabel
 from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
-from kansha.notifications import DataHistory
+from kansha.services.actionlog.models import DataHistory
 from nagare.database import session
 from sqlalchemy.ext.associationproxy import AssociationProxy
 

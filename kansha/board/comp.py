@@ -223,7 +223,7 @@ class Board(object):
         for c in self.data.columns:
             col = self._services(
                 column.Column, c.id, self, self.card_extensions,
-                self.search_engine, data=c)
+                self.action_log, self.search_engine, data=c)
             if c.archive:
                 archive = col
             else:
@@ -256,13 +256,13 @@ class Board(object):
             self.columns = [component.Component(
                 self._services(
                     column.Column, c.id, self,
-                    self.card_extensions, self.search_engine)
+                    self.card_extensions, self.action_log, self.search_engine)
                 ) for c in self.data.columns]
         else:
             self.columns = [component.Component(
                 self._services(
                     column.Column, c.id, self,
-                    self.card_extensions, self.search_engine)
+                    self.card_extensions, self.action_log, self.search_engine)
                 ) for c in self.data.columns if not c.archive]
 
 
@@ -328,7 +328,7 @@ class Board(object):
         col = self.data.create_column(index, title, nb_cards, archive=archive)
         col_obj = self._services(
             column.Column, col.id, self,
-            self.card_extensions, self.search_engine)
+            self.card_extensions, self.action_log, self.search_engine)
         if not archive or (archive and self.archive):
             self.columns.insert(
                 index, component.Component(col_obj, 'new'))
@@ -396,9 +396,9 @@ class Board(object):
             values = {'from': orig.get_title(),
                       'to': dest.get_title(),
                       'card': card().data.title}
-            notifications.add_history(self.data, card().data,
-                                      security.get_user().data,
-                                      u'card_move', values)
+            self.action_log.for_card(card()).add_history(
+                security.get_user(),
+                u'card_move', values)
             # reindex it in case it has been moved to the archive column
             scard = fts_schema.Card.from_model(card().data)
             self.search_engine.update_document(scard)

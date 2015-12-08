@@ -30,13 +30,13 @@ class Gallery(CardExtension):
 
     LOAD_PRIORITY = 40
 
-    def __init__(self, card, assets_manager_service):
+    def __init__(self, card, action_log, assets_manager_service):
         """Init method
 
         In:
             - ``card`` -- card component
         """
-        self.card = card
+        super(Gallery, self).__init__(card, action_log)
         self.assets_manager = assets_manager_service
         self.data = DataGallery(self.card)
 
@@ -83,7 +83,7 @@ class Gallery(CardExtension):
         fileid = self.assets_manager.save(new_file.file.read(),
                                           metadata={'filename': new_file.filename, 'content-type': new_file.type})
         data = {'file': new_file.filename, 'card': self.card.get_title()}
-        notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_file', data)
+        self.action_log.add_history(security.get_user(), u'card_add_file', data)
         return self._create_asset_c(self.data.add_asset(fileid))
 
     def add_assets(self, new_files):

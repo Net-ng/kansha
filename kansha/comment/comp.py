@@ -13,8 +13,8 @@ import datetime
 from nagare.database import session
 from nagare import component, security
 
+from kansha import validator
 from kansha.user import usermanager
-from kansha import notifications, validator
 from kansha.cardextension import CardExtension
 
 from .models import DataComment
@@ -102,14 +102,14 @@ class Comments(CardExtension):
     """Comments component
     """
 
-    def __init__(self, card):
+    def __init__(self, card, action_log):
         """Initialization
 
         In:
             - ``parent`` -- the parent card
             - ``comments`` -- the comments of the card
         """
-        super(Comments, self).__init__(card)
+        super(Comments, self).__init__(card, action_log)
         self.comments = [self._create_comment_component(data_comment) for data_comment in card.get_comments()]
 
     def _create_comment_component(self, data_comment):
@@ -133,7 +133,7 @@ class Comments(CardExtension):
             session.add(comment)
             session.flush()
             data = {'comment': v.strip(), 'card': self.card.get_title()}
-            notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_comment', data)
+            self.action_log.add_history(security.get_user(), u'card_add_comment', data)
             self.comments.insert(0, self._create_comment_component(comment))
 
     def delete_comment(self, comp):

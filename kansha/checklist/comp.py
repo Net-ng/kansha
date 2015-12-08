@@ -12,7 +12,6 @@ import random
 
 from nagare import component, database, i18n, security
 
-from kansha import notifications
 from kansha import title
 from kansha.cardextension import CardExtension
 
@@ -27,8 +26,9 @@ class NewChecklistItem(object):
 
 class ChecklistItem(object):
 
-    def __init__(self, id_, data=None):
+    def __init__(self, id_, action_log, data=None):
         self.id = id_
+        self.action_log = action_log
         data = data if data is not None else self.data
         self.title = component.Component(
             title.EditableTitle(
@@ -63,19 +63,19 @@ class ChecklistItem(object):
         data = {'item': self.get_title(),
                 'list': item.checklist.title,
                 'card': item.checklist.card.title}
-        notifications.add_history(item.checklist.card.column.board,
-                                  item.checklist.card,
-                                  security.get_user().data,
-                                  u'card_listitem_done' if self.done else u'card_listitem_undone',
-                                  data)
+        self.action_log.add_history(
+            security.get_user(),
+            u'card_listitem_done' if self.done else u'card_listitem_undone',
+            data)
 
 
 class Checklist(object):
 
-    def __init__(self, id_, data=None):
+    def __init__(self, id_, action_log, data=None):
         self.id = id_
+        self.action_log = action_log
         data = data if data is not None else self.data
-        self.items = [component.Component(ChecklistItem(item.id, item)) for item in data.items]
+        self.items = [component.Component(ChecklistItem(item.id, action_log, item)) for item in data.items]
 
         self.title = component.Component(
             title.EditableTitle(
@@ -91,7 +91,7 @@ class Checklist(object):
         if text is None or not text.strip():
             return
         data_item = self.data.add_item_from_str(text)
-        item = ChecklistItem(data_item.id, data_item)
+        item = ChecklistItem(data_item.id, self.action_log, data_item)
         self.add_item(item)
 
     def add_item(self, item):
@@ -119,6 +119,8 @@ class Checklist(object):
         return self.data.title
 
     def set_title(self, title):
+        if not self.data.title:
+            self.new_title(title)
         self.data.title = title
 
     def set_index(self, index):
@@ -146,9 +148,8 @@ class Checklist(object):
     def new_title(self, title):
         cl = self.data
         data = {'list': title, 'card': cl.card.title}
-        notifications.add_history(cl.card.column.board,
-                                  cl.card,
-                                  security.get_user().data,
+        self.action_log.add_history(
+                                  security.get_user(),
                                   u'card_add_list',
                                   data)
 
@@ -157,9 +158,9 @@ class Checklists(CardExtension):
 
     LOAD_PRIORITY = 30
 
-    def __init__(self, card):
-        super(Checklists, self).__init__(card)
-        cklists = [(clist.id, Checklist(clist.id, clist)) for clist in card.get_datalists()]
+    def __init__(self, card, action_log):
+        super(Checklists, self).__init__(card, action_log)
+        cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in card.get_datalists()]
         self.ck_cache = dict(cklists)
         self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
@@ -171,7 +172,7 @@ class Checklists(CardExtension):
             new_data_checklist = DataChecklist(card=parent.data,
                                                title=checklist.data.title)
             database.session.flush()
-            new_checklist = Checklist(new_data_checklist.id, new_data_checklist)
+            new_checklist = Checklist(new_data_checklist.id, self.action_log, new_data_checklist)
             new_checklist.set_index(index)
             for item in checklist.items:
                 item = item()
@@ -195,16 +196,15 @@ class Checklists(CardExtension):
         data = {'list': cl.get_title(), 'card': self.card.get_title()}
         cl.data.delete()
         if data['list']:
-            notifications.add_history(self.card.column.board.data,
-                                      self.card.data,
-                                      security.get_user().data,
+            self.action_log.add_history(
+                                      security.get_user(),
                                       u'card_delete_list',
                                       data)
 
     def add_checklist(self):
         clist = DataChecklist(card=self.card.data)
         database.session.flush()
-        ck = Checklist(clist.id, clist)
+        ck = Checklist(clist.id, self.action_log, clist)
         self.ck_cache[clist.id] = ck
         ck.set_index(len(self.checklists))
         self.checklists.append(component.Component(ck))
@@ -224,7 +224,7 @@ class Checklists(CardExtension):
         data = json.loads(request.GET['data'])
         item_id = int(data['id'].split('_')[-1])
         checklist_id = int(data['target'].split('_')[-1])
-        item = ChecklistItem(item_id)
+        item = ChecklistItem(item_id, self.action_log)
         source = self.ck_cache[item.checklist_id]
         checklist = self.ck_cache[checklist_id]
         source.remove_item(item)

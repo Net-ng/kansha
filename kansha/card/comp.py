@@ -40,7 +40,7 @@ class Card(object):
     """Card component
     """
 
-    def __init__(self, id_, column, card_extensions, services_service, data=None):
+    def __init__(self, id_, column, card_extensions, action_log, services_service, data=None):
         """Initialization
 
         In:
@@ -50,16 +50,17 @@ class Card(object):
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
         self.column = column
+        self.card_extensions = card_extensions
+        self.action_log = action_log.for_card(self)
         self._services = services_service
         self._data = data
         self.extensions = ()
-        self.card_extensions = card_extensions
         self.refresh()
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_data.author = additional_data['author'].data
-        new_obj = self._services(Card, new_data.id, parent, {}, data=new_data)
+        new_obj = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
         new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
                                    for name, extension in self.extensions]
         return new_obj
@@ -80,7 +81,7 @@ class Card(object):
         """
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.extensions = [(name, component.Component(self._services(extension, self)))
+        self.extensions = [(name, component.Component(self._services(extension, self, self.action_log)))
                                 for name, extension in self.card_extensions.items()]
 
     @property
@@ -102,7 +103,7 @@ class Card(object):
             - ``title`` -- new title
         """
         values = {'from': self.data.title, 'to': title}
-        notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_title', values)
+        self.action_log.add_history(security.get_user(), u'card_title', values)
         self.data.title = title
 
     def get_title(self):
@@ -238,7 +239,7 @@ class Card(object):
     @weight.setter
     def weight(self, value):
         values = {'from': self.data.weight, 'to': value, 'card': self.data.title}
-        notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_weight', values)
+        self.action_log.add_history(security.get_user(), u'card_weight', values)
         self.data.weight = value
 
     def weighting_on(self):
@@ -289,12 +290,13 @@ class CardWeightEditor(editor.Editor, CardExtension):
     WEIGHTING_FREE = 1
     WEIGHTING_LIST = 2
 
-    def __init__(self, target, *args):
+    def __init__(self, target, action_log, *args):
         """
         In:
          - ``target`` -- Card instance
         """
-        super(CardWeightEditor, self).__init__(target, self.fields)
+        editor.Editor.__init__(self, target, self.fields)
+        CardExtension.__init__(self, target, action_log)
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
@@ -324,12 +326,12 @@ class CardMembers(CardExtension):
 
     max_shown_members = 3
 
-    def __init__(self, card):
+    def __init__(self, card, action_log):
         """
         Card is a card business object.
         """
 
-        super(CardMembers, self).__init__(card)
+        super(CardMembers, self).__init__(card, action_log)
 
         # members part of the card
         self.overlay_add_members = component.Component(
@@ -372,8 +374,8 @@ class CardMembers(CardExtension):
         members = filter(None, map(usermanager.UserManager.get_by_email, emails))
         for new_data_member in members:
             self.add_member(new_data_member)
-            #values = {'user_id': new_data_member.username, 'user': new_data_member.fullname, 'card': self.data.title}
-            #notifications.add_history(self.column.board.data, self.data, security.get_user().data, u'card_add_member', values)
+            values = {'user_id': new_data_member.username, 'user': new_data_member.fullname, 'card': self.card.get_title()}
+            self.action_log.add_history(security.get_user(), u'card_add_member', values)
 
     def add_member(self, new_data_member):
         """Attach new member to card
@@ -398,5 +400,5 @@ class CardMembers(CardExtension):
         for member in self.members:
             if member().username == username:
                 self.members.remove(member)
-                #values = {'user_id': member().username, 'user': member().data.fullname, 'card': data.title}
-                #notifications.add_history(self.column.board.data, data, security.get_user().data, u'card_remove_member', values)
+                values = {'user_id': member().username, 'user': member().data.fullname, 'card': self.card.get_title()}
+                self.action_log.add_history(security.get_user(), u'card_remove_member', values)

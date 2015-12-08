@@ -21,14 +21,14 @@ class CardDescription(CardExtension):
 
     LOAD_PRIORITY = 20
 
-    def __init__(self, parent):
+    def __init__(self, card, action_log):
         """Initialization
 
         In:
-            - ``parent`` -- the object parent
+            - ``card`` -- the card
         """
-        self.parent = parent
-        self.text = parent.get_description()
+        super(CardDescription, self).__init__(card, action_log)
+        self.text = card.get_description()
 
     def change_text(self, text):
         """Edit the description
@@ -44,7 +44,7 @@ class CardDescription(CardExtension):
         if text:
             text = validator.clean_html(text)
         self.text = text
-        self.parent.set_description(text)
+        self.card.set_description(text)
 
     def __nonzero__(self):
         """Return False if the description if empty

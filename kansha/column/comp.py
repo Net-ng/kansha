@@ -13,8 +13,8 @@ from nagare.i18n import _
 from nagare import component, var, security, i18n
 
 from kansha import title
+from kansha import exceptions
 from kansha.toolbox import popin, overlay
-from kansha import exceptions, notifications
 from kansha.card import (comp as card, fts_schema)
 
 from .models import DataColumn
@@ -25,7 +25,7 @@ class Column(object):
     """Column component
     """
 
-    def __init__(self, id_, board, card_extensions, search_engine, services_service, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, search_engine, services_service, data=None):
         """Initialization
 
         In:
@@ -37,13 +37,19 @@ class Column(object):
         self.board = board
         self.nb_card = var.Var(self.data.nb_max_cards)
         self._services = services_service
+        self.action_log = action_log
         self.search_engine = search_engine
         self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [component.Component(self._services(card.Card, c.id, self, self.card_extensions, data=c))
+        self.cards = [
+            component.Component(
+                self._services(
+                    card.Card, c.id, self,
+                    self.card_extensions,
+                    self.action_log, data=c))
                       for c in self.data.cards]
         self.new_card = component.Component(
             card.NewCard(self)).on_answer(self.create_card)
@@ -56,7 +62,7 @@ class Column(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = self._services(Column, new_data.id, None, self.card_extensions, self.search_engine, data=new_data)
+        new_obj = self._services(Column, new_data.id, None, self.card_extensions, parent.action_log, self.search_engine, data=new_data)
 
         for card in self.cards:
             new_card = card().copy(new_obj, additional_data)
@@ -226,14 +232,14 @@ class Column(object):
         if text:
             if self.can_add_cards:
                 new_card = self.data.create_card(text, security.get_user().data)
-                card_obj = self._services(card.Card, new_card.id, self, self.card_extensions)
+                card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
                 self.cards.append(component.Component(card_obj, 'new'))
                 values = {'column_id': self.id,
                           'column': self.get_title(),
                           'card': new_card.title}
-                notifications.add_history(self.board.data, new_card,
-                                          security.get_user().data,
-                                          u'card_create', values)
+                card_obj.action_log.add_history(
+                    security.get_user(),
+                    u'card_create', values)
                 scard = fts_schema.Card.from_model(new_card)
                 self.search_engine.add_document(scard)
                 self.search_engine.commit()
@@ -250,16 +256,16 @@ class Column(object):
         """
         self.cards = [card for card in self.cards if c != card()]
         values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        notifications.add_history(self.board.data, c.data,
-                                  security.get_user().data,
-                                  u'card_delete', values)
+        c.action_log.add_history(
+            security.get_user(),
+            u'card_delete', values)
         self.search_engine.delete_document(fts_schema.Card, c.id)
         self.search_engine.commit()
         c.delete()
 
     def refresh(self):
         self.cards = [component.Component(
-            self._services(card.Card, c.id, self, self.card_extensions, data=c)
+            self._services(card.Card, c.id, self, self.card_extensions, self.action_log, data=c)
             ) for c in self.data.cards]
 
     def archive_card(self, c):
@@ -270,7 +276,7 @@ class Column(object):
         """
         self.cards = [card for card in self.cards if c != card()]
         values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        notifications.add_history(self.board.data, c.data, security.get_user().data, u'card_archive', values)
+        c.action_log.add_history(security.get_user(), u'card_archive', values)
         self.board.archive_card(c)
 
     def edit_card(self, c):

@@ -37,10 +37,11 @@ class ActionLog(object):
         return ActionLog(self._board, card)
 
     def add_history(self, user, action, data):
+        '''user is App User'''
         DataHistory.add_history(
             self.board.data,
             self.card and self.card.data,
-            user, action, data
+            user.data, action, data
         )
 
     def get_events(self, hours=None):
@@ -53,4 +54,4 @@ class ActionLog(object):
     # view API
     def get_history(self):
         'internal'
-        DataHistory.get_history(self.board.data, cardid=self.card_id(), username=self.user_id())
+        return DataHistory.get_history(self.board.data, cardid=self.card_id(), username=self.user_id())

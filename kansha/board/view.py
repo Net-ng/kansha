@@ -54,7 +54,7 @@ def render_Board_menu(self, h, comp, *args):
                 lambda: self.popin.call(
                     popin.Popin(
                         component.Component(
-                            notifications.ActionLog(self)
+                            self.action_log
                         ),
                         'history'
                     )

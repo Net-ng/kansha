@@ -74,7 +74,7 @@ class DataHistory(Entity):
         data = self.data.copy()
         data['author'] = self.user.fullname or self.user.username
         msg = EVENT_MESSAGES.get(self.action)
-        msg = _(msg) % data if msg is not None else 'Undefined event type "%s"', self.action
+        msg = (_(msg) % data) if msg is not None else ('Undefined event type "%s"' % self.action)
         return msg
 
     @classmethod

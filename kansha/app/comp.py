@@ -24,7 +24,6 @@ from nagare import component, wsgi, security, config, log, i18n
 
 from kansha import exceptions
 from kansha.user import user_profile
-from kansha.board import comp as board
 from kansha.authentication import login
 from kansha import services, notifications
 from kansha.services.search import SearchEngine
@@ -90,7 +89,7 @@ class Kansha(object):
         if not id_:
             return
         board = self.boards_manager.get_by_id(id_)
-        if board is not None and not board.archive:
+        if board is not None and not board.archived:
             self._select_board(board)
         else:
             raise exceptions.BoardNotFound()

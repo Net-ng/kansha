@@ -8,7 +8,6 @@
 # this distribution.
 #--
 
-from kansha.card.fts_schema import Card as FTSCard
 from .comp import Board
 
 

@@ -166,7 +166,7 @@ class Card(object):
         return added
 
     def remove_member(self, data_member):
-        self.data.members.remove(data_member)
+        self.data.remove_member(data_member)
 
     @property
     def members(self):
@@ -202,7 +202,7 @@ class Card(object):
         In:
             - ``member`` -- Board Member instance to remove
         """
-        self.data.remove_board_member(member)
+        self.data.remove_member(member.get_user_data())
         self.refresh()  # brute force solution until we have proper communication between extensions
 
     # Cover methods

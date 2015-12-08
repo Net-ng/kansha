@@ -65,8 +65,6 @@ class DataCard(Entity):
         """
         DataCard.get(self.id).cover = None
 
-    def remove_board_member(self, member):
-        """Remove member from board"""
-        if member.get_user_data() in self.members:
-            self.members.remove(member.get_user_data())
-            session.flush()
+    def remove_member(self, datauser):
+        if datauser in self.members:
+            self.members.remove(datauser)

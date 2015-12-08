@@ -25,17 +25,18 @@ class DataCard(Entity):
     using_options(tablename='card')
     title = Field(UnicodeText)
     description = Field(UnicodeText, default=u'')
-    votes = OneToMany('DataVote')
     index = Field(Integer)
+    creation_date = Field(DateTime)
     column = ManyToOne('DataColumn')
+
+    # feature data to move to card extensions
+    votes = OneToMany('DataVote')
     labels = ManyToMany('DataLabel')
     comments = OneToMany('DataComment', order_by="-creation_date")
     assets = OneToMany('DataAsset', order_by="-creation_date")
     checklists = OneToMany('DataChecklist', order_by="index")
     members = ManyToMany('DataUser')
     cover = OneToOne('DataAsset', inverse="cover")
-    # author = ManyToOne('DataUser', inverse="my_cards")
-    creation_date = Field(DateTime)
     due_date = Field(Date)
     weight = Field(Unicode(255), default=u'')
 

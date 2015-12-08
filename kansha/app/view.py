@@ -67,10 +67,10 @@ def render_kansha_menu(self, h, comp, *args):
 def render_kansha_tab(self, h, comp, *args):
     user = security.get_user()
     if user is None:
-        h << h.a(self.app_title, class_="collapse", id="mainTab")
+        h << h.a(self.app_title)
     else:
         app_user = UserManager.get_app_user(user.username)
-        h << h.a(component.Component(app_user, "avatar"), self.app_title, id="mainTab")
+        h << h.a(component.Component(app_user, "avatar"), self.app_title)
     return h.root
 
 

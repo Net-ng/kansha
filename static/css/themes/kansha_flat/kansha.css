@@ -215,6 +215,11 @@ a:hover .ico-btn {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
     border-top: none;
 }
+
+.nav-menu .title:hover {
+    color: #5C5C5C;
+}
+
 /* End navigation menu */
 
 /* Footer */

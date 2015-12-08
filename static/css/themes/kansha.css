@@ -194,8 +194,11 @@ i.icon {
     z-index: 25;
 }
 
+.nav-menu:hover .actions {
+}
+
 .nav-menu .title {
-    position: relative;
+    position: absolute;
     padding: 0 10px 5px 10px;
     white-space: nowrap;
     z-index: 30;

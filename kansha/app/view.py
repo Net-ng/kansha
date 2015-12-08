@@ -47,8 +47,8 @@ def answer_on_menu(self, comp, user, v):
 @presentation.render_for(Kansha, model='menu')
 def render_kansha_menu(self, h, comp, *args):
     """Main menu part"""
-    with h.div(class_='navbar', id='mainNavbar'):
-        with h.div(class_='navActions', id='mainActions'):
+    with h.div(class_='nav-menu'):
+        with h.ul(class_='actions'):
             # If login, display logout button
             user = security.get_user()
             if user:
@@ -56,12 +56,10 @@ def render_kansha_menu(self, h, comp, *args):
                 self.user_menu.on_answer(lambda v: answer_on_menu(self, comp, user, v))
                 h << self.user_menu.render(h, 'menu')
             else:
-                with h.div(id='login'):
-                    h << h.a("login", href=h.request.application_url)
+                h << h.li(h.a(_(u"Login"), href=h.request.application_url))
 
         # Tab part
-        with h.div(class_="tab collapse"):
-            h << self.title.render(h.AsyncRenderer())
+        h << h.span(self.title.render(h.AsyncRenderer()), class_="title", id='kansha-nav-menu')
     return h.root
 
 

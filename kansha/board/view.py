@@ -28,9 +28,9 @@ from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile
 
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
-    with h.div(class_='navbar', id='boardNavbar'):
-        with h.div(class_='navActions', id='boardActions'):
-            h << h.a(self.icons['preferences']).action(
+    with h.div(class_='nav-menu'):
+        with h.ul(class_='actions'):
+            h << h.li(h.a(self.icons['preferences']).action(
                 lambda: self.popin.call(
                     popin.Popin(
                         component.Component(
@@ -39,18 +39,18 @@ def render_Board_menu(self, h, comp, *args):
                         "edit"
                     )
                 )
-            )
+            ))
 
             if security.has_permissions('edit', self):
-                h << self.add_list_overlay
-                h << self.edit_description_overlay
+                h << h.li(self.add_list_overlay)
+                h << h.li(self.edit_description_overlay)
             if security.has_permissions('manage', self):
-                h << self.save_template_overlay
+                h << h.li(self.save_template_overlay)
 
-            h << h.a(self.icons['export']).action(self.export)
+            h << h.li(h.a(self.icons['export']).action(self.export))
 
 
-            h << h.a(self.icons['history']).action(
+            h << h.li(h.a(self.icons['history']).action(
                 lambda: self.popin.call(
                     popin.Popin(
                         component.Component(
@@ -59,10 +59,10 @@ def render_Board_menu(self, h, comp, *args):
                         'history'
                     )
                 )
-            )
+            ))
 
             if security.has_permissions('manage', self):
-                h << h.a(
+                h << h.li(h.a(
                     self.icons['archive'],
                     onclick=(
                         'return confirm(%s)' %
@@ -70,9 +70,9 @@ def render_Board_menu(self, h, comp, *args):
                             _("This board will be archived. Are you sure?")
                         ).decode('UTF-8')
                     )
-                ).action(self.archive_board)
+                ).action(self.archive_board))
             else:
-                h << h.a(
+                h << h.li(h.a(
                     self.icons['leave'],
                     onclick=(
                         "return confirm(%s)" %
@@ -80,10 +80,9 @@ def render_Board_menu(self, h, comp, *args):
                             _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                         ).decode('UTF-8')
                     )
-                ).action(self.leave)
+                ).action(self.leave))
 
-        with h.div(class_="tab collapse"):
-            h << h.a('Board', title='Board', id="boardTab")
+        h << h.span(_(u'Board'), class_="title", id='board-nav-menu')
     return h.root
 
 

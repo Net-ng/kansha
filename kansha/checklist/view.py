@@ -84,7 +84,7 @@ def render_Checklist(self, h, comp, model):
         with h.div(class_='title'):
             h << h.i(class_='icon-list')
             h << self.title.render(h.AsyncRenderer())
-            h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+            h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
@@ -109,5 +109,5 @@ def render_Checklist_progress(self, h, comp, model):
 def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
     h << h.span(self.title.render(h.AsyncRenderer()), class_='done' if self.done else '')
-    h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+    h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
     return h.root

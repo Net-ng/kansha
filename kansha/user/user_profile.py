@@ -487,7 +487,6 @@ class UserBoards(object):
         comp.answer(new_board.id)
 
     def reload_boards(self):
-        self.last_modified_boards.clear()
         self.my_boards.clear()
         self.guest_boards.clear()
         self.archived_boards.clear()
@@ -512,8 +511,8 @@ class UserBoards(object):
                     elif security.has_permissions('edit', board_obj):
                         self.guest_boards[board_id] = board_comp
 
-        for board_id, (last_activity, board_comp) in sorted(last_modifications.items(), key=operator.itemgetter(1, 0))[:5]:
-            self.last_modified_boards[board_id] = board_comp
+        last_5 = sorted(last_modifications.values(), reverse=True)[:5]
+        self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
 
         public, private = board.Board.get_templates_for(self.user_id, self.user_source)
         self.templates = {'public': [(b.id, b.template_title) for b in public],

@@ -49,24 +49,11 @@ class DataCard(Entity):
         return new_data
 
     @classmethod
-    def create_card(cls, column, title):
-        """Create new column
-
-        In:
-            - ``column`` -- DataColumn, father of the column
-            - ``title`` -- title of the card
-        Return:
-            - created DataCard instance
-        """
-        new_card = cls(title=title,
-                       creation_date=datetime.datetime.utcnow())
-        column.cards.append(new_card)
-        return new_card
-
-    @classmethod
     def get_all(cls):
         query = cls.query.options(subqueryload('labels'), subqueryload('comments'))
         return query
+
+    # Methods for data belonging to card extensions
 
     def make_cover(self, asset):
         """

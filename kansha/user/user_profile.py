@@ -10,6 +10,7 @@
 
 from collections import OrderedDict
 import imghdr
+import operator
 import peak.rules
 
 from nagare import ajax, component, editor, presentation, security, var
@@ -468,7 +469,6 @@ class UserBoards(object):
         self.my_boards = {}
         self.guest_boards = {}
         self.archived_boards = {}
-        self.all_boards = {}
 
         self.reload_boards()
 
@@ -486,35 +486,38 @@ class UserBoards(object):
         new_board.data.is_template = False
         comp.answer(new_board.id)
 
-    def _get_board(self, b, model=0):
-        if b.id in self.all_boards:
-            bc = self.all_boards[b.id]
-        else:
-            bbo = self._services(board.Board, b.id, self.app_title, self.app_banner, self.theme,
-                                 {}, None,
-                                 on_board_delete=self.reload_boards,
-                                 on_board_archive=self.reload_boards,
-                                 on_board_restore=self.reload_boards,
-                                 on_board_leave=self.reload_boards,
-                                 on_update_members=self.reload_boards,
-                                 load_data=False)
-            bc = component.Component(bbo, model)
-            self.all_boards[b.id] = bc
-        return bc
-
     def reload_boards(self):
-        self.all_boards = {}
+        self.last_modified_boards.clear()
+        self.my_boards.clear()
+        self.guest_boards.clear()
+        self.archived_boards.clear()
+        last_modifications = {}
+        for board_id, in board.Board.get_all_board_ids(): # Comma is important
+            board_obj = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
+                                       self.card_extensions, None,
+                                       on_board_delete=self.reload_boards,
+                                       on_board_archive=self.reload_boards,
+                                       on_board_restore=self.reload_boards,
+                                       on_board_leave=self.reload_boards,
+                                       on_update_members=self.reload_boards,
+                                       load_data=False)
+            if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
+                board_comp = component.Component(board_obj)
+                if board_obj.archived:
+                    self.archived_boards[board_id] = board_comp
+                else:
+                    last_modifications[board_id] = (board_obj.get_last_activity(), board_comp)
+                    if security.has_permissions('manage', board_obj):
+                        self.my_boards[board_id] = board_comp
+                    elif security.has_permissions('edit', board_obj):
+                        self.guest_boards[board_id] = board_comp
+
+        for board_id, (last_activity, board_comp) in sorted(last_modifications.items(), key=operator.itemgetter(1, 0))[:5]:
+            self.last_modified_boards[board_id] = board_comp
+
         public, private = board.Board.get_templates_for(self.user_id, self.user_source)
         self.templates = {'public': [(b.id, b.template_title) for b in public],
                          'private': [(b.id, b.template_title) for b in private]}
-        self.last_modified_boards = OrderedDict((b.id, self._get_board(b))
-                                                for b in board.Board.get_last_modified_boards_for(self.user_id, self.user_source))
-        self.my_boards = OrderedDict((b.id, self._get_board(b))
-                                     for b in board.Board.get_user_boards_for(self.user_id, self.user_source))
-        self.guest_boards = OrderedDict((b.id, self._get_board(b))
-                                        for b in board.Board.get_guest_boards_for(self.user_id, self.user_source))
-        self.archived_boards = OrderedDict((b.id, self._get_board(b, 'archived_item'))
-                                           for b in board.Board.get_archived_boards_for(self.user_id, self.user_source))
 
     def purge_archived_boards(self):
         for board in self.archived_boards.itervalues():

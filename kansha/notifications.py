@@ -124,6 +124,14 @@ def get_subscribers():
     return q
 
 
+def get_last_activity(board):
+    q = database.session.query(DataHistory.when)
+    q = q.filter(DataHistory.board == board)
+    q = q.order_by(DataHistory.when.desc())
+    q = q.limit(1)
+    return q.scalar()
+
+
 def get_events(board, hours=None):
     '''board to None means "everything".'''
     since = datetime.utcnow() - timedelta(hours=hours)

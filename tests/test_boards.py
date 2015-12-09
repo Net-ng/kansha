@@ -17,6 +17,7 @@ from nagare import database
 from kansha.board.models import DataBoard
 from kansha.board import comp as board_module
 from kansha.board import boardsmanager
+from kansha.user import user_profile
 from kansha import notifications
 from . import helpers
 
@@ -292,26 +293,32 @@ class BoardTest(unittest.TestCase):
 
     def test_get_boards(self):
         '''Test get boards methods'''
+
         helpers.set_dummy_context()
         board = helpers.create_board()
         user = helpers.create_user()
-        helpers.set_context(user)
-        user2 = helpers.create_user('test')
-        board.add_member(user2)
+        user2 = helpers.create_user('bis')
+        board.add_member(user2, 'member')
         self.assertTrue(board.has_manager(user))
-        self.assertIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())
-        self.assertNotIn(board.data, board_module.Board.get_guest_boards_for(user.data.username, user.data.source).all())
-
         self.assertFalse(board.has_manager(user2))
-        self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user2.data.username, user2.data.source).all())
-        self.assertIn(board.data, board_module.Board.get_guest_boards_for(user2.data.username, user2.data.source).all())
 
-        notifications.add_history(board.data, board.data.columns[0].cards[0], user.get_user_data(), u'test', {})
-        self.assertIn(board.data, board_module.Board.get_last_modified_boards_for(user.data.username, user.data.source).all())
+        helpers.set_context(user)
+        user_boards = user_profile.UserBoards('', '', '', {}, user.get_user_data(), None, None, helpers.create_services())
+        self.assertIn(board.id, user_boards.last_modified_boards)
+        self.assertNotIn(board.id, user_boards.guest_boards)
+        self.assertIn(board.id, user_boards.my_boards)
+        self.assertNotIn(board.id, user_boards.archived_boards)
+
+        helpers.set_context(user2)
+        user_boards = user_profile.UserBoards('', '', '', {}, user2.get_user_data(), None, None, helpers.create_services())
+        self.assertIn(board.id, user_boards.last_modified_boards)
+        self.assertIn(board.id, user_boards.guest_boards)
+        self.assertNotIn(board.id, user_boards.my_boards)
+        self.assertNotIn(board.id, user_boards.archived_boards)
 
         board.archive_board()
-        self.assertIn(board.data, board_module.Board.get_archived_boards_for(user.data.username, user.data.source).all())
-        self.assertNotIn(board.data, board_module.Board.get_user_boards_for(user.data.username, user.data.source).all())
+        user_boards.reload_boards()
+        self.assertIn(board.id, user_boards.archived_boards)
 
     def test_get_by(self):
         '''Test get_by_uri and get_by_id methods'''

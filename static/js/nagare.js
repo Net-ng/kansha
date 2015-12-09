@@ -42,7 +42,6 @@ nagare_callbacks = {
         removeRequest(o.tId);
         if (o.responseText.substring(0, 1) !== "<") {
             setTimeout(o.responseText, 0);
-            setTimeout(YAHOO.kansha.app.initTooltips, 10);
         } else {
             YAHOO.kansha.app.syncError(500, 'Must reload all');
         }
@@ -58,7 +57,6 @@ nagare_callbacks = {
                 js += js_fragments.childNodes[i].data;
             }
             setTimeout(js, 0);
-            setTimeout(YAHOO.kansha.app.initTooltips, 10);
         } else {
             var data = YAHOO.lang.JSON.parse(o.responseText);
             YAHOO.kansha.app.syncError(data.status, data.details);

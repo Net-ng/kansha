@@ -120,8 +120,8 @@ def render_User_last_manager(self, h, comp, *args):
 @presentation.render_for(User, model="menu")
 def render_User_menu(self, h, comp, *args):
     """Render user menu"""
-    h << h.a(h.i(class_='icon-home'), _("Home"), class_="home").action(lambda: comp.answer(self))
-    h << h.a(h.i(class_='icon-switch'), _("Logout"), class_="logout").action(comp.answer)
+    h << h.li(h.a(h.i(class_='icon-home'), _("Home"), class_="home").action(lambda: comp.answer(self)))
+    h << h.li(h.a(h.i(class_='icon-switch'), _("Logout"), class_="logout").action(comp.answer))
     return h.root
 
 

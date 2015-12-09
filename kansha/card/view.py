@@ -230,10 +230,8 @@ def render_cardweighteditor_edit(self, h, comp, *args):
 def render_cardweighteditor_edit(self, h, comp, *args):
     if self.weight.value:
         with h.span(class_='badge'):
-            label = _('weight')
             h << h.span(h.i(class_='icon-star'), ' ',
-                        self.weight.value, class_='label',
-                        data_tooltip=label)
+                        self.weight.value, class_='label', title=_(u'Weight'))
     return h.root
 
 

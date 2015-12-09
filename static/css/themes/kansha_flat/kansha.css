@@ -200,34 +200,26 @@ a:hover .ico-btn {
 /* End menu */
 
 /* Navigation menu */
-.navbar .tab {
+.nav-menu .actions {
     background: white;
-    border-radius: 0 0 10px 10px;
-    border-top: 0;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
-}
-
-.tab a {
-    font: normal 25px OpenSansSemiBold;
-}
-
-.navbar .navActions {
-    background: white;
-    font: normal 16px OpenSansLight;
+    font-family:  OpenSansLight;
+    font-size: 15px;
     border-radius: 0 0 10px 0;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
-    border-bottom: 0;
 }
 
-.navbar .navActions a {
-    color: #434343;
-    font: 15px OpenSansLight;
+.nav-menu .title {
+    background: white;
+    font: normal 25px OpenSansSemiBold;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
+    border-top: none;
 }
 
-.navbar .navActions i {
-    font-size: 24px;
-    color: #939393;
+.nav-menu:hover .title {
+    color: #5C5C5C;
 }
+
 /* End navigation menu */
 
 /* Footer */

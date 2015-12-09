@@ -35,10 +35,8 @@ def render(self, h, comp, *args):
 
 @presentation.render_for(Label, model='color')
 def render(self, h, comp, *args):
-    """Render the label as a simple colored block (no text in it but with a
-    tooltip)
-    """
-    return h.span(class_='card-label', style=color_style(self), data_tooltip=self.data.title)
+    """Render the label as a simple colored block"""
+    return h.span(class_='card-label', style=color_style(self), title=self.get_title())
 
 
 @presentation.render_for(Label, model='edit-color')

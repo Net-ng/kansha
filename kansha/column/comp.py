@@ -347,7 +347,6 @@ class NewColumn(object):
         col_id = 'list_' + str(col.id)
 
         return (
-            "YAHOO.kansha.app.toggleMenu('boardNavbar');"
             "reload_columns();"
             "YAHOO.kansha.app.saveLimit(%s,%s)" % (
                 ajax.py2js(col_id), ajax.py2js(nb_cards or 0)

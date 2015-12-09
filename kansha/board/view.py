@@ -28,9 +28,9 @@ from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile
 
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
-    with h.div(class_='navbar', id='boardNavbar'):
-        with h.div(class_='navActions', id='boardActions'):
-            h << h.a(self.icons['preferences']).action(
+    with h.div(class_='nav-menu'):
+        with h.ul(class_='actions'):
+            h << h.li(h.a(self.icons['preferences']).action(
                 lambda: self.popin.call(
                     popin.Popin(
                         component.Component(
@@ -39,18 +39,18 @@ def render_Board_menu(self, h, comp, *args):
                         "edit"
                     )
                 )
-            )
+            ))
 
             if security.has_permissions('edit', self):
-                h << self.add_list_overlay
-                h << self.edit_description_overlay
+                h << h.li(self.add_list_overlay)
+                h << h.li(self.edit_description_overlay)
             if security.has_permissions('manage', self):
-                h << self.save_template_overlay
+                h << h.li(self.save_template_overlay)
 
-            h << h.a(self.icons['export']).action(self.export)
+            h << h.li(h.a(self.icons['export']).action(self.export))
 
 
-            h << h.a(self.icons['history']).action(
+            h << h.li(h.a(self.icons['history']).action(
                 lambda: self.popin.call(
                     popin.Popin(
                         component.Component(
@@ -59,10 +59,10 @@ def render_Board_menu(self, h, comp, *args):
                         'history'
                     )
                 )
-            )
+            ))
 
             if security.has_permissions('manage', self):
-                h << h.a(
+                h << h.li(h.a(
                     self.icons['archive'],
                     onclick=(
                         'return confirm(%s)' %
@@ -70,9 +70,9 @@ def render_Board_menu(self, h, comp, *args):
                             _("This board will be archived. Are you sure?")
                         ).decode('UTF-8')
                     )
-                ).action(self.archive_board)
+                ).action(self.archive_board))
             else:
-                h << h.a(
+                h << h.li(h.a(
                     self.icons['leave'],
                     onclick=(
                         "return confirm(%s)" %
@@ -80,11 +80,9 @@ def render_Board_menu(self, h, comp, *args):
                             _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                         ).decode('UTF-8')
                     )
-                ).action(self.leave)
+                ).action(self.leave))
 
-        kw = {'onclick': "YAHOO.kansha.app.toggleMenu('boardNavbar')"}
-        with h.div(class_="tab collapse", **kw):
-            h << h.a('Board', title='Board', id="boardTab")
+        h << h.span(_(u'Board'), class_="title", id='board-nav-menu')
     return h.root
 
 
@@ -195,7 +193,7 @@ def render_Board_item(self, h, comp, *args):
     with h.li:
         link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
         if self.data.description:
-            link.set('data-tooltip', self.data.description)
+            link.set('title', self.data.description)
         h << link
         h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'members', false);
                                 YAHOO.kansha.app.highlight(this, 'archive', false);
@@ -784,7 +782,7 @@ def render_board_background_title_color_edit(self, h, comp, *args):
 @presentation.render_for(BoardBackground, model='title-color')
 def render_board_background_title_color(self, h, comp, *args):
     style = 'background-color:%s' % (self.board.title_color or u'')
-    h << h.span(class_='board-title-color', style=style, data_tooltip=json.dumps(self.board.data.id))
+    h << h.span(class_='board-title-color', style=style)
     return h.root
 
 

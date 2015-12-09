@@ -107,8 +107,7 @@ def render_gallery_badge(self, h, *args):
     """Gallery badge for the card"""
     if self.assets:
         with h.span(class_='badge'):
-            label = _N('file', 'files', len(self.assets))
-            h << h.span(h.i(class_='icon-file'), ' ', len(self.assets), class_='label', data_tooltip=label)
+            h << h.span(h.i(class_='icon-file'), ' ', len(self.assets), class_='label')
     return h.root
 
 

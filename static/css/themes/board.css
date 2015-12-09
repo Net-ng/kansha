@@ -1015,24 +1015,6 @@ div.history th {
 
 /* Responsive */
 @media all and (max-width: 1360px) {
-    .navbar {
-        height: 58px;
-        margin-top: -57px
-    }
-
-    .navbar #mainActions {
-        display: inline-block;
-    }
-
-    .navbar #mainActions #login {
-        display: inline-block
-    }
-
-    .navbar #mainActions #login a {
-        display: inline-block;
-        padding: 2px 0 3px 39px;
-    }
-
     .list-header {
         height: auto
     }
@@ -1101,15 +1083,6 @@ div.history th {
         max-width: 99%;
     }
 
-    .navbar {
-        margin-bottom: 24px
-    }
-
-    .navbar #boardActions a i {
-        width: 0 !important;
-        overflow: hidden;
-    }
-
     #lists {
         white-space: normal;
         width: 100% !important;
@@ -1160,34 +1133,6 @@ div.history th {
 }
 
 @media all and (max-width: 640px) {
-    .navbar {
-        margin-top: 0;
-        height: 40px;
-    }
-
-    .navbar #mainActions {
-        display: inline-block;
-    }
-
-    .navbar #mainActions #login a {
-        width: 0;
-        height: 20px;
-        overflow: hidden
-    }
-
-    .board .board-title {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .navbar .tab {
-        left: 10px;
-    }
-
-    #boardNavbar .tab {
-        left: 195px;
-    }
-
     .board .board-title .title-form input {
         width: calc(100% - 150px);
     }

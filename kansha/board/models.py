@@ -196,53 +196,8 @@ class DataBoard(Entity):
         self.background_image = image or u''
 
     @classmethod
-    def get_last_modified_boards_for(cls, user_username, user_source):
-        q2 = session.query(DataHistory.board_id.distinct())
-        q2 = q2.filter(DataHistory.user_username == user_username)
-        q2 = q2.filter(DataHistory.user_source == user_source)
-        q2 = q2.order_by(DataHistory.when.desc())
-        q2 = q2.limit(5)
-        q = cls.query.distinct().join(DataBoardMember)
-        q = q.filter(DataBoardMember.user_username == user_username)
-        q = q.filter(DataBoardMember.user_source == user_source)
-        q = q.filter(DataBoard.id.in_(q2))
-        q = q.filter(cls.archived == False)
-        q = q.filter(cls.is_template == False)
-        return q
-
-    @classmethod
-    def get_user_boards_for(cls, user_username, user_source):
-        q = cls.query.join(DataBoardManager)
-        q = q.filter(DataBoardManager.user_username == user_username)
-        q = q.filter(DataBoardManager.user_source == user_source)
-        q = q.filter(cls.archived == False)
-        q = q.filter(cls.is_template == False)
-        q = q.order_by(DataBoard.title)
-        return q
-
-    @classmethod
-    def get_guest_boards_for(cls, user_username, user_source):
-        q2 = session.query(DataBoardManager.board_id)
-        q2 = q2.filter(DataBoardManager.user_username == user_username)
-        q2 = q2.filter(DataBoardManager.user_source == user_source)
-        q = cls.query.join(DataBoardMember)
-        q = q.filter(DataBoardMember.user_username == user_username)
-        q = q.filter(DataBoardMember.user_source == user_source)
-        q = q.filter(cls.archived == False)
-        q = q.filter(cls.is_template == False)
-        q = q.filter(~DataBoard.id.in_(q2))
-        q = q.order_by(DataBoard.title)
-        return q
-
-    @classmethod
-    def get_archived_boards_for(cls, user_username, user_source):
-        q = cls.query.join(DataBoardMember)
-        q = q.filter(DataBoardMember.user_username == user_username)
-        q = q.filter(DataBoardMember.user_source == user_source)
-        q = q.filter(cls.archived == True)
-        q = q.filter(cls.is_template == False)
-        q = q.order_by(DataBoard.title)
-        return q
+    def get_all_board_ids(cls):
+        return session.query(cls.id).filter_by(is_template=False).order_by(cls.title)
 
     @classmethod
     def get_templates_for(cls, user_username, user_source, public_value):

@@ -825,6 +825,9 @@ class Board(object):
                 results.append(user)
         return results
 
+    def get_last_activity(self):
+        return notifications.get_last_activity(self.data)
+
     def get_friends(self, user):
         """Return user friends for the current board
 
@@ -933,20 +936,8 @@ class Board(object):
             self.card_matches = set()
 
     @staticmethod
-    def get_last_modified_boards_for(user_username, user_source):
-        return DataBoard.get_last_modified_boards_for(user_username, user_source)
-
-    @staticmethod
-    def get_user_boards_for(user_username, user_source):
-        return DataBoard.get_user_boards_for(user_username, user_source)
-
-    @staticmethod
-    def get_guest_boards_for(user_username, user_source):
-        return DataBoard.get_guest_boards_for(user_username, user_source)
-
-    @staticmethod
-    def get_archived_boards_for(user_username, user_source):
-        return DataBoard.get_archived_boards_for(user_username, user_source)
+    def get_all_board_ids():
+        return DataBoard.get_all_board_ids()
 
     @staticmethod
     def get_templates_for(user_username, user_source):

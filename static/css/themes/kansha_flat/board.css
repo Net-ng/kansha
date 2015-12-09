@@ -519,15 +519,6 @@ div.history th {
 /* End resync content */
 
 /* Responsive */
-@media all and (max-width: 1360px) {
-    .navbar #mainActions {
-        background: white;
-        color: #434343;
-        font: normal 14px OpenSansLight;
-        border-radius: 0 0 10px 0;
-    }
-}
-
 @media (max-width: 813px) {
     .row > .list {
         background-color: #eaeaea;
@@ -539,7 +530,7 @@ div.history th {
 }
 
 @media all and (max-width: 640px) {
-    .navbar #mainActions {
+    .nav-menu #mainActions {
         background: white;
         color: #434343;
         font: normal 14px OpenSansLight;

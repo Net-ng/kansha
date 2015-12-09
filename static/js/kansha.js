@@ -18,7 +18,6 @@
         NS = YAHOO.namespace('kansha');
     // methods to refresh cards
     NS.reload_cards = {};
-    NS.uniqueTooltip = null;
 
     NS.app = {
         panel: undefined,
@@ -93,15 +92,6 @@
             func(node, 'hidden');
         },
 
-        toggleDisplay: function (el) {
-            var node = Dom.get(el);
-            if (YAHOO.util.Dom.hasClass(node, ['hidden'])) {
-                Dom.removeClass(node, 'hidden');
-            } else {
-                Dom.addClass(node, 'hidden');
-            }
-        },
-
         /**
          * Basic highlight function
          */
@@ -145,64 +135,6 @@
             root.find('a').click(function (e) {
                 e.stopPropagation();
             });
-        },
-
-        /**
-         * Animate menu function
-         */
-        toggleMenu: function (navId) {
-            var nextMarginTop = 0;
-            var tab = ECN('tab', 'div', navId);
-            var zone = ECN('navActions', '', navId)[0];
-            if (Dom.hasClass(tab, 'expand')[0]) {
-                nextMarginTop = -zone.clientHeight;
-                Dom.setStyle(navId, 'z-index', 25);
-                Dom.replaceClass(tab, 'tab expand', 'tab collapse');
-                Dom.setStyle('mask', 'display', 'none');
-            } else {
-                Dom.setStyle(navId, 'z-index', 30);
-                Dom.replaceClass(tab, 'tab collapse', 'tab expand');
-                Dom.setStyle('mask', 'display', 'block');
-                // Method must be called once
-                var caller = arguments[0];
-                var onMaskClick = function () {
-                    YAHOO.kansha.app.toggleMenu(caller);
-                    Event.removeListener('mask', 'click', onMaskClick);
-                };
-                Event.addListener('mask', 'click', onMaskClick);
-            }
-
-            var attributes = {'margin-top': { to: nextMarginTop - 3 }};
-            var anim_nav = new Anim(navId, attributes, 0.2);
-            anim_nav.animate();
-        },
-
-        initToggleKansha: function () {
-            YAHOO.util.Dom.batch(ECN('navbar', 'div'), function (e) {
-                var zone = ECN('navActions', '', e)[0];
-                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight - 3 + 'px');
-            });
-        },
-
-        initTooltips: function () {
-            var nodes = Selector.query('*[data-tooltip]');
-            NS.uniqueTooltip = NS.app.tooltip(nodes, ' ');
-            NS.uniqueTooltip.contextTriggerEvent.subscribe(function (type, args) {
-                var context = args[0];
-                this.cfg.setProperty('text', Dom.getAttribute(context, 'data-tooltip'));
-            });
-        },
-
-        /**
-         * Basic tooltip function
-         */
-        tooltip: function (ctx, txt) {
-            var ttp = new YAHOO.widget.Tooltip(txt, {context: ctx,
-                text: txt,
-                zIndex: 2000,
-                effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.20 }
-            });
-            return ttp;
         },
 
         /**
@@ -766,5 +698,3 @@
 }());
 
 YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.init);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initToggleKansha);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initTooltips);

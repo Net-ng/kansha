@@ -37,8 +37,7 @@ class Label(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = Label(new_data)
-        return new_obj
+        return Label(new_data)
 
     @property
     def data(self):

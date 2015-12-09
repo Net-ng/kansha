@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from kansha.card.fts_schema import Card
 from .comp import Board
 
 
@@ -44,5 +45,5 @@ class BoardsManager(object):
     @staticmethod
     def index_user_cards(user, search_engine):
         for card in user.my_cards:
-            search_engine.add_document(FTSCard.from_model(card))
+            search_engine.add_document(Card.from_model(card))
         search_engine.commit()

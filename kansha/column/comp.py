@@ -56,13 +56,17 @@ class Column(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = self._services(Column, new_data.id, None, self.card_extensions, self.search_engine, data=new_data)
-
+        new_column = self._services(Column, new_data.id, None, self.card_extensions, self.search_engine, data=new_data)
         for card in self.cards:
-            new_card = card().copy(new_obj, additional_data)
-            new_obj.cards.append(component.Component(new_card))
+            new_card = card().copy(new_column, additional_data)
+            new_column.index_card(new_card)
+            new_column.cards.append(component.Component(new_card))
+        return new_column
 
-        return new_obj
+    def index_card(self, card):
+        scard = fts_schema.Card.from_model(card.data)
+        self.search_engine.add_document(scard)
+        self.search_engine.commit()
 
     def set_reload_search(self):
         self.board.set_reload_search()

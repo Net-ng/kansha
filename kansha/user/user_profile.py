@@ -48,6 +48,7 @@ class UserProfile(object):
                 theme,
                 card_extensions,
                 user,
+                search_engine
             )
         )
         self.menu['my-cards'] = MenuEntry(
@@ -440,7 +441,7 @@ def get_userform(app_title, app_banner, theme, source):
 
 class UserBoards(object):
 
-    def __init__(self, app_title, app_banner, theme, card_extensions, user, mail_sender_service, assets_manager_service, services_service):
+    def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, mail_sender_service, assets_manager_service, services_service):
         """ UserBoards
 
         List of user's boards, and form to add new one board
@@ -463,6 +464,7 @@ class UserBoards(object):
         self.assets_manager = assets_manager_service
         self.user_id = user.username
         self.user_source = user.source
+        self.search_engine = search_engine
         self._services = services_service
         
         self.last_modified_boards = {}
@@ -474,7 +476,7 @@ class UserBoards(object):
 
     def create_board(self, board_id, comp):
         b = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
-                           self.card_extensions, None,
+                           self.card_extensions, self.search_engine,
                            on_board_delete=self.reload_boards,
                            on_board_archive=self.reload_boards,
                            on_board_restore=self.reload_boards,

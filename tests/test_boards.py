@@ -304,17 +304,21 @@ class BoardTest(unittest.TestCase):
 
         helpers.set_context(user)
         user_boards = user_profile.UserBoards('', '', '', {}, user.get_user_data(), None, None, helpers.create_services())
-        self.assertIn(board.id, user_boards.last_modified_boards)
+        self.assertNotIn(board.id, user_boards.last_modified_boards)
         self.assertNotIn(board.id, user_boards.guest_boards)
         self.assertIn(board.id, user_boards.my_boards)
         self.assertNotIn(board.id, user_boards.archived_boards)
 
         helpers.set_context(user2)
         user_boards = user_profile.UserBoards('', '', '', {}, user2.get_user_data(), None, None, helpers.create_services())
-        self.assertIn(board.id, user_boards.last_modified_boards)
+        self.assertNotIn(board.id, user_boards.last_modified_boards)
         self.assertIn(board.id, user_boards.guest_boards)
         self.assertNotIn(board.id, user_boards.my_boards)
         self.assertNotIn(board.id, user_boards.archived_boards)
+
+        notifications.add_history(board.data, None, user.get_user_data(), u'test', {})
+        user_boards.reload_boards()
+        self.assertIn(board.id, user_boards.last_modified_boards)
 
         board.archive_board()
         user_boards.reload_boards()

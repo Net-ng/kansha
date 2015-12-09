@@ -183,24 +183,24 @@ class Board(object):
         new_data = self.data.copy(None)
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_obj = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_data=False)
-        new_obj.add_member(owner, 'manager')
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_data=False)
+        new_board.add_member(owner, 'manager')
         additional_data['author'] = owner
 
         additional_data['labels'] = []
         for lbl in self.labels:
-            new_label = lbl.copy(new_obj, additional_data)
+            new_label = lbl.copy(new_board, additional_data)
             additional_data['labels'].append(new_label)
-            new_obj.labels.append(new_label)
+            new_board.labels.append(new_label)
 
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
-            new_col = column.copy(new_obj, additional_data)
-            new_obj.columns.append(component.Component(new_col))
+            new_col = column.copy(new_board, additional_data)
+            new_board.columns.append(component.Component(new_col))
 
-        new_obj.archive_column = new_obj.create_column(index=len(cols), title=_(u'Archive'), archive=True)
+        new_board.archive_column = new_board.create_column(index=len(cols), title=_(u'Archive'), archive=True)
 
-        return new_obj
+        return new_board
 
     def save_as_template(self, title, description, shared):
         user = security.get_user()

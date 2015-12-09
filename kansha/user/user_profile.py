@@ -505,7 +505,9 @@ class UserBoards(object):
                 if board_obj.archived:
                     self.archived_boards[board_id] = board_comp
                 else:
-                    last_modifications[board_id] = (board_obj.get_last_activity(), board_comp)
+                    last_activity = board_obj.get_last_activity()
+                    if last_activity is not None:
+                        last_modifications[board_id] = (last_activity, board_comp)
                     if security.has_permissions('manage', board_obj):
                         self.my_boards[board_id] = board_comp
                     elif security.has_permissions('edit', board_obj):

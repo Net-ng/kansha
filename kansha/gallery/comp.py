@@ -48,7 +48,7 @@ class Gallery(CardExtension):
         self.comp_id = str(random.randint(10000, 100000))
 
     def copy(self, parent, additional_data):
-        new_extension = self.__class__(parent, self.assets_manager)
+        new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
         for data_asset in self.data.get_assets():
             new_asset_id = self.assets_manager.copy(data_asset.filename)
             new_asset_data = data_asset.add_asset(new_asset_id, parent, additional_data['author'])

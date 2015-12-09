@@ -105,3 +105,11 @@ class DataHistory(Entity):
         if username:
             q = q.filter(cls.user.has(username=username))
         return q
+
+    @classmethod
+    def get_last_activity(cls, board):
+        q = database.session.query(cls.when)
+        q = q.filter(cls.board == board)
+        q = q.order_by(cls.when.desc())
+        q = q.limit(1)
+        return q.scalar()

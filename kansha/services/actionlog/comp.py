@@ -47,6 +47,9 @@ class ActionLog(object):
     def get_events(self, hours=None):
         return DataHistory.get_events(self.board and self.board.data, hours)
 
+    def get_last_activity(self):
+        return DataHistory.get_last_activity(self._board.data)
+
     @staticmethod
     def get_events_for_data(data_board, hours=None):
         return DataHistory.get_events(data_board, hours)

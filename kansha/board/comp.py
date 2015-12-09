@@ -829,7 +829,7 @@ class Board(object):
         return results
 
     def get_last_activity(self):
-        return notifications.get_last_activity(self.data)
+        return self.action_log.get_last_activity()
 
     def get_friends(self, user):
         """Return user friends for the current board

@@ -24,6 +24,8 @@ from kansha.models import Entity
 
 # messages
 
+# FIXME: how can extensions use their own .mo files for translations? So that we can
+# delegate message formating to them?
 EVENT_MESSAGES = {
     'card_create': _L(u'Card "%(card)s" has been added to column "%(column)s"'),
     'card_delete': _L(u'User %(author)s has deleted card "%(card)s"'),

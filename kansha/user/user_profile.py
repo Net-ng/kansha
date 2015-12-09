@@ -464,7 +464,7 @@ class UserBoards(object):
         self.user_id = user.username
         self.user_source = user.source
         self._services = services_service
-        
+
         self.last_modified_boards = {}
         self.my_boards = {}
         self.guest_boards = {}

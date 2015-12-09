@@ -10,12 +10,36 @@
 import json
 import random
 
+from peak.rules import when
+
+from nagare.i18n import _
 from nagare import component, database, i18n, security
 
 from kansha import title
 from kansha.cardextension import CardExtension
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataChecklist, DataChecklistItem
+
+
+@when(render_event, "action=='card_add_list'")
+def render_event_card_add_list(action, data):
+    return _(u'User %(author)s has added the checklist "%(list)s" to card "%(card)s"') % data
+
+
+@when(render_event, "action=='card_delete_list'")
+def render_event(action, data):
+    return _(u'User %(author)s has deleted the checklist "%(list)s" from card "%(card)s"') % data
+
+
+@when(render_event, "action=='card_listitem_done'")
+def render_event(action, data):
+    return _(u'User %(author)s has checked the item %(item)s from the checklist "%(list)s", on card "%(card)s"') % data
+
+
+@when(render_event, "action=='card_listitem_undone'")
+def render_event(action, data):
+    return _(u'User %(author)s has unchecked the item %(item)s from the checklist "%(list)s", on card "%(card)s"') % data
 
 
 class NewChecklistItem(object):

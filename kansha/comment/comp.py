@@ -10,14 +10,23 @@
 
 import datetime
 
+from peak.rules import when
+
+from nagare.i18n import _
 from nagare.database import session
 from nagare import component, security
 
 from kansha import validator
 from kansha.user import usermanager
 from kansha.cardextension import CardExtension
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataComment
+
+
+@when(render_event, "action=='card_add_comment'")
+def render_event_card_add_comment(action, data):
+    return _(u'User %(author)s has commented card "%(card)s"') % data
 
 
 class Comment(object):

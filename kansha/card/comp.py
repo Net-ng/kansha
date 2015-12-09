@@ -10,14 +10,17 @@
 
 import dateutil.parser
 
+from peak.rules import when
+
 from nagare.i18n import _
 from nagare import (component, log, security, editor, validator)
 
 from kansha import title
+from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha import exceptions, notifications
 from kansha.cardextension import CardExtension
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataCard
 
@@ -277,6 +280,11 @@ class Card(object):
 ############### Extension components ###################
 
 
+@when(render_event, "action=='card_weight'")
+def render_event_card_weight(action, data):
+    return _(u'Card "%(card)s" has been weighted from (%(from)s) to (%(to)s)') % data
+
+
 class CardWeightEditor(editor.Editor, CardExtension):
 
     """ Card weight Form
@@ -318,6 +326,16 @@ class CardWeightEditor(editor.Editor, CardExtension):
             super(CardWeightEditor, self).commit(self.fields)
             success = True
         return success
+
+
+@when(render_event, "action=='card_add_member'")
+def render_event_card_add_member(action, data):
+    return _(u'User %(user)s has been assigned to card "%(card)s"') % data
+
+
+@when(render_event, "action=='card_remove_member'")
+def render_event_card_remove_member(action, data):
+    return _(u'User %(user)s has been unassigned from card "%(card)s"') % data
 
 
 class CardMembers(CardExtension):

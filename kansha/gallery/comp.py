@@ -9,21 +9,27 @@
 
 import random
 
+from peak.rules import when
 from cgi import FieldStorage
 from webob.exc import HTTPOk
 
 from nagare.i18n import _
 from nagare import component, security, var
 
-from kansha import notifications
 from kansha.toolbox import overlay
 from kansha.user import usermanager
 from kansha.cardextension import CardExtension
 from kansha.authentication.database import validators
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataGallery, DataAsset
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
+
+
+@when(render_event, "action=='card_add_file'")
+def render_event_card_add_file(action, data):
+    return _(u'User %(author)s has added file "%(file)s" to card "%(card)s"') % data
 
 
 class Gallery(CardExtension):

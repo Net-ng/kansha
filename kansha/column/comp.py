@@ -238,9 +238,7 @@ class Column(object):
                 notifications.add_history(self.board.data, new_card,
                                           security.get_user().data,
                                           u'card_create', values)
-                scard = fts_schema.Card.from_model(new_card)
-                self.search_engine.add_document(scard)
-                self.search_engine.commit()
+                self.index_card(card_obj)
                 self.set_reload_search()
                 return card_obj
             else:

@@ -149,7 +149,7 @@ class Card(object):
     # Members
 
     def get_available_users(self):
-        """Return user's which are authorized to be add on this card
+        """Return user's which are authorized to be added on this card
 
         Return:
             - a set of user (UserData instance)

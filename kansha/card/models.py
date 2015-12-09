@@ -26,7 +26,7 @@ class DataCard(Entity):
     title = Field(UnicodeText)
     description = Field(UnicodeText, default=u'')
     index = Field(Integer)
-    creation_date = Field(DateTime)
+    creation_date = Field(DateTime, default=datetime.datetime.utcnow)
     column = ManyToOne('DataColumn')
 
     # feature data to move to card extensions

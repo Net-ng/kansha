@@ -211,7 +211,8 @@ class Board(events.EventHandlerMixIn):
             return self.delete_column(event.data)
         elif event.is_(events.CardArchived):
             return self.archive_card(event.emitter)
-        # terminus (for now)
+        elif event.is_(events.SearchIndexUpdated):
+            return self.set_reload_search()
 
     def save_as_template(self, title, description, shared):
         user = security.get_user()

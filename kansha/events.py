@@ -99,5 +99,5 @@ class CardArchived(Event):
     pass
 
 
-class SearchIndexModified(Event):
+class SearchIndexUpdated(Event):
     pass

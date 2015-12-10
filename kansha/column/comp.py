@@ -71,8 +71,6 @@ class Column(events.EventHandlerMixIn):
 
         return new_obj
 
-    def set_reload_search(self):
-        self.board.set_reload_search()
 
     def actions(self, action, comp):
         if action == 'delete':
@@ -83,11 +81,11 @@ class Column(events.EventHandlerMixIn):
             for card in self.cards:
                 self.delete_card(card())
             self.refresh()
-        self.set_reload_search() # ok
+        self.emit_event(comp, events.SearchIndexUpdated)
 
     def ui_create_card(self, comp, title):
         self.create_card(title)
-        self.set_reload_search() # ok
+        self.emit_event(comp, events.SearchIndexUpdated)
 
     def on_event(self, comp, event):
         if event.is_(events.CardClicked):
@@ -101,7 +99,7 @@ class Column(events.EventHandlerMixIn):
             scard = fts_schema.Card.from_model(card_bo.data)
             self.search_engine.update_document(scard)
             self.search_engine.commit()
-            self.set_reload_search() #ok
+            self.emit_event(comp, events.SearchIndexUpdated)
 
     @property
     def data(self):

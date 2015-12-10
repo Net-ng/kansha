@@ -137,7 +137,7 @@ def render_column_body(self, h, comp, *args):
     if not self.is_archive:
         with h.div(class_='list-footer', id=self.id + '_footer', **kw):
             if security.has_permissions('edit', self):
-                h << h.div(self.new_card)
+                h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
 
     h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
     return h.root

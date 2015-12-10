@@ -91,9 +91,13 @@ class PopinClosed(Event):
     pass
 
 
-class CardEditorClosed(Event):
+class CardEditorClosed(PopinClosed):
     pass
 
 
 class CardArchived(Event):
+    pass
+
+
+class SearchIndexModified(Event):
     pass

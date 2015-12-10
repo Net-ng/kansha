@@ -53,7 +53,7 @@ class Column(events.EventHandlerMixIn):
                     self.action_log, data=c))
                       for c in self.data.cards]
         self.new_card = component.Component(
-            card.NewCard(self)).on_answer(self.create_card)
+            card.NewCard(self))
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
@@ -74,16 +74,20 @@ class Column(events.EventHandlerMixIn):
     def set_reload_search(self):
         self.board.set_reload_search()
 
-    def actions(self, data, comp):
-        if data == 'delete':
+    def actions(self, action, comp):
+        if action == 'delete':
             self.emit_event(comp, events.ColumnDeleted, comp)
-        elif data == 'set_limit':
+        elif action == 'set_limit':
             self.card_counter.call(model='edit')
-        elif data == 'purge':
+        elif action == 'purge':
             for card in self.cards:
                 self.delete_card(card())
             self.refresh()
-        self.set_reload_search()
+        self.set_reload_search() # ok
+
+    def ui_create_card(self, comp, title):
+        self.create_card(title)
+        self.set_reload_search() # ok
 
     def on_event(self, comp, event):
         if event.is_(events.CardClicked):
@@ -97,7 +101,7 @@ class Column(events.EventHandlerMixIn):
             scard = fts_schema.Card.from_model(card_bo.data)
             self.search_engine.update_document(scard)
             self.search_engine.commit()
-            self.set_reload_search()
+            self.set_reload_search() #ok
 
     @property
     def data(self):
@@ -245,23 +249,21 @@ class Column(events.EventHandlerMixIn):
             - ``text`` -- the title of the new card
         """
         if text:
-            if self.can_add_cards:
-                new_card = self.data.create_card(text, security.get_user().data)
-                card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
-                self.cards.append(component.Component(card_obj, 'new'))
-                values = {'column_id': self.id,
-                          'column': self.get_title(),
-                          'card': new_card.title}
-                card_obj.action_log.add_history(
-                    security.get_user(),
-                    u'card_create', values)
-                scard = fts_schema.Card.from_model(new_card)
-                self.search_engine.add_document(scard)
-                self.search_engine.commit()
-                self.set_reload_search()
-                return card_obj
-            else:
+            if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
+            new_card = self.data.create_card(text, security.get_user().data)
+            card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
+            self.cards.append(component.Component(card_obj, 'new'))
+            values = {'column_id': self.id,
+                      'column': self.get_title(),
+                      'card': new_card.title}
+            card_obj.action_log.add_history(
+                security.get_user(),
+                u'card_create', values)
+            scard = fts_schema.Card.from_model(new_card)
+            self.search_engine.add_document(scard)
+            self.search_engine.commit()
+            return card_obj
 
     def delete_card(self, c):
         """Delete card

@@ -329,11 +329,18 @@ def render_members_many_user(self, h, comp, *args):
 def render_new_card(self, h, comp, *args):
     """Render card creator minified"""
     h << h.a(h.strong('+'), h.span(_('Add a card')),
-             class_='link-small').action(lambda: comp.answer(comp.call(model='add')))
+             class_='link-small').action(comp.becomes, model='add')
     if self.needs_refresh:
         h << h.script('increase_version();')
         self.toggle_refresh()
     return h.root
+
+
+def toggle_answer(card_editor, comp, text):
+    card_editor.toggle_refresh()
+    comp.becomes(model=None)
+    if text:
+        comp.answer(text())
 
 
 @presentation.render_for(NewCard, 'add')
@@ -342,15 +349,11 @@ def render_new_card_add(self, h, comp, *args):
     text = var.Var()
     id_ = h.generate_id('newCard')
 
-    def answer():
-        self.toggle_refresh()
-        comp.answer(text())
-
     with h.form(class_='card-add-form'):
         h << h.input(type='text', id=id_).action(text)
-        h << h.button(_('Add'), class_='btn btn-primary').action(answer)
+        h << h.button(_('Add'), class_='btn btn-primary').action(toggle_answer, self, comp, text)
         h << ' '
-        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
+        h << h.button(_('Cancel'), class_='btn').action(toggle_answer, self, comp, None)
 
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 

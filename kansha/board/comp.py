@@ -205,6 +205,12 @@ class Board(object):
 
         return new_obj
 
+    def handle_event(self, comp, event):
+        if event.type == 'ColumnDeleted':
+            # actually delete the column
+            return self.delete_column(event.data)
+        # terminus (for now)
+
     def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
@@ -335,7 +341,7 @@ class Board(object):
         self.increase_version()
         return col_obj
 
-    def delete_column(self, id_):
+    def delete_column(self, col_comp):
         """Delete a board's column
 
         In:
@@ -343,13 +349,10 @@ class Board(object):
         """
 
         security.check_permissions('edit', self)
-        for comp in self.columns:
-            if comp().data.id == id_:
-                self.columns.remove(comp)
-                comp().delete()
-                self.increase_version()
-                return popin.Empty()
-        raise exceptions.KanshaException('No column with id [%s] found' % id_)
+        self.columns.remove(col_comp)
+        col_comp().delete()
+        self.increase_version()
+        return popin.Empty()
 
     def move_cards(self, v):
         """Function called after drag and drop of a card or column

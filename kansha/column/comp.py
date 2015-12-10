@@ -13,6 +13,7 @@ from nagare.i18n import _
 from nagare import component, var, security, i18n
 
 from kansha import title
+from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
 from kansha.card import (comp as card, fts_schema)
@@ -74,15 +75,24 @@ class Column(object):
         self.board.set_reload_search()
 
     def actions(self, data, comp):
-        if data[0] == 'delete':
-            comp.answer(data[1])
-        elif data[0] == 'set_limit':
+        if data == 'delete':
+            self.emit_event(comp, events.ColumnDeleted, comp)
+        elif data == 'set_limit':
             self.card_counter.call(model='edit')
-        elif data[0] == 'purge':
+        elif data == 'purge':
             for card in self.cards:
                 self.delete_card(card())
             self.refresh()
         self.set_reload_search()
+
+    def emit_event(self, comp, kind, data):
+        event = kind(data, source=[self])
+        return comp.answer(event)
+
+    def handle_event(self, comp, event):
+        # bubble up
+        event.append(self)
+        return comp.answer(event)
 
     @property
     def data(self):

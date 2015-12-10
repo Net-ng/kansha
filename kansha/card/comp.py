@@ -16,6 +16,7 @@ from nagare.i18n import _
 from nagare import (component, log, security, editor, validator)
 
 from kansha import title
+from kansha import events
 from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
@@ -141,6 +142,16 @@ class Card(object):
         start = dateutil.parser.parse(request.GET['start']).date()
         for __, extension in self.extensions:
             extension().new_card_position(start)
+
+    def emit_event(self, comp, kind, data):
+        event = kind(data, source=[self])
+        return comp.answer(event)
+
+    def handle_event(self, comp, event):
+        # bubble up
+        event.append(self)
+        return comp.answer(event)
+
 
     ################################
     # Feature methods, persistency #

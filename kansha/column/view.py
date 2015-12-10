@@ -69,14 +69,14 @@ def render_column_overlay(self, h, comp, *args):
                             _(u'The list will be deleted. Are you sure?')
                         ).decode('UTF-8'),
                         'callback': h.a.action(
-                            lambda: comp.answer(('delete', self.data.id))
+                            comp.answer, 'delete'
                         ).get('onclick')
                     }
                 )
                 h << h.a(_(u'Delete this list'), onclick=onclick)
             h << h.li(
                 h.a(_('Set cards limit')).action(
-                    lambda: comp.answer(('set_limit', self.data.id))
+                    comp.answer, 'set_limit'
                 ),
                 id=self.id + '_counter_option'
             )
@@ -87,7 +87,7 @@ def render_column_overlay(self, h, comp, *args):
                         _(u'All cards will be deleted. Are you sure?')
                     ).decode('UTF-8'),
                     'purge_func': h.a.action(
-                        lambda: comp.answer(('purge', self.data.id))
+                        comp.answer, 'purge'
                     ).get('onclick')
                 }
                 h << h.a(_('Purge the cards'), onclick=onclick)

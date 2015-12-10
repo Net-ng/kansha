@@ -21,7 +21,7 @@ from kansha.card import (comp as card, fts_schema)
 from .models import DataColumn
 
 
-class Column(object):
+class Column(events.EventHandlerMixIn):
 
     """Column component
     """
@@ -85,11 +85,7 @@ class Column(object):
             self.refresh()
         self.set_reload_search()
 
-    def emit_event(self, comp, kind, data):
-        event = kind(data, source=[self])
-        return comp.answer(event)
-
-    def handle_event(self, comp, event):
+    def on_event(self, comp, event):
         if event.is_(events.CardClicked):
             card_comp = event.data
             card_comp.becomes(popin.Popin(card_comp, 'edit'))
@@ -102,10 +98,6 @@ class Column(object):
             self.search_engine.update_document(scard)
             self.search_engine.commit()
             self.set_reload_search()
-
-        # bubble up
-        event.append(self)
-        return comp.answer(event)
 
     @property
     def data(self):

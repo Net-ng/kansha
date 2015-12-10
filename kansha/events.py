@@ -9,6 +9,35 @@
 # --
 
 
+class EventHandlerMixIn(object):
+    """
+    Mix-in that implements:
+      - `emit_event`, to emit an event;
+      - `handle_event`, a callback for comp.on_answer if comp is expected to emit events.
+
+      `handle_event` calls a method `on_event(event)`
+      on `self` (if exists) to handle the event and then systematically bubbles the event up.
+      `handle_event` returns the return value of `on_event`
+      if any, or the return value of the upper levels.
+    """
+
+    def emit_event(self, comp, kind, data=None):
+        event = kind(data, source=[self])
+        return comp.answer(event)
+
+    def handle_event(self, comp, event):
+
+        local_res = None
+        local_handler = getattr(self, 'on_event')
+        if local_handler:
+            local_res = local_handler(comp, event)
+        # bubble up in any case
+        event.append(self)
+        upper_res = comp.answer(event)
+        # return local result in priority
+        return local_res or upper_res
+
+
 class Event(object):
     """Can be derived"""
 

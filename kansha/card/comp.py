@@ -39,7 +39,7 @@ class NewCard(object):
         self.needs_refresh = not self.needs_refresh
 
 
-class Card(object):
+class Card(events.EventHandlerMixIn):
 
     """Card component
     """
@@ -146,14 +146,7 @@ class Card(object):
     def emit_event(self, comp, kind, data=None):
         if kind == events.PopinClosed:
             kind = events.CardEditorClosed
-        event = kind(data, source=[self])
-        return comp.answer(event)
-
-    def handle_event(self, comp, event):
-        # bubble up
-        event.append(self)
-        return comp.answer(event)
-
+        super(Card, self).emit_event(comp, kind, data)
 
     ################################
     # Feature methods, persistency #

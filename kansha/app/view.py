@@ -161,7 +161,7 @@ def render_kansha(self, h, comp, *args):
             h << comp.render(h, model='oip')
             with h.div(id='application'):
                 h << comp.render(h, model='menu')
-                h << self.content
+                h << self.content.on_answer(self.handle_event)
 
     h.head.javascript_url('js/nagare.js')
 

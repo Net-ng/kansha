@@ -54,7 +54,7 @@ WEIGHTING_FREE = 1
 WEIGHTING_LIST = 2
 
 
-class Board(object):
+class Board(events.EventHandlerMixIn):
 
     """Board component"""
 
@@ -205,7 +205,7 @@ class Board(object):
 
         return new_obj
 
-    def handle_event(self, comp, event):
+    def on_event(self, comp, event):
         if event.is_(events.ColumnDeleted):
             # actually delete the column
             return self.delete_column(event.data)

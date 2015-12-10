@@ -131,6 +131,9 @@ class Kansha(object):
                 'edit'
             )
 
+    def handle_event(self, event):
+        log.info('Ignoring event %s', event)
+
 
 class MainTask(component.Task):
     def __init__(self, app_title, theme, config, card_extensions, search, services_service):

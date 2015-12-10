@@ -143,7 +143,9 @@ class Card(object):
         for __, extension in self.extensions:
             extension().new_card_position(start)
 
-    def emit_event(self, comp, kind, data):
+    def emit_event(self, comp, kind, data=None):
+        if kind == events.PopinClosed:
+            kind = events.CardEditorClosed
         event = kind(data, source=[self])
         return comp.answer(event)
 

@@ -10,7 +10,8 @@
 
 from nagare import ajax
 from nagare import presentation, component
-from nagare.i18n import _
+
+from kansha.events import PopinClosed
 
 
 class Popin(object):
@@ -33,6 +34,9 @@ class Popin(object):
         Popin.panel_id += 1
         self.id = 'panel%d' % Popin.panel_id
 
+    def emit_event(self, comp, kind, data):
+        '''Popin itself is transparent.'''
+        return comp.answer(kind(data, source=[self.comp()]))
 
 @presentation.render_for(Popin, 'dnd')
 @presentation.render_for(Popin, 'edit')
@@ -44,15 +48,16 @@ def render(self, h, comp, *args):
 @presentation.render_for(Popin)
 def render(self, h, comp, *args):
     """Render the popin and opens it"""
-
-    action = h.a.action(lambda: comp.answer(self.comp)).get('onclick')
+    business_obj = self.comp()
+    emit_event = getattr(business_obj, 'emit_event', self.emit_event)
+    action = h.a.action(emit_event, comp, PopinClosed, comp).get('onclick')
     close_func = 'function (){%s;}' % (action)
 
     h << self.comp
 
     with h.div(style='display: none'):
         with h.div(id=self.id):
-            self.comp.on_answer(comp.answer)
+            self.comp.on_answer(comp.answer) # Popin is transparent
             h << self.comp.render(h.AsyncRenderer(), model=self.model)
 
     h << h.script(

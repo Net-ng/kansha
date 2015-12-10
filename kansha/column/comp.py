@@ -90,6 +90,19 @@ class Column(object):
         return comp.answer(event)
 
     def handle_event(self, comp, event):
+        if event.is_(events.CardClicked):
+            card_comp = event.data
+            card_comp.becomes(popin.Popin(card_comp, 'edit'))
+        elif event.is_(events.CardEditorClosed):
+            card_bo = event.emitter
+            slot = event.data
+            slot.becomes(card_bo)
+            # card has been edited, reindex
+            scard = fts_schema.Card.from_model(card_bo.data)
+            self.search_engine.update_document(scard)
+            self.search_engine.commit()
+            self.set_reload_search()
+
         # bubble up
         event.append(self)
         return comp.answer(event)
@@ -288,21 +301,6 @@ class Column(object):
         values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
         c.action_log.add_history(security.get_user(), u'card_archive', values)
         self.board.archive_card(c)
-
-    def edit_card(self, c):
-        """Wraps a card component into a popin component.
-
-        In:
-            - ``c`` -- card to edit (or delete)
-
-        """
-        if c.call(popin.Popin(c, 'edit')) == 'delete':
-            self.archive_card(c())
-        scard = fts_schema.Card.from_model(c().data)
-        self.search_engine.update_document(scard)
-        self.search_engine.commit()
-        c().refresh()
-        self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):
 

@@ -28,7 +28,7 @@ from kansha.column import comp as column
 from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
 from kansha.authentication.database import forms
-from kansha import exceptions, notifications, validator
+from kansha import events, exceptions, validator
 
 from .models import DataBoard, DataBoardMember
 from .templates import SaveTemplateTask
@@ -206,9 +206,11 @@ class Board(object):
         return new_obj
 
     def handle_event(self, comp, event):
-        if event.type == 'ColumnDeleted':
+        if event.is_(events.ColumnDeleted):
             # actually delete the column
             return self.delete_column(event.data)
+        elif event.is_(events.CardArchived):
+            return self.archive_card(event.emitter)
         # terminus (for now)
 
     def save_as_template(self, title, description, shared):

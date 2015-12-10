@@ -12,6 +12,7 @@ import peak
 from nagare.i18n import _
 from nagare import ajax, presentation, security, var
 
+from kansha import events
 from kansha.card.comp import CardWeightEditor
 
 from .comp import Card, CardMembers, NewCard
@@ -43,7 +44,7 @@ def render(self, h, comp, *args):
 
     card_id = h.generate_id()
 
-    onclick = h.a.action(lambda: comp.answer(comp)).get('onclick').replace('return', "")
+    onclick = h.a.action(self.emit_event, comp, events.CardClicked, comp).get('onclick').replace('return', "")
     if self.column.board.card_matches:
         c_class = 'card highlight' if self.id in self.column.board.card_matches else 'card hidden'
     else:
@@ -117,7 +118,7 @@ def render_card_delete(self, h, comp, model):
     if security.has_permissions('edit', self) and not self.column.is_archive:
         close_func = ajax.js(
             'function (){%s;}' %
-            h.a.action(comp.answer, 'delete').get('onclick')
+            h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
         )
         h << h.button(
             h.i(class_='icon-trashcan'),

@@ -129,7 +129,7 @@ def render_column_body(self, h, comp, *args):
     model = 'dnd' if security.has_permissions('edit', self) else "no_dnd"
     id_ = h.generate_id()
     with h.div(class_='list-body', id=id_):
-        h << [card.on_answer(self.edit_card).render(h, model=model) for card in self.cards]
+        h << [card.on_answer(self.handle_event, comp).render(h, model=model) for card in self.cards]
         h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
     kw = {}
     if not security.has_permissions('edit', self):

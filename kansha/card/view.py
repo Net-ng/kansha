@@ -45,11 +45,7 @@ def render(self, h, comp, *args):
     card_id = h.generate_id()
 
     onclick = h.a.action(self.emit_event, comp, events.CardClicked, comp).get('onclick').replace('return', "")
-    if self.column.board.card_matches:
-        c_class = 'card highlight' if self.id in self.column.board.card_matches else 'card hidden'
-    else:
-        c_class = 'card'
-    with h.div(id=self.id, class_=c_class):
+    with h.div(id=self.id, class_='card'):
         with h.div(id=card_id, onclick=onclick):
             with h.div(class_='headers'):
                 h << [extension.render(h, 'header') for extension in extensions]

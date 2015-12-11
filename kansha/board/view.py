@@ -342,7 +342,7 @@ def render_Board_columns(self, h, comp, *args):
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
             # Call columns resize
-            h << h.script('YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();')
+            h << h.script("YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();$(window).trigger('reload_search');")
     return h.root
 
 

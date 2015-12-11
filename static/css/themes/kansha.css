@@ -511,3 +511,20 @@ i.icon {
     display: inline
 }
 /* End errors */
+
+/* Modal window */
+.modal {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.modal > div {
+    max-width: 680px;
+    position: relative;
+    margin: 10% auto;
+}
+/* End modal window */

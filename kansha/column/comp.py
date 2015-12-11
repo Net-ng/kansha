@@ -8,14 +8,12 @@
 # this distribution.
 #--
 
-from nagare import ajax
 from nagare.i18n import _
-from nagare import component, var, security, i18n
+from nagare import component, editor, i18n, security, var, validator as nagare_validator
 
-from kansha import title
 from kansha.toolbox import popin, overlay
-from kansha import exceptions, notifications
-from kansha.card import (comp as card, fts_schema)
+from kansha.card import comp as card, fts_schema
+from kansha import exceptions, notifications, title
 
 from .models import DataColumn
 
@@ -312,46 +310,41 @@ class Column(object):
         return self.data.archive
 
 
-class NewColumn(object):
+class NewColumnEditor(object):
 
     """Column creator component
     """
 
-    def __init__(self, board):
+    def __init__(self, columns_count):
         """Initialization
 
         In:
             - ``board`` -- the board the new column will belong
         """
-        self.board = board
-        self.index = var.Var()
-        self.title = var.Var()
-        self.nb_cards = var.Var()
-        self.nb_cards_comp = component.Component(self, 'nb_cards')
+        self.columns_count = columns_count
+        self.index = editor.Property(u'').validate(nagare_validator.to_int)
+        self.title = editor.Property(u'')
+        self.title.validate(lambda v: nagare_validator.to_string(v).not_empty(_(u'''Can't be empty''')))
+        self.nb_cards = editor.Property(u'').validate(self.validate_nb_cards)
 
-    def count_board_columns(self):
-        """Return the number of columns in the board
-        """
-        return len(self.board.columns)
+    def is_validated(self):
+        return all((
+            self.index.error is None,
+            self.title.error is None,
+            self.nb_cards.error is None
+        ))
 
-    def create_column(self, comp):
-        """Create the column.
+    def validate_nb_cards(self, value):
+        if value:
+            return nagare_validator.to_int(value)
+        return value
 
-        Create new column and call the model "closed" on component
+    def commit(self, comp):
+        if self.is_validated():
+            comp.answer((self.index.value, self.title.value, self.nb_cards.value))
 
-        In:
-            - ``comp`` -- component
-        """
-        nb_cards = int(self.nb_cards()) if self.nb_cards() else None
-        col = self.board.create_column(self.index(), self.title(), nb_cards or None)
-        col_id = 'list_' + str(col.id)
-
-        return (
-            "reload_columns();"
-            "YAHOO.kansha.app.saveLimit(%s,%s)" % (
-                ajax.py2js(col_id), ajax.py2js(nb_cards or 0)
-            )
-        )
+    def cancel(self, comp):
+        comp.answer(None)
 
 
 class CardsCounter(object):

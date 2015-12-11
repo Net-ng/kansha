@@ -42,7 +42,7 @@ def render_Board_menu(self, h, comp, *args):
             ))
 
             if security.has_permissions('edit', self):
-                h << h.li(self.add_list_overlay)
+                h << h.li(h.a(self.icons['add_list']).action(self.add_list))
                 h << h.li(self.edit_description_overlay)
             if security.has_permissions('manage', self):
                 h << h.li(self.save_template_overlay)
@@ -105,6 +105,7 @@ def render_Board(self, h, comp, *args):
 
     # TODO: Remove this popin
     h << self.popin.render(h.AsyncRenderer())
+    h << self.modal
 
     background_image_url = self.background_image_url
     background_image_position = self.background_image_position

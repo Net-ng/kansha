@@ -48,7 +48,7 @@ def render(self, h, comp, *args):
     action = h.a.action(lambda: comp.answer(self.comp)).get('onclick')
     close_func = 'function (){%s;}' % (action)
 
-    h << self.comp
+    h << self.comp.on_answer(lambda x: None)
 
     with h.div(style='display: none'):
         with h.div(id=self.id):
@@ -59,6 +59,26 @@ def render(self, h, comp, *args):
         "YAHOO.kansha.app.showPopin(%s, %s)" % (ajax.py2js(self.id), close_func)
     )
 
+    return h.root
+
+
+class Modal(object):
+    def __init__(self, comp):
+        if not isinstance(comp, component.Component):
+            comp = component.Component(comp)
+        self.comp = comp
+
+
+@presentation.render_for(Modal)
+def render_PopinV2(self, h, comp, model):
+    with h.div(class_='modal', id_='modal'):
+        with h.div:
+            h << self.comp.on_answer(comp.answer)
+    h << h.script('''$("#modal").click(function(e) {
+    if ($(e.target).hasClass('modal')) {
+        window.location = "%s";
+    }
+});''' % h.a.action(comp.answer).get('href'))
     return h.root
 
 

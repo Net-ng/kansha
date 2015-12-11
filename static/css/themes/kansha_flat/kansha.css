@@ -338,3 +338,17 @@ a:hover .ico-btn {
     color: #c22e2e;
 }
 /* End errors */
+
+/* Modal window */
+.modal {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal > div {
+    border-radius: 5px;
+    background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
+    padding: 8px 8px 8px 8px;
+}
+/* End modal window */

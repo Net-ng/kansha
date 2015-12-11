@@ -11,9 +11,9 @@
 from nagare.i18n import _
 from nagare import ajax, presentation, security, var
 
-from kansha.toolbox import remote
+from kansha.toolbox import popin
 
-from .comp import CardsCounter, Column, NewColumn
+from .comp import CardsCounter, Column, NewColumnEditor
 
 
 @presentation.render_for(Column)
@@ -143,42 +143,40 @@ def render_column_body(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(NewColumn)
-def render_newcolumn(self, h, comp, *args):
+@presentation.render_for(NewColumnEditor)
+def render_NewColumnEditor(self, h, comp, *args):
     """Render column creator"""
-    id_ = h.generate_id('newColumn')
+    h << h.h2(_(u'Add list'))
     with h.form:
-        h << h.label(_('Name'))
-        h << h.input(id=id_, type='text', placeholder=_(
-            'List title')).action(self.title)
-        h << h.label(_('Position'))
-        with h.select().action(lambda v: self.index(int(v))):
-            for i in xrange(1, self.count_board_columns() + 2):
-                h << h.option(i, value=i - 1).selected(i)
-        h << self.nb_cards_comp
+        with h.div:
+            id_ = h.generate_id()
+            h << h.label(_('Name'), for_=id)
+            h << h.input(id=id_, type='text', placeholder=_('List title')).error(self.title.error).action(self.title)
+
+        with h.div:
+            id_ = h.generate_id()
+            h << h.label(_('Position'), for_=id_)
+            with h.select(id=id_).error(self.index.error).action(self.index):
+                for i in xrange(1, self.columns_count + 2):
+                    h << h.option(i, value=i - 1).selected(i)
+
+        with h.div:
+            id_ = h.generate_id()
+            h << h.label(_('Number max of cards'), id_=id_)
+            h << h.input(id=id_, type='text').error(self.nb_cards.error).action(self.nb_cards)
+            h << h.script(
+                """YAHOO.util.Event.on(%s, 'keyup', function (e) {
+                        var result =this.value.replace(/[^0-9]/g, '')
+                        if (this.value !=result) {
+                               this.value = result;
+                            }
+                 })""" % ajax.py2js(id_)
+            )
+
         with h.div(class_='buttons'):
-            h << h.button(_('Add'), class_=('btn btn-primary'),
-                          ).action(remote.Action(lambda: self.create_column(comp)))
+            h << h.button(_('Add'), class_=('btn btn-primary')).action(self.commit, comp)
             h << ' '
-            h << h.button(_('Cancel'), class_='btn').action(
-                remote.Action(lambda: """YAHOO.kansha.app.hideOverlay()"""))
-    return h.root
-
-
-@presentation.render_for(NewColumn, 'nb_cards')
-def render_newcolumn_nbcards(self, h, comp, *args):
-    id_ = h.generate_id('Cardnumber')
-    with h.form:
-        h << h.label(_('Number max of cards'))
-        h << h.input(id=id_, type='text').action(self.nb_cards)
-        h << h.script(
-            """YAHOO.util.Event.on(%s, 'keyup', function (e) {
-                    var result =this.value.replace(/[^0-9]/g, '')
-                    if (this.value !=result) {
-                           this.value = result;
-                        }
-             })""" % ajax.py2js(id_)
-        )
+            h << h.a(_('Cancel'), class_='btn').action(self.cancel, comp)
     return h.root
 
 

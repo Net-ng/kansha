@@ -89,6 +89,7 @@ class Board(object):
 
         self.version = self.data.version
         self.popin = component.Component(popin.Empty())
+        self.modal = component.Component(popin.Empty())
         self.card_matches = set()  # search results
         self.last_search = u''
 
@@ -136,13 +137,6 @@ class Board(object):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
-        # Add new column component
-        self.new_column = component.Component(column.NewColumn(self))
-        self.add_list_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['add_list'],
-                            lambda r: self.new_column.render(r),
-                            title=_("Add list"), dynamic=True))
-
         # Edit description component
         self.description = component.Component(BoardDescription(self.get_description))
         self.description.on_answer(self.set_description)
@@ -178,6 +172,13 @@ class Board(object):
     def reload_save_template_comp(self):
         self.save_template_comp = component.Component(SaveTemplateTask(self))
         self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())
+
+    def add_list(self):
+        new_column_editor = column.NewColumnEditor(len(self.columns))
+        answer = self.modal.call(popin.Modal(new_column_editor))
+        if answer:
+            index, title, nb_cards = answer
+            self.create_column(index, title, nb_cards if nb_cards else None)
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
@@ -328,7 +329,7 @@ class Board(object):
             self.card_extensions, self.search_engine)
         if not archive or (archive and self.archive):
             self.columns.insert(
-                index, component.Component(col_obj, 'new'))
+                index, component.Component(col_obj))
         self.increase_version()
         return col_obj
 

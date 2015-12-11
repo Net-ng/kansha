@@ -69,45 +69,6 @@ class BoardTest(unittest.TestCase):
         board.delete_column(column_id)
         self.assertEqual(board.count_columns(), 2)
 
-    def test_move_cards(self):
-        """Test move cards"""
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        self.assertEqual(len(board.columns), 3)
-
-        data = []
-        for col in board.columns:
-            cards = [c().id for c in col().cards]
-            data.append([col().id, cards])
-
-        obj = data.pop(0)
-        data.insert(1, obj)
-
-        card = data[1][1].pop(-1)
-        data[0][1].append(card)
-        card = data[1][1].pop(1)
-        data[2][1].append(card)
-        card = data[2][1].pop(0)
-        data[0][1].append(card)
-        card = data[1][1].pop(1)
-        data[0][1].append(card)
-        card = data[1][1].pop(1)
-        data[2][1].append(card)
-        data[0][1].append(card)
-
-        move_cards_value = json.dumps(data)
-        board.move_cards(move_cards_value)
-
-        self.assertEqual(len(board.data.columns), 4)
-        self.assertEqual(len(board.columns), 3)
-
-        for index, (col_id, cards) in enumerate(data):
-            col = board.columns[index]()
-            self.assertEqual(col.id, col_id)
-            self.assertEqual(len(col.cards), len(cards))
-            card_ids = [c().id for c in col.cards]
-            self.assertEqual(card_ids, cards)
-
     def test_set_visibility_1(self):
         """Test set visibility method 1
 

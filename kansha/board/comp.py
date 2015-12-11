@@ -366,34 +366,6 @@ class Board(events.EventHandlerMixIn):
         self.increase_version()
         return popin.Empty()
 
-    def move_cards(self, v):
-        """Function called after drag and drop of a card or column
-
-        In:
-            - ``v`` -- a structure containing the lists/cards position
-                       (ex . [ ["list_1", ["card_1", "card_2"]],
-                             ["list_2", ["card_3", "card_4"]] ])
-        """
-        security.check_permissions('edit', self)
-        ids = json.loads(v)
-        cards = {}
-        cols = {}
-
-        for col in self.columns:
-            cards.update(dict([(card().id, card) for card in col().cards
-                               if not isinstance(card(), popin.Empty)]))
-            cols[col().id] = col
-
-        # move columns
-        self.columns = []
-        for (col_index, (col_id, card_ids)) in enumerate(ids):
-            comp_col = cols[col_id]
-            self.columns.append(comp_col)
-            comp_col().change_index(col_index)
-            comp_col().move_cards([cards[id_] for id_ in card_ids])
-
-        session.flush()
-
     def update_card_position(self, data):
         security.check_permissions('edit', self)
         data = json.loads(data)

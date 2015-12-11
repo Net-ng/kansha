@@ -182,19 +182,6 @@ class Column(events.EventHandlerMixIn):
             self.archive_card(card())
         DataColumn.delete_column(self.data)
 
-    def move_cards(self, cards):
-        """Replace self.cards by cards
-
-        In:
-            - ``cards`` -- list of Card instances wrapped on component
-        """
-
-        self.cards = cards
-        # remove cards for data part
-        self.data.cards = []
-        for card_index, card in enumerate(cards):
-            card().move_card(card_index, self)
-
     def move_card(self, card_id, index):
         found = False
         for card_index, card in enumerate(self.data.cards):

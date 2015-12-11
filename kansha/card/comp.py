@@ -111,7 +111,7 @@ class Card(events.EventHandlerMixIn):
         return self.data.title
 
     def delete(self):
-        """Delete itself"""
+        """Prepare for deletion"""
         for __, extension in self.extensions:
             extension().delete()
         self.data.delete()

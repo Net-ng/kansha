@@ -69,13 +69,6 @@ class Card(events.EventHandlerMixIn):
         return new_obj
 
     @property
-    def must_reload_search(self):
-        return self.board.must_reload_search
-
-    def reload_search(self):
-        return self.board.reload_search()
-
-    @property
     def board(self):
         return self.column.board
 
@@ -146,7 +139,7 @@ class Card(events.EventHandlerMixIn):
     def emit_event(self, comp, kind, data=None):
         if kind == events.PopinClosed:
             kind = events.CardEditorClosed
-        super(Card, self).emit_event(comp, kind, data)
+        return super(Card, self).emit_event(comp, kind, data)
 
     ################################
     # Feature methods, persistency #

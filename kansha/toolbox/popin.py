@@ -53,7 +53,7 @@ def render(self, h, comp, *args):
     action = h.a.action(emit_event, comp, PopinClosed, comp).get('onclick')
     close_func = 'function (){%s;}' % (action)
 
-    h << self.comp
+    h << self.comp.on_answer(lambda x: None) # Ignore answers from this view
 
     with h.div(style='display: none'):
         with h.div(id=self.id):

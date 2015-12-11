@@ -66,8 +66,7 @@ def render(self, h, comp, *args):
             h.a.action(ajax.Update()).get('onclick')
         )
     )
-    if self.must_reload_search:
-        self.reload_search()
+    if self.emit_event(comp, events.CardDisplayed) == 'reload_search':
         h << h.script('''$(window).trigger('reload_search');''')
 
     return h.root

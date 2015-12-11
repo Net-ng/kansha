@@ -206,13 +206,22 @@ class Board(events.EventHandlerMixIn):
         return new_obj
 
     def on_event(self, comp, event):
+        result = None
         if event.is_(events.ColumnDeleted):
             # actually delete the column
-            return self.delete_column(event.data)
+            result = self.delete_column(event.data)
         elif event.is_(events.CardArchived):
-            return self.archive_card(event.emitter)
+            result = self.archive_card(event.emitter)
         elif event.is_(events.SearchIndexUpdated):
-            return self.set_reload_search()
+            result = self.set_reload_search()
+        elif event.is_(events.CardDisplayed):
+            if self.must_reload_search:
+                self.reload_search()
+                result = 'reload_search'
+            else:
+                result = 'nop'
+
+        return result
 
     def save_as_template(self, title, description, shared):
         user = security.get_user()

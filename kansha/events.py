@@ -80,24 +80,55 @@ class Event(object):
 # Standard events
 
 class ColumnDeleted(Event):
+    """
+    The user clicked on the 'delete column' action.
+    `data` is the column component (component.Component).
+    """
     pass
 
 
 class CardClicked(Event):
+    """
+    The user clicked on a card.
+    `data` is the card component (component.Component)
+    """
     pass
 
 
 class PopinClosed(Event):
+    """
+    The Popin has closed.
+    `data` is the component.Component containing the Popin.
+    """
     pass
 
 
 class CardEditorClosed(PopinClosed):
+    """
+    In the particular case when the Popin contains the card editor.
+    """
     pass
 
 
 class CardArchived(Event):
+    """
+    The user clicked on the `Delete` button in the card editor.
+    No payload.
+    """
     pass
 
 
 class SearchIndexUpdated(Event):
+    """
+    Some operations have been committed on the search index.
+    No payload.
+    """
+    pass
+
+
+class CardDisplayed(Event):
+    """
+    A card has just been (re-)displayed on the board (default form).
+    No payload.
+    """
     pass

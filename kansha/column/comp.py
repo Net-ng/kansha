@@ -71,7 +71,6 @@ class Column(events.EventHandlerMixIn):
 
         return new_obj
 
-
     def actions(self, action, comp):
         if action == 'delete':
             self.emit_event(comp, events.ColumnDeleted, comp)

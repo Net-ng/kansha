@@ -92,6 +92,10 @@ class Card(events.EventHandlerMixIn):
         self._data = None
         return self.__dict__
 
+    @property
+    def index(self):
+        return self.data.index
+
     def set_title(self, title):
         """Set title
 
@@ -114,19 +118,6 @@ class Card(events.EventHandlerMixIn):
         """Prepare for deletion"""
         for __, extension in self.extensions:
             extension().delete()
-        self.data.delete()
-
-    def move_card(self, card_index, column):
-        """Move card
-
-        In:
-            - ``card_index`` -- new index of the card
-            - ``column`` -- new father
-        """
-        data_card = self.data
-        data_card.index = card_index
-        column.data.cards.append(data_card)
-        self.column = column
 
     def card_dropped(self, request, response):
         """

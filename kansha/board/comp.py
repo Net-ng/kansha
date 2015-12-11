@@ -376,22 +376,20 @@ class Board(events.EventHandlerMixIn):
 
         orig = cols[data['orig']]
 
-        if data['orig'] != data['dest']:  # Move from one column to another
-            dest = cols[data['dest']]
-            card = orig.remove_card(data['card'])
-            dest.insert_card(card, data['index'])
-            values = {'from': orig.get_title(),
-                      'to': dest.get_title(),
-                      'card': card().data.title}
-            self.action_log.for_card(card()).add_history(
-                security.get_user(),
-                u'card_move', values)
-            # reindex it in case it has been moved to the archive column
-            scard = fts_schema.Card.from_model(card().data)
-            self.search_engine.update_document(scard)
-            self.search_engine.commit()
-        else:  # Reorder only
-            orig.move_card(data['card'], data['index'])
+        dest = cols[data['dest']]
+        card_comp = orig.remove_card_by_id(data['card'])
+        dest.insert_card_comp(data['index'], card_comp)
+        card = card_comp()
+        values = {'from': orig.get_title(),
+                  'to': dest.get_title(),
+                  'card': card.get_title()}
+        self.action_log.for_card(card).add_history(
+            security.get_user(),
+            u'card_move', values)
+        # reindex it in case it has been moved to the archive column
+        scard = fts_schema.Card.from_model(card.data)
+        self.search_engine.update_document(scard)
+        self.search_engine.commit()
         session.flush()
 
     def update_column_position(self, data):
@@ -448,13 +446,13 @@ class Board(events.EventHandlerMixIn):
         self.refresh()
         self.set_reload_search()
 
-    def archive_card(self, c):
+    def archive_card(self, card):
         """Archive card
 
         In:
-            - ``c`` -- card to archive
+            - ``card`` -- card to archive
         """
-        c.move_card(0, self.archive_column)
+        self.archive_column.append_card(card)
         self.archive_column.refresh()
 
     @property

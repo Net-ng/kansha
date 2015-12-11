@@ -77,9 +77,7 @@ class Column(events.EventHandlerMixIn):
         elif action == 'set_limit':
             self.card_counter.call(model='edit')
         elif action == 'purge':
-            for card in self.cards:
-                self.delete_card(card())
-            self.refresh()
+            self.purge_cards()
         self.emit_event(comp, events.SearchIndexUpdated)
 
     def ui_create_card(self, comp, title):
@@ -182,49 +180,65 @@ class Column(events.EventHandlerMixIn):
             self.archive_card(card())
         DataColumn.delete_column(self.data)
 
-    def move_card(self, card_id, index):
-        found = False
-        for card_index, card in enumerate(self.data.cards):
-            if 'card_%s' % card.id == card_id:
-                found = True
-                break
-        if not found:
+    def remove_card(self, card):
+        self.cards.pop(card.index)
+        self.data.remove_card(card.data)
+
+    def remove_card_by_id(self, card_id):
+        """Remove card and return corresponding Component."""
+        # find component
+        card_comp = filter(lambda x: x().id == card_id, self.cards)[0]
+        try:
+            self.remove_card(card_comp())
+        except (IndexError, ValueError):
             raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        data_column = self.data
-        card = data_column.cards.pop(card_index)
-        data_column.cards.insert(index, card)
-        card = self.cards.pop(card_index)
-        self.cards.insert(index, card)
+        return card_comp
 
-    def remove_card(self, card_id):
-        found = False
-        for card_index, card in enumerate(self.cards):
-            if card().id == card_id:
-                found = True
-                break
-        if not found:
-            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        removed_card = self.cards.pop(card_index)
-        return removed_card
+    def insert_card(self, index, card):
+        self.data.insert_card(index, card.data)
+        self.cards.insert(index, component.Component(card))
 
-    def insert_card(self, card, index):
-        self.cards.insert(index, card)
-        card().move_card(index, self)
-        data_column = self.data
-        c = data_column.cards
-        c.remove(card().data)
-        c.insert(index, card().data)
+    def insert_card_comp(self, index, card_comp):
+        self.data.insert_card(index, card_comp().data)
+        self.cards.insert(index, card_comp)
 
-    def get_available_labels(self):
-        return self.board.labels
-
-    def change_index(self, new_index):
-        """Change index of the column
+    def delete_card(self, card):
+        """Delete card
 
         In:
-            - ``index`` -- new index
+            - ``card`` -- card to delete
         """
-        self.data.index = new_index
+        self.cards.pop(card.index)
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': card.get_title()}
+        card.action_log.add_history(
+            security.get_user(),
+            u'card_delete', values)
+        self.search_engine.delete_document(fts_schema.Card, card.id)
+        self.search_engine.commit()
+        card.delete()
+        self.data.delete_card(card.data)
+
+    def purge_cards(self):
+        for card_comp in self.cards:
+            card_comp().delete()
+        del self.cards[:]
+        self.data.purge_cards()
+
+    def append_card(self, card):
+        self.data.append_card(card.data)
+        self.cards.append(component.Component(card))
+
+    # FIXME: move to board only, use Events
+    def archive_card(self, c):
+        """Delete card
+
+        In:
+            - ``c`` -- card to delete
+        """
+        self.cards = [card for card in self.cards if c != card()]
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
+        c.action_log.add_history(security.get_user(), u'card_archive', values)
+        self.board.archive_card(c)
 
     def create_card(self, text=''):
         """Create a new card
@@ -249,36 +263,21 @@ class Column(events.EventHandlerMixIn):
             self.search_engine.commit()
             return card_obj
 
-    def delete_card(self, c):
-        """Delete card
+    def get_available_labels(self):
+        return self.board.labels
+
+    def change_index(self, new_index):
+        """Change index of the column
 
         In:
-            - ``c`` -- card to delete
+            - ``index`` -- new index
         """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        c.action_log.add_history(
-            security.get_user(),
-            u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, c.id)
-        self.search_engine.commit()
-        c.delete()
+        self.data.index = new_index
 
     def refresh(self):
         self.cards = [component.Component(
             self._services(card.Card, c.id, self, self.card_extensions, self.action_log, data=c)
             ) for c in self.data.cards]
-
-    def archive_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        c.action_log.add_history(security.get_user(), u'card_archive', values)
-        self.board.archive_card(c)
 
     def set_nb_cards(self, nb_cards):
 

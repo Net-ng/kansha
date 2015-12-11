@@ -66,6 +66,25 @@ class DataColumn(Entity):
         self.cards.append(card)
         return card
 
+    def remove_card(self, card):
+        if card in self.cards:
+            self.cards.remove(card)
+
+    def insert_card(self, index, card):
+        self.cards.insert(index, card)
+
+    def delete_card(self, card):
+        self.remove_card(card)
+        card.delete()
+
+    def purge_cards(self):
+        for card in self.cards:
+            card.delete()
+
+    def append_card(self, card):
+        card.index = None
+        self.cards.append(card)
+
     @classmethod
     def delete_column(cls, column):
         """Delete column

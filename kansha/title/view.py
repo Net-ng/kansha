@@ -15,7 +15,7 @@ from .comp import EditableTitle, Title
 
 
 @presentation.render_for(Title)
-def render(self, h, comp, *args):
+def render(self, h, comp, model):
     with h.a(class_=self.class_).action(comp.answer):
         title = self.title()
         h << (h.input(placeholder=self.placeholder) if (self.placeholder and title is None) else title)

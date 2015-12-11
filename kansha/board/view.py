@@ -8,8 +8,6 @@
 # this distribution.
 # --
 
-import json
-
 from nagare.i18n import _, _N
 from nagare import ajax, component, presentation, security, var
 
@@ -119,7 +117,7 @@ def render_Board(self, h, comp, *args):
     with h.div(class_='board', style=style):
         with h.div(class_='header'):
             with h.div(class_='board-title'):
-                h << self.title.render(h.AsyncRenderer(), None if security.has_permissions('edit', self) else 'readonly')
+                h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
             h << comp.render(h, 'switch')
         with h.div(class_='bbody'):
             h << comp.render(h.AsyncRenderer(), self.model)
@@ -340,7 +338,7 @@ def render_Board_columns(self, h, comp, *args):
             with h.div(id='lists'):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
-                    model = None if not security.has_permissions('edit', self) else column.model or 'dnd'
+                    model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
                     on_answer = lambda v, column = column: column.becomes(self.delete_column(v))
                     h << column.on_answer(on_answer).render(h, model)
 

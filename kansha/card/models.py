@@ -68,3 +68,7 @@ class DataCard(Entity):
     def remove_member(self, datauser):
         if datauser in self.members:
             self.members.remove(datauser)
+
+    @property
+    def archived(self):
+        return self.column.archive

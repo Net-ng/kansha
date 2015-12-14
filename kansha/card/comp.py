@@ -93,6 +93,10 @@ class Card(events.EventHandlerMixIn):
         return self.__dict__
 
     @property
+    def archived(self):
+        return self.data.archived
+
+    @property
     def index(self):
         return self.data.index
 

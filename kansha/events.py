@@ -132,3 +132,11 @@ class CardDisplayed(Event):
     No payload.
     """
     pass
+
+
+# "Request" events
+
+class IsCardInArchive(Event):
+    """Emitted by card. No payload."""
+    pass
+

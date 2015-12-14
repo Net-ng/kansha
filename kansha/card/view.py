@@ -110,7 +110,7 @@ def render_card_edit(self, h, comp, *args):
 
 @presentation.render_for(Card, 'delete-action')
 def render_card_delete(self, h, comp, model):
-    if security.has_permissions('edit', self) and not self.column.is_archive:
+    if security.has_permissions('edit', self) and not self.archived:
         close_func = ajax.js(
             'function (){%s;}' %
             h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
@@ -121,17 +121,12 @@ def render_card_delete(self, h, comp, model):
             class_='btn delete',
             onclick=(
                 "if (confirm(%(confirm_msg)s)) {"
-                "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
+                "   YAHOO.kansha.app.archiveCard(%(close_func)s);"
                 "   reload_columns();"
                 "}"
                 "return false" %
                 {
                     'close_func': ajax.py2js(close_func),
-                    'id': ajax.py2js(self.id),
-                    'col_id': ajax.py2js(self.column.id),
-                    'archive_col_id': ajax.py2js(
-                        self.column.board.archive_column.id
-                    ),
                     'confirm_msg': ajax.py2js(
                         _(u'This card will be deleted. Are you sure?')
                     ).decode('UTF-8')

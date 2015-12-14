@@ -360,7 +360,7 @@
             increase_version();
         },
 
-        archiveCard: function (deleteFunction, card_id, column_id, archive_column_id) {
+        archiveCard: function (deleteFunction) {
             //Close popin
             if (NS.app.popin) {
                 deleteFunction();
@@ -371,26 +371,6 @@
             }
             if (NS.app.isMobile()) {
                 NS.app.show('application', true);
-            }
-            //Remove card from column
-            var el = Dom.get(card_id),
-                dndCard = el.parentNode.parentNode,
-                parent = dndCard.parentNode;
-            parent.removeChild(dndCard);
-            NS.app.countCards(column_id);
-
-            //Add card to archive column
-            var archive_column = Dom.get(archive_column_id);
-            if (archive_column !== null) {
-                var body = archive_column.childNodes[3];
-
-                if (body.firstChild) {
-                    body.insertBefore(dndCard, body.firstChild);
-                } else {
-                    body.appendChild(dndCard);
-                }
-
-                NS.app.countCards(archive_column_id);
             }
 
             increase_version();

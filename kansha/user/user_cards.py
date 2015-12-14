@@ -17,9 +17,9 @@ from sqlalchemy import desc
 from nagare import (component, presentation, i18n)
 from kansha.card import comp as card
 from kansha.card.models import DataCard
-from kansha.column.models import DataColumn
 from kansha.board.models import DataBoard
-
+from kansha.column.models import DataColumn
+from kansha.services.actionlog import DummyActionLog
 
 class UserCards(object):
 
@@ -73,9 +73,10 @@ class UserCards(object):
         if self._cards is None:
             order_keys = [self.KEYS[feat] for feat in self.order_by]
             order = [prop() for prop, __ in order_keys]
+            action_log = DummyActionLog()
             self._cards = [
                 component.Component(
-                    self._services(card.Card, c.id, None, {}, data=c)
+                    self._services(card.Card, c.id, None, {}, action_log, data=c)
                 )
                 # FIXME: nosql in components!
                 for c in (self.user.cards.join(DataCard.column).

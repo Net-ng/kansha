@@ -58,3 +58,18 @@ class ActionLog(object):
     def get_history(self):
         'internal'
         return DataHistory.get_history(self.board.data, cardid=self.card_id(), username=self.user_id())
+
+
+class DummyActionLog(ActionLog):
+
+    def __init__(self):
+        super(DummyActionLog, self).__init__(None)
+
+    def add_history(self, user, action, data):
+        pass
+
+    def get_last_activity(self):
+        return []
+
+    def get_history(self):
+        return []

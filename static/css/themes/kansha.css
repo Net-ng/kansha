@@ -525,6 +525,6 @@ i.icon {
 .modal > div {
     max-width: 680px;
     position: relative;
-    margin: 10% auto;
+    margin: 70px auto 30px auto;
 }
 /* End modal window */

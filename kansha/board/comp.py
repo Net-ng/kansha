@@ -137,14 +137,6 @@ class Board(object):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
-        self.save_template_comp = None
-        self.reload_save_template_comp()
-        self.save_template_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['save_template'],
-                            lambda r: self.save_template_comp.render(r),
-                            title=_(u"Save board as template"), dynamic=True)
-        )
-
         self.must_reload_search = False
 
     @classmethod
@@ -159,10 +151,6 @@ class Board(object):
     def exists(cls, **kw):
         return DataBoard.exists(**kw)
 
-    def reload_save_template_comp(self):
-        self.save_template_comp = component.Component(SaveTemplateTask(self))
-        self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())
-
     def add_list(self):
         new_column_editor = column.NewColumnEditor(len(self.columns))
         answer = self.modal.call(popin.Modal(new_column_editor))
@@ -175,6 +163,22 @@ class Board(object):
         answer = self.modal.call(popin.Modal(description_editor))
         if answer:
             self.set_description(answer)
+
+    def save_template(self):
+        save_template_editor = SaveTemplateTask(self.get_title(),
+                                                self.get_description(),
+                                                self.save_as_template)
+        self.modal.call(popin.Modal(save_template_editor))
+
+
+    def save_as_template(self, title, description, shared):
+        user = security.get_user()
+        template = self.copy(user, {})
+        template.mark_as_template()
+        template.set_title(title)
+        template.set_description(description)
+        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        return template
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
@@ -198,15 +202,6 @@ class Board(object):
         new_obj.archive_column = new_obj.create_column(index=len(cols), title=_(u'Archive'), archive=True)
 
         return new_obj
-
-    def save_as_template(self, title, description, shared):
-        user = security.get_user()
-        template = self.copy(user, {})
-        template.mark_as_template()
-        template.set_title(title)
-        template.set_description(description)
-        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
-        return template
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

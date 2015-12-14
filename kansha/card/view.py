@@ -99,7 +99,7 @@ def render_card_edit(self, h, comp, *args):
     with h.div(class_='card-edit-form'):
         with h.div(class_='header'):
             with h.div(class_='title'):
-                h << self.title.render(h.AsyncRenderer(), None if security.has_permissions('edit', self) else 'readonly')
+                h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
                 h << h.span('(%s)' % self.column.get_title(), class_='reminder')  # FIXME: no direct access to column
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):

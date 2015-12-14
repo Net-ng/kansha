@@ -30,17 +30,7 @@ from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile
 def render_Board_menu(self, h, comp, *args):
     with h.div(class_='nav-menu'):
         with h.ul(class_='actions'):
-            h << h.li(h.a(self.icons['preferences']).action(
-                lambda: self.popin.call(
-                    popin.Popin(
-                        component.Component(
-                            BoardConfig(self)
-                        ),
-                        "edit"
-                    )
-                )
-            ))
-
+            h << h.li(h.a(self.icons['preferences']).action(self.show_preferences))
             if security.has_permissions('edit', self):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))
                 h << h.li(h.a(self.icons['edit_desc']).action(self.edit_description))
@@ -48,18 +38,7 @@ def render_Board_menu(self, h, comp, *args):
                 h << h.li(h.a(self.icons['save_template']).action(self.save_template))
 
             h << h.li(h.a(self.icons['export']).action(self.export))
-
-
-            h << h.li(h.a(self.icons['history']).action(
-                lambda: self.popin.call(
-                    popin.Popin(
-                        component.Component(
-                            notifications.ActionLog(self)
-                        ),
-                        'history'
-                    )
-                )
-            ))
+            h << h.li(h.a(self.icons['history']).action(self.show_actionlog))
 
             if security.has_permissions('manage', self):
                 h << h.li(h.a(
@@ -103,8 +82,6 @@ def render_Board(self, h, comp, *args):
     if security.has_permissions('edit', self):
         h << comp.render(h, "menu")
 
-    # TODO: Remove this popin
-    h << self.popin.render(h.AsyncRenderer())
     h << self.modal
 
     background_image_url = self.background_image_url
@@ -391,10 +368,10 @@ def render_BoardDescription(self, h, comp, *args):
 
 @presentation.render_for(BoardConfig)
 def render_BoardConfig(self, h, comp, *args):
-    return h.root
+    return comp.render(h.AsyncRenderer(), 'edit')
 
 
-@presentation.render_for(BoardConfig, model="edit")
+@presentation.render_for(BoardConfig, model='edit')
 def render_BoardConfig_edit(self, h, comp, *args):
     """Render the board configuration panel"""
     h << h.h2(_(u'Board configuration'))

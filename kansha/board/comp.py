@@ -31,6 +31,7 @@ from kansha import exceptions, notifications, validator
 
 from .models import DataBoard, DataBoardMember
 from .templates import SaveTemplateTask
+from .boardconfig import BoardConfig
 
 # Board visibility
 BOARD_PRIVATE = 0
@@ -88,7 +89,6 @@ class Board(object):
         self.card_extensions = card_extensions
 
         self.version = self.data.version
-        self.popin = component.Component(popin.Empty())
         self.modal = component.Component(popin.Empty())
         self.card_matches = set()  # search results
         self.last_search = u''
@@ -151,6 +151,7 @@ class Board(object):
     def exists(cls, **kw):
         return DataBoard.exists(**kw)
 
+    # Main menu actions
     def add_list(self):
         new_column_editor = column.NewColumnEditor(len(self.columns))
         answer = self.modal.call(popin.Modal(new_column_editor))
@@ -169,6 +170,14 @@ class Board(object):
                                                 self.get_description(),
                                                 self.save_as_template)
         self.modal.call(popin.Modal(save_template_editor))
+
+    def show_actionlog(self):
+        viewer = notifications.ActionLog(self)
+        self.modal.call(popin.Modal(viewer))
+
+    def show_preferences(self):
+        preferences = BoardConfig(self)
+        self.modal.call(popin.Modal(preferences))
 
 
     def save_as_template(self, title, description, shared):

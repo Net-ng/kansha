@@ -40,7 +40,7 @@ def render_card_new(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card"""
 
-    extensions = [extension for name, extension in self.extensions]
+    extensions = [extension.on_answer(self.handle_event, comp) for name, extension in self.extensions]
 
     card_id = h.generate_id()
 
@@ -73,11 +73,6 @@ def render(self, h, comp, *args):
     """Render the card read-only"""
     with h.div(id=self.id, class_='card'):
         with h.div:
-            h << {
-                'onclick': "window.location.href=%s" % ajax.py2js(
-                    '%s#id_%s' % (self.data.column.board.url, self.id)
-                )
-            }
             with h.div(class_='title'):
                 h << self.title.render(h, 'readonly')
             # FIXME: unify with main card view.

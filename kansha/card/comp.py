@@ -53,7 +53,7 @@ class Card(events.EventHandlerMixIn):
         """
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
-        self.column = column
+        self.column = column # still used by extensions, not by the card itself
         self.card_extensions = card_extensions
         self.action_log = action_log.for_card(self)
         self._services = services_service
@@ -67,10 +67,6 @@ class Card(events.EventHandlerMixIn):
         new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
                                    for name, extension in self.extensions]
         return new_obj
-
-    @property
-    def board(self):
-        return self.column.board
 
     def refresh(self):
         """Refresh the sub components
@@ -139,6 +135,10 @@ class Card(events.EventHandlerMixIn):
     ################################
     # Feature methods, persistency #
     ################################
+
+    @property
+    def board(self):  # still needed by some extensions, no the card itself.
+        return self.column.board
 
     # Members
 

@@ -90,13 +90,14 @@ def render_card_edit(self, h, comp, *args):
     # Test for delete card
     if self.data is None:
         return h.root
-    # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
+
+    parent_title = self.emit_event(comp, events.ParentTitleNeeded) or ''
 
     with h.div(class_='card-edit-form'):
         with h.div(class_='header'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), None if security.has_permissions('edit', self) else 'readonly')
-                h << h.span('(%s)' % self.column.get_title(), class_='reminder')  # FIXME: no direct access to column
+                h << h.span('(%s)' % parent_title, class_='reminder')
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
                 for name, extension in self.extensions:

@@ -88,6 +88,8 @@ class Column(events.EventHandlerMixIn):
         if event.is_(events.CardClicked):
             card_comp = event.data
             card_comp.becomes(popin.Popin(card_comp, 'edit'))
+        elif event.is_(events.ParentTitleNeeded):
+            return self.get_title()
         elif event.is_(events.CardEditorClosed):
             card_bo = event.emitter
             slot = event.data
@@ -198,9 +200,10 @@ class Column(events.EventHandlerMixIn):
         self.data.insert_card(index, card.data)
         self.cards.insert(index, component.Component(card))
 
-    def insert_card_comp(self, index, card_comp):
+    def insert_card_comp(self, comp, index, card_comp):
         self.data.insert_card(index, card_comp().data)
         self.cards.insert(index, card_comp)
+        card_comp.on_answer(self.handle_event, comp)
 
     def delete_card(self, card):
         """Delete card

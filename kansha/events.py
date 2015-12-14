@@ -135,8 +135,6 @@ class CardDisplayed(Event):
 
 
 # "Request" events
-
-class IsCardInArchive(Event):
-    """Emitted by card. No payload."""
+class ParentTitleNeeded(Event):
+    """The emitter needs context from parent in the form of a title string."""
     pass
-

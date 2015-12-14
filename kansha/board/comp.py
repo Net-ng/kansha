@@ -372,13 +372,13 @@ class Board(events.EventHandlerMixIn):
 
         cols = {}
         for col in self.columns:
-            cols[col().id] = col()
+            cols[col().id] = (col(), col)
 
-        orig = cols[data['orig']]
+        orig, __ = cols[data['orig']]
 
-        dest = cols[data['dest']]
+        dest, dest_comp = cols[data['dest']]
         card_comp = orig.remove_card_by_id(data['card'])
-        dest.insert_card_comp(data['index'], card_comp)
+        dest.insert_card_comp(dest_comp, data['index'], card_comp)
         card = card_comp()
         values = {'from': orig.get_title(),
                   'to': dest.get_title(),

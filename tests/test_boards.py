@@ -65,8 +65,8 @@ class BoardTest(unittest.TestCase):
         board = helpers.create_board()
         self.assertIsNotNone(board.archive_column)
         self.assertEqual(board.count_columns(), 3)
-        column_id = board.columns[0]().db_id
-        board.delete_column(column_id)
+        column = board.columns[0]
+        board.delete_column(column)
         self.assertEqual(board.count_columns(), 2)
 
     def test_set_visibility_1(self):

@@ -173,7 +173,8 @@ def render_card_dnd(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'action')
 def render_cardweighteditor(self, h, comp, *args):
-    if self.target.weighting_on():
+    self.update_runtime_config(comp)
+    if self.weighting_switch:
         h << self.action_button
     return h.root
 
@@ -193,7 +194,7 @@ def answer(editor, comp):
 @presentation.render_for(CardWeightEditor, 'edit')
 def render_cardweighteditor_edit(self, h, comp, *args):
 
-    if self.board.weighting_cards == self.WEIGHTING_FREE:
+    if self.weighting_switch == self.WEIGHTING_FREE:
         id_ = h.generate_id('weight')
         with h.form:
             h << h.input(
@@ -202,11 +203,11 @@ def render_cardweighteditor_edit(self, h, comp, *args):
                 id_=id_).action(self.weight).error(self.weight.error)
             h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
             h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
-    elif self.board.weighting_cards == self.WEIGHTING_LIST:
+    elif self.weighting_switch == self.WEIGHTING_LIST:
         with h.form:
             with h.div(class_='btn select'):
                 with h.select.action(self.weight):
-                    for value in self.board.weights.split(','):
+                    for value in self.allowed_weights.split(','):
                         h << h.option(value, value=value).selected(self.weight)
             h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
 

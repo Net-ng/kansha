@@ -238,9 +238,6 @@ class Card(events.EventHandlerMixIn):
         self.action_log.add_history(security.get_user(), u'card_weight', values)
         self.data.weight = value
 
-    def weighting_on(self):
-        return self.board.weighting_cards
-
     # Comments
 
     def get_comments(self):
@@ -310,8 +307,12 @@ class CardWeightEditor(editor.Editor, CardExtension):
         return value
 
     @property
-    def board(self):
-        return self.target.board
+    def weighting_switch(self):
+        return self.runtime_config.get('weighting_cards', self.WEIGHTING_OFF)
+
+    @property
+    def allowed_weights(self):
+        return self.runtime_config.get('weights', '')
 
     def commit(self):
         success = False

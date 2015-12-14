@@ -30,6 +30,7 @@ from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
 from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
+from kansha.cardextension import GetExtensionConfig
 
 from .boardconfig import BoardConfig
 from .templates import SaveTemplateTask
@@ -222,10 +223,22 @@ class Board(events.EventHandlerMixIn):
                 result = 'reload_search'
             else:
                 result = 'nop'
+        elif event.is_(GetExtensionConfig):
+            result = self.get_card_extension_config(event.data)
 
         return result
 
-    def switch_view(self):
+    def get_card_extension_config(self, entry_name):
+        config = {}
+        if entry_name == 'weight':
+            config = {
+                'weighting_cards': self.weighting_cards,
+                'weights': self.weights
+            }
+
+        return config
+
+      def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
     def load_children(self):

@@ -17,7 +17,7 @@ import xlwt
 from webob import exc
 from nagare.database import session
 from nagare.i18n import _, format_date
-from nagare import component, log, security
+from nagare import component, log, security, var
 
 from kansha.card import fts_schema
 from kansha.user import usermanager
@@ -137,16 +137,6 @@ class Board(object):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
-        # Edit description component
-        self.description = component.Component(BoardDescription(self.get_description))
-        self.description.on_answer(self.set_description)
-
-        # Wraps edit description in an overlay
-        self.edit_description_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['edit_desc'],
-                            lambda r: self.description.render(r),
-                            title=_("Edit board description"), dynamic=True))
-
         self.save_template_comp = None
         self.reload_save_template_comp()
         self.save_template_overlay = component.Component(
@@ -179,6 +169,12 @@ class Board(object):
         if answer:
             index, title, nb_cards = answer
             self.create_column(index, title, nb_cards if nb_cards else None)
+
+    def edit_description(self):
+        description_editor = BoardDescription(self.get_description())
+        answer = self.modal.call(popin.Modal(description_editor))
+        if answer:
+            self.set_description(answer)
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
@@ -980,22 +976,16 @@ class BoardDescription(object):
         In:
             - ``description`` -- callable that returns the description.
         """
-        self.description = description
-        self.success = False
+        self.description = var.Var(description)
 
-    def filter_text(self, text_var):
-        """Return filtered content of text Var
-        """
-        text = text_var() and text_var().strip()
-        if text:
-            text = validator.clean_text(text)
+    def commit(self, comp):
+        description = self.description().strip()
+        if description:
+            description = validator.clean_text(description)
+        comp.answer(description)
 
-        return text
-
-    def set_description(self, comp, text=None):
-        if text is not None:
-            comp.answer(self.filter_text(text))
-        self.success = True
+    def cancel(self, comp):
+        comp.answer(None)
 
 
 class BoardMember(object):

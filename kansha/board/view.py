@@ -43,7 +43,7 @@ def render_Board_menu(self, h, comp, *args):
 
             if security.has_permissions('edit', self):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))
-                h << h.li(self.edit_description_overlay)
+                h << h.li(h.a(self.icons['edit_desc']).action(self.edit_description))
             if security.has_permissions('manage', self):
                 h << h.li(self.save_template_overlay)
 
@@ -369,29 +369,22 @@ def render_Board_save_template(self, h, comp, *args):
 @presentation.render_for(BoardDescription)
 def render_BoardDescription(self, h, comp, *args):
     """Render description component in edit mode"""
-    if self.success:
-        h << h.script('YAHOO.kansha.app.hideOverlay();')
-        self.success = False
-    else:
-        text = var.Var(self.description())
-        with h.form(class_='description-form'):
-            txt_id, btn_id = h.generate_id(), h.generate_id()
-            h << h.label(_(u'Description'), for_=txt_id)
-            ta = h.textarea(text(), id_=txt_id).action(text)
-            h << ta
-            with h.div(class_='buttons'):
-                h << h.button(_('Save'), class_='btn btn-primary',
-                              id=btn_id).action(self.set_description, comp, text)
-                h << ' '
-                h << h.button(
-                    _('Cancel'), class_='btn').action(self.set_description, comp)
+    h << h.h2(_(u'Edit board description'))
+    with h.form(class_='description-form'):
+        txt_id, btn_id = h.generate_id(), h.generate_id()
+        h << h.label(_(u'Description'), for_=txt_id)
+        h << h.textarea(self.description(), id_=txt_id).action(self.description)
+        with h.div(class_='buttons'):
+            h << h.button(_('Save'), class_='btn btn-primary', id=btn_id).action(self.commit, comp)
+            h << ' '
+            h << h.a(_('Cancel'), class_='btn').action(self.cancel, comp)
 
-            h.head.javascript(
-                h.generate_id(),
-                'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
-                    ajax.py2js(txt_id), ajax.py2js(btn_id)
-                )
+        h.head.javascript(
+            h.generate_id(),
+            'YAHOO.kansha.app.addCtrlEnterHandler(%s, %s)' % (
+                ajax.py2js(txt_id), ajax.py2js(btn_id)
             )
+        )
 
     return h.root
 

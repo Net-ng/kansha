@@ -454,8 +454,6 @@ class UserBoards(object):
          - ``assets_manager`` -- Assets manager service
         """
         self.app_title = app_title
-
-        self.app_title = app_title
         self.app_banner = app_banner
         self.theme = theme
         self.card_extensions = card_extensions

@@ -179,7 +179,6 @@ class Board(object):
         preferences = BoardConfig(self)
         self.modal.call(popin.Modal(preferences))
 
-
     def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})

@@ -53,7 +53,7 @@ class Kansha(object):
 
         self.title = component.Component(self, 'tab')
         self.user_menu = component.Component(None)
-        self.content = component.Component(None).on_answer(self.select_board)
+        self.content = component.Component(None)
         self.user_manager = UserManager()
         self.boards_manager = self._services(BoardsManager, self.app_title, self.app_banner, self.theme, card_extensions, self.search_engine)
 

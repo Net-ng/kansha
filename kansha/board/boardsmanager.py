@@ -8,7 +8,6 @@
 # this distribution.
 #--
 
-from kansha.card.fts_schema import Card
 from .comp import Board
 
 
@@ -41,9 +40,3 @@ class BoardsManager(object):
         new_board = board.copy(user, data)
         new_board.data.is_template = board_to_template
         return new_board
-
-    @staticmethod
-    def index_user_cards(user, search_engine):
-        for card in user.my_cards:
-            search_engine.add_document(Card.from_model(card))
-        search_engine.commit()

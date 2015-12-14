@@ -57,15 +57,18 @@ class Column(object):
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_column = self._services(Column, new_data.id, None, self.card_extensions, self.search_engine, data=new_data)
+        cards_to_index = []
         for card in self.cards:
             new_card = card().copy(new_column, additional_data)
-            new_column.index_card(new_card)
+            cards_to_index.append(new_card)
             new_column.cards.append(component.Component(new_card))
+        new_column.index_cards(cards_to_index)
         return new_column
 
-    def index_card(self, card):
-        scard = fts_schema.Card.from_model(card.data)
-        self.search_engine.add_document(scard)
+    def index_cards(self, cards):
+        for card in cards:
+            scard = fts_schema.Card.from_model(card.data)
+            self.search_engine.add_document(scard)
         self.search_engine.commit()
 
     def set_reload_search(self):
@@ -238,7 +241,7 @@ class Column(object):
                 notifications.add_history(self.board.data, new_card,
                                           security.get_user().data,
                                           u'card_create', values)
-                self.index_card(card_obj)
+                self.index_cards([card_obj])
                 self.set_reload_search()
                 return card_obj
             else:

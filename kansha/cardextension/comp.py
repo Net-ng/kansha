@@ -9,19 +9,32 @@
 
 from nagare.services import plugin
 
+from kansha.events import EventHandlerMixIn, Event
 
-class CardExtension(plugin.Plugin):
+
+class GetExtensionConfig(Event):
+    """
+    Ask for runtime configuration of card extension.
+    Payload is extension name (`entry_name`).
+    """
+
+
+class CardExtension(plugin.Plugin, EventHandlerMixIn):
     CATEGORY = 'card-extension'
 
     def __init__(self, card, action_log):
         self.card = card
         self.action_log = action_log
+        self.runtime_config = {}
 
     def delete(self):
         pass
 
     def copy(self, parent, additional_data):
             return self.__class__(parent, parent.action_log)
+
+    def update_runtime_config(self, comp):
+        self.runtime_config = self.emit_event(comp, GetExtensionConfig, self.entry_name)
 
     def new_card_position(self, value):
         pass

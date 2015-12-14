@@ -8,4 +8,4 @@
 #--
 
 from . import view
-from .comp import CardExtension
+from .comp import CardExtension, GetExtensionConfig

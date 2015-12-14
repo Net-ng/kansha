@@ -28,7 +28,7 @@ class EventHandlerMixIn(object):
     def handle_event(self, comp, event):
 
         local_res = None
-        local_handler = getattr(self, 'on_event')
+        local_handler = getattr(self, 'on_event', None)
         if local_handler:
             local_res = local_handler(comp, event)
         # bubble up in any case

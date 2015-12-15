@@ -329,11 +329,11 @@ textarea.expanded {
 }
 
 .card-actions {
-    width: 145px;
+    width: 155px;
 }
 
 .card-edition {
-    width: calc(100% - 175px);
+    width: calc(100% - 185px);
 }
 
 .card-actions button i[class^="icon-"],

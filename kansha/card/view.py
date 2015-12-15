@@ -98,37 +98,37 @@ def render_card_edit(self, h, comp, *args):
                 for name, extension in self.extensions:
                     h << h.div(extension.render(h.AsyncRenderer()), class_=name)
             with h.div(class_='card-actions'):
-                with h.form:
-                    h << comp.render(h, 'delete-action')
-                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
+                h << comp.render(h, 'delete-action')
+                h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
     return h.root
 
 
 @presentation.render_for(Card, 'delete-action')
 def render_card_delete(self, h, comp, model):
     if security.has_permissions('edit', self) and not self.archived:
-        close_func = ajax.js(
-            'function (){%s;}' %
-            h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
-        )
-        h << h.button(
-            h.i(class_='icon-trashcan'),
-            _('Delete'),
-            class_='btn delete',
-            onclick=(
-                "if (confirm(%(confirm_msg)s)) {"
-                "   YAHOO.kansha.app.archiveCard(%(close_func)s);"
-                "   reload_columns();"
-                "}"
-                "return false" %
-                {
-                    'close_func': ajax.py2js(close_func),
-                    'confirm_msg': ajax.py2js(
-                        _(u'This card will be deleted. Are you sure?')
-                    ).decode('UTF-8')
-                }
+        with h.form:
+            close_func = ajax.js(
+                'function (){%s;}' %
+                h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
             )
-        )
+            h << h.button(
+                h.i(class_='icon-trashcan'),
+                _('Delete'),
+                class_='btn delete',
+                onclick=(
+                    "if (confirm(%(confirm_msg)s)) {"
+                    "   YAHOO.kansha.app.archiveCard(%(close_func)s);"
+                    "   reload_columns();"
+                    "}"
+                    "return false" %
+                    {
+                        'close_func': ajax.py2js(close_func),
+                        'confirm_msg': ajax.py2js(
+                            _(u'This card will be deleted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                )
+            )
     return h.root
 
 

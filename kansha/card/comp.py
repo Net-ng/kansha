@@ -137,10 +137,6 @@ class Card(events.EventHandlerMixIn):
     # Feature methods, persistency #
     ################################
 
-    @property
-    def board(self):  # still needed by some extensions, not the card itself.
-        return self.column.board
-
     # Members
 
     def add_member(self, new_data_member):

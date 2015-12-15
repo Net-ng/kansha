@@ -255,7 +255,7 @@ i.icon {
 
 /* Boards (home + boards) */
 .boardItemLabel {
-    display: block;
+    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -478,7 +478,7 @@ i.icon {
 
 .members .count {
     position: relative;
-    left: -11px;
+    margin-left: -11px;
     top: 1px;
 }
 

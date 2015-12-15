@@ -64,7 +64,6 @@ def render_cover(self, h, comp, model):
 @presentation.render_for(Gallery, "action")
 def render_download(self, h, comp, *args):
     if security.has_permissions('edit', self):
-        v_file = var.Var()
         submit_id = h.generate_id("attach_submit")
         input_id = h.generate_id("attach_input")
         h << h.label((h.i(class_='icon-file'),
@@ -93,11 +92,12 @@ def render_download(self, h, comp, *args):
                     ).decode('UTF-8')
                 }
             )
-            submit_action = ajax.Update(render=lambda r: comp.render(r, model=None),
-                     component_to_update='gal' + self.comp_id,
-                     action=lambda: self.add_assets(v_file()))
+            submit_action = ajax.Update(
+                render=lambda r: comp.render(r, model=None),
+                component_to_update='gal' + self.comp_id,
+            )
 
-            h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(v_file)
+            h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(self.add_assets)
             h << h.input(class_='hidden', id=submit_id, type="submit").action(submit_action)
     return h.root
 

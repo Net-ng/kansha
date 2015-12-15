@@ -15,23 +15,23 @@
 # Any reproduction modification or use without prior written
 # approval from PagesJaunes is strictly forbidden.
 #=-
-from datetime import datetime, timedelta
 import random
 import string
+from datetime import datetime, timedelta
 
-from nagare.database import session
 from nagare import local, security
+from nagare.database import session
 
-from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
-from kansha.services.services_repository import ServicesRepository
-from kansha.services.search.dummyengine import DummySearchEngine
-from kansha.services.mail import DummyMailSender
-from kansha.board import models as board_models
-from kansha.card.models import DataCard
-from kansha.vote.models import DataVote
+from kansha.user import usermanager
 from kansha.board import boardsmanager
 from kansha.security import SecurityManager
-from kansha.user import usermanager
+from kansha.card.models import DataCard
+from kansha.vote.models import DataVote
+from kansha.board import models as board_models
+from kansha.services.mail import DummyMailSender
+from kansha.services.search.dummyengine import DummySearchEngine
+from kansha.services.services_repository import ServicesRepository
+from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
 
 
 def setup_db(metadata):

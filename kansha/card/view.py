@@ -233,6 +233,7 @@ def render_card_members(self, h, comp, *args):
     Then icon "more user" if necessary
     And at the end icon "add user"
     """
+    self.update_runtime_config(comp)
     with h.div(class_='members'):
         h << h.script('''YAHOO.kansha.app.hideOverlay();''')
         for m in self.members[:self.max_shown_members]:
@@ -271,12 +272,12 @@ def render_card_members_read_only(self, h, comp, *args):
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
-    with h.form:
-        with h.div(class_="members"):
-            if security.has_permissions('edit', self.card):
-                h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
-            else:
-                h << [m.render(h, "avatar") for m in self.members]
+    # with h.form:
+    with h.div(class_="members"):
+        if security.has_permissions('edit', self.card):
+            h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
+        else:
+            h << [m.render(h, "avatar") for m in self.members]
     return h.root
 
 

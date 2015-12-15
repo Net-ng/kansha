@@ -235,6 +235,12 @@ class Board(events.EventHandlerMixIn):
                 'weighting_cards': self.weighting_cards,
                 'weights': self.weights
             }
+        elif entry_name == 'card_members':
+            config = {
+                'available_user_ids': self.get_available_user_ids(),
+                'pending_user_ids': self.get_pending_user_ids(),
+                'member_stats': self.get_member_stats()
+            }
 
         return config
 
@@ -800,17 +806,6 @@ class Board(events.EventHandlerMixIn):
         self._best_friends = [component.Component(usermanager.UserManager.get_app_user(u.username), "friend") for u in best_friends]
         return self._best_friends
 
-    @property
-    def favorites(self):
-        """Return favorites users of the board
-
-        Favorites users are most used users in this board
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        return self.get_member_stats()
-
     def get_member_stats(self):
         """Return the most used users in this column.
 
@@ -826,16 +821,16 @@ class Board(events.EventHandlerMixIn):
                 member_stats[username] = member_stats.get(username, 0) + column_member_stats[username]
         return member_stats
 
-    def get_available_users(self):
+    def get_available_user_ids(self):
         """Return list of member
 
         Return:
             - list of members
         """
-        return [dbm.member for dbm in self.data.board_members]
+        return set(dbm.member.id for dbm in self.data.board_members)
 
-    def get_pending_users(self):
-        return self.data.get_pending_users()
+    def get_pending_user_ids(self):
+        return set(user.id for user in self.data.get_pending_users())
 
     def set_background_image(self, new_file):
         """Set the board's background image

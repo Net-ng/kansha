@@ -163,8 +163,7 @@ class Board(object):
     def edit_description(self):
         description_editor = BoardDescription(self.get_description())
         answer = self.modal.call(popin.Modal(description_editor))
-        if answer:
-            self.set_description(answer)
+        self.set_description(answer)
 
     def save_template(self):
         save_template_editor = SaveTemplateTask(self.get_title(),

@@ -268,7 +268,7 @@ def render_Icon(self, h, comp, *args):
         h << h.i(class_=self.icon, title=self.title)
         h << self.title
     else:
-        h << h.i(class_=self.icon)
+        h << h.i(class_=self.icon, title=self.title)
     return h.root
 
 

@@ -186,9 +186,6 @@ class Card(events.EventHandlerMixIn):
 
     # Label methods
 
-    def get_available_labels(self):
-        return self.column.get_available_labels()
-
     def get_datalabels(self):
         return self.data.labels
 

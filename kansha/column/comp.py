@@ -262,9 +262,6 @@ class Column(events.EventHandlerMixIn):
             self.index_cards([card_obj])
             return card_obj
 
-    def get_available_labels(self):
-        return self.board.labels
-
     def change_index(self, new_index):
         """Change index of the column
 

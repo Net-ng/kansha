@@ -120,7 +120,7 @@ class CardLabels(CardExtension):
     def get_available_labels(self):
         """Returns the labels available in the card's board
         """
-        return self.card.get_available_labels()
+        return self.runtime_config.get('available_labels', [])
 
     def activate(self, label_id):
         """Adds/removes a label to the current card.

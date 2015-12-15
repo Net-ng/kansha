@@ -241,6 +241,10 @@ class Board(events.EventHandlerMixIn):
                 'pending_user_ids': self.get_pending_user_ids(),
                 'member_stats': self.get_member_stats()
             }
+        elif entry_name == 'labels':
+            config = {
+                'available_labels': self.labels
+            }
 
         return config
 

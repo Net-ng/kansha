@@ -93,17 +93,6 @@
         },
 
         /**
-         * Basic highlight function
-         */
-        highlight: function (root, el, show) {
-            if (!NS.app.overlay) {    // If any overlay is open, suspend highlights...
-                var node = ECN(el, '', root),
-                    func = show ? Dom.removeClass : Dom.addClass;
-                func(node, 'highlight');
-            }
-        },
-
-        /**
          * Hightlight cards
          * Parameter: list of card ids
          */
@@ -246,10 +235,6 @@
             	NS.app.overlay.center();
             }
             NS.app.overlay.show();
-        },
-
-        addCloseMethodTOverlay: function (overlay_id, f) {
-            NS.app.overlay.closeMethod = f;
         },
 
         showPopin: function (id, closeFunction) {
@@ -603,23 +588,6 @@
                 Dom.removeClass(counter, 'hidden');
             }
             NS.app.showTitleForm(column.id);
-        },
-
-        hideTitleForm: function (column) {
-            column = Dom.get(column);
-            var title = Dom.get(column.id + '_title');
-            var form_ = ECN('title-form', null, title)[0];
-            var from_div = Dom.get(form_);
-            from_div.addClass('hidden');
-        },
-
-        showTitleForm: function (column) {
-            column = Dom.get(column);
-            var title = Dom.get(column.id + '_title');
-            var form = ECN('title-form', null, title)[0];
-            if (form) {
-                form.removeClass('hidden');
-            }
         },
 
         set_title_color: function (color) {

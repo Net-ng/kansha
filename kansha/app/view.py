@@ -150,7 +150,7 @@ def render_kansha(self, h, comp, *args):
                     h << comp.render(h, model='oip')
                     with h.div(id='application'):
                         h << comp.render(h, model='menu')
-                        h << self.content#.on_answer(self.select_board)
+                        h << self.content.on_answer(self.select_board)
             with h.div(class_='credits'):
                 with h.div(class_='container'):
                     h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))

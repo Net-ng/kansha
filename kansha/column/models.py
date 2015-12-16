@@ -57,13 +57,14 @@ class DataColumn(Entity):
         q = q.filter(cls.board == board)
         q.update({'index': cls.index + 1})
         col = cls(title=title, index=index, board=board, nb_max_cards=nb_cards, archive=archive)
-        session.add(col)
+        # session.add(col)
         session.flush()
         return col
 
     def create_card(self, title, user):
         card = DataCard(title=title, creation_date=datetime.now())
         self.cards.append(card)
+        session.flush()
         return card
 
     def remove_card(self, card):

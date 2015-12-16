@@ -526,3 +526,20 @@ i.icon {
         left: 160px;
     }
 }
+
+/* Modal window */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.modal > div {
+    max-width: 680px;
+    position: relative;
+    margin: 70px auto 30px auto;
+}
+/* End modal window */

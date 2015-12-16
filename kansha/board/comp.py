@@ -17,7 +17,7 @@ import xlwt
 from webob import exc
 from nagare.database import session
 from nagare.i18n import _, format_date
-from nagare import component, log, security
+from nagare import component, log, security, var
 
 from kansha import title
 from kansha.card import fts_schema
@@ -30,8 +30,10 @@ from kansha.toolbox import popin, overlay
 from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
 
-from .models import DataBoard, DataBoardMember
+from .boardconfig import BoardConfig
 from .templates import SaveTemplateTask
+from .models import DataBoard, DataBoardMember
+
 
 # Board visibility
 BOARD_PRIVATE = 0
@@ -91,7 +93,7 @@ class Board(events.EventHandlerMixIn):
         self.action_log = ActionLog(self)
 
         self.version = self.data.version
-        self.popin = component.Component(popin.Empty())
+        self.modal = component.Component(popin.Empty())
         self.card_matches = set()  # search results
         self.last_search = u''
 
@@ -139,31 +141,6 @@ class Board(events.EventHandlerMixIn):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
-        # Add new column component
-        self.new_column = component.Component(column.NewColumn(self))
-        self.add_list_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['add_list'],
-                            lambda r: self.new_column.render(r),
-                            title=_("Add list"), dynamic=True))
-
-        # Edit description component
-        self.description = component.Component(BoardDescription(self.get_description))
-        self.description.on_answer(self.set_description)
-
-        # Wraps edit description in an overlay
-        self.edit_description_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['edit_desc'],
-                            lambda r: self.description.render(r),
-                            title=_("Edit board description"), dynamic=True))
-
-        self.save_template_comp = None
-        self.reload_save_template_comp()
-        self.save_template_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['save_template'],
-                            lambda r: self.save_template_comp.render(r),
-                            title=_(u"Save board as template"), dynamic=True)
-        )
-
         self.must_reload_search = False
 
     @classmethod
@@ -178,9 +155,40 @@ class Board(events.EventHandlerMixIn):
     def exists(cls, **kw):
         return DataBoard.exists(**kw)
 
-    def reload_save_template_comp(self):
-        self.save_template_comp = component.Component(SaveTemplateTask(self))
-        self.save_template_comp.on_answer(lambda v: self.reload_save_template_comp())
+    # Main menu actions
+    def add_list(self):
+        new_column_editor = column.NewColumnEditor(len(self.columns))
+        answer = self.modal.call(popin.Modal(new_column_editor))
+        if answer:
+            index, title, nb_cards = answer
+            self.create_column(index, title, nb_cards if nb_cards else None)
+
+    def edit_description(self):
+        description_editor = BoardDescription(self.get_description())
+        answer = self.modal.call(popin.Modal(description_editor))
+        self.set_description(answer)
+
+    def save_template(self):
+        save_template_editor = SaveTemplateTask(self.get_title(),
+                                                self.get_description(),
+                                                self.save_as_template)
+        self.modal.call(popin.Modal(save_template_editor))
+
+    def show_actionlog(self):
+        self.modal.call(popin.Modal(self.action_log))
+
+    def show_preferences(self):
+        preferences = BoardConfig(self)
+        self.modal.call(popin.Modal(preferences))
+
+    def save_as_template(self, title, description, shared):
+        user = security.get_user()
+        template = self.copy(user, {})
+        template.mark_as_template()
+        template.set_title(title)
+        template.set_description(description)
+        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        return template
 
     def copy(self, owner, additional_data):
         new_data = self.data.copy(None)
@@ -222,15 +230,6 @@ class Board(events.EventHandlerMixIn):
                 result = 'nop'
 
         return result
-
-    def save_as_template(self, title, description, shared):
-        user = security.get_user()
-        template = self.copy(user, {})
-        template.mark_as_template()
-        template.set_title(title)
-        template.set_description(description)
-        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
-        return template
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
@@ -349,7 +348,7 @@ class Board(events.EventHandlerMixIn):
             self.card_extensions, self.action_log, self.search_engine)
         if not archive or (archive and self.archive):
             self.columns.insert(
-                index, component.Component(col_obj, 'new'))
+                index, component.Component(col_obj))
         self.increase_version()
         return col_obj
 
@@ -967,22 +966,16 @@ class BoardDescription(object):
         In:
             - ``description`` -- callable that returns the description.
         """
-        self.description = description
-        self.success = False
+        self.description = var.Var(description)
 
-    def filter_text(self, text_var):
-        """Return filtered content of text Var
-        """
-        text = text_var() and text_var().strip()
-        if text:
-            text = validator.clean_text(text)
+    def commit(self, comp):
+        description = self.description().strip()
+        if description:
+            description = validator.clean_text(description)
+        comp.answer(description)
 
-        return text
-
-    def set_description(self, comp, text=None):
-        if text is not None:
-            comp.answer(self.filter_text(text))
-        self.success = True
+    def cancel(self, comp):
+        comp.answer(None)
 
 
 class BoardMember(object):

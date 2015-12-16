@@ -67,6 +67,26 @@ def render(self, h, comp, *args):
     return h.root
 
 
+class Modal(object):
+    def __init__(self, comp):
+        if not isinstance(comp, component.Component):
+            comp = component.Component(comp)
+        self.comp = comp
+
+
+@presentation.render_for(Modal)
+def render_PopinV2(self, h, comp, model):
+    with h.div(class_='modal', id_='modal'):
+        with h.div:
+            h << self.comp.on_answer(comp.answer)
+    h << h.script('''$("#modal").click(function(e) {
+    if ($(e.target).hasClass('modal')) {
+        window.location = "%s";
+    }
+});''' % h.a.action(comp.answer).get('href'))
+    return h.root
+
+
 class Empty(object):
 
     """A component showing only a bit of Javascript

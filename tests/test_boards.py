@@ -277,7 +277,8 @@ class BoardTest(unittest.TestCase):
         self.assertNotIn(board.id, user_boards.my_boards)
         self.assertNotIn(board.id, user_boards.archived_boards)
 
-        notifications.add_history(board.data, None, user.get_user_data(), u'test', {})
+        column = board.create_column(1, u'test')
+        column.create_card(u'test')
         user_boards.reload_boards()
         self.assertIn(board.id, user_boards.last_modified_boards)
 

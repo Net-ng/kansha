@@ -151,8 +151,7 @@ class BasicUserForm(editor.Editor):
 
 @presentation.render_for(BasicUserForm)
 def render(self, h, comp, *args):
-    h << comp.render(h, "edit")
-    return h.root
+    return comp.render(h.SyncRenderer(), "edit")
 
 
 @presentation.render_for(BasicUserForm, model="edit")

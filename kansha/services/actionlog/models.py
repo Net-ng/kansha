@@ -8,8 +8,8 @@
 # this distribution.
 # --
 
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
 
 from sqlalchemy.types import TypeDecorator
 
@@ -53,7 +53,6 @@ class DataHistory(Entity):
     user = ManyToOne('DataUser', ondelete='cascade')
 
     def to_string(self):
-        print 'ouh!'
         data = self.data.copy()
         data['author'] = self.user.fullname or self.user.username
         return render_event(self.action, data)

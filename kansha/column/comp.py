@@ -265,8 +265,8 @@ class Column(object):
 
     def refresh(self):
         self.cards = [component.Component(
-            self._services(card.Card, c.id, self, self.card_extensions, self.action_log, data=c)
-            ) for c in self.data.cards]
+            self._services(card.Card, data_card.id, self, self.card_extensions, self.action_log, data=data_card)
+            ) for data_card in self.data.cards]
 
     def archive_card(self, c):
         """Delete card

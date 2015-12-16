@@ -94,7 +94,7 @@ def render_Board(self, h, comp, *args):
 
     with h.div(class_='board', style=style):
         with h.div(class_='header'):
-            with h.div(class_='board-title'):
+            with h.div(class_='board-title', style='color: %s' % self.title_color):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
             h << comp.render(h, 'switch')
         with h.div(class_='bbody'):

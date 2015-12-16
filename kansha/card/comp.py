@@ -16,6 +16,7 @@ from nagare.i18n import _
 from nagare import (component, log, security, editor, validator)
 
 from kansha import title
+from kansha import events
 from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
@@ -38,7 +39,7 @@ class NewCard(object):
         self.needs_refresh = not self.needs_refresh
 
 
-class Card(object):
+class Card(events.EventHandlerMixIn):
 
     """Card component
     """
@@ -52,7 +53,7 @@ class Card(object):
         """
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
-        self.column = column
+        self.column = column # still used by extensions, not by the card itself
         self.card_extensions = card_extensions
         self.action_log = action_log.for_card(self)
         self._services = services_service
@@ -62,22 +63,10 @@ class Card(object):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_data.author = additional_data['author'].data
         new_obj = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
         new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
                                    for name, extension in self.extensions]
         return new_obj
-
-    @property
-    def must_reload_search(self):
-        return self.board.must_reload_search
-
-    def reload_search(self):
-        return self.board.reload_search()
-
-    @property
-    def board(self):
-        return self.column.board
 
     def refresh(self):
         """Refresh the sub components
@@ -99,6 +88,14 @@ class Card(object):
         self._data = None
         return self.__dict__
 
+    @property
+    def archived(self):
+        return self.data.archived
+
+    @property
+    def index(self):
+        return self.data.index
+
     def set_title(self, title):
         """Set title
 
@@ -118,22 +115,9 @@ class Card(object):
         return self.data.title
 
     def delete(self):
-        """Delete itself"""
+        """Prepare for deletion"""
         for __, extension in self.extensions:
             extension().delete()
-        self.data.delete()
-
-    def move_card(self, card_index, column):
-        """Move card
-
-        In:
-            - ``card_index`` -- new index of the card
-            - ``column`` -- new father
-        """
-        data_card = self.data
-        data_card.index = card_index
-        column.data.cards.append(data_card)
-        self.column = column
 
     def card_dropped(self, request, response):
         """
@@ -143,14 +127,23 @@ class Card(object):
         for __, extension in self.extensions:
             extension().new_card_position(start)
 
+    def emit_event(self, comp, kind, data=None):
+        if kind == events.PopinClosed:
+            kind = events.CardEditorClosed
+        return super(Card, self).emit_event(comp, kind, data)
+
     ################################
     # Feature methods, persistency #
     ################################
 
+    @property
+    def board(self):  # still needed by some extensions, no the card itself.
+        return self.column.board
+
     # Members
 
     def get_available_users(self):
-        """Return user's which are authorized to be add on this card
+        """Return user's which are authorized to be added on this card
 
         Return:
             - a set of user (UserData instance)
@@ -167,7 +160,7 @@ class Card(object):
         return added
 
     def remove_member(self, data_member):
-        self.data.members.remove(data_member)
+        self.data.remove_member(data_member)
 
     @property
     def members(self):
@@ -203,7 +196,7 @@ class Card(object):
         In:
             - ``member`` -- Board Member instance to remove
         """
-        self.data.remove_board_member(member)
+        self.data.remove_member(member.get_user_data())
         self.refresh()  # brute force solution until we have proper communication between extensions
 
     # Cover methods

@@ -21,6 +21,7 @@ from kansha.board.models import DataBoard
 from kansha.column.models import DataColumn
 from kansha.services.actionlog import DummyActionLog
 
+
 class UserCards(object):
 
     # the lambdas on the fields are there to avoid serialization
@@ -119,6 +120,10 @@ def render(self, h, comp, *args):
                         if subgroup != sg_title(card):
                             subgroup = sg_title(card)
                             h << h.h4(subgroup)
-                        h << card.render(h, 'readonly')
+                        with h.div:
+                            h << {
+                                'onclick': "window.location.href='%s#id_%s'" % (self.data.column.board.url, self.id)
+                            }
+                            h << card.render(h, 'readonly')
                 h << h.div(class_='list-footer hidden')
     return h.root

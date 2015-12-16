@@ -127,7 +127,7 @@ class BoardTest(unittest.TestCase):
         data.members.append(user.data)
 
         with i18n.Locale('en', 'US'):
-            component.Component(board).render(xhtml5.Renderer())
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())
 
     def test_rendering_security_view_board_3(self):
         """Test rendering security view board 3
@@ -140,7 +140,7 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PUBLIC)
 
         with i18n.Locale('en', 'US'):
-            component.Component(board).render(xhtml5.Renderer())
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())
 
 
 ''' Obsolete tests to be rewritten when the security mechanism for card extension is ready

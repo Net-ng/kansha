@@ -50,11 +50,11 @@ class UserProfile(object):
                 user,
             )
         )
-        self.menu['my-cards'] = MenuEntry(
-            _L(u'My cards'),
-            'profile',
-            services_service(UserCards, user, search_engine, theme)
-        )
+        # self.menu['my-cards'] = MenuEntry(
+        #     _L(u'My cards'),
+        #     'profile',
+        #     services_service(UserCards, user, search_engine, theme)
+        # )
         self.menu['profile'] = MenuEntry(
             _L(u'Profile'),
             'user',

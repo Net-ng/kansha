@@ -69,14 +69,14 @@ def render_column_overlay(self, h, comp, *args):
                             _(u'The list will be deleted. Are you sure?')
                         ).decode('UTF-8'),
                         'callback': h.a.action(
-                            lambda: comp.answer(('delete', self.data.id))
+                            comp.answer, 'delete'
                         ).get('onclick')
                     }
                 )
                 h << h.a(_(u'Delete this list'), onclick=onclick)
             h << h.li(
                 h.a(_('Set cards limit')).action(
-                    lambda: comp.answer(('set_limit', self.data.id))
+                    comp.answer, 'set_limit'
                 ),
                 id=self.id + '_counter_option'
             )
@@ -87,7 +87,7 @@ def render_column_overlay(self, h, comp, *args):
                         _(u'All cards will be deleted. Are you sure?')
                     ).decode('UTF-8'),
                     'purge_func': h.a.action(
-                        lambda: comp.answer(('purge', self.data.id))
+                        comp.answer, 'purge'
                     ).get('onclick')
                 }
                 h << h.a(_('Purge the cards'), onclick=onclick)
@@ -129,7 +129,7 @@ def render_column_body(self, h, comp, *args):
     model = 'dnd' if security.has_permissions('edit', self) else "no_dnd"
     id_ = h.generate_id()
     with h.div(class_='list-body', id=id_):
-        h << [card.on_answer(self.edit_card).render(h, model=model) for card in self.cards]
+        h << [card.on_answer(self.handle_event, comp).render(h, model=model) for card in self.cards]
         h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
     kw = {}
     if not security.has_permissions('edit', self):
@@ -137,7 +137,7 @@ def render_column_body(self, h, comp, *args):
     if not self.is_archive:
         with h.div(class_='list-footer', id=self.id + '_footer', **kw):
             if security.has_permissions('edit', self):
-                h << h.div(self.new_card)
+                h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
 
     h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
     return h.root

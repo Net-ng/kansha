@@ -17,7 +17,6 @@ from nagare import security
 from nagare.security import form_auth, common
 
 from .card.comp import Card
-from .label.comp import Label
 from .board.comp import Board
 from .comment.comp import Comment
 from .gallery.comp import Gallery
@@ -169,10 +168,6 @@ class Rules(common.Rules):
     @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Card)")
     def _(self, user, perm, card):
         return security.has_permissions('checklist', card.column)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Label)")
-    def _(self, user, perm, subject):
-        return security.has_permissions('edit', subject.board)
 
     @when(common.Rules.has_permission, "user and (perm == 'create_board')")
     def _(self, user, perm, subject):

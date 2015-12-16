@@ -58,7 +58,6 @@ def create_boards_from_templates(user, folder):
                     due_date = date(*due_date[:3])
                 card = DataCard(title=card['title'],
                                 description=card.get('description', u''),
-                                author=user,
                                 due_date=due_date,
                                 creation_date=datetime.utcnow(),
                                 column=col,

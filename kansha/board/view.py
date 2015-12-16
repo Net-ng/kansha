@@ -327,11 +327,10 @@ def render_Board_columns(self, h, comp, *args):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
                     model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
-                    on_answer = lambda v, column = column: column.becomes(self.delete_column(v))
-                    h << column.on_answer(on_answer).render(h, model)
+                    h << column.on_answer(self.handle_event, comp).render(h, model)
 
             # Call columns resize
-            h << h.script('YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();')
+            h << h.script("YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();$(window).trigger('reload_search');")
     return h.root
 
 

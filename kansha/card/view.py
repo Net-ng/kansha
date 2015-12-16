@@ -12,6 +12,7 @@ import peak
 from nagare.i18n import _
 from nagare import ajax, presentation, security, var
 
+from kansha import events
 from kansha.card.comp import CardWeightEditor
 
 from .comp import Card, CardMembers, NewCard
@@ -39,16 +40,12 @@ def render_card_new(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card"""
 
-    extensions = [extension for name, extension in self.extensions]
+    extensions = [extension.on_answer(self.handle_event, comp) for name, extension in self.extensions]
 
     card_id = h.generate_id()
 
-    onclick = h.a.action(lambda: comp.answer(comp)).get('onclick').replace('return', "")
-    if self.column.board.card_matches:
-        c_class = 'card highlight' if self.id in self.column.board.card_matches else 'card hidden'
-    else:
-        c_class = 'card'
-    with h.div(id=self.id, class_=c_class):
+    onclick = h.a.action(self.emit_event, comp, events.CardClicked, comp).get('onclick').replace('return', "")
+    with h.div(id=self.id, class_='card'):
         with h.div(id=card_id, onclick=onclick):
             with h.div(class_='headers'):
                 h << [extension.render(h, 'header') for extension in extensions]
@@ -65,8 +62,7 @@ def render(self, h, comp, *args):
             h.a.action(ajax.Update()).get('onclick')
         )
     )
-    if self.must_reload_search:
-        self.reload_search()
+    if self.emit_event(comp, events.CardDisplayed) == 'reload_search':
         h << h.script('''$(window).trigger('reload_search');''')
 
     return h.root
@@ -77,11 +73,6 @@ def render(self, h, comp, *args):
     """Render the card read-only"""
     with h.div(id=self.id, class_='card'):
         with h.div:
-            h << {
-                'onclick': "window.location.href=%s" % ajax.py2js(
-                    '%s#id_%s' % (self.data.column.board.url, self.id)
-                )
-            }
             with h.div(class_='title'):
                 h << self.title.render(h, 'readonly')
             # FIXME: unify with main card view.
@@ -94,54 +85,50 @@ def render_card_edit(self, h, comp, *args):
     # Test for delete card
     if self.data is None:
         return h.root
-    # h << h.script('''YAHOO.kansha.app.hideOverlay();''')
+
+    parent_title = self.emit_event(comp, events.ParentTitleNeeded) or ''
 
     with h.div(class_='card-edit-form'):
         with h.div(class_='header'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
-                h << h.span('(%s)' % self.column.get_title(), class_='reminder')  # FIXME: no direct access to column
+                h << h.span('(%s)' % parent_title, class_='reminder')
         with h.div(class_='grid-2'):
             with h.div(class_='card-edition'):
                 for name, extension in self.extensions:
                     h << h.div(extension.render(h.AsyncRenderer()), class_=name)
             with h.div(class_='card-actions'):
-                with h.form:
-                    h << comp.render(h, 'delete-action')
-                    h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
+                h << comp.render(h, 'delete-action')
+                h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
     return h.root
 
 
 @presentation.render_for(Card, 'delete-action')
 def render_card_delete(self, h, comp, model):
-    if security.has_permissions('edit', self) and not self.column.is_archive:
-        close_func = ajax.js(
-            'function (){%s;}' %
-            h.a.action(comp.answer, 'delete').get('onclick')
-        )
-        h << h.button(
-            h.i(class_='icon-trashcan'),
-            _('Delete'),
-            class_='btn delete',
-            onclick=(
-                "if (confirm(%(confirm_msg)s)) {"
-                "   YAHOO.kansha.app.archiveCard(%(close_func)s, %(id)s, %(col_id)s, %(archive_col_id)s);"
-                "   reload_columns();"
-                "}"
-                "return false" %
-                {
-                    'close_func': ajax.py2js(close_func),
-                    'id': ajax.py2js(self.id),
-                    'col_id': ajax.py2js(self.column.id),
-                    'archive_col_id': ajax.py2js(
-                        self.column.board.archive_column.id
-                    ),
-                    'confirm_msg': ajax.py2js(
-                        _(u'This card will be deleted. Are you sure?')
-                    ).decode('UTF-8')
-                }
+    if security.has_permissions('edit', self) and not self.archived:
+        with h.form:
+            close_func = ajax.js(
+                'function (){%s;}' %
+                h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
             )
-        )
+            h << h.button(
+                h.i(class_='icon-trashcan'),
+                _('Delete'),
+                class_='btn delete',
+                onclick=(
+                    "if (confirm(%(confirm_msg)s)) {"
+                    "   YAHOO.kansha.app.archiveCard(%(close_func)s);"
+                    "   reload_columns();"
+                    "}"
+                    "return false" %
+                    {
+                        'close_func': ajax.py2js(close_func),
+                        'confirm_msg': ajax.py2js(
+                            _(u'This card will be deleted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                )
+            )
     return h.root
 
 
@@ -328,11 +315,18 @@ def render_members_many_user(self, h, comp, *args):
 def render_new_card(self, h, comp, *args):
     """Render card creator minified"""
     h << h.a(h.strong('+'), h.span(_('Add a card')),
-             class_='link-small').action(lambda: comp.answer(comp.call(model='add')))
+             class_='link-small').action(comp.becomes, model='add')
     if self.needs_refresh:
         h << h.script('increase_version();')
         self.toggle_refresh()
     return h.root
+
+
+def toggle_answer(card_editor, comp, text):
+    card_editor.toggle_refresh()
+    comp.becomes(model=None)
+    if text:
+        comp.answer(text())
 
 
 @presentation.render_for(NewCard, 'add')
@@ -341,15 +335,11 @@ def render_new_card_add(self, h, comp, *args):
     text = var.Var()
     id_ = h.generate_id('newCard')
 
-    def answer():
-        self.toggle_refresh()
-        comp.answer(text())
-
     with h.form(class_='card-add-form'):
         h << h.input(type='text', id=id_).action(text)
-        h << h.button(_('Add'), class_='btn btn-primary').action(answer)
+        h << h.button(_('Add'), class_='btn btn-primary').action(toggle_answer, self, comp, text)
         h << ' '
-        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
+        h << h.button(_('Cancel'), class_='btn').action(toggle_answer, self, comp, None)
 
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 

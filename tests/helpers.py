@@ -141,14 +141,14 @@ def create_default_cards(board, user):
     green = board.get_label_by_title(u'Green')
     red = board.get_label_by_title(u'Red')
     column_1 = board.columns[0]
-    cards = [DataCard(title=u"Welcome to your board!", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
-             DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", author=user, creation_date=datetime.utcnow()),
+    cards = [DataCard(title=u"Welcome to your board!", creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
+             DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", creation_date=datetime.utcnow()),
              DataCard(title=u"Use color-coded labels for organization",
-                      labels=[green, red], author=user, creation_date=datetime.utcnow()),
+                      labels=[green, red], creation_date=datetime.utcnow()),
              DataCard(title=u"Make as many lists as you need!",
-                      votes=[DataVote(user=user)], author=user, creation_date=datetime.utcnow()),
-             DataCard(title=u"Try dragging cards anywhere.", author=user, creation_date=datetime.utcnow()),
-             DataCard(title=u"Finished with a card? Delete it.", author=user, creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(-2)),
+                      votes=[DataVote(user=user)], creation_date=datetime.utcnow()),
+             DataCard(title=u"Try dragging cards anywhere.", creation_date=datetime.utcnow()),
+             DataCard(title=u"Finished with a card? Delete it.", creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(-2)),
              ]
     for i, c in enumerate(cards):
         c.index = i
@@ -156,12 +156,12 @@ def create_default_cards(board, user):
     column_1.nb_max_cards = len(cards)
 
     column_2 = board.columns[1]
-    cards = [DataCard(title=u'This is a card.', author=user, creation_date=datetime.utcnow()),
-             DataCard(title=u"Click on a card to see what's behind it.", author=user, creation_date=datetime.utcnow()),
-             DataCard(title=u"You can add files to a card.", author=user, creation_date=datetime.utcnow()),
+    cards = [DataCard(title=u'This is a card.', creation_date=datetime.utcnow()),
+             DataCard(title=u"Click on a card to see what's behind it.", creation_date=datetime.utcnow()),
+             DataCard(title=u"You can add files to a card.", creation_date=datetime.utcnow()),
              DataCard(
-                 title=u'To learn more tricks, check out the manual.', author=user, creation_date=datetime.utcnow()),
-             DataCard(title=u"Use as many boards as you want.", author=user, creation_date=datetime.utcnow())]
+                 title=u'To learn more tricks, check out the manual.', creation_date=datetime.utcnow()),
+             DataCard(title=u"Use as many boards as you want.", creation_date=datetime.utcnow())]
     for i, c in enumerate(cards):
         c.index = i
     column_2.cards = cards

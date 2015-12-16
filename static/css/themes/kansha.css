@@ -512,7 +512,7 @@ i.icon {
 }
 /* End errors */
 
-@media (max-width:1100px){
+@media (max-width:1200px){
     .nav-menu .actions li a {
         display: inline-block;
         width: 28px;

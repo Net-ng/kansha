@@ -28,7 +28,7 @@ from kansha.column import comp as column
 from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
 from kansha.authentication.database import forms
-from kansha import exceptions, notifications, validator
+from kansha import events, exceptions, validator
 
 from .models import DataBoard, DataBoardMember
 from .templates import SaveTemplateTask
@@ -54,7 +54,7 @@ WEIGHTING_FREE = 1
 WEIGHTING_LIST = 2
 
 
-class Board(object):
+class Board(events.EventHandlerMixIn):
 
     """Board component"""
 
@@ -205,6 +205,24 @@ class Board(object):
 
         return new_obj
 
+    def on_event(self, comp, event):
+        result = None
+        if event.is_(events.ColumnDeleted):
+            # actually delete the column
+            result = self.delete_column(event.data)
+        elif event.is_(events.CardArchived):
+            result = self.archive_card(event.emitter)
+        elif event.is_(events.SearchIndexUpdated):
+            result = self.set_reload_search()
+        elif event.is_(events.CardDisplayed):
+            if self.must_reload_search:
+                self.reload_search()
+                result = 'reload_search'
+            else:
+                result = 'nop'
+
+        return result
+
     def save_as_template(self, title, description, shared):
         user = security.get_user()
         template = self.copy(user, {})
@@ -335,7 +353,7 @@ class Board(object):
         self.increase_version()
         return col_obj
 
-    def delete_column(self, id_):
+    def delete_column(self, col_comp):
         """Delete a board's column
 
         In:
@@ -343,41 +361,10 @@ class Board(object):
         """
 
         security.check_permissions('edit', self)
-        for comp in self.columns:
-            if comp().data.id == id_:
-                self.columns.remove(comp)
-                comp().delete()
-                self.increase_version()
-                return popin.Empty()
-        raise exceptions.KanshaException('No column with id [%s] found' % id_)
-
-    def move_cards(self, v):
-        """Function called after drag and drop of a card or column
-
-        In:
-            - ``v`` -- a structure containing the lists/cards position
-                       (ex . [ ["list_1", ["card_1", "card_2"]],
-                             ["list_2", ["card_3", "card_4"]] ])
-        """
-        security.check_permissions('edit', self)
-        ids = json.loads(v)
-        cards = {}
-        cols = {}
-
-        for col in self.columns:
-            cards.update(dict([(card().id, card) for card in col().cards
-                               if not isinstance(card(), popin.Empty)]))
-            cols[col().id] = col
-
-        # move columns
-        self.columns = []
-        for (col_index, (col_id, card_ids)) in enumerate(ids):
-            comp_col = cols[col_id]
-            self.columns.append(comp_col)
-            comp_col().change_index(col_index)
-            comp_col().move_cards([cards[id_] for id_ in card_ids])
-
-        session.flush()
+        self.columns.remove(col_comp)
+        col_comp().delete()
+        self.increase_version()
+        return popin.Empty()
 
     def update_card_position(self, data):
         security.check_permissions('edit', self)
@@ -385,26 +372,24 @@ class Board(object):
 
         cols = {}
         for col in self.columns:
-            cols[col().id] = col()
+            cols[col().id] = (col(), col)
 
-        orig = cols[data['orig']]
+        orig, __ = cols[data['orig']]
 
-        if data['orig'] != data['dest']:  # Move from one column to another
-            dest = cols[data['dest']]
-            card = orig.remove_card(data['card'])
-            dest.insert_card(card, data['index'])
-            values = {'from': orig.get_title(),
-                      'to': dest.get_title(),
-                      'card': card().data.title}
-            self.action_log.for_card(card()).add_history(
-                security.get_user(),
-                u'card_move', values)
-            # reindex it in case it has been moved to the archive column
-            scard = fts_schema.Card.from_model(card().data)
-            self.search_engine.update_document(scard)
-            self.search_engine.commit()
-        else:  # Reorder only
-            orig.move_card(data['card'], data['index'])
+        dest, dest_comp = cols[data['dest']]
+        card_comp = orig.remove_card_by_id(data['card'])
+        dest.insert_card_comp(dest_comp, data['index'], card_comp)
+        card = card_comp()
+        values = {'from': orig.get_title(),
+                  'to': dest.get_title(),
+                  'card': card.get_title()}
+        self.action_log.for_card(card).add_history(
+            security.get_user(),
+            u'card_move', values)
+        # reindex it in case it has been moved to the archive column
+        scard = fts_schema.Card.from_model(card.data)
+        self.search_engine.update_document(scard)
+        self.search_engine.commit()
         session.flush()
 
     def update_column_position(self, data):
@@ -461,13 +446,13 @@ class Board(object):
         self.refresh()
         self.set_reload_search()
 
-    def archive_card(self, c):
+    def archive_card(self, card):
         """Archive card
 
         In:
-            - ``c`` -- card to archive
+            - ``card`` -- card to archive
         """
-        c.move_card(0, self.archive_column)
+        self.archive_column.append_card(card)
         self.archive_column.refresh()
 
     @property

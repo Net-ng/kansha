@@ -25,17 +25,18 @@ class DataCard(Entity):
     using_options(tablename='card')
     title = Field(UnicodeText)
     description = Field(UnicodeText, default=u'')
-    votes = OneToMany('DataVote')
     index = Field(Integer)
+    creation_date = Field(DateTime, default=datetime.datetime.utcnow)
     column = ManyToOne('DataColumn')
+
+    # feature data to move to card extensions
+    votes = OneToMany('DataVote')
     labels = ManyToMany('DataLabel')
     comments = OneToMany('DataComment', order_by="-creation_date")
     assets = OneToMany('DataAsset', order_by="-creation_date")
     checklists = OneToMany('DataChecklist', order_by="index")
     members = ManyToMany('DataUser')
     cover = OneToOne('DataAsset', inverse="cover")
-    author = ManyToOne('DataUser', inverse="my_cards")
-    creation_date = Field(DateTime)
     due_date = Field(Date)
     weight = Field(Unicode(255), default=u'')
 
@@ -48,25 +49,11 @@ class DataCard(Entity):
         return new_data
 
     @classmethod
-    def create_card(cls, column, title, user):
-        """Create new column
-
-        In:
-            - ``column`` -- DataColumn, father of the column
-            - ``title`` -- title of the card
-            - ``user`` -- DataUser, author of the card
-        Return:
-            - created DataCard instance
-        """
-        new_card = cls(title=title, author=user,
-                       creation_date=datetime.datetime.utcnow())
-        column.cards.append(new_card)
-        return new_card
-
-    @classmethod
     def get_all(cls):
         query = cls.query.options(subqueryload('labels'), subqueryload('comments'))
         return query
+
+    # Methods for data belonging to card extensions
 
     def make_cover(self, asset):
         """
@@ -78,8 +65,10 @@ class DataCard(Entity):
         """
         DataCard.get(self.id).cover = None
 
-    def remove_board_member(self, member):
-        """Remove member from board"""
-        if member.get_user_data() in self.members:
-            self.members.remove(member.get_user_data())
-            session.flush()
+    def remove_member(self, datauser):
+        if datauser in self.members:
+            self.members.remove(datauser)
+
+    @property
+    def archived(self):
+        return self.column.archive

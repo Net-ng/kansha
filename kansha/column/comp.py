@@ -13,6 +13,7 @@ from nagare.i18n import _
 from nagare import component, var, security, i18n
 
 from kansha import title
+from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
 from kansha.card import (comp as card, fts_schema)
@@ -20,7 +21,7 @@ from kansha.card import (comp as card, fts_schema)
 from .models import DataColumn
 
 
-class Column(object):
+class Column(events.EventHandlerMixIn):
 
     """Column component
     """
@@ -52,7 +53,7 @@ class Column(object):
                     self.action_log, data=c))
                       for c in self.data.cards]
         self.new_card = component.Component(
-            card.NewCard(self)).on_answer(self.create_card)
+            card.NewCard(self))
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
@@ -70,19 +71,34 @@ class Column(object):
 
         return new_obj
 
-    def set_reload_search(self):
-        self.board.set_reload_search()
-
-    def actions(self, data, comp):
-        if data[0] == 'delete':
-            comp.answer(data[1])
-        elif data[0] == 'set_limit':
+    def actions(self, action, comp):
+        if action == 'delete':
+            self.emit_event(comp, events.ColumnDeleted, comp)
+        elif action == 'set_limit':
             self.card_counter.call(model='edit')
-        elif data[0] == 'purge':
-            for card in self.cards:
-                self.delete_card(card())
-            self.refresh()
-        self.set_reload_search()
+        elif action == 'purge':
+            self.purge_cards()
+        self.emit_event(comp, events.SearchIndexUpdated)
+
+    def ui_create_card(self, comp, title):
+        self.create_card(title)
+        self.emit_event(comp, events.SearchIndexUpdated)
+
+    def on_event(self, comp, event):
+        if event.is_(events.CardClicked):
+            card_comp = event.data
+            card_comp.becomes(popin.Popin(card_comp, 'edit'))
+        elif event.is_(events.ParentTitleNeeded):
+            return self.get_title()
+        elif event.is_(events.CardEditorClosed):
+            card_bo = event.emitter
+            slot = event.data
+            slot.becomes(card_bo)
+            # card has been edited, reindex
+            scard = fts_schema.Card.from_model(card_bo.data)
+            self.search_engine.update_document(scard)
+            self.search_engine.commit()
+            self.emit_event(comp, events.SearchIndexUpdated)
 
     @property
     def data(self):
@@ -166,51 +182,89 @@ class Column(object):
             self.archive_card(card())
         DataColumn.delete_column(self.data)
 
-    def move_cards(self, cards):
-        """Replace self.cards by cards
+    def remove_card(self, card):
+        self.cards.pop(card.index)
+        self.data.remove_card(card.data)
+
+    def remove_card_by_id(self, card_id):
+        """Remove card and return corresponding Component."""
+        # find component
+        card_comp = filter(lambda x: x().id == card_id, self.cards)[0]
+        try:
+            self.remove_card(card_comp())
+        except (IndexError, ValueError):
+            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
+        return card_comp
+
+    def insert_card(self, index, card):
+        self.data.insert_card(index, card.data)
+        self.cards.insert(index, component.Component(card))
+
+    def insert_card_comp(self, comp, index, card_comp):
+        self.data.insert_card(index, card_comp().data)
+        self.cards.insert(index, card_comp)
+        card_comp.on_answer(self.handle_event, comp)
+
+    def delete_card(self, card):
+        """Delete card
 
         In:
-            - ``cards`` -- list of Card instances wrapped on component
+            - ``card`` -- card to delete
         """
+        self.cards.pop(card.index)
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': card.get_title()}
+        card.action_log.add_history(
+            security.get_user(),
+            u'card_delete', values)
+        self.search_engine.delete_document(fts_schema.Card, card.id)
+        self.search_engine.commit()
+        card.delete()
+        self.data.delete_card(card.data)
 
-        self.cards = cards
-        # remove cards for data part
-        self.data.cards = []
-        for card_index, card in enumerate(cards):
-            card().move_card(card_index, self)
+    def purge_cards(self):
+        for card_comp in self.cards:
+            card_comp().delete()
+        del self.cards[:]
+        self.data.purge_cards()
 
-    def move_card(self, card_id, index):
-        found = False
-        for card_index, card in enumerate(self.data.cards):
-            if 'card_%s' % card.id == card_id:
-                found = True
-                break
-        if not found:
-            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        data_column = self.data
-        card = data_column.cards.pop(card_index)
-        data_column.cards.insert(index, card)
-        card = self.cards.pop(card_index)
-        self.cards.insert(index, card)
+    def append_card(self, card):
+        self.data.append_card(card.data)
+        self.cards.append(component.Component(card))
 
-    def remove_card(self, card_id):
-        found = False
-        for card_index, card in enumerate(self.cards):
-            if card().id == card_id:
-                found = True
-                break
-        if not found:
-            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        removed_card = self.cards.pop(card_index)
-        return removed_card
+    # FIXME: move to board only, use Events
+    def archive_card(self, c):
+        """Delete card
 
-    def insert_card(self, card, index):
-        self.cards.insert(index, card)
-        card().move_card(index, self)
-        data_column = self.data
-        c = data_column.cards
-        c.remove(card().data)
-        c.insert(index, card().data)
+        In:
+            - ``c`` -- card to delete
+        """
+        self.cards = [card for card in self.cards if c != card()]
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
+        c.action_log.add_history(security.get_user(), u'card_archive', values)
+        self.board.archive_card(c)
+
+    def create_card(self, text=''):
+        """Create a new card
+
+        In:
+            - ``text`` -- the title of the new card
+        """
+        if text:
+            if not self.can_add_cards:
+                raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
+            new_card = self.data.create_card(text, security.get_user().data)
+            card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
+            self.cards.append(component.Component(card_obj, 'new'))
+            values = {'column_id': self.id,
+                      'column': self.get_title(),
+                      'card': new_card.title}
+            card_obj.action_log.add_history(
+                security.get_user(),
+                u'card_create', values)
+            scard = fts_schema.Card.from_model(new_card)
+            self.search_engine.add_document(scard)
+            self.search_engine.commit()
+            return card_obj
 
     def get_available_labels(self):
         return self.board.labels
@@ -223,76 +277,10 @@ class Column(object):
         """
         self.data.index = new_index
 
-    def create_card(self, text=''):
-        """Create a new card
-
-        In:
-            - ``text`` -- the title of the new card
-        """
-        if text:
-            if self.can_add_cards:
-                new_card = self.data.create_card(text, security.get_user().data)
-                card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
-                self.cards.append(component.Component(card_obj, 'new'))
-                values = {'column_id': self.id,
-                          'column': self.get_title(),
-                          'card': new_card.title}
-                card_obj.action_log.add_history(
-                    security.get_user(),
-                    u'card_create', values)
-                scard = fts_schema.Card.from_model(new_card)
-                self.search_engine.add_document(scard)
-                self.search_engine.commit()
-                self.set_reload_search()
-                return card_obj
-            else:
-                raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
-
-    def delete_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        c.action_log.add_history(
-            security.get_user(),
-            u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, c.id)
-        self.search_engine.commit()
-        c.delete()
-
     def refresh(self):
         self.cards = [component.Component(
             self._services(card.Card, data_card.id, self, self.card_extensions, self.action_log, data=data_card)
             ) for data_card in self.data.cards]
-
-    def archive_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        c.action_log.add_history(security.get_user(), u'card_archive', values)
-        self.board.archive_card(c)
-
-    def edit_card(self, c):
-        """Wraps a card component into a popin component.
-
-        In:
-            - ``c`` -- card to edit (or delete)
-
-        """
-        if c.call(popin.Popin(c, 'edit')) == 'delete':
-            self.archive_card(c())
-        scard = fts_schema.Card.from_model(c().data)
-        self.search_engine.update_document(scard)
-        self.search_engine.commit()
-        c().refresh()
-        self.set_reload_search()
 
     def set_nb_cards(self, nb_cards):
 

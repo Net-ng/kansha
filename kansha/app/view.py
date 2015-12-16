@@ -150,7 +150,7 @@ def render_kansha(self, h, comp, *args):
                     h << comp.render(h, model='oip')
                     with h.div(id='application'):
                         h << comp.render(h, model='menu')
-                        h << self.content
+                        h << self.content#.on_answer(self.select_board)
             with h.div(class_='credits'):
                 with h.div(class_='container'):
                     h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
@@ -161,7 +161,7 @@ def render_kansha(self, h, comp, *args):
             h << comp.render(h, model='oip')
             with h.div(id='application'):
                 h << comp.render(h, model='menu')
-                h << self.content
+                h << self.content.on_answer(self.handle_event)
 
     h.head.javascript_url('js/nagare.js')
 

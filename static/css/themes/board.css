@@ -328,23 +328,12 @@ textarea.expanded {
     display: block;
 }
 
-.members {
-    min-height: 32px;
-    margin-top: 5px;
-    display: inline-block;
-}
-
-.members .more {
-    display: inline-block;
-    margin-top: 2px;
-}
-
 .card-actions {
-    width: 145px;
+    width: 155px;
 }
 
 .card-edition {
-    width: calc(100% - 175px);
+    width: calc(100% - 185px);
 }
 
 .card-actions button i[class^="icon-"],
@@ -352,36 +341,14 @@ textarea.expanded {
     margin-right: 3px;
 }
 
-.members a {
-    width: auto;
-    /*float: left;*/
-    padding: 0
-}
-
-.members .add {
-    visibility: hidden;
-    display: inline-block;
-    overflow: hidden;
-    margin-top: 2px;
-}
-
-.card .members .count {
-    padding: 0 4px;
-}
-
 .card:hover .members .add,
 .card-actions:hover .members .add {
     visibility: visible;
 }
 
-.members .add a {
-    white-space: nowrap;
-}
-
 .members .miniavatar {
     display: inline-block;
     overflow: hidden;
-    margin-right: 5px;
     max-height: 28px;
     max-width: 28px;
 }

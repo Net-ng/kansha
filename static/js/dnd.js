@@ -282,10 +282,6 @@
                 var src = this.getEl(),
                     dragEl = this.getDragEl(),
                     region = Dom.getRegion(src);
-                Dom.getElementsByClassName('card', 'div', src, function (elem) {
-                    YAHOO.kansha.app.highlight(elem, 'badges', true);
-                    YAHOO.kansha.app.highlight(elem, 'members', true);
-                });
                 dragEl.innerHTML = src.innerHTML;
                 Dom.addClass(dragEl, 'card-dragging');
                 if (YAHOO.kansha.app.isDesktop()) {

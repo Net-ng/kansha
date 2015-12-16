@@ -16,30 +16,22 @@
     margin-bottom: 10px;
 }
 
-.home .boards li a {
-    padding: 5px;
-}
-
+.home .boards .add,
 .home .boards a.archive,
 .home .boards a.restore,
 .home .boards a.delete,
 .home .boards a.leave {
-    display: none;
+    display: inline-block;
+    visibility: hidden;
     overflow: hidden;
-    position: absolute;
-    right: 0;
-    top: 0;
 }
 
-.home .boards a.archive.highlight,
-.home .boards a.restore.highlight,
-.home .boards a.delete.highlight,
-.home .boards a.leave.highlight {
-    display: block
-}
-
-.home .boards a.restore {
-    right: 40px;
+.home .boards ul.board-labels li:hover .add,
+.home .boards ul.board-labels li:hover a.archive,
+.home .boards ul.board-labels li:hover a.restore,
+.home .boards ul.board-labels li:hover a.delete,
+.home .boards ul.board-labels li:hover a.leave {
+    visibility: visible;
 }
 
 .home .boards ul.board-labels {
@@ -49,29 +41,22 @@
     max-width: 800px;
 }
 
-.home .boards ul.board-labels .label-title {
-    padding: 0 0 0 5px;
-    line-height: 34px;
+.home .boards ul.board-labels li {
+    padding: 0 5px;
 }
 
-.home .boards ul.board-labels .label-title input {
-    margin: 0;
+.home .boards ul.board-labels li .boardItemLabel {
+    width: calc(100% - 220px);
 }
 
-.home .boards ul.unstyled label {
-    margin-bottom: 0;
+.home .boards ul.board-labels li .actions {
+    display: inline-block;
+    width: 220px;
+    text-align: right;
 }
 
 .home .new-board select {
     width: auto;
-}
-
-.home .boards ul.board-labels li {
-    position: relative;
-}
-
-.home .boards input {
-    margin-top: 5px
 }
 
 .home .boards .list {
@@ -81,50 +66,14 @@
 .boards { margin-bottom: 50px; }
 
 /* Board labels */
-.boards .wide {
-    display: inline;
-}
-
 .boards .compact {
     display: none;
-}
-
-.board-labels .members {
-    width: auto;
-    float: none;
-    position: absolute;
-    right: 34px;
-    top: 4px
-}
-
-.board-labels .members a {
-    width: auto;
-    padding: 0 !important
-}
-
-.board-labels .members .add {
-    display: none;
-    overflow: hidden;
-    margin-right: -15px;
-}
-
-.board-labels .members.highlight .add {
-    display: inline-block;
 }
 
 .board-labels .members .miniavatar {
     display: inline-block;
     overflow: hidden;
     max-height: 28px;
-}
-
-.board-labels .members .more {
-    margin-right: -15px
-}
-
-.board-labels .members .more > a {
-    display: inline-block;
-    overflow: hidden;
 }
 /* End board labels */
 
@@ -156,6 +105,19 @@
 
 /* Responsive small size */
 @media all and (max-width:640px) {
-    .home .boards .wide { display: none; }
-    .home .boards .compact { display: inline-block; }
+    .home .boards .wide {
+        display: none;
+    }
+
+    .home .boards .compact {
+        display: inline-block;
+    }
+
+    .home .boards ul.board-labels li .boardItemLabel {
+        width: calc(100% - 100px);
+    }
+
+    .home .boards ul.board-labels li .actions {
+        width: 100px;
+    }
 }

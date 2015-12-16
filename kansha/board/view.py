@@ -189,24 +189,16 @@ def render_Board_item(self, h, comp, *args):
 
     url = self.data.url
     with h.li:
-        link = h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel")
-        if self.data.description:
-            link.set('title', self.data.description)
-        h << link
-        h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'members', false);
-                                YAHOO.kansha.app.highlight(this, 'archive', false);
-                                YAHOO.kansha.app.highlight(this, 'leave', false);""",
-              'onmouseout': """YAHOO.kansha.app.highlight(this, 'members', true);
-                               YAHOO.kansha.app.highlight(this, 'archive', true);
-                               YAHOO.kansha.app.highlight(this, 'leave', true);"""}
+        h << h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel", title=self.data.description)
 
-        h << self.comp_members.render(h, 'members')
+        with h.div(class_='actions'):
+            h << self.comp_members.render(h, 'members')
 
-        if security.has_permissions('manage', self):
-            h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
-        else:
-            onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
+            if security.has_permissions('manage', self):
+                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
+            else:
+                onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
     return h.root
 
 
@@ -215,15 +207,11 @@ def render_Board_archived_item(self, h, comp, *args):
     with h.li:
         h << h.a(self.data.title, href='#', class_="boardItemLabel")
 
-        h << {'onmouseover': """YAHOO.kansha.app.highlight(this, 'delete', false);
-                                YAHOO.kansha.app.highlight(this, 'restore', false);""",
-              'onmouseout': """YAHOO.kansha.app.highlight(this, 'delete', true);
-                               YAHOO.kansha.app.highlight(this, 'restore', true);"""}
-
         if security.has_permissions('manage', self):
-            onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-            h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
-            h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
+            with h.div(class_='actions'):
+                onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
+                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
     return h.root
 
 
@@ -280,7 +268,7 @@ def render_Icon(self, h, comp, *args):
         h << h.i(class_=self.icon, title=self.title)
         h << self.title
     else:
-        h << h.i(class_=self.icon)
+        h << h.i(class_=self.icon, title=self.title)
     return h.root
 
 

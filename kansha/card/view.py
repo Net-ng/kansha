@@ -137,7 +137,7 @@ def render(self, h, comp, *args):
     card = ajax.py2js(self, h)
     if card:
         clicked_cb = h.a.action(
-            lambda: comp.answer(comp)
+            lambda: self.emit_event(comp, events.CardClicked, comp)
         ).get('onclick')
 
         dropped_cb = h.a.action(
@@ -348,9 +348,9 @@ def render_new_card_add(self, h, comp, *args):
 
 @peak.rules.when(ajax.py2js, (Card,))
 def py2js(value, h):
-    due_date = ajax.py2js(value.due_date(), h)
-    if not due_date:
+    if not value.due_date:
         return None
+    due_date = ajax.py2js(value.due_date, h)
 
     return u'{title:%s, editable:true, allDay: true, start: %s}' % (
             ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)

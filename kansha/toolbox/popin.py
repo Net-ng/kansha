@@ -28,7 +28,7 @@ class Popin(object):
             - ``model`` -- the model of the wrapped component used
                 to populate the popin content
         """
-        self.comp = component.Component(comp, model=comp.model)
+        self.comp = component.Component(comp)
         self.model = model
 
         Popin.panel_id += 1
@@ -46,14 +46,14 @@ def render(self, h, comp, *args):
 
 @presentation.render_for(Popin, 'calendar')
 @presentation.render_for(Popin)
-def render(self, h, comp, *args):
+def render(self, h, comp, model):
     """Render the popin and opens it"""
     business_obj = self.comp()
     emit_event = getattr(business_obj, 'emit_event', self.emit_event)
     action = h.a.action(emit_event, comp, PopinClosed, comp).get('onclick')
     close_func = 'function (){%s;}' % (action)
 
-    h << self.comp.on_answer(lambda x: None) # Ignore answers from this view
+    h << self.comp.on_answer(lambda x: None).render(h, model=model) # Ignore answers from this view
 
     with h.div(style='display: none'):
         with h.div(id=self.id):

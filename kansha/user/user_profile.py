@@ -151,11 +151,10 @@ class BasicUserForm(editor.Editor):
 
 @presentation.render_for(BasicUserForm)
 def render(self, h, comp, *args):
-    h << comp.render(h, "edit")
-    return h.root
+    return comp.render(h.SyncRenderer(), 'edit')
 
 
-@presentation.render_for(BasicUserForm, model="edit")
+@presentation.render_for(BasicUserForm, model='edit')
 def render(self, h, comp, *args):
     with h.div:
         with h.form.pre_action(self.pre_action):
@@ -181,14 +180,14 @@ def render(self, h, comp, *args):
                     with h.li:
                         h << _('Picture')
                         h << h.div(
-                            h.img(src=self.target.picture, class_="avatar big"))
+                            h.img(src=self.target.picture, class_='avatar big'))
 
                 with h.li:
                     h << h.label(_('Display week numbers in calendars'))
                     h << h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers)
 
             with h.div:
-                h << h.input(value=_("Save"), class_="btn btn-primary",
+                h << h.input(value=_('Save'), class_='btn btn-primary',
                              type='submit').action(self.commit)
     return h.root
 
@@ -242,7 +241,7 @@ class UserForm(BasicUserForm):
         # check that this user name does not exist
         user = self.user_manager.get_by_username(value)
         if user:
-            raise ValueError(_("Username %s is not available. Please choose another one.")
+            raise ValueError(_('Username %s is not available. Please choose another one.')
                              % value)
         return value
 
@@ -258,7 +257,7 @@ class UserForm(BasicUserForm):
         min_len = 6
 
         if len(value) < min_len and len(value) > 0:
-            raise ValueError(_("Password too short: should have at least %d characters")
+            raise ValueError(_('Password too short: should have at least %d characters')
                              % min_len)
         return value
 
@@ -272,7 +271,7 @@ class UserForm(BasicUserForm):
         """
         if len(value) == 0 or security.get_user().data.check_password(value):
             return self.validate_password(value)
-        raise ValueError(_("This password doesn't match the old one."))
+        raise ValueError(_('''This password doesn't match the old one.'''))
 
     def validate_passwords_match(self, value):
         """Check if confirmation password and password are equals
@@ -285,7 +284,7 @@ class UserForm(BasicUserForm):
         if self.password.value == value:
             return value
         else:
-            raise ValueError(_("The two passwords don't match"))
+            raise ValueError(_('''The two passwords don't match'''))
 
     def _create_email_confirmation(self, application_url):
         """Create email confirmation"""
@@ -309,7 +308,7 @@ class UserForm(BasicUserForm):
             confirmation = self._create_email_confirmation(application_url)
             confirmation.send_email(self.mail_sender)
             self.email_to_confirm.info = _(
-                "A confirmation email has been sent.")
+                'A confirmation email has been sent.')
         # Test if password has changed
         if (len(self.password()) > 0 and
                 not(self.old_password.error) and
@@ -317,7 +316,7 @@ class UserForm(BasicUserForm):
             user = security.get_user()
             user.data.change_password(self.password())
             user.update_password(self.password())
-            self.password_repeat.info = _("The password has been changed")
+            self.password_repeat.info = _('The password has been changed')
         super(BasicUserForm, self).commit(self.fields)
 
     def set_picture(self, new_file):
@@ -351,7 +350,7 @@ class UserForm(BasicUserForm):
         self.picture(self.assets_manager.get_image_url(uid, size='thumb'))
 
 
-@presentation.render_for(UserForm, "edit")
+@presentation.render_for(UserForm, 'edit')
 def render(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
     h.head.css_url('css/themes/%s/home.css' % self.theme)
@@ -370,7 +369,7 @@ def render(self, h, comp, *args):
                           h.input(type='text', value=self.email_to_confirm()).action(self.email_to_confirm).error(self.email_to_confirm.error))
                     if hasattr(self.email_to_confirm, 'info'):
                         h << h.span(
-                            self.email_to_confirm.info, class_="info-message")
+                            self.email_to_confirm.info, class_='info-message')
                 with h.li(_('Language')):
                     with h.select().action(self.language).error(self.language.error):
                         for (id, lang) in LANGUAGES.items():
@@ -385,19 +384,19 @@ def render(self, h, comp, *args):
                     if picture:
                         with h.label(for_='picture'):
                             h << h.img(
-                                src=self.target.get_picture(), class_="avatar big")
+                                src=self.target.get_picture(), class_='avatar big')
                     h << h.input(type='file', id='picture').action(self.set_picture)\
                         .error(self.picture.error)
 
                 with h.li:
                     h << (_('Old Password'), ' ',
                           # FF hack, don't save my password please
-                          h.input(type='password', style="display:none"),
+                          h.input(type='password', style='display:none'),
                           h.input(type='password').action(self.old_password)
                           .error(self.old_password.error))
                     if hasattr(self.password_repeat, 'info'):
                         h << h.span(
-                            self.password_repeat.info, class_="info-message")
+                            self.password_repeat.info, class_='info-message')
                 with h.li:
                     h << (_('New password'), ' ',
                           h.input(type='password').action(self.password).error(self.password.error))
@@ -412,8 +411,8 @@ def render(self, h, comp, *args):
                     h << h.input(type='checkbox', id=week_numbers_id).selected(self.display_week_numbers.value).action(self.display_week_numbers)
 
             with h.div(class_=''):
-                h << h.input(_("Save"),
-                             class_="btn btn-primary",
+                h << h.input(_('Save'),
+                             class_='btn btn-primary',
                              type='submit').action(self.commit, h.request.application_url)
     return h.root
 
@@ -536,17 +535,17 @@ def render_userboards(self, h, comp, *args):
 
     if self.last_modified_boards:
         h << h.h1(_(u'Last modified boards'))
-        with h.ul(class_="board-labels"):
-            h << [b.on_answer(comp.answer).render(h, "item") for b in self.last_modified_boards.itervalues()]
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.last_modified_boards.itervalues()]
 
     h << h.h1(_(u'My boards'))
-    with h.ul(class_="board-labels"):
-        h << [b.on_answer(comp.answer).render(h, "item") for b in self.my_boards.itervalues()]
+    with h.ul(class_='board-labels'):
+        h << [b.on_answer(comp.answer).render(h, 'item') for b in self.my_boards.itervalues()]
 
     if self.guest_boards:
         h << h.h1(_(u'Guest boards'))
-        with h.ul(class_="board-labels"):
-            h << [b.on_answer(comp.answer).render(h, "item") for b in self.guest_boards.itervalues()]
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.guest_boards.itervalues()]
 
     with h.div(class_='new-board'):
         with h.form:
@@ -570,16 +569,16 @@ def render_userboards(self, h, comp, *args):
     if len(self.archived_boards):
         h << h.h1(_('Archived boards'))
 
-        with h.ul(class_="board-labels"):
-            h << [b.render(h, "archived_item")
+        with h.ul(class_='board-labels'):
+            h << [b.render(h, 'archived_item')
                   for b in self.archived_boards.itervalues()]
 
         with h.form:
             h << h.button(
-                _("Delete"),
-                class_="delete",
+                _('Delete'),
+                class_='delete',
                 onclick='return confirm(%s)' % ajax.py2js(
-                    _("These boards will be destroyed. Are you sure?")
+                    _('These boards will be destroyed. Are you sure?')
                 ).decode('UTF-8'),
                 type='submit'
             ).action(self.purge_archived_boards)

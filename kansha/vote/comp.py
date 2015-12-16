@@ -22,17 +22,9 @@ class Votes(CardExtension):
     """Vote component
     """
 
-    def __init__(self, parent):
-        """Initialization
-
-        In:
-            - ``parent`` -- the parent object (Card instance)
-        """
-        self.parent = parent
-
     @property
     def votes(self):
-        card_data = self.parent.data
+        card_data = self.card.data
         return card_data.votes
 
     def vote(self):
@@ -40,10 +32,10 @@ class Votes(CardExtension):
 
         Remove vote if user has already voted
         """
-        security.check_permissions('vote', self.parent)
+        security.check_permissions('vote', self.card)
         if not self.has_voted():
             user = security.get_user()
-            card_data = self.parent.data  # Garbage collector pbm with ORM
+            card_data = self.card.data  # Garbage collector pbm with ORM
             vote = DataVote(user=user.data)
             self.votes.append(vote)
         else:
@@ -52,10 +44,10 @@ class Votes(CardExtension):
     def unvote(self):
         """Remove a vote to the current card
         """
-        security.check_permissions('vote', self.parent)
+        security.check_permissions('vote', self.card)
         if self.has_voted():
             user = security.get_user()
-            card_data = self.parent.data
+            card_data = self.card.data
             vote = DataVote.get_vote(user.data, card_data)
             self.votes.remove(vote)
 
@@ -70,6 +62,6 @@ class Votes(CardExtension):
         user = security.get_user()
         q = database.session.query(DataVote)
         q = q.filter(DataVote.user == user.data)
-        card_data = self.parent.data
+        card_data = self.card.data
         q = q.filter(DataVote.card == card_data)
         return q.count() > 0

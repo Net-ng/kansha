@@ -18,7 +18,7 @@ from .comp import Votes
 @presentation.render_for(Votes, model='action')
 def render_Votes_edit(self, h, comp, *args):
     """Add vote form"""
-    if security.has_permissions('vote', self.parent):
+    if security.has_permissions('vote', self.card):
         nb_votes = len(self.votes)
         if self.has_voted():
             h << h.a(h.i(class_='icon-heart'), _('Unvote (%s)') % nb_votes,
@@ -40,7 +40,7 @@ def render_Votes_badge(self, h, *args):
             id_ = h.generate_id()
             link = h.a(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label', id=id_)
             # Test if user can vote
-            if security.has_permissions('vote', self.parent):
+            if security.has_permissions('vote', self.card):
                 link.action(self.vote)
             h << link
             h << h.script(

@@ -16,12 +16,11 @@ from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
 from kansha.models import Entity
-from kansha.column.models import DataColumn
-from kansha.label.models import DataLabel
-from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
-from kansha.notifications import DataHistory
 from nagare.database import session
+from kansha.label.models import DataLabel
+from kansha.column.models import DataColumn
 from sqlalchemy.ext.associationproxy import AssociationProxy
+from kansha.user.models import DataUser, DataBoardMember, DataBoardManager
 
 
 class DataBoard(Entity):

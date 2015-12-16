@@ -9,34 +9,40 @@
 
 import random
 
+from peak.rules import when
 from cgi import FieldStorage
 from webob.exc import HTTPOk
 
 from nagare.i18n import _
 from nagare import component, security, var
 
-from kansha import notifications
 from kansha.toolbox import overlay
 from kansha.user import usermanager
 from kansha.cardextension import CardExtension
 from kansha.authentication.database import validators
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataGallery, DataAsset
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 
 
+@when(render_event, "action=='card_add_file'")
+def render_event_card_add_file(action, data):
+    return _(u'User %(author)s has added file "%(file)s" to card "%(card)s"') % data
+
+
 class Gallery(CardExtension):
 
     LOAD_PRIORITY = 40
 
-    def __init__(self, card, assets_manager_service):
+    def __init__(self, card, action_log, assets_manager_service):
         """Init method
 
         In:
             - ``card`` -- card component
         """
-        self.card = card
+        super(Gallery, self).__init__(card, action_log)
         self.assets_manager = assets_manager_service
         self.data = DataGallery(self.card)
 
@@ -48,7 +54,7 @@ class Gallery(CardExtension):
         self.comp_id = str(random.randint(10000, 100000))
 
     def copy(self, parent, additional_data):
-        new_extension = self.__class__(parent, self.assets_manager)
+        new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
         for data_asset in self.data.get_assets():
             new_asset_id = self.assets_manager.copy(data_asset.filename)
             new_asset_data = data_asset.add_asset(new_asset_id, parent, additional_data['author'])
@@ -83,7 +89,7 @@ class Gallery(CardExtension):
         fileid = self.assets_manager.save(new_file.file.read(),
                                           metadata={'filename': new_file.filename, 'content-type': new_file.type})
         data = {'file': new_file.filename, 'card': self.card.get_title()}
-        notifications.add_history(self.card.column.board.data, self.card.data, security.get_user().data, u'card_add_file', data)
+        self.action_log.add_history(security.get_user(), u'card_add_file', data)
         return self._create_asset_c(self.data.add_asset(fileid))
 
     def add_assets(self, new_files):

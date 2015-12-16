@@ -37,7 +37,6 @@ class DataCard(Entity):
     author = ManyToOne('DataUser', inverse="my_cards")
     creation_date = Field(DateTime)
     due_date = Field(Date)
-    history = OneToMany('DataHistory')
     weight = Field(Unicode(255), default=u'')
 
     def copy(self, parent):
@@ -47,11 +46,6 @@ class DataCard(Entity):
                             column=parent)
         session.flush()
         return new_data
-
-    def delete_history(self):
-        for event in self.history:
-            session.delete(event)
-        session.flush()
 
     @classmethod
     def create_card(cls, column, title, user):

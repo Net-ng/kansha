@@ -22,13 +22,13 @@ def render(self, h, comp, *args):
     """
     id_ = h.generate_id()
     kw = {'class': 'description', 'id': id_}
-    if security.has_permissions('edit', self.parent):
+    if security.has_permissions('edit', self.card):
         kw['onclick'] = h.a.action(
             lambda: self.change_text(comp.call(model='edit'))).get('onclick')
     with h.div(**kw):
         if self.text:
             h << h.parse_htmlstring(self.text, fragment=True)
-        elif security.has_permissions('edit', self.parent):
+        elif security.has_permissions('edit', self.card):
             h << h.textarea(placeholder=_("Add description."))
 
     h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))

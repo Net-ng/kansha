@@ -15,22 +15,23 @@
 # Any reproduction modification or use without prior written
 # approval from PagesJaunes is strictly forbidden.
 #=-
-from datetime import datetime, timedelta
 import random
 import string
+from datetime import datetime, timedelta
 
-from nagare.database import session
 from nagare import local, security
+from nagare.database import session
 
-from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
-from kansha.services.services_repository import ServicesRepository
-from kansha.services.mail import DummyMailSender
-from kansha.board import models as board_models
-from kansha.card.models import DataCard
-from kansha.vote.models import DataVote
+from kansha.user import usermanager
 from kansha.board import boardsmanager
 from kansha.security import SecurityManager
-from kansha.user import usermanager
+from kansha.card.models import DataCard
+from kansha.vote.models import DataVote
+from kansha.board import models as board_models
+from kansha.services.mail import DummyMailSender
+from kansha.services.search.dummyengine import DummySearchEngine
+from kansha.services.services_repository import ServicesRepository
+from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
 
 
 def setup_db(metadata):
@@ -125,7 +126,7 @@ def create_board():
     """
     user = create_user()
     services = create_services()
-    boards_manager = boardsmanager.BoardsManager('', '', '', {}, None, services)
+    boards_manager = boardsmanager.BoardsManager('', '', '', {}, DummySearchEngine(None), services)
     template = board_models.create_template_todo()
     template = boards_manager.get_by_id(template.id)
     board = boards_manager.copy_board(template, user, False)

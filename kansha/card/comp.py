@@ -63,10 +63,11 @@ class Card(events.EventHandlerMixIn):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
-        new_obj.extensions = [(name, component.Component(extension().copy(new_obj, additional_data)))
-                                   for name, extension in self.extensions]
-        return new_obj
+        new_card = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
+        new_card.extensions = [(name, component.Component(extension().copy(new_card, additional_data)))
+                               for name, extension in self.extensions]
+        return new_card
+
 
     def refresh(self):
         """Refresh the sub components
@@ -143,8 +144,7 @@ class Card(events.EventHandlerMixIn):
     # Members
 
     def get_available_users(self):
-        """Return user's which are authorized to be added on this card
-
+        """
         Return:
             - a set of user (UserData instance)
         """

@@ -63,13 +63,20 @@ class Column(events.EventHandlerMixIn):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_obj = self._services(Column, new_data.id, None, self.card_extensions, parent.action_log, self.search_engine, data=new_data)
-
+        new_column = self._services(Column, new_data.id, None, self.card_extensions, parent.action_log, self.search_engine, data=new_data)
+        cards_to_index = []
         for card in self.cards:
-            new_card = card().copy(new_obj, additional_data)
-            new_obj.cards.append(component.Component(new_card))
+            new_card = card().copy(new_column, additional_data)
+            cards_to_index.append(new_card)
+            new_column.cards.append(component.Component(new_card))
+        new_column.index_cards(cards_to_index)
+        return new_column
 
-        return new_obj
+    def index_cards(self, cards):
+        for card in cards:
+            scard = fts_schema.Card.from_model(card.data)
+            self.search_engine.add_document(scard)
+        self.search_engine.commit()
 
     def actions(self, action, comp):
         if action == 'delete':
@@ -261,9 +268,7 @@ class Column(events.EventHandlerMixIn):
             card_obj.action_log.add_history(
                 security.get_user(),
                 u'card_create', values)
-            scard = fts_schema.Card.from_model(new_card)
-            self.search_engine.add_document(scard)
-            self.search_engine.commit()
+            self.index_cards([card_obj])
             return card_obj
 
     def get_available_labels(self):

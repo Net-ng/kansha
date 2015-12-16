@@ -487,8 +487,11 @@ class Board(events.EventHandlerMixIn):
     def delete(self):
         """Deletes the board
         """
+        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
+        if not self.columns:
+            self.load_data()
         for column in self.columns:
-            column().delete()
+            column().delete(purge=True)
         self.data.delete_history()
         self.data.delete_members()
         session.refresh(self.data)
@@ -725,6 +728,7 @@ class Board(events.EventHandlerMixIn):
         remove_method[member.role](member)
 
         # remove member from columns
+        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
         if not self.columns:
             self.load_data()
         for c in self.columns:

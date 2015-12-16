@@ -182,10 +182,13 @@ class Column(events.EventHandlerMixIn):
     def get_pending_users(self):
         return set(self.board.get_pending_users())
 
-    def delete(self):
+    def delete(self, purge=False):
         """Delete itself"""
-        for card in self.cards:
-            self.archive_card(card())
+        if purge:
+            self.purge_cards()
+        else:
+            for card in self.cards:
+                self.archive_card(card())
         DataColumn.delete_column(self.data)
 
     def remove_card(self, card):
@@ -229,8 +232,15 @@ class Column(events.EventHandlerMixIn):
 
     def purge_cards(self):
         for card_comp in self.cards:
-            card_comp().delete()
+            card = card_comp()
+            values = {'column_id': self.id, 'column': self.get_title(), 'card': card.get_title()}
+            card.action_log.add_history(
+                security.get_user(),
+                u'card_delete', values)
+            self.search_engine.delete_document(fts_schema.Card, card.id)
+            card.delete()
         del self.cards[:]
+        self.search_engine.commit()
         self.data.purge_cards()
 
     def append_card(self, card):

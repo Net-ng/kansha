@@ -492,7 +492,7 @@ class UserBoards(object):
         last_modifications = {}
         for board_id, in board.Board.get_all_board_ids(): # Comma is important
             board_obj = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
-                                       self.card_extensions, None,
+                                       self.card_extensions, self.search_engine,
                                        on_board_delete=self.reload_boards,
                                        on_board_archive=self.reload_boards,
                                        on_board_restore=self.reload_boards,

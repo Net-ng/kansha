@@ -166,7 +166,8 @@ class Board(events.EventHandlerMixIn):
     def edit_description(self):
         description_editor = BoardDescription(self.get_description())
         answer = self.modal.call(popin.Modal(description_editor))
-        self.set_description(answer)
+        if answer is not None:
+            self.set_description(answer)
 
     def save_template(self):
         save_template_editor = SaveTemplateTask(self.get_title(),

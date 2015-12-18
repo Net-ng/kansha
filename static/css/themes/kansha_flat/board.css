@@ -195,12 +195,15 @@ a.card-label:hover {
 /* End editor */
 
 /* Badges */
+.badge {
+    color: #a5a5a5;
+}
+
 .badge i {
     font-size: 13px;
 }
 
 .badge > .label {
-    color: inherit;
     font-size: 12px;
 }
 

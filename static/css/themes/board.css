@@ -414,6 +414,10 @@ textarea.expanded {
     margin-right: 10px
 }
 
+.card-edit-form .header .title > div {
+    display: inline;
+}
+
 .card-edit-form .header .title {
     word-wrap: break-word;
     display: inline;

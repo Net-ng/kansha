@@ -574,9 +574,9 @@ def render_BoardProfile(self, h, comp, *args):
                         h << h.script('reload_columns();')
                         self._changed(False)
 
-                    active = 'active btn-primary' if self.board.archive else ''
+                    active = 'active btn-primary' if self.board.show_archive else ''
                     h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))
-                    active = 'active btn-primary' if not self.board.archive else ''
+                    active = 'active btn-primary' if not self.board.show_archive else ''
                     h << h.button(_('Hide'), class_='btn %s' % active).action(lambda: self.set_archive(0))
 
         with h.div(class_='panel-section'):

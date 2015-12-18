@@ -248,7 +248,7 @@ class Board(events.EventHandlerMixIn):
             last_idx = max(c.index for c in self.data.columns) if self.data.columns else -1
             self.archive_column = self.create_column(index=last_idx + 1, title=_(u'Archive'), archive=True)
 
-        if self.archive and security.has_permissions('manage', self):
+        if self.show_archive and security.has_permissions('manage', self):
             columns.append(component.Component(self.archive_column))
 
         self.columns = columns
@@ -264,7 +264,7 @@ class Board(events.EventHandlerMixIn):
         return refresh
 
     def refresh(self):
-        if self.archive:
+        if self.show_archive:
             self.columns = [component.Component(
                 self._services(
                     column.Column, c.id, self,
@@ -338,7 +338,7 @@ class Board(events.EventHandlerMixIn):
         col_obj = self._services(
             column.Column, col.id, self,
             self.card_extensions, self.action_log, self.search_engine)
-        if not archive or (archive and self.archive):
+        if not archive or (archive and self.show_archive):
             self.columns.insert(
                 index, component.Component(col_obj))
         self.increase_version()
@@ -429,11 +429,12 @@ class Board(events.EventHandlerMixIn):
         return self.data.archived
 
     @property
-    def archive(self):
-        return self.data.archive
+    def show_archive(self):
+        return self.data.show_archive
 
-    def set_archive(self, value):
-        self.data.archive = value
+    @show_archive.setter
+    def show_archive(self, value):
+        self.data.show_archive = value
         self.refresh()
         self.set_reload_search()
 
@@ -887,7 +888,7 @@ class Board(events.EventHandlerMixIn):
         if query:
             condition = fts_schema.Card.match(query) & (fts_schema.Card.board_id == self.id)
             # do not query archived cards if archive column is hidden
-            if not self.archive:
+            if not self.show_archive:
                 condition &= (fts_schema.Card.archived == False)
             self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
             # make the difference between empty search and no results

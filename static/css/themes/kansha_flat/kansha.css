@@ -11,8 +11,9 @@
 body {
     background: #f5f5f5;
     font-family: Helvetica Neue,Helvetica,Arial,sans-serif,icons;
-    color: #737373;
+    color: #5c5c5c;
 }
+
 a {
     color: #636363;
 }
@@ -21,13 +22,18 @@ a:hover {
     color: #5C5C5C;
 }
 
+button, input, optgroup, select, textarea {
+    color: #5c5c5c;
+}
+
 input, select, textarea {
     border: 1px solid #c0c0c0;
 }
 
-select {
-    border: 1px solid #c0c0c0;
-}
+::-webkit-input-placeholder { color: #c0c0c0; }
+:-moz-placeholder { color: #c0c0c0; }
+::-moz-placeholder { color: #c0c0c0; }
+:-ms-input-placeholder { color: #c0c0c0; }
 
 a:focus, input:focus, textarea:focus, button:focus {
     outline: 0 none;

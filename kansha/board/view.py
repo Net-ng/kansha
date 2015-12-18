@@ -216,6 +216,11 @@ def render_Board_members_list_overlay(self, h, comp, *args):
     return h.root
 
 
+def invite_members(board, application_url, emails):
+    board.invite_members(emails, application_url)
+    return 'reload_boards();'
+
+
 @presentation.render_for(Board, "add_member_overlay")
 def render_Board_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
@@ -226,9 +231,9 @@ def render_Board_add_member_overlay(self, h, comp, *args):
         with h.div(class_="favorites"):
             h << h.h3(_('Favorites'))
             with h.ul:
-                h << h.li([f.on_answer(lambda email: self.invite_members(email, application_url)) for f in friends])
+                h << h.li([f.on_answer(invite_members, self, application_url) for f in friends])
     with h.div(class_="members search"):
-        h << self.new_member.on_answer(lambda emails: self.invite_members(emails, application_url))
+        h << self.new_member.on_answer(invite_members, self, application_url)
 
     return h.root
 

@@ -748,16 +748,13 @@ class Board(events.EventHandlerMixIn):
         Create token used in invitation email.
         Store email in pending list.
 
-        In:
+        Params:
             - ``emails`` -- list of emails
-        Return:
-            - javascript to reload members and hide overlay
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
             invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
-        return 'reload_boards();'
 
     def resend_invitation(self, pending_member, application_url):
         """Resend an invitation,

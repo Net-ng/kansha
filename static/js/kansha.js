@@ -641,8 +641,9 @@
                  element.innerHTML = editor.getData();
             });
             editor.on('instanceReady', function() {
+                editor.container.addClass('kansha-cke');
                 editor.focus();
-            })
+            });
         }
 
     };

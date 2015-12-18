@@ -638,8 +638,11 @@
                 removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
             });
             editor.on('change', function(ev){
-               element.innerHTML = editor.getData();
+                 element.innerHTML = editor.getData();
             });
+            editor.on('instanceReady', function() {
+                editor.focus();
+            })
         }
 
     };

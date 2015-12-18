@@ -22,6 +22,7 @@ from nagare.admin import command
 from nagare.namespaces import xhtml5
 from nagare import component, wsgi, security, config, log, i18n
 
+from kansha import events
 from kansha import exceptions
 from kansha.user import user_profile
 from kansha.authentication import login
@@ -72,8 +73,6 @@ class Kansha(object):
         return self
 
     def _select_board(self, board):
-        board.on_board_archive = self.select_last_board
-        board.on_board_leave = self.select_last_board
         self.content.becomes(board)
         # if user is logged, update is last board
         user = security.get_user()
@@ -132,6 +131,8 @@ class Kansha(object):
             )
 
     def handle_event(self, event):
+        if event.is_(events.BoardLeft) or event.is_(events.BoardArchived):
+            self.select_last_board()
         log.info('Ignoring event %s', event)
 
 

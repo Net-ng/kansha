@@ -106,6 +106,7 @@ class PopinClosed(Event):
 class CardEditorClosed(PopinClosed):
     """
     In the particular case when the Popin contains the card editor.
+    `data` is the component.Component containing the Popin.
     """
     pass
 
@@ -133,6 +134,38 @@ class CardDisplayed(Event):
     """
     pass
 
+
+class BoardAccessChanged(Event):
+    """
+    The access conditions to the board changed.
+    """
+
+
+class BoardDeleted(BoardAccessChanged):
+    """
+    The board has been deleted.
+    No payload.
+    """
+
+
+class BoardArchived(BoardAccessChanged):
+    """
+    The board has been archived.
+    No payload.
+    """
+
+
+class BoardRestored(BoardAccessChanged):
+    """
+    The board has been restored from archive.
+    """
+
+
+class BoardLeft(BoardAccessChanged):
+    """
+    The user has left the board.
+    No payload.
+    """
 
 # "Request" events
 class ParentTitleNeeded(Event):

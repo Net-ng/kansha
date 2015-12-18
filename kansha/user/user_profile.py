@@ -15,9 +15,9 @@ import peak.rules
 from nagare import ajax, component, editor, presentation, security, var
 from nagare.i18n import _, _L
 
-from kansha import validator
-from kansha.board import comp as board
 from kansha.menu import MenuEntry
+from kansha import validator, events
+from kansha.board import comp as board
 from kansha.authentication.database import validators, forms as registation_forms
 
 # from .user_cards import UserCards
@@ -473,11 +473,6 @@ class UserBoards(object):
     def create_board(self, board_id, comp):
         b = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
                            self.card_extensions, self.search_engine,
-                           on_board_delete=self.reload_boards,
-                           on_board_archive=self.reload_boards,
-                           on_board_restore=self.reload_boards,
-                           on_board_leave=self.reload_boards,
-                           on_update_members=self.reload_boards,
                            load_data=False)
         b.load_data()
         new_board = b.copy(security.get_user(), {})
@@ -492,11 +487,6 @@ class UserBoards(object):
         for board_id, in board.Board.get_all_board_ids(): # Comma is important
             board_obj = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
                                        self.card_extensions, self.search_engine,
-                                       on_board_delete=self.reload_boards,
-                                       on_board_archive=self.reload_boards,
-                                       on_board_restore=self.reload_boards,
-                                       on_board_leave=self.reload_boards,
-                                       on_update_members=self.reload_boards,
                                        load_data=False)
             if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
                 board_comp = component.Component(board_obj)
@@ -520,9 +510,13 @@ class UserBoards(object):
 
     def purge_archived_boards(self):
         for board in self.archived_boards.itervalues():
-            board().on_board_delete = None  # don't call self.delete_board!
             board().delete()
         self.archived_boards = OrderedDict()
+
+    def handle_event(self, event):
+        if event.is_kind_of(events.BoardAccessibilityChanged):
+            return self.reload_boards()
+
 
 
 @presentation.render_for(UserBoards)
@@ -536,16 +530,16 @@ def render_userboards(self, h, comp, *args):
     if self.last_modified_boards:
         h << h.h1(_(u'Last modified boards'))
         with h.ul(class_='board-labels'):
-            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.last_modified_boards.itervalues()]
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
 
     h << h.h1(_(u'My boards'))
     with h.ul(class_='board-labels'):
-        h << [b.on_answer(comp.answer).render(h, 'item') for b in self.my_boards.itervalues()]
+        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
 
     if self.guest_boards:
         h << h.h1(_(u'Guest boards'))
         with h.ul(class_='board-labels'):
-            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.guest_boards.itervalues()]
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
 
     with h.div(class_='new-board'):
         with h.form:
@@ -570,7 +564,7 @@ def render_userboards(self, h, comp, *args):
         h << h.h1(_('Archived boards'))
 
         with h.ul(class_='board-labels'):
-            h << [b.render(h, 'archived_item')
+            h << [b.on_answer(self.handle_event).render(h, 'archived_item')
                   for b in self.archived_boards.itervalues()]
 
         with h.form:

@@ -65,8 +65,7 @@ class Board(events.EventHandlerMixIn):
 
     def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
                  assets_manager_service, mail_sender_service, services_service,
-                 on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, on_update_members=None, load_data=True):
+                 load_data=True):
         """Initialization
 
         In:
@@ -80,11 +79,6 @@ class Board(events.EventHandlerMixIn):
         self.theme = theme
         self.mail_sender = mail_sender_service
         self.id = id_
-        self.on_board_delete = on_board_delete
-        self.on_board_archive = on_board_archive
-        self.on_board_restore = on_board_restore
-        self.on_board_leave = on_board_leave
-        self.on_update_members = on_update_members
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine
         self._services = services_service
@@ -321,9 +315,6 @@ class Board(events.EventHandlerMixIn):
         """
         return self.data.title
 
-    def set_visibility(self, visibility):
-        self.data.visibility = visibility
-
     def mark_as_template(self):
         self.data.is_template = True
 
@@ -485,7 +476,7 @@ class Board(events.EventHandlerMixIn):
         self.data.weighting_cards = 0
         self.data.weights = ''
 
-    def delete(self):
+    def delete(self, comp=None):
         """Deletes the board
         """
         # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
@@ -497,29 +488,27 @@ class Board(events.EventHandlerMixIn):
         self.data.delete_members()
         session.refresh(self.data)
         self.data.delete()
-        if self.on_board_delete is not None:
-            # if self.on_board_delete is None there is nothing
-            # to call after deletion
-            self.on_board_delete()
+        if comp:
+            self.emit_event(comp, events.BoardDeleted)
         return True
 
-    def archive_board(self):
+    def archive_board(self, comp=None):
         """Archive the board
         """
         self.data.archived = True
-        if self.on_board_archive is not None:
-            self.on_board_archive()
+        if comp:
+            self.emit_event(comp, events.BoardArchived)
         return True
 
-    def restore_board(self):
+    def restore(self, comp=None):
         """Unarchive the board
         """
         self.data.archived = False
-        if self.on_board_restore is not None:
-            self.on_board_restore()
+        if comp:
+            self.emit_event(comp, events.BoardRestored)
         return True
 
-    def leave(self):
+    def leave(self, comp=None):
         user = security.get_user()
         for member in self.members:
             m_user = member().user().data
@@ -533,8 +522,8 @@ class Board(events.EventHandlerMixIn):
             self.data.remove_manager(board_member)
         for column in self.columns:
             column().remove_board_member(user)
-        if self.on_board_leave is not None:
-            self.on_board_leave()
+        if comp:
+            self.emit_event(comp, events.BoardLeft)
         return True
 
     def export(self):
@@ -675,8 +664,6 @@ class Board(events.EventHandlerMixIn):
          - ``role`` -- role's member (manager or member)
         """
         self.data.add_member(new_member, role)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_pending(self, member):
         # remove from pending list
@@ -690,24 +677,18 @@ class Board(events.EventHandlerMixIn):
 
         # remove invitation
         self.remove_invitation(member.username)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_manager(self, manager):
         # remove from managers list
         self.managers = [p for p in self.managers if p() != manager]
         # remove manager from data part
         self.data.remove_manager(manager)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_member(self, member):
         # remove from members list
         self.members = [p for p in self.members if p() != member]
         # remove member from data part
         self.data.remove_member(member)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_board_member(self, member):
         """Remove member from board
@@ -748,8 +729,6 @@ class Board(events.EventHandlerMixIn):
 
         self.data.change_role(member, new_role)
         self.update_members()
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_invitation(self, email):
         """ Remove invitation
@@ -762,8 +741,6 @@ class Board(events.EventHandlerMixIn):
                 token.delete()
                 session.flush()
                 break
-        if self.on_update_members:
-            self.on_update_members()
 
     def invite_members(self, emails, application_url):
         """Invite somebody to this board,

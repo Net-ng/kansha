@@ -47,7 +47,7 @@ def render_Board_menu(self, h, comp, *args):
                             _("This board will be archived. Are you sure?")
                         ).decode('UTF-8')
                     )
-                ).action(self.archive_board))
+                ).action(self.archive_board, comp))
             else:
                 h << h.li(h.a(
                     self.icons['leave'],
@@ -57,7 +57,7 @@ def render_Board_menu(self, h, comp, *args):
                             _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                         ).decode('UTF-8')
                     )
-                ).action(self.leave))
+                ).action(self.leave, comp))
 
         h << h.span(_(u'Board'), class_="title", id='board-nav-menu')
     return h.root
@@ -166,10 +166,10 @@ def render_Board_item(self, h, comp, *args):
             h << self.comp_members.render(h, 'members')
 
             if security.has_permissions('manage', self):
-                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
+                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board, comp)
             else:
                 onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave, comp)
     return h.root
 
 
@@ -181,8 +181,8 @@ def render_Board_archived_item(self, h, comp, *args):
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
-                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete, comp)
+                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore, comp)
     return h.root
 
 

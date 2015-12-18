@@ -37,15 +37,5 @@ def render_Votes_badge(self, h, *args):
     """
     if self.votes:
         with h.span(class_='badge'):
-            id_ = h.generate_id()
-            link = h.a(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label', id=id_)
-            # Test if user can vote
-            if security.has_permissions('vote', self.card):
-                link.action(self.vote)
-            h << link
-            h << h.script(
-                "YAHOO.util.Event.addListener(%s, 'click', YAHOO.util.Event.stopPropagation)" %
-                ajax.py2js(id_)
-            )
-
+            h << h.span(h.i(class_='icon-heart'), ' ', len(self.votes), class_='label')
     return h.root

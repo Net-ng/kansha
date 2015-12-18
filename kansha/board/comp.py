@@ -493,7 +493,7 @@ class Board(events.EventHandlerMixIn):
             self.emit_event(comp, events.BoardDeleted)
         return True
 
-    def archive_board(self, comp=None):
+    def archive(self, comp=None):
         """Archive the board
         """
         self.data.archived = True

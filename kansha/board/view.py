@@ -47,7 +47,7 @@ def render_Board_menu(self, h, comp, *args):
                             _("This board will be archived. Are you sure?")
                         ).decode('UTF-8')
                     )
-                ).action(self.archive_board, comp))
+                ).action(self.archive, comp))
             else:
                 h << h.li(h.a(
                     self.icons['leave'],
@@ -166,7 +166,7 @@ def render_Board_item(self, h, comp, *args):
             h << self.comp_members.render(h, 'members')
 
             if security.has_permissions('manage', self):
-                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board, comp)
+                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive, comp)
             else:
                 onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                 h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave, comp)

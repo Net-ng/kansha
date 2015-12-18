@@ -282,7 +282,7 @@ class BoardTest(unittest.TestCase):
         user_boards.reload_boards()
         self.assertIn(board.id, user_boards.last_modified_boards)
 
-        board.archive_board()
+        board.archive()
         user_boards.reload_boards()
         self.assertIn(board.id, user_boards.archived_boards)
 

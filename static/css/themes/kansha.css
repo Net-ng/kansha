@@ -16,7 +16,6 @@ form {
 
 input, select, textarea {
     box-sizing: border-box;
-    width: 100%;
     padding: 4px 6px;
     margin: 0;
     resize: none;
@@ -417,7 +416,7 @@ i.icon {
     display: table-cell;
     padding: 4px;
     white-space: nowrap;
-    min-width: 92px
+    min-width: 92px;
 }
 
 .overlay.board-labels-overlay .name .email {

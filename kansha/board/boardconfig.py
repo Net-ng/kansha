@@ -195,4 +195,28 @@ class BoardBackground(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
+        self.background_position = var.Var(self.board.background_image_position)
         self._changed = var.Var(False)
+
+    def get_available_background_positions(self):
+        return [(value, value.capitalize()) for value in ('fill', 'fit', 'stretch', 'tile', 'center')]
+
+    def set_background_position(self):
+        self.board.set_background_position(self.background_position())
+        self._changed(True)
+
+    def set_background(self, img):
+        self.board.set_background_image(img)
+        self._changed(True)
+
+    def reset_background(self):
+        self.board.set_background_image(None)
+        self._changed(True)
+
+    def set_color(self, color):
+        self.board.set_title_color(color)
+        self._changed(True)
+
+    def reset_color(self):
+        self.board.set_title_color('')
+        self._changed(True)

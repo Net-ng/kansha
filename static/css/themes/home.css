@@ -65,6 +65,15 @@
 
 .boards { margin-bottom: 50px; }
 
+
+.boards input[type=text],
+.boards input[type=password],
+.boards input[type=file],
+.boards select,
+.boards textarea {
+    width: 100%;
+}
+
 /* Board labels */
 .boards .compact {
     display: none;

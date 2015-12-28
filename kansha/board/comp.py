@@ -881,17 +881,12 @@ class Board(events.EventHandlerMixIn):
             fileid = self.assets_manager.save(new_file.file.read(),
                                               metadata={'filename': new_file.filename,
                                                         'content-type': new_file.type})
-
-            w, h = self.assets_manager.get_image_size(fileid)
-            if all((w, h, w >= 500, h >= 500)):
-                pos = u'cover'
-            else:
-                pos = u'repeat'
             self.data.background_image = fileid
-            self.data.background_position = pos
         else:
             self.data.background_image = None
-            self.data.background_position = None
+
+    def set_background_position(self, position):
+        self.data.background_position = position
 
     @property
     def background_image_url(self):
@@ -904,7 +899,7 @@ class Board(events.EventHandlerMixIn):
 
     @property
     def background_image_position(self):
-        return self.data.background_position or 'repeat'
+        return self.data.background_position or 'center'
 
     @property
     def title_color(self):

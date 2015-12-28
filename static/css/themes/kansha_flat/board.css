@@ -109,9 +109,11 @@
 }
 
 .list-marker {
-    border: 1px solid #c0c0c0;
-    background-color: #EAEAEA;
-    border-radius: 6px;
+    border-radius: 3px;
+	margin: 0px 0 0 10px;
+    border: 1px solid #c8c8c8;
+    background-color: #dfdcdc;
+    box-shadow: inset #b5b5b5 2px 1px 1px;
 }
 /* End lists */
 
@@ -143,13 +145,14 @@
 }
 
 .card-dragging .card {
-    border: 1px solid #eaeaea
+    border: 1px solid #d8d8d8;
 }
 
 .card-marker {
-    background-color: #eaeaea;
-    border-radius: 5px;
-    border: 1px solid #c0c0c0;
+    border-radius: 3px;
+    border: 1px solid #c8c8c8;
+    background-color: #dfdcdc;
+    box-shadow: inset #b5b5b5 2px 1px 1px;
 }
 
 .card-label {

@@ -639,20 +639,10 @@ textarea.expanded {
     width: 68px;
 }
 
-#card-gallery a {
+#card-gallery .asset {
     position: relative;
     display: inline-block;
     margin: 8px 8px 0 0;
-}
-
-#card-gallery a span.is_cover {
-    display: block;
-    width: 26px;
-    height: 26px;
-    background: url(../../img/check.png);
-    position: absolute;
-    top: -10px;
-    right: -10px
 }
 
 .file_icon {

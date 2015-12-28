@@ -318,9 +318,34 @@ a.card-label:hover {
 /* End due dates */
 
 /* Card gallery */
-#card-gallery a {
+#card-gallery .asset {
     border: 4px solid white;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.24);
+    margin: 8px 6px 0 0;
+}
+
+#card-gallery .asset:hover {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.64)
+}
+
+#card-gallery .asset .delete,
+#card-gallery .asset .cover {
+    position: absolute;
+    top: -10px;
+    visibility: hidden;
+}
+
+#card-gallery .asset:hover .delete,
+#card-gallery .asset:hover .cover {
+    visibility: visible;
+}
+
+#card-gallery .asset .delete {
+    left: -8px;
+}
+
+#card-gallery .asset .cover {
+    right: -8px;
 }
 
 .cover img {

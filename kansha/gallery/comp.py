@@ -47,11 +47,11 @@ class Gallery(CardExtension):
         self.data = DataGallery(self.card)
 
         self.assets = []
-        self.overlays = []
         for data_asset in self.data.get_assets():
             self._create_asset_c(data_asset)
-        #self.crop_overlay = None
         self.comp_id = str(random.randint(10000, 100000))
+        self.model = 'view'
+        self.cropper = component.Component()
 
     def copy(self, parent, additional_data):
         new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
@@ -65,16 +65,9 @@ class Gallery(CardExtension):
 
     def _create_asset_c(self, data_asset):
         asset = Asset(data_asset, self.assets_manager)
-        asset_thumb = component.Component(asset, 'thumb').on_answer(self.action)
-        asset_menu = component.Component(asset, 'menu').on_answer(self.action)
-        self.assets.append(asset_thumb)
-        self.overlays.append(self._create_overlay_c(asset_thumb, asset_menu))
+        asset_comp = component.Component(asset).on_answer(self.action)
+        self.assets.append(asset_comp)
         return asset
-
-    def _create_overlay_c(self, asset_thumb, asset_menu):
-        return component.Component(overlay.Overlay(lambda h, asset_thumb=asset_thumb: asset_thumb.render(h),
-                                                   lambda h, asset_menu=asset_menu: asset_menu.render(h),
-                                                   dynamic=False, cls='card-edit-form-overlay'))
 
     def add_asset(self, new_file):
         """Add one new file to card
@@ -116,17 +109,21 @@ class Gallery(CardExtension):
 
     def action(self, response):
         action, asset = response[0], response[1]
-        if action == "download":
-            pass
-        elif action == "delete":
+        if action == 'delete':
             self.delete_asset(asset)
-        elif action == "make cover":
-            self.make_cover(asset, *list(response[2]))
-            # for data_asset in self.data.get_assets():
-            #    self._create_asset_c(data_asset)
-            # return "YAHOO.kansha.app.hideOverlay();"
+        elif action == 'configure_cover':
+            self.configure_cover(asset)
+        elif action == 'make_cover':
+            left, top, width, height = response[2:]
+            self.make_cover(asset, left, top, width, height)
+        elif action == 'cancel_cover':
+            self.model = 'view'
         elif action == 'remove_cover':
             self.remove_cover(asset)
+
+    def configure_cover(self, asset):
+        self.model = 'crop'
+        self.cropper.call(AssetCropper(asset))
 
     def make_cover(self, asset, left, top, width, height):
         """Make the given asset as cover for the card
@@ -143,6 +140,7 @@ class Gallery(CardExtension):
         for a in self.assets:
             a().is_cover = False
         asset.is_cover = True
+        self.model = 'view'
 
     def get_cover(self):
         if not self.card.has_cover():
@@ -158,6 +156,7 @@ class Gallery(CardExtension):
         """
         self.card.remove_cover()
         asset.is_cover = False
+        self.model = 'view'
 
     def delete_asset(self, asset):
         """Delete asset
@@ -168,22 +167,18 @@ class Gallery(CardExtension):
         In:
             - ``asset`` -- Asset to delete
         """
-        i = 0
         for a in self.assets:
             if a() == asset:
                 self.assets.remove(a)
-                self.overlays.pop(i)
                 self.assets_manager.delete(asset.filename)
                 self.data.delete(asset.filename)
                 break
-            i = i + 1
 
     def delete(self):
         '''Delete all assets'''
         for asset in self.data.get_assets():
             self.assets_manager.delete(asset.filename)
         self.assets = []
-        self.overlays = []
 
 
 class Asset(object):
@@ -194,8 +189,6 @@ class Asset(object):
         self.author = component.Component(usermanager.UserManager.get_app_user(data_asset.author.username, data=data_asset.author))
         self.assets_manager = assets_manager_service
         self.is_cover = data_asset.cover is not None
-        self.cropper = None
-        self.overlay_cropper = None
 
     def is_image(self):
         return self.assets_manager.get_metadata(self.filename)['content-type'] in IMAGE_CONTENT_TYPES
@@ -213,26 +206,28 @@ class Asset(object):
     def data(self):
         return DataAsset.get_by_filename(self.filename)
 
-    def create_cropper_component(self, comp, card_component, card_component_id, card_component_model):
-        self.cropper = component.Component(AssetCropper(self, card_component, card_component_id, card_component_model))
-        asset_cropper_menu = component.Component(self, 'cropper_menu')
-        self.asset_cropper = asset_cropper = component.Component(self, 'crop').on_answer(comp.answer)
-        self.overlay_cropper = component.Component(overlay.Overlay(lambda h, asset_cropper_menu=asset_cropper_menu: asset_cropper_menu.render(h),
-                                                                   lambda h, asset_cropper=asset_cropper: asset_cropper.render(h),
-                                                                   dynamic=False,
-                                                                   cls='card-edit-form-overlay',
-                                                                   centered=True))
+    def cancel(self, comp, answer):
+        comp.answer()
 
-
-    def end_crop(self, comp, answ):
-        comp.answer(('make cover', self, answ))
+    def end_crop(self, comp, answer):
+        comp.answer(('make_cover', self, answer))
 
 
 class AssetCropper(object):
 
-    def __init__(self, asset, card_component, card_component_id, card_component_model):
+    def __init__(self, asset):
         self.asset = asset
-        self.card_component = card_component
-        self.card_component_id = card_component_id
-        self.card_component_model = card_component_model
-        self.crop_left, self.crop_top, self.crop_width, self.crop_height = var.Var(), var.Var(), var.Var(), var.Var()
+        self.crop_left = var.Var(0)
+        self.crop_top = var.Var(0)
+        self.crop_width = var.Var(425)
+        self.crop_height = var.Var(250)
+
+    def commit(self, comp):
+        comp.answer(('make_cover', self.asset, self.crop_left(), self.crop_top(), self.crop_width(), self.crop_height()))
+
+    def remove_cover(self, comp):
+        comp.answer(('remove_cover', self.asset))
+
+    def cancel(self, comp):
+        comp.answer(('cancel_cover', self.asset))
+

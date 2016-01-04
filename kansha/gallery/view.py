@@ -99,7 +99,7 @@ def render_download(self, h, comp, *args):
                 }
             )
             submit_action = ajax.Update(
-                render=lambda r: comp.render(r, model=None),
+                render=lambda r: r.div(comp.render(r, model=None), r.script('YAHOO.kansha.app.closeModal()')),
                 component_to_update='gal' + self.comp_id,
             )
 

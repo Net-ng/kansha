@@ -517,6 +517,7 @@ i.icon {
         width: 28px;
         height: 20px;
         overflow: hidden;
+        padding: 0;
     }
     #kansha-nav-menu {
         left: 0;

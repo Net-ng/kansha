@@ -41,16 +41,22 @@ CONTENT_TYPES = {'image/png': render_image,
 def render(self, h, comp, *args):
     with h.div(id='gal' + self.comp_id):
         with h.div(class_='nbItems'):
-            h << h.script(u'YAHOO.kansha.app.closeModal(); YAHOO.kansha.app.hideOverlay();')
             h << comp.render(h, model='badge')
         with h.div(id="card-gallery"):
-            if security.has_permissions('edit', self):
-                h << self.overlays
-            else:
-                for asset in self.assets:
-                    h << asset.render(h, model='anonymous')
-
+            h << comp.render(h, self.model)
     return h.root
+
+@presentation.render_for(Gallery, 'view')
+def render_Gallery_view(self, h, comp, model):
+    model = 'edit' if security.has_permissions('edit', self) else 'anonymous'
+    for asset in self.assets:
+        h << asset.render(h, model)
+    return h.root
+
+
+@presentation.render_for(Gallery, 'crop')
+def render_Gallery_crop(self, h, comp, model):
+    return self.cropper.on_answer(self.action)
 
 
 @presentation.render_for(Gallery, 'cover')
@@ -111,20 +117,9 @@ def render_gallery_badge(self, h, *args):
     return h.root
 
 
-@presentation.render_for(Asset, model="anonymous")
-def render_asset_anonymous(self, h, comp, model, *args):
-    return h.a(
-        comp.render(h, model="thumb"),
-        onclick="window.open(%s);YAHOO.kansha.app.hideOverlay()" % ajax.py2js(
-            self.assets_manager.get_image_url(self.filename)
-        ),
-        target='_blank'
-    )
-
-
 @presentation.render_for(Asset)
-@presentation.render_for(Asset, model='medium')
 @presentation.render_for(Asset, model='thumb')
+@presentation.render_for(Asset, model='medium')
 @presentation.render_for(Asset, model='cover')
 def render_asset(self, h, comp, model, *args):
     res = []
@@ -138,64 +133,37 @@ def render_asset(self, h, comp, model, *args):
     res.append(meth(self, h, comp, model, **kw))
     return res
 
-
-@presentation.render_for(Asset, 'menu')
-def render_overlay_menu(self, h, comp, *args):
-
-    id_ = h.generate_id()
-
-    card_cmp, card_id, card_model = h.get_async_root().component, h.get_async_root().id, h.get_async_root().model
-
-    with h.div(id=id_):
-
-        with h.ul:
-            h << h.li(h.a(
-                _('Open'),
-                target='_blank',
-                onclick=(
-                    "window.open(%s);"
-                    "YAHOO.kansha.app.hideOverlay()" %
-                    ajax.py2js(self.assets_manager.get_image_url(self.filename))
-                )
-            )
-            )
-            h << h.li(h.a(_('Delete')).action(lambda: comp.answer(('delete', self))))
-            if self.is_image():
+@presentation.render_for(Asset, model='edit')
+def render_Asset_thumb(self, h, comp, model, *args):
+    with h.div(class_='asset'):
+        action = h.a.action(lambda: comp.answer(('delete', self))).get('onclick')
+        onclick = ajax.py2js(_(u'Are you sure you want to delete this file?'), h)
+        onclick = u'if (confirm(%s)) { %s }' % (onclick, action)
+        with h.a(class_='delete', title=_(u'Delete'), href='#', onclick=onclick):
+            h << h.i(class_='icon-cancel')
+        if self.is_image():
+            with h.a(class_='cover', title=_(u'Configure cover')).action(lambda: comp.answer(('configure_cover', self))):
                 if self.is_cover:
-                    h << h.li(h.a(_('Remove cover')).action(
-                        lambda: comp.answer(('remove_cover', self))))
-                else:
-                    # Open asset cropper
-                    card_cmp = h.get_async_root().component
-                    card_id = h.get_async_root().id
-                    card_model = h.get_async_root().model
-
-                    self.create_cropper_component(comp, card_cmp, card_id, card_model)
-                    h << h.li(self.overlay_cropper)
+                    h << {'style': 'visibility: visible'}
+                h << h.i(class_='icon-checkmark')
+        with h.a(href=self.assets_manager.get_image_url(self.filename), target='_blank'):
+            h << comp.render(h, 'thumb')
     return h.root
 
-
-@presentation.render_for(Asset, 'cropper_menu')
-def render_asset_cropper_menu(self, h, comp, *args):
-    h << h.span(_('Make cover'))
-    return h.root
-
-
-@presentation.render_for(Asset, model='crop')
-def render_gallery_crop(self, h, comp, *args):
-
-    h << self.cropper.on_answer(lambda answ: self.end_crop(comp, answ))
-
+@presentation.render_for(Asset, model="anonymous")
+def render_asset_anonymous(self, h, comp, model, *args):
+    with h.div(class_='asset'):
+        with h.a(href=self.assets_manager.get_image_url(self.filename), target='_blank'):
+            h << comp.render(h, model="thumb")
     return h.root
 
 
 @presentation.render_for(AssetCropper)
 def render_gallery_cropper(self, h, comp, *args):
-    crop_width, crop_height = 425, 250
-
     h << h.p(_('Use the controls below to create the cover of your card.'))
 
-    form_id, img_id = h.generate_id(), h.generate_id()
+    form_id = h.generate_id()
+    img_id = h.generate_id()
 
     with h.form:
         for crop_name in 'crop_left', 'crop_top', 'crop_width', 'crop_height':
@@ -207,18 +175,15 @@ def render_gallery_cropper(self, h, comp, *args):
                 ajax.py2js(img_id),
                 ajax.py2js(img_id),
                 ajax.py2js(form_id),
-                ajax.py2js(crop_width),
-                ajax.py2js(crop_height)
+                ajax.py2js(self.crop_width()),
+                ajax.py2js(self.crop_height())
             )
         )
         with h.div(class_='buttons'):
-            h << h.input(type='submit',
-                         value=_('Done'),
-                         class_='btn btn-primary').action(ajax.Update(render=lambda r: self.card_component.render(r, self.card_component_model),
-                                                                                action=lambda: comp.answer((int(self.crop_left() or 0),
-                                                                                                            int(self.crop_top() or 0),
-                                                                                                            int(self.crop_width() or crop_width),
-                                                                                                            int(self.crop_height() or crop_height))),
-                                                                                component_to_update=self.card_component_id)
-                                                                    )
+            h << h.button(_('Create cover'), class_='btn btn-primary').action(self.commit, comp)
+            if self.asset.is_cover:
+                h << ' '
+                h << h.button(_('Remove cover'), class_='btn delete').action(self.remove_cover, comp)
+            h << ' '
+            h << h.button(_('Cancel'), class_='btn').action(self.cancel, comp)
     return h.root

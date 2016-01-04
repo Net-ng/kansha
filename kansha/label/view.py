@@ -26,7 +26,7 @@ def color_style(self):
 
 
 @presentation.render_for(Label)
-def render(self, h, comp, *args):
+def render_Label(self, h, comp, *args):
     """Render the label as a simple colored block (text in it)"""
     with h.span(class_='card-label', style=color_style(self)):
         h << h.span(self.data.title)
@@ -34,13 +34,19 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(Label, model='color')
-def render(self, h, comp, *args):
+def render_Label_color(self, h, comp, *args):
     """Render the label as a simple colored block"""
     return h.span(class_='card-label', style=color_style(self), title=self.get_title())
 
 
+@presentation.render_for(Label, model='inactive')
+def render_Label_inactive(self, h, comp, *args):
+    """Render the label as a simple colored block"""
+    return h.span(class_='card-label', style='background-color: grey', title=self.get_title())
+
+
 @presentation.render_for(Label, model='edit-color')
-def render(self, h, comp, *args):
+def render_Label_edit_color(self, h, comp, *args):
     """Edit the label color"""
     # If label changed reload columns
     if self._changed():
@@ -56,7 +62,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(Label, model='edit-color-overlay')
-def render(self, h, comp, *args):
+def render_Label_edit_color_overlay(self, h, comp, *args):
     """Color chooser contained in the overlay body"""
     v = var.Var(self.data.color)
     i = h.generate_id()
@@ -72,7 +78,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(CardLabels, model='header')
-def render(self, h, comp, *args):
+def render_CardLabels_header(self, h, comp, *args):
     """Show labels inline (used in card summary view)"""
     if self.colors:
         with h.div(class_='inline-labels'):
@@ -82,20 +88,18 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(CardLabels, model='list')
-def render(self, h, comp, *args):
+def render_CardLabels_list(self, h, comp, *args):
     """Show labels inline with grey label (for card edit view)"""
     h << h.script('YAHOO.kansha.app.hideOverlay();')
     with h.span(class_='inline-labels'):
-        h << (component.Component(Label(d), model='color')
-              for d in self.data_labels)
-        for _i in range(len(self.get_available_labels()) - len(list(self.colors))):
-            h << h.span(
-                class_='card-label', style='background-color:%s' % "grey")
+        for label in self.card.get_available_labels():
+            model = 'color' if label.id in self.labels else 'inactive'
+            h << component.Component(Label(label), model)
     return h.root
 
 
 @presentation.render_for(CardLabels)
-def render(self, h, comp, *args):
+def render_CardLabels(self, h, comp, *args):
     """Add or remove labels to card"""
     if security.has_permissions('edit', self.card):
         h << self.overlay
@@ -105,7 +109,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(CardLabels, model='overlay')
-def render(self, h, comp, *args):
+def render_CardLabels_overlay(self, h, comp, *args):
     """Label chooser contained in the overlay's body"""
     with h.ul(class_='unstyled inline-labels'):
         for _i, label in enumerate(self.get_available_labels(), 1):
@@ -123,6 +127,4 @@ def render(self, h, comp, *args):
                     h << h.span(class_="card-label",
                                 style='background-color: %s' % label.get_color())
                     h << h.span(label.get_title())
-                    if label.id in self.labels:
-                        h << h.i(class_='icon-checkmark')
     return h.root

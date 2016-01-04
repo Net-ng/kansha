@@ -554,7 +554,7 @@ def render_userboards(self, h, comp, *args):
 
             if len(self.templates) > 1:
                 with h.select.action(template):
-                    with h.optgroup(label=_(u'Public templates')):
+                    with h.optgroup(label=_(u'Shared templates')):
                         h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
                     if self.templates['private']:
                         with h.optgroup(label=_(u'My templates')):

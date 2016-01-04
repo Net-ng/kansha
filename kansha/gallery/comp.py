@@ -21,7 +21,6 @@ from kansha.cardextension import CardExtension
 from kansha.authentication.database import validators
 from kansha.services.actionlog.messages import render_event
 
-
 from .models import DataGallery, DataAsset
 
 

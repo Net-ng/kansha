@@ -9,20 +9,21 @@
 
 import random
 
-from peak.rules import when
 from cgi import FieldStorage
 from webob.exc import HTTPOk
+from peak.rules import when
 
-from nagare.i18n import _
 from nagare import component, security, var
+from nagare.i18n import _
 
-from kansha.toolbox import overlay
-from kansha.user import usermanager
-from kansha.cardextension import CardExtension
-from kansha.authentication.database import validators
 from kansha.services.actionlog.messages import render_event
+from kansha.authentication.database import validators
+from kansha.cardextension import CardExtension
+from kansha.user import usermanager
+
 
 from .models import DataGallery, DataAsset
+
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
 

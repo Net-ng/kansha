@@ -82,17 +82,10 @@ def render_Board(self, h, comp, *args):
 
     h << self.modal
 
-    background_image_url = self.background_image_url
-    background_image_position = self.background_image_position
-
-    if background_image_url:
-        styles = {'repeat': 'background:url(%s) repeat' % background_image_url,
-                  'cover': 'background:url(%s) no-repeat; background-size:cover' % background_image_url}
-        style = styles[background_image_position]
-    else:
-        style = ''
-
-    with h.div(class_='board', style=style):
+    with h.div(class_='board'):
+        if self.background_image_url:
+            h << {'class': 'board ' + self.background_image_position,
+                  'style': 'background-image:url(%s)' % self.background_image_url}
         with h.div(class_='header'):
             with h.div(class_='board-title', style='color: %s' % self.title_color):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
@@ -255,7 +248,6 @@ def render_Board_columns(self, h, comp, *args):
     h.head.css_url('js/fullcalendar-2.2.6/fullcalendar.min.css')
     h.head.javascript_url('js/moment.js')
     h.head.javascript_url('js/fullcalendar-2.2.6/fullcalendar.min.js')
-    h.head.css('mont-color', '.fc-toolbar h2 {color: %s}' % (self.title_color if self.title_color else '#5C5C5C'))
     lang = security.get_user().get_locale().language
     if lang != 'en':
         h.head.javascript_url('js/fullcalendar-2.2.6/lang/%s.js' % lang)
@@ -625,22 +617,29 @@ def render_BoardMember_overlay(self, h, comp, *args):
 
 @presentation.render_for(BoardBackground, model='menu')
 def render_board_background_menu(self, h, comp, *args):
-    """Render the link leading to the background configuration"""
-    h << h.a(_('Background image')).action(comp.answer)
-    return h.root
+    return h.a(_('Background image')).action(comp.answer)
 
 
 @presentation.render_for(BoardBackground)
 @presentation.render_for(BoardBackground, model='edit')
 def render_board_background_edit(self, h, comp, *args):
     """Render the background configuration panel"""
+    if self._changed():
+        h.head.javascript(
+            h.generate_id(),
+            "YAHOO.kansha.app.setBoardBackgroundImage(%s, %s);"
+            "YAHOO.kansha.app.setTitleColor(%s)" % (
+                ajax.py2js(self.board.background_image_url or '', h),
+                ajax.py2js(self.board.background_image_position, h),
+                ajax.py2js(self.board.title_color or u'', h)
+            )
+        )
+        self._changed(False)
+
     with h.div(class_='panel-section background'):
         h << h.div(_(u'Background image'), class_='panel-section-title')
         with h.div:
             with h.div:
-                def set_background(img):
-                    self.board.set_background_image(img)
-                    self._changed(True)
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
@@ -660,27 +659,37 @@ def render_board_background_edit(self, h, comp, *args):
                 YAHOO.util.Event.onDOMReady(function() {
                     YAHOO.util.Event.on(%(input_id)s, 'change', valueChanged);
                 });''' % {
-                            'max_size': ajax.py2js(self.board.background_max_size),
-                            'input_id': ajax.py2js(input_id),
-                            'submit_id': ajax.py2js(submit_id),
+                            'max_size': ajax.py2js(self.board.background_max_size, h),
+                            'input_id': ajax.py2js(input_id, h),
+                            'submit_id': ajax.py2js(submit_id, h),
                             'error': ajax.py2js(
-                                _(u'Max file size exceeded')
+                                _(u'Max file size exceeded'), h
                             ).decode('UTF-8')
                         }
                     )
-                    h << h.input(id=input_id, style="position:absolute;left:-1000px;", type="file", name="file",
+                    h << h.input(id=input_id, class_='hidden', type="file", name="file",
                                  multiple="multiple", maxlength="100",).action(v_file)
-                    h << h.input(style="position:absolute;left:-1000px;", id=submit_id, type="submit").action(
-                        lambda: set_background(v_file()))
+                    h << h.input(id=submit_id, class_='hidden', type="submit").action(
+                        lambda: self.set_background(v_file()))
             with h.div:
-                def reset_background():
-                    self.board.set_background_image(None)
-                    self._changed(True)
                 h << _('or') << ' '
-                h << h.a(_('Reset background')).action(reset_background)
+                h << h.a(_(u'Reset background')).action(self.reset_background)
         with h.div:
             with h.span(class_='text-center'):
                 h << component.Component(self.board, model='background_image')
+        with h.div:
+            input_id = h.generate_id()
+            submit_id = h.generate_id("image_position_submit")
+            h << h.script(u'''YAHOO.util.Event.onDOMReady(function() {
+                YAHOO.util.Event.on(%(input_id)s, 'change', function() { YAHOO.util.Dom.get(%(submit_id)s).click(); });
+            });''' % {'input_id': ajax.py2js(input_id, h),
+                      'submit_id': ajax.py2js(submit_id, h)})
+            with h.form:
+                h << h.label(_(u'Image position'), for_=input_id)
+                with h.select(id_=input_id).action(self.background_position):
+                    for value, name in self.get_available_background_positions():
+                        h << h.option(name, value=value).selected(self.background_position())
+                h << h.input(class_='hidden', id_=submit_id, type="submit").action(self.set_background_position)
 
     with h.div(class_='panel-section background'):
         h << h.div(_(u'Board title color'), class_='panel-section-title')
@@ -688,11 +697,8 @@ def render_board_background_edit(self, h, comp, *args):
             with h.div:
                 h << comp.render(h, model='title-color-edit')
             with h.div:
-                def reset_color():
-                    self.board.set_title_color(None)
-                    self._changed(True)
                 h << _('or') << ' '
-                h << h.a(_('Reset to default color')).action(reset_color)
+                h << h.a(_('Reset to default color')).action(self.reset_color)
     return h.root
 
 
@@ -712,21 +718,6 @@ def render_board_background_image(self, h, comp, *args):
 def render_board_background_title_color_edit(self, h, comp, *args):
     """Edit the label color"""
     # If label changed reload columns
-    if self._changed():
-        h.head.javascript(
-            h.generate_id(),
-            "YAHOO.kansha.app.set_title_color(%s)" %
-            ajax.py2js(self.board.title_color or u'')
-        )
-        image_url = self.board.background_image_url or ''
-        image_position = self.board.background_image_position
-        h.head.javascript(
-            h.generate_id(),
-            "YAHOO.kansha.app.set_board_background_image(%s, %s)" % (
-                ajax.py2js(image_url), ajax.py2js(image_position)
-            )
-        )
-        self._changed(False)
     h << component.Component(overlay.Overlay(lambda r: comp.render(r, model='title-color'),
                                              lambda r: comp.render(r,
                                                                    model='title-color-overlay'),
@@ -745,17 +736,13 @@ def render_board_background_title_color(self, h, comp, *args):
 @presentation.render_for(BoardBackground, model='title-color-overlay')
 def render_board_background_title_color_overlay(self, h, comp, *args):
     """Color chooser contained in the overlay body"""
-    def set_color(color):
-        self.board.set_title_color(color)
-        self._changed(True)
-
     v = var.Var(self.board.title_color)
     i = h.generate_id()
     h << h.div(id=i, class_='label-color-picker clearfix')
     with h.form:
         h << h.input(type='hidden', value=v(), id='%s-hex-value' % i).action(v)
         h << h.button(_('Save'), class_='btn btn-primary').action(
-            ajax.Update(action=lambda v=v: set_color(v())))
+            ajax.Update(action=lambda v=v: self.set_color(v())))
         h << ' '
         h << h.button(_('Cancel'), class_='btn').action(lambda: None)
     h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))

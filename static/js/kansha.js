@@ -570,31 +570,14 @@
             NS.app.showTitleForm(column.id);
         },
 
-        set_title_color: function (color) {
-            if (color) {
-                Dom.setStyle(Selector.query('.boardTitle a'), 'color', color);
-                Dom.setStyle(Selector.query('.fc-toolbar h2'), 'color', color);
-            } else {
-                Dom.setStyle(Selector.query('.boardTitle a'), 'color', '');
-                Dom.setStyle(Selector.query('.fc-toolbar h2'), 'color', '');
-            }
+        setTitleColor: function (color) {
+            Dom.setStyle(Selector.query('.board-title a'), 'color', color || '');
         },
 
-        set_board_background_image: function (image_url, position) {
-            var position = position || 'repeat',
-                bg = '',
-                size = '';
-            if (image_url) {
-                if (position === 'cover') {
-                    bg = 'url(' + image_url + ') no-repeat';
-                    size = 'cover';
-                } else {
-                    bg = 'url(' + image_url + ') repeat';
-                }
-            }
-
-            Dom.setStyle(Selector.query('#application .board'), 'background', bg);
-            Dom.setStyle(Selector.query('#application .board'), 'background-size', size);
+        setBoardBackgroundImage: function (imageUrl, position) {
+            var boardNode = Selector.query('#application .board', null, true);
+            Dom.setStyle(boardNode, 'background-image', 'url(' + imageUrl + ')')
+            Dom.setAttribute(boardNode, 'className', 'board ' + position);
         },
 
         create_board_calendar: function (calendar, displayWeekNumbers) {

@@ -103,6 +103,26 @@ textarea.expanded {
     height: 100%;
     width: 100%;
     overflow-y: hidden; /* board viewport already has one */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+
+.board.fill {
+    background-size: cover;
+}
+
+.board.fit {
+    background-size: contain;
+}
+
+.board.stretch {
+    background-size: 100% 100%;
+}
+
+.board.tile {
+    background-position: top left;
+    background-repeat: repeat;
 }
 
 .board .header {
@@ -386,6 +406,14 @@ textarea.expanded {
 /* End card drag n drop */
 
 /* Editor */
+.card-edit-form input[type=text],
+.card-edit-form input[type=password],
+.card-edit-form input[type=file],
+.card-edit-form select,
+.card-edit-form textarea {
+    width: 100%;
+}
+
 .card-edit-form .card-actions ul {
     list-style-type: none;
     margin-left: 0;

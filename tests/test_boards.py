@@ -7,8 +7,6 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-
-import json
 import unittest
 
 from elixir import metadata as __metadata__
@@ -18,7 +16,6 @@ from kansha.board.models import DataBoard
 from kansha.board import comp as board_module
 from kansha.board import boardsmanager
 from kansha.user import user_profile
-from kansha import notifications
 from . import helpers
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})

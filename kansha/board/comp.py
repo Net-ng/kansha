@@ -204,7 +204,8 @@ class Board(events.EventHandlerMixIn):
             new_col = column.copy(new_board, additional_data)
             new_board.columns.append(component.Component(new_col))
 
-        new_board.archive_column = new_board.create_column(index=len(cols), title=_(u'Archive'), archive=True)
+        new_board.archive_column = new_board.create_column(index=len(cols), title=_(u'Archive'))
+        new_board.archive_column.is_archive = True
 
         return new_board
 
@@ -231,25 +232,13 @@ class Board(events.EventHandlerMixIn):
 
     def load_data(self):
         columns = []
-        archive = None
         for c in self.data.columns:
             col = self._services(
                 column.Column, c.id, self, self.card_extensions,
                 self.action_log, self.search_engine, data=c)
-            if c.archive:
-                archive = col
-            else:
-                columns.append(component.Component(col))
-
-        if archive is not None:
-            self.archive_column = archive
-        elif not self.data.is_template:
-            # Create the unique archive column
-            last_idx = max(c.index for c in self.data.columns) if self.data.columns else -1
-            self.archive_column = self.create_column(index=last_idx + 1, title=_(u'Archive'), archive=True)
-
-        if self.show_archive and security.has_permissions('manage', self):
-            columns.append(component.Component(self.archive_column))
+            if col.is_archive:
+                self.archive_column = col
+            columns.append(component.Component(col))
 
         self.columns = columns
 
@@ -264,19 +253,8 @@ class Board(events.EventHandlerMixIn):
         return refresh
 
     def refresh(self):
-        if self.show_archive:
-            self.columns = [component.Component(
-                self._services(
-                    column.Column, c.id, self,
-                    self.card_extensions, self.action_log, self.search_engine)
-                ) for c in self.data.columns]
-        else:
-            self.columns = [component.Component(
-                self._services(
-                    column.Column, c.id, self,
-                    self.card_extensions, self.action_log, self.search_engine)
-                ) for c in self.data.columns if not c.archive]
-
+        print "refresh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        self.load_data()
 
     @property
     def all_members(self):
@@ -323,7 +301,7 @@ class Board(events.EventHandlerMixIn):
         """
         return len(self.columns)
 
-    def create_column(self, index, title, nb_cards=None, archive=False):
+    def create_column(self, index, title, nb_cards=None):
         """Create a new column in the board
 
         In:
@@ -334,13 +312,12 @@ class Board(events.EventHandlerMixIn):
         security.check_permissions('edit', self)
         if title == '':
             return False
-        col = self.data.create_column(index, title, nb_cards, archive=archive)
+        col = self.data.create_column(index, title, nb_cards)
         col_obj = self._services(
             column.Column, col.id, self,
             self.card_extensions, self.action_log, self.search_engine)
-        if not archive or (archive and self.show_archive):
-            self.columns.insert(
-                index, component.Component(col_obj))
+        self.columns.insert(
+            index, component.Component(col_obj))
         self.increase_version()
         return col_obj
 
@@ -435,7 +412,6 @@ class Board(events.EventHandlerMixIn):
     @show_archive.setter
     def show_archive(self, value):
         self.data.show_archive = value
-        self.refresh()
         self.set_reload_search()
 
     def archive_card(self, card):

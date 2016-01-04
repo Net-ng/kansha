@@ -301,6 +301,8 @@ def render_Board_columns(self, h, comp, *args):
             with h.div(id='lists'):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
+                    if column().is_archive and not self.show_archive:
+                        continue
                     model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 

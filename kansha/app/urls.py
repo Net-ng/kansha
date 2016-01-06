@@ -11,13 +11,11 @@
 from nagare import presentation, security, log, component
 from nagare.i18n import _
 
-from kansha import models
 from kansha.exceptions import NotFound
 from kansha.authentication.database import forms
 from kansha.user.usermanager import UserManager
-from kansha.gallery import comp as gallery, models as gallery_models
+from .comp import MainTask
 
-from .comp import MainTask, WSGIApp
 
 def logout():
     if security.get_user() is not None:

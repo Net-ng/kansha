@@ -26,7 +26,7 @@ from kansha.user import usermanager
 from kansha.board import boardsmanager
 from kansha.security import SecurityManager
 from kansha.card.models import DataCard
-from kansha.vote.models import DataVote
+from kansha.card_extensions.vote import DataVote
 from kansha.board import models as board_models
 from kansha.services.mail import DummyMailSender
 from kansha.services.search.dummyengine import DummySearchEngine

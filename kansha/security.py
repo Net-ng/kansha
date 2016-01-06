@@ -12,19 +12,14 @@ from base64 import b64encode, b64decode
 from Crypto import Random
 from peak.rules import when
 from Crypto.Cipher import Blowfish
-
 from nagare import security
 from nagare.security import form_auth, common
 
-from .card.comp import Card
-from .board.comp import Board
-from .comment.comp import Comment
-from .gallery.comp import Gallery
+from .board.comp import Board  # Do not remove
+from .card.comp import Card  # Do not remove
 from .user.usermanager import UserManager
-from .column.comp import Column, CardsCounter
-from .board.comp import (BOARD_PRIVATE, BOARD_PUBLIC,
-                         COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
-                         VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS)
+from .column.comp import CardsCounter, Column  # Do not remove
+from .board.comp import COMMENTS_PUBLIC, COMMENTS_MEMBERS, VOTES_PUBLIC, VOTES_MEMBERS
 
 
 class Unauthorized(Exception):
@@ -123,11 +118,6 @@ class Rules(common.Rules):
     @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Board)")
     def _(self, user, perm, board):
         return board.has_member(user) and user
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Gallery)")
-    def _(self, user, perm, gallery):
-        """Test if description is editable"""
-        return security.has_permissions('edit', gallery.card)
 
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Column)")
     def _(self, user, perm, column):

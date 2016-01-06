@@ -23,7 +23,7 @@ from kansha import title
 from kansha.card import fts_schema
 from kansha.user import usermanager
 from kansha.services import ActionLog
-from kansha.label import comp as label
+from kansha.card_extensions.label import comp as label
 from kansha.column import comp as column
 from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay

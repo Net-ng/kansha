@@ -18,10 +18,9 @@ from nagare import database
 from kansha.board.models import DataBoard
 from kansha.card.models import DataCard
 from kansha.column.models import DataColumn
-from kansha.comment.models import DataComment
-from kansha.label.models import DataLabel
+from kansha.card_extensions.comment.models import DataComment
+from kansha.card_extensions.label.models import DataLabel
 from kansha.user.models import DataUser
-
 
 DEFAULT_LABELS = (
     (u'Vert', u'#22C328'),

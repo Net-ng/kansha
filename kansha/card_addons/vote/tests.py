@@ -14,9 +14,9 @@ from nagare import database
 from elixir import metadata as __metadata__
 
 from kansha import helpers
+from kansha.services.actionlog import DummyActionLog
 
 from .comp import Votes
-from .models import DataVote
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 
@@ -28,7 +28,7 @@ class VoteTest(unittest.TestCase):
         board = helpers.create_board()
         column = board.create_column(1, u'test')
         card = column.create_card(u'test')
-        self.votes = Votes(card, None)
+        self.votes = Votes(card, DummyActionLog())
 
     def tearDown(self):
         helpers.teardown_db(__metadata__)

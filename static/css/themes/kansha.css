@@ -8,7 +8,10 @@
  **/
 
 /* General */
-html, body { height: 100%; max-height: 100% }
+html, body {
+    height: 100%;
+    max-height: 100%;
+}
 
 form {
     margin: 0 0 3px 0;

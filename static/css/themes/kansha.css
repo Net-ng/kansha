@@ -535,11 +535,27 @@ i.icon {
     right: 0;
     bottom: 0;
     left: 0;
+    text-align: center;
 }
 
 .modal > div {
     max-width: 680px;
     position: relative;
-    margin: 70px auto 30px auto;
+    margin: 70px auto;
+    display: inline-block;
+    text-align: left;
+}
+
+.modal > div > div {
+    display: inline-block;
+}
+
+.modal textarea {
+    min-width: 300px;
+}
+
+.modal input,
+.modal select {
+    min-width: 200px;
 }
 /* End modal window */

@@ -133,9 +133,8 @@ textarea.expanded {
 .board .board-title {
     display: inline-block;
     padding: 10px 10px;
-    margin-left: 400px;
+    margin-left: 320px;
     height: 50px;
-    width: calc(100% - 400px - 350px);
 }
 
 .board .board-title a,
@@ -147,7 +146,6 @@ textarea.expanded {
 }
 
 .board .board-title .title-form input {
-    width: 440px;
     margin-right: 5px;
 }
 
@@ -715,7 +713,7 @@ textarea.expanded {
 }
 
 #show_results {
-    min-width: 200px;
+    min-width: 120px;
     display: inline-block;
     padding: 0 5px;
     text-align: right;
@@ -1012,16 +1010,16 @@ div.history th {
         margin-bottom: 5px
     }
 
-    .board .board-title {
-        margin-top: 50px;
-        margin-left: 50px;
-        width: calc(100% - 50px);
-    }
-
     .bbody {
         top: 115px;
     }
+}
 
+@media all and (max-width: 1200px) {
+    .board .board-title {
+        margin-top: 50px;
+        margin-left: 0px;
+    }
 }
 
 @media (max-width: 813px) {
@@ -1088,11 +1086,6 @@ div.history th {
         width: 52%;
         display: inline-block;
         margin-bottom: 0
-    }
-
-    .board .board-title {
-        margin-top: 50px;
-        margin-left: 20px;
     }
 
     .checklists .checklist .new-item-form input {

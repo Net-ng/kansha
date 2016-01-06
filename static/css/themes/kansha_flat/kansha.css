@@ -325,6 +325,7 @@ a:hover .ico-btn {
     border-radius: 10px;
     border: 2px solid white;
     padding: 0px 4px;
+    display: inline-block;
 }
 
 .members .count:hover {

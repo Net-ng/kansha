@@ -30,7 +30,6 @@ class DataCard(Entity):
     column = ManyToOne('DataColumn')
 
     # feature data to move to card extensions
-    votes = OneToMany('DataVote')
     labels = ManyToMany('DataLabel')
     comments = OneToMany('DataComment', order_by="-creation_date")
     assets = OneToMany('DataAsset', order_by="-creation_date")

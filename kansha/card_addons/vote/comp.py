@@ -32,8 +32,7 @@ class Votes(CardExtension):
         security.check_permissions('vote', self.card)
         if not self.has_voted():
             user = security.get_user()
-            vote = DataVote(user=user.data)
-            self.votes.append(vote)
+            DataVote(card=self.card.data, user=user.data)
         else:
             self.unvote()
 
@@ -42,12 +41,7 @@ class Votes(CardExtension):
         security.check_permissions('vote', self.card)
         if self.has_voted():
             user = security.get_user()
-            vote = DataVote.get_vote(self.card.data, user.data)
-            self.votes.remove(vote)
-
-    def __nonzero__(self):
-        '''Check whether there are votes on the current card or not'''
-        return self.count_votes() > 0
+            DataVote.get_vote(self.card.data, user.data).delete()
 
     def has_voted(self):
         '''Check if the current user already vote for this card'''

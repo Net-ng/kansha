@@ -18,13 +18,11 @@ from .comp import Votes
 def render_Votes_edit(self, h, comp, *args):
     '''Add vote form'''
     if security.has_permissions('vote', self.card):
-        nb_votes = self.count_votes()
         if self.has_voted():
-            h << h.a(h.i(class_='icon-heart'), _('Unvote (%s)') % nb_votes,
-                     class_='btn').action(self.vote)
+            msg = _('Unvote (%s)') % self.count_votes()
         else:
-            h << h.a(h.i(class_='icon-heart'), _('Vote (%s)') % nb_votes,
-                     class_='btn').action(self.vote)
+            msg = _('Vote (%s)') % self.count_votes()
+        h << h.a(h.i(class_='icon-heart'), msg, class_='btn').action(self.vote)
     return h.root
 
 

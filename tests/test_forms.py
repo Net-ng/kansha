@@ -10,12 +10,12 @@
 
 import logging
 import unittest
-from . import helpers
-from nagare import database
-from sqlalchemy import MetaData
-from kansha.authentication.database import forms
 
+from nagare import database
 from elixir import metadata as __metadata__
+
+from kansha import helpers
+from kansha.authentication.database import forms
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 

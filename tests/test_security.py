@@ -9,15 +9,15 @@
 #--
 
 import unittest
+
 from nagare import database, i18n, security, component
 from nagare.namespaces import xhtml5
-from sqlalchemy import MetaData
-from kansha.board import comp as board_module
-from kansha.board import boardsmanager
-from . import helpers
-from kansha.security import Unauthorized
 from elixir import metadata as __metadata__
 
+from kansha.board import comp as board_module
+from kansha.board import boardsmanager
+from kansha import helpers
+from kansha.security import Unauthorized
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 

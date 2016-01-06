@@ -23,10 +23,10 @@ from kansha import title
 from kansha.card import fts_schema
 from kansha.user import usermanager
 from kansha.services import ActionLog
-from kansha.card_extensions.label import comp as label
 from kansha.column import comp as column
 from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
+from kansha.card_addons.label import Label
 from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
 
@@ -593,7 +593,7 @@ class Board(events.EventHandlerMixIn):
     def labels(self):
         """Returns the labels associated with the board
         """
-        return [self._services(label.Label, data) for data in self.data.labels]
+        return [self._services(Label, data) for data in self.data.labels]
 
     @property
     def data(self):

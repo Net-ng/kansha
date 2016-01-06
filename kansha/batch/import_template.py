@@ -6,21 +6,23 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
-from datetime import date, datetime
-from glob import glob
-import json
+
 import os
 import sys
+import json
 import time
+from glob import glob
+from datetime import date, datetime
 
 from nagare import database
 
-from kansha.board.models import DataBoard
-from kansha.card.models import DataCard
-from kansha.column.models import DataColumn
-from kansha.card_extensions.comment.models import DataComment
-from kansha.card_extensions.label.models import DataLabel
 from kansha.user.models import DataUser
+from kansha.card.models import DataCard
+from kansha.board.models import DataBoard
+from kansha.column.models import DataColumn
+from kansha.card_addons.label import DataLabel
+from kansha.card_addons.comment import DataComment
+
 
 DEFAULT_LABELS = (
     (u'Vert', u'#22C328'),

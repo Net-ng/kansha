@@ -83,15 +83,15 @@ setup(
       ldaplogin = kansha.authentication.ldap.forms:Login
 
       [kansha.card.extensions]
-      labels = kansha.card_extensions.label.comp:CardLabels
-      description = kansha.card_extensions.description.comp:CardDescription
-      checklists = kansha.card_extensions.checklist.comp:Checklists
-      gallery = kansha.card_extensions.gallery.comp:Gallery
-      comments = kansha.card_extensions.comment.comp:Comments
-      due_date = kansha.card_extensions.due_date.comp:DueDate
-      votes = kansha.card_extensions.vote.comp:Votes
-      weight = kansha.card.comp:CardWeightEditor
-      card_members = kansha.card.comp:CardMembers
+      labels = kansha.card_addons.label.comp:CardLabels
+      description = kansha.card_addons.description.comp:CardDescription
+      checklists = kansha.card_addons.checklist.comp:Checklists
+      gallery = kansha.card_addons.gallery.comp:Gallery
+      comments = kansha.card_addons.comment.comp:Comments
+      due_date = kansha.card_addons.due_date.comp:DueDate
+      votes = kansha.card_addons.vote.comp:Votes
+      weight = kansha.card_addons.weight:CardWeightEditor
+      card_members = kansha.card_addons.members:CardMembers
 
       [nagare.applications]
       kansha = kansha.app:app

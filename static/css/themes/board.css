@@ -1009,16 +1009,16 @@ div.history th {
         display: block;
         margin-bottom: 5px
     }
-
-    .bbody {
-        top: 115px;
-    }
 }
 
 @media all and (max-width: 1200px) {
     .board .board-title {
         margin-top: 50px;
         margin-left: 0px;
+    }
+    
+    .bbody {
+        top: 115px;
     }
 }
 

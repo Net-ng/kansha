@@ -250,11 +250,6 @@ class Card(events.EventHandlerMixIn):
     def set_description(self, value):
         self.data.description = value
 
-    # Checklists
-
-    def get_datalists(self):
-        return self.data.checklists
-
     # Due Date
 
     @property

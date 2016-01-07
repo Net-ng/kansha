@@ -100,7 +100,6 @@ class DataUser(Entity):
     last_board = OneToOne('DataBoard', inverse='last_users')
     cards = ManyToMany('DataCard', inverse='members', lazy='dynamic')
     history = OneToMany('DataHistory')
-    votes = OneToMany('DataVote')
 
     def __init__(self, username, password, fullname, email,
                  source=u'application', picture=None, **kw):

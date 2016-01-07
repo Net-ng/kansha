@@ -28,7 +28,7 @@ class DataChecklist(Entity):
     title = Field(Unicode(255))
     items = OneToMany('DataChecklistItem', order_by='index', inverse='checklist',
                       collection_class=ordering_list('index'))
-    card = ManyToOne('DataCard')
+    card = ManyToOne('DataCard', inverse='checklists')
     author = ManyToOne('DataUser')
     index = Field(Integer)
 

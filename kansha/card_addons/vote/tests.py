@@ -8,35 +8,19 @@
 # this distribution.
 #--
 
-import unittest
-
-from nagare import database
-from elixir import metadata as __metadata__
-
-from kansha import helpers
-from kansha.services.actionlog import DummyActionLog
+from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import Votes
 
-database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 
-
-class VoteTest(unittest.TestCase):
-    def setUp(self):
-        helpers.setup_db(__metadata__)
-        helpers.set_context(helpers.create_user())
-        board = helpers.create_board()
-        column = board.create_column(1, u'test')
-        card = column.create_card(u'test')
-        self.votes = Votes(card, DummyActionLog())
-
-    def tearDown(self):
-        helpers.teardown_db(__metadata__)
+class VoteTest(CardExtensionTestCase):
+    def create_instance(self, card, action_log):
+        return Votes(card, action_log)
 
     def test_vote_and_unvote(self):
-        self.votes.vote()
-        self.assertEqual(self.votes.count_votes(), 1)
-        self.assertTrue(self.votes.has_voted())
-        self.votes.unvote()
-        self.assertEqual(self.votes.count_votes(), 0)
-        self.assertFalse(self.votes.has_voted())
+        self.extension.vote()
+        self.assertEqual(self.extension.count_votes(), 1)
+        self.assertTrue(self.extension.has_voted())
+        self.extension.unvote()
+        self.assertEqual(self.extension.count_votes(), 0)
+        self.assertFalse(self.extension.has_voted())

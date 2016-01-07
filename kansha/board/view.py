@@ -12,9 +12,10 @@ from nagare.i18n import _, _N
 from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
-from kansha.toolbox import overlay, popin, remote
+from kansha.toolbox import overlay, remote
 from kansha.board.boardconfig import WeightsSequenceEditor
 
+from .boardsmanager import BoardsManager
 from .comp import (Board, BoardDescription, BoardMember,
                    Icon)
 from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
@@ -753,4 +754,70 @@ def render_board_background_title_color_overlay(self, h, comp, *args):
         h << ' '
         h << h.button(_('Cancel'), class_='btn').action(lambda: None)
     h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
+    return h.root
+
+##### BoardsManager
+
+
+@presentation.render_for(BoardsManager)
+def render_userboards(self, h, comp, *args):
+    template = var.Var(u'')
+    h.head << h.head.title(self.app_title)
+
+    h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
+
+    if self.last_modified_boards:
+        h << h.h1(_(u'Last modified boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
+
+    h << h.h1(_(u'My boards'))
+    with h.ul(class_='board-labels'):
+        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
+
+    if self.guest_boards:
+        h << h.h1(_(u'Guest boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
+
+    with h.div(class_='new-board'):
+        with h.form:
+            h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
+            h << _(u' a new ')
+
+            if len(self.templates) > 1:
+                with h.select.action(template):
+                    with h.optgroup(label=_(u'Shared templates')):
+                        h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
+                    if self.templates['private']:
+                        with h.optgroup(label=_(u'My templates')):
+                            h << [h.option(tpl, value=id_) for id_, tpl in self.templates['private']]
+            else:
+                id_, tpl = self.templates.items()[0]
+                template(id_)
+                h << tpl
+
+            h << _(u' board')
+
+    if len(self.archived_boards):
+        h << h.h1(_('Archived boards'))
+
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'archived_item')
+                  for b in self.archived_boards.itervalues()]
+
+        with h.form:
+            h << h.button(
+                _('Delete'),
+                class_='delete',
+                onclick='return confirm(%s)' % ajax.py2js(
+                    _('These boards will be destroyed. Are you sure?')
+                ).decode('UTF-8'),
+                type='submit'
+            ).action(self.purge_archived_boards)
+
+    h << h.script('YAHOO.kansha.app.hideOverlay();'
+                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_user_boards, render=0)).get('onclick'))
+
     return h.root

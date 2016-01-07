@@ -8,6 +8,12 @@
 # this distribution.
 #--
 
+from collections import OrderedDict
+
+from nagare import security, component
+
+from kansha import events
+
 from .comp import Board
 
 
@@ -19,6 +25,11 @@ class BoardsManager(object):
         self.card_extensions = card_extensions
         self.search_engine = search_engine
         self._services = services_service
+
+        self.last_modified_boards = {}
+        self.my_boards = {}
+        self.guest_boards = {}
+        self.archived_boards = {}
 
     def get_by_id(self, id_):
         board = None
@@ -40,3 +51,53 @@ class BoardsManager(object):
         new_board = board.copy(user, data)
         new_board.data.is_template = board_to_template
         return new_board
+
+    #####
+
+    def create_board(self, board_id, comp):
+        """Create a new board from template for current user."""
+        b = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
+                           self.card_extensions, self.search_engine,
+                           load_data=False)
+        b.load_data()
+        new_board = b.copy(security.get_user(), {})
+        new_board.data.is_template = False
+        comp.answer(new_board.id)
+
+    def reload_user_boards(self):
+        self.my_boards.clear()
+        self.guest_boards.clear()
+        self.archived_boards.clear()
+        last_modifications = {}
+        for board_id, in Board.get_all_board_ids(): # Comma is important
+            board_obj = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
+                                       self.card_extensions, self.search_engine,
+                                       load_data=False)
+            if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
+                board_comp = component.Component(board_obj)
+                if board_obj.archived:
+                    self.archived_boards[board_id] = board_comp
+                else:
+                    last_activity = board_obj.get_last_activity()
+                    if last_activity is not None:
+                        last_modifications[board_id] = (last_activity, board_comp)
+                    if security.has_permissions('manage', board_obj):
+                        self.my_boards[board_id] = board_comp
+                    elif security.has_permissions('edit', board_obj):
+                        self.guest_boards[board_id] = board_comp
+
+        last_5 = sorted(last_modifications.values(), reverse=True)[:5]
+        self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
+        user = security.get_user()
+        public, private = Board.get_templates_for(user.username, user.source)
+        self.templates = {'public': [(b.id, b.template_title) for b in public],
+                         'private': [(b.id, b.template_title) for b in private]}
+
+    def purge_archived_boards(self):
+        for board in self.archived_boards.itervalues():
+            board().delete()
+        self.archived_boards = OrderedDict()
+
+    def handle_event(self, event):
+        if event.is_kind_of(events.BoardAccessChanged):
+            return self.reload_user_boards()

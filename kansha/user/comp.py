@@ -49,6 +49,10 @@ class User(security_common.User):
         return self.data.email
 
     @property
+    def source(self):
+        return self.data.source
+
+    @property
     def is_local(self):
         """Test if it's a application user
 

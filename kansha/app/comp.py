@@ -32,7 +32,7 @@ from kansha.services.search import SearchEngine
 from kansha.user.usermanager import UserManager
 from kansha.board.boardsmanager import BoardsManager
 from kansha.security import SecurityManager, Unauthorized
-from kansha.user.user_profile import get_userform, UserBoards  # !!!!!!!!!!!!!!!
+from kansha.user.user_profile import get_userform  # !!!!!!!!!!!!!!!
 
 
 def run():
@@ -71,6 +71,8 @@ class Kansha(object):
         In:
             - ``id_`` -- the id of the selected menu entry
         """
+        if id_ == 'boards':
+            self.boards_manager.reload_user_boards()
         self.content.becomes(self.home_menu[id_].content)
         self.selected = id_
 
@@ -87,15 +89,7 @@ class Kansha(object):
         self.home_menu['boards'] = MenuEntry(
             _L(u'Boards'),
             'board',
-            self._services(
-                UserBoards,
-                self.app_title,
-                self.app_banner,
-                self.theme,
-                self.card_extensions,
-                user.data,
-                self.search_engine
-            )
+            self.boards_manager
         )
         self.home_menu['profile'] = MenuEntry(
             _L(u'Profile'),

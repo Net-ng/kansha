@@ -15,7 +15,6 @@ from nagare.namespaces.xhtml import absolute_url
 from nagare import ajax, component, presentation, security
 
 from kansha import VERSION
-from kansha.user import user_profile
 from kansha.user.usermanager import UserManager
 
 from .comp import Kansha

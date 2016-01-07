@@ -13,6 +13,7 @@ from nagare.security import common
 
 from . import view
 from .comp import Gallery
+from .models import DataAsset, DataGallery
 
 
 @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Gallery)")

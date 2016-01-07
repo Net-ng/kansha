@@ -119,7 +119,10 @@ class Comments(CardExtension):
             - ``comments`` -- the comments of the card
         """
         super(Comments, self).__init__(card, action_log)
-        self.comments = [self._create_comment_component(data_comment) for data_comment in card.get_comments()]
+        self.comments = [self._create_comment_component(data_comment) for data_comment in self.get_data()]
+
+    def get_data(self):
+        return DataComment.get_data_by_card(self.card.data)
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete_comment)

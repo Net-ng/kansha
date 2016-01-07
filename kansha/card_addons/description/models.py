@@ -10,24 +10,19 @@
 
 from elixir import using_options
 from elixir import ManyToOne
-from elixir import Field, UnicodeText, DateTime
+from elixir import Field, UnicodeText
 
 from kansha.models import Entity
 
 
-class DataComment(Entity):
+class DataCardDescription(Entity):
+    using_options(tablename='card_description')
 
-    """Comment mapper
-    """
-    using_options(tablename='comment')
-    comment = Field(UnicodeText, default=u'')
-    creation_date = Field(DateTime)
+    description = Field(UnicodeText, default=u'')
     card = ManyToOne('DataCard')
-    author = ManyToOne('DataUser')
 
     @classmethod
     def get_data_by_card(cls, card):
         q = cls.query
         q = q.filter_by(card=card)
-        q = q.order_by(cls.creation_date.desc())
-        return q.all()
+        return q.first()

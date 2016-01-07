@@ -19,30 +19,19 @@ from kansha.models import Entity
 
 
 class DataCard(Entity):
+    '''Card mapper'''
 
-    """Card mapper
-    """
     using_options(tablename='card')
     title = Field(UnicodeText)
-    description = Field(UnicodeText, default=u'')
     index = Field(Integer)
     creation_date = Field(DateTime, default=datetime.datetime.utcnow)
     column = ManyToOne('DataColumn')
 
     # feature data to move to card extensions
-    labels = ManyToMany('DataLabel')
-    comments = OneToMany('DataComment', order_by="-creation_date")
-    assets = OneToMany('DataAsset', order_by="-creation_date")
-    checklists = OneToMany('DataChecklist', order_by="index")
     members = ManyToMany('DataUser')
-    cover = OneToOne('DataAsset', inverse="cover")
-    due_date = Field(Date)
-    weight = Field(Unicode(255), default=u'')
 
     def copy(self, parent):
         new_data = DataCard(title=self.title,
-                            description=self.description,
-                            weight=self.weight,
                             column=parent)
         session.flush()
         return new_data

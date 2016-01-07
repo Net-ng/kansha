@@ -195,32 +195,10 @@ class Card(events.EventHandlerMixIn):
         self.data.remove_member(member.get_user_data())
         self.refresh()  # brute force solution until we have proper communication between extensions
 
-    # Cover methods
-
-    def make_cover(self, asset):
-        """Make card cover with asset
-
-        In:
-            - ``asset`` -- New cover, Asset component
-        """
-        self.data.make_cover(asset)
-
-    def has_cover(self):
-        return self.data.cover is not None
-
-    def get_cover(self):
-        return self.data.cover
-
-    def remove_cover(self):
-        self.data.remove_cover()
-
     # Label methods
 
     def get_available_labels(self):
         return self.column.get_available_labels()
-
-    def get_datalabels(self):
-        return self.data.labels
 
     # Weight
 
@@ -237,33 +215,17 @@ class Card(events.EventHandlerMixIn):
     def weighting_on(self):
         return self.board.weighting_cards
 
-    # Comments
-
-    def get_comments(self):
-        return self.data.comments
-
-    # Description
-
-    def get_description(self):
-        return self.data.description
-
-    def set_description(self, value):
-        self.data.description = value
-
-    # Checklists
-
-    def get_datalists(self):
-        return self.data.checklists
-
+    # TODO Calendar view should be a board extension
     # Due Date
-
     @property
     def due_date(self):
-        return self.data.due_date
+        ext = self.card_extensions['due_date']()
+        return ext.get_value()
 
     @due_date.setter
     def due_date(self, value):
-        self.data.due_date = value
+        ext = self.card_extensions['due_date']()
+        return ext.set_value(value)
 
 
 ############### Extension components ###################

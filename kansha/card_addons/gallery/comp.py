@@ -47,7 +47,7 @@ class Gallery(CardExtension):
         self.data = DataGallery(self.card)
 
         self.assets = []
-        for data_asset in self.data.get_assets():
+        for data_asset in self.data.get_data():
             self._create_asset_c(data_asset)
         self.comp_id = str(random.randint(10000, 100000))
         self.model = 'view'
@@ -55,7 +55,7 @@ class Gallery(CardExtension):
 
     def copy(self, parent, additional_data):
         new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
-        for data_asset in self.data.get_assets():
+        for data_asset in self.data.get_data():
             new_asset_id = self.assets_manager.copy(data_asset.filename)
             new_asset_data = data_asset.add_asset(new_asset_id, parent, additional_data['author'])
             new_extension._create_asset_c(new_asset_data)
@@ -136,14 +136,14 @@ class Gallery(CardExtension):
           - ``height`` -- Crop height
         """
         self.assets_manager.create_cover(asset.filename, left, top, width, height)
-        self.card.make_cover(asset)
+        DataAsset.make_cover(asset)
         for a in self.assets:
             a().is_cover = False
         asset.is_cover = True
         self.model = 'view'
 
     def get_cover(self):
-        if not self.card.has_cover():
+        if not DataAsset.has_cover_for_card(self.card.data):
             return None
 
         return Asset(self.card.get_cover(), self.assets_manager)
@@ -176,7 +176,7 @@ class Gallery(CardExtension):
 
     def delete(self):
         '''Delete all assets'''
-        for asset in self.data.get_assets():
+        for asset in self.data.get_data():
             self.assets_manager.delete(asset.filename)
         self.assets = []
 

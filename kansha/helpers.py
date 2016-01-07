@@ -142,14 +142,14 @@ def create_default_cards(board, user):
     green = board.get_label_by_title(u'Green')
     red = board.get_label_by_title(u'Red')
     column_1 = board.columns[0]
-    cards = [DataCard(title=u"Welcome to your board!", creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(5)),
+    cards = [DataCard(title=u"Welcome to your board!", creation_date=datetime.utcnow()),
              DataCard(title=u"We've created some lists and cards for you, so you can play with it right now!", creation_date=datetime.utcnow()),
              DataCard(title=u"Use color-coded labels for organization",
                       labels=[green, red], creation_date=datetime.utcnow()),
              DataCard(title=u"Make as many lists as you need!",
                       votes=[DataVote(user=user)], creation_date=datetime.utcnow()),
              DataCard(title=u"Try dragging cards anywhere.", creation_date=datetime.utcnow()),
-             DataCard(title=u"Finished with a card? Delete it.", creation_date=datetime.utcnow(), due_date=datetime.utcnow() + timedelta(-2)),
+             DataCard(title=u"Finished with a card? Delete it.", creation_date=datetime.utcnow()),
              ]
     for i, c in enumerate(cards):
         c.index = i

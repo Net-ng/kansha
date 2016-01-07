@@ -89,10 +89,13 @@ class CardLabels(CardExtension):
         """
         super(CardLabels, self).__init__(card, action_log)
         self.comp_id = str(random.randint(10000, 100000))
-        self.labels = [l.id for l in card.get_datalabels()]
+        self.labels = [l.id for l in self.get_data()]
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                            lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
+
+    def get_data(self):
+        return DataLabel.get_data_by_card(self.card.data)
 
     def copy(self, parent, additional_data):
         new_extension = super(CardLabels, self).copy(parent, additional_data)

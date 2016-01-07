@@ -20,8 +20,8 @@ class DataGallery(object):
     def __init__(self, card):
         self.card = card
 
-    def get_assets(self):
-        return DataAsset.get_assets(self.card)
+    def get_data(self):
+        return DataAsset.get_data_by_card(self.card)
 
     def get_asset(self, filename):
         return DataAsset.get_by_filename(filename)
@@ -40,7 +40,25 @@ class DataAsset(Entity):
     creation_date = Field(DateTime)
     author = ManyToOne('DataUser')
     card = ManyToOne('DataCard')
-    cover = ManyToOne('DataCard', inverse="cover")
+    cover = ManyToOne('DataCard')
+
+    @classmethod
+    def get_data_by_card(cls, card):
+        q = cls.query
+        q = q.filter_by(card=card)
+        return q.all()
+
+    @classmethod
+    def get_cover_for_card(cls, card):
+        q = cls.query
+        q = q.filter_by(cover=card)
+        return q.first()
+
+    @classmethod
+    def has_cover_for_card(cls, card):
+        q = cls.query
+        q = q.filter_by(cover=card)
+        return q.count() == 1
 
     @classmethod
     def add_asset(cls, filename, card, author):
@@ -48,17 +66,5 @@ class DataAsset(Entity):
                    creation_date=datetime.datetime.utcnow())
 
     @classmethod
-    def get_assets(cls, card):
-        """Return all assets"""
-        q = cls.query
-        q = q.filter(cls.card == card.data)
-        return q.all()
-
-    @classmethod
     def get_by_filename(cls, filename):
         return cls.get(filename)
-        # TODO check permissions
-        """if data_asset:
-            data_board = data_asset.card.column.board
-            if security.has_permissions('view', data_board):
-                return data_asset"""

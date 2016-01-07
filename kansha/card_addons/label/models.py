@@ -34,3 +34,9 @@ class DataLabel(Entity):
                              board=parent)
         session.flush()
         return new_data
+
+    @classmethod
+    def get_data_by_card(cls, card):
+        q = cls.query
+        q = q.filter_by(card=card)
+        return q.all()

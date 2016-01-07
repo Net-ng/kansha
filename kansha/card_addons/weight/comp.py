@@ -11,15 +11,16 @@ from nagare import component, editor, validator
 
 from kansha.cardextension import CardExtension
 
+from .models import DataCardWeight
 
-class CardWeightEditor(editor.Editor, CardExtension):
+
+class CardWeightEditor(CardExtension):
 
     """ Card weight Form
     """
 
     LOAD_PRIORITY = 80
 
-    fields = {'weight'}
     # WEIGHTING TYPES
     WEIGHTING_OFF = 0
     WEIGHTING_FREE = 1
@@ -30,10 +31,16 @@ class CardWeightEditor(editor.Editor, CardExtension):
         In:
          - ``target`` -- Card instance
         """
-        editor.Editor.__init__(self, target, self.fields)
         CardExtension.__init__(self, target, action_log)
+        self.weight = editor.Property(self.get_data().weight)
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
+
+    def get_data(self):
+        data = DataCardWeight.get_data_by_card(self.card.data)
+        if data is None:
+            data = DataCardWeight(card=self.card.data)
+        return data
 
     def validate_weight(self, value):
         """
@@ -43,13 +50,9 @@ class CardWeightEditor(editor.Editor, CardExtension):
             validator.IntValidator(value).to_int()
         return value
 
-    @property
-    def board(self):
-        return self.target.board
-
     def commit(self):
         success = False
-        if self.is_validated(self.fields):
-            super(CardWeightEditor, self).commit(self.fields)
+        if self.weight.error is None:
+            self.get_data().weight = self.weight.value
             success = True
         return success

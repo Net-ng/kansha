@@ -30,9 +30,9 @@ class Card(schema.Document):
         '''
         return cls('card_%d' % card.id,
                    title=card.title,
-                   description=card.description,
-                   comments='\n'.join(c.comment for c in card.comments),
-                   lists='\n'.join(unicode(cl) for cl in card.checklists),
-                   tags=' '.join(t.title for t in card.labels),
+                   #description=card.description,
+                   #comments='\n'.join(c.comment for c in card.comments),
+                   #lists='\n'.join(unicode(cl) for cl in card.checklists),
+                   #tags=' '.join(t.title for t in card.labels),
                    board_id=card.column.board.id,
                    archived=card.column.archive)

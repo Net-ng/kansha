@@ -10,6 +10,8 @@
 from kansha import validator
 from kansha.cardextension import CardExtension
 
+from .models import DataCardDescription
+
 
 class CardDescription(CardExtension):
     """Description component,
@@ -30,6 +32,19 @@ class CardDescription(CardExtension):
         super(CardDescription, self).__init__(card, action_log)
         self.text = card.get_description()
 
+    def get_data(self):
+        data = DataCardDescription.get_data_by_card(self.card.data)
+        if data is None:
+            data = DataCardDescription(card=self.card.data)
+        return data
+
+    def get_description(self):
+        return data.description
+
+    def set_description(self, text):
+        data = self.get_data()
+        data.description = text
+
     def change_text(self, text):
         """Edit the description
 
@@ -44,7 +59,7 @@ class CardDescription(CardExtension):
         if text:
             text = validator.clean_html(text)
         self.text = text
-        self.card.set_description(text)
+        self.set_description(text)
 
     def __nonzero__(self):
         """Return False if the description if empty

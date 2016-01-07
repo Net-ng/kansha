@@ -184,10 +184,13 @@ class Checklists(CardExtension):
 
     def __init__(self, card, action_log):
         super(Checklists, self).__init__(card, action_log)
-        cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in card.get_datalists()]
+        cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in self.get_data()]
         self.ck_cache = dict(cklists)
         self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
+
+    def get_data(self):
+        return DataChecklist.get_data_by_card(self.card.data)
 
     def copy(self, parent, additional_data):
         new_extension = super(Checklists, self).copy(parent, additional_data)

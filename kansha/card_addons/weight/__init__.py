@@ -8,4 +8,5 @@
 #--
 
 from . import view
+from .models import DataCardWeight
 from .comp import CardWeightEditor

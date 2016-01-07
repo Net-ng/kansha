@@ -14,6 +14,8 @@ from nagare import component
 from kansha.toolbox import calendar_widget
 from kansha.cardextension import CardExtension
 
+from .models import DataCardDueDate
+
 
 class DueDate(CardExtension):
 
@@ -26,13 +28,23 @@ class DueDate(CardExtension):
             - ``card`` -- the object card
         """
         super(DueDate, self).__init__(card, action_log)
-        self.value = card.due_date
+        self.value = self.get_value()
         self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
         self.calendar = component.Component(self.calendar)
 
+    def get_data(self):
+        data = DataCardDueDate.get_data_by_card(self.card.data)
+        if data is None:
+            data = DataCardDueDate(card=self.card.data)
+        return data
+
+    def get_value(self):
+        return self.get_data().due_date
+
     def set_value(self, value):
         '''Set the value to a new date (or None)'''
-        self.card.due_date = value
+        data = self.get_data()
+        data.due_date = value
         self.value = value
 
     def new_card_position(self, value):

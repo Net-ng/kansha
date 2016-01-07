@@ -28,9 +28,16 @@ class DataChecklist(Entity):
     title = Field(Unicode(255))
     items = OneToMany('DataChecklistItem', order_by='index', inverse='checklist',
                       collection_class=ordering_list('index'))
-    card = ManyToOne('DataCard', inverse='checklists')
+    card = ManyToOne('DataCard')
     author = ManyToOne('DataUser')
     index = Field(Integer)
+
+    @classmethod
+    def get_data_by_card(cls, card):
+        q = cls.query
+        q = q.filter_by(card=card)
+        q = q.order_by(cls.index)
+        return q.all()
 
     def copy(self, other):
         self.title = other.title

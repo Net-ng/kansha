@@ -30,7 +30,7 @@ class CardDescription(CardExtension):
             - ``card`` -- the card
         """
         super(CardDescription, self).__init__(card, action_log)
-        self.text = card.get_description()
+        self.text = self.get_description()
 
     def get_data(self):
         data = DataCardDescription.get_data_by_card(self.card.data)
@@ -39,7 +39,7 @@ class CardDescription(CardExtension):
         return data
 
     def get_description(self):
-        return data.description
+        return self.get_data().description
 
     def set_description(self, text):
         data = self.get_data()

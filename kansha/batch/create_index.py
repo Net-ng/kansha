@@ -37,7 +37,7 @@ from kansha.card.models import DataCard
 def rebuild_index(app):
     # init index
     app.search_engine.create_collection([SCard])
-    for card in DataCard.get_all():
+    for card in DataCard.query:
         scard = SCard.from_model(card)
         app.search_engine.add_document(scard)
     app.search_engine.commit()

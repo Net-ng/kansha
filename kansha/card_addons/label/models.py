@@ -24,7 +24,7 @@ class DataLabel(Entity):
     title = Field(Unicode(255))
     color = Field(Unicode(255))
     board = ManyToOne('DataBoard')
-    cards = ManyToMany('DataCard')
+    cards = ManyToMany('DataCard', tablename='label_cards__card_labels')
     index = Field(Integer)
 
     def copy(self, parent):
@@ -38,5 +38,5 @@ class DataLabel(Entity):
     @classmethod
     def get_data_by_card(cls, card):
         q = cls.query
-        q = q.filter_by(card=card)
+        q = q.filter(cls.cards.contains(card))
         return q.all()

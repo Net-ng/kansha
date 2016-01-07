@@ -36,11 +36,6 @@ class DataCard(Entity):
         session.flush()
         return new_data
 
-    @classmethod
-    def get_all(cls):
-        query = cls.query.options(subqueryload('labels'), subqueryload('comments'))
-        return query
-
     # Methods for data belonging to card extensions
 
     def make_cover(self, asset):

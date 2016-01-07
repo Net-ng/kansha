@@ -32,16 +32,7 @@ def answer_on_menu(self, comp, user, v):
     if v is None:
         comp.answer(None)
     else:
-        u = self._services(
-            user_profile.UserProfile,
-            self.app_title,
-            self.app_banner,
-            self.theme,
-            self.card_extensions,
-            user.data,
-            self.search_engine
-        )
-        self.content.becomes(u, 'edit')
+        self._on_menu_entry('boards')
 
 
 @presentation.render_for(Kansha, model='menu')
@@ -112,6 +103,20 @@ def render_Kansha_oip(self, h, comp, model):
     return h.root
 
 
+@presentation.render_for(Kansha, 'home_menu')
+def render_user_profile__menu(self, h, comp, *args):
+    with h.div(class_='menu'):
+        with h.ul:
+            for id_, entry in self.home_menu.iteritems():
+                with h.li:
+                    with h.a.action(self._on_menu_entry, id_):
+                        h << h.i(class_='icon icon-' + entry.icon)
+                        h << h.span(entry.label)
+                        if self.selected == id_:
+                            h << {'class': 'active'}
+    return h.root
+
+
 @presentation.render_for(Kansha)
 def render_kansha(self, h, comp, *args):
     """Main renderer"""
@@ -141,7 +146,16 @@ def render_kansha(self, h, comp, *args):
 
     h.head.javascript_url('js/ckeditor-4.5.3/ckeditor.js')
 
-    if isinstance(self.content(), user_profile.UserProfile):
+    if self.selected == 'board':
+        with h.body(class_='yui-skin-sam'):
+            h << h.div(id="mask")
+            h << comp.render(h, model='resync')
+            h << comp.render(h, model='oip')
+            with h.div(id='application'):
+                h << comp.render(h, model='menu')
+                h << self.content.on_answer(self.handle_event)
+    else:
+        h.head << h.head.title(self.app_title)
         with h.body(class_='yui-skin-sam'):
             with h.div(class_='wrap'):
                 with h.div(class_='container'):
@@ -150,18 +164,14 @@ def render_kansha(self, h, comp, *args):
                     h << comp.render(h, model='oip')
                     with h.div(id='application'):
                         h << comp.render(h, model='menu')
-                        h << self.content.on_answer(self.select_board)
+
+                        with h.div(class_='home'), h.div(class_='grid-2'):
+                            h << comp.render(h, 'home_menu')
+                            with h.div(class_='boards'):
+                                h << self.content.on_answer(self.select_board).render(h.AsyncRenderer())
             with h.div(class_='credits'):
                 with h.div(class_='container'):
                     h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
-    else:
-        with h.body(class_='yui-skin-sam'):
-            h << h.div(id="mask")
-            h << comp.render(h, model='resync')
-            h << comp.render(h, model='oip')
-            with h.div(id='application'):
-                h << comp.render(h, model='menu')
-                h << self.content.on_answer(self.handle_event)
 
     h.head.javascript_url('js/nagare.js')
 

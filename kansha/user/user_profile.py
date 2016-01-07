@@ -8,14 +8,13 @@
 # this distribution.
 #--
 
-from collections import OrderedDict
 import imghdr
 import peak.rules
+from collections import OrderedDict
 
 from nagare import ajax, component, editor, presentation, security, var
 from nagare.i18n import _, _L
 
-from kansha.menu import MenuEntry
 from kansha import validator, events
 from kansha.board import comp as board
 from kansha.authentication.database import validators, forms as registation_forms
@@ -28,80 +27,75 @@ LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
 
 
-class UserProfile(object):
+# class UserProfile(object):
 
-    def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, services_service):
-        """
-        In:
-         - ``user`` -- user (DataUser instance)
-        """
-        self.app_title = app_title
-        self.menu = OrderedDict()
-        self.menu['boards'] = MenuEntry(
-            _L(u'Boards'),
-            'board',
-            services_service(
-                UserBoards,
-                app_title,
-                app_banner,
-                theme,
-                card_extensions,
-                user,
-                search_engine
-            )
-        )
-        # self.menu['my-cards'] = MenuEntry(
-        #     _L(u'My cards'),
-        #     'profile',
-        #     services_service(UserCards, user, search_engine, theme)
-        # )
-        self.menu['profile'] = MenuEntry(
-            _L(u'Profile'),
-            'user',
-            services_service(
-                get_userform(
-                    app_title, app_banner, theme, user.source
-                ),
-                user,
-            )
-        )
+#     def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, services_service):
+#         """
+#         In:
+#          - ``user`` -- user (DataUser instance)
+#         """
+#         self.app_title = app_title
+    #     self.menu = OrderedDict()
+    #     self.menu['boards'] = MenuEntry(
+    #         _L(u'Boards'),
+    #         'board',
+    #         services_service(
+    #             UserBoards,
+    #             app_title,
+    #             app_banner,
+    #             theme,
+    #             card_extensions,
+    #             user,
+    #             search_engine
+    #         )
+    #     )
+    #     self.menu['profile'] = MenuEntry(
+    #         _L(u'Profile'),
+    #         'user',
+    #         services_service(
+    #             get_userform(
+    #                 app_title, app_banner, theme, user.source
+    #             ),
+    #             user,
+    #         )
+    #     )
 
-        self.content = component.Component(None)
-        self._on_menu_entry(next(iter(self.menu)))
+    #     self.content = component.Component(None)
+    #     self._on_menu_entry(next(iter(self.menu)))
 
-    def _on_menu_entry(self, id_):
-        """Select a configuration menu entry
+    # def _on_menu_entry(self, id_):
+    #     """Select a configuration menu entry
 
-        In:
-            - ``id_`` -- the id of the selected menu entry
-        """
-        self.content.becomes(self.menu[id_].content)
-        self.selected = id_
+    #     In:
+    #         - ``id_`` -- the id of the selected menu entry
+    #     """
+    #     self.content.becomes(self.menu[id_].content)
+    #     self.selected = id_
 
 
-@presentation.render_for(UserProfile, 'edit')
-def render_user_profile__edit(self, h, comp, *args):
-    h.head << h.head.title(self.app_title)
+# @presentation.render_for(UserProfile, 'edit')
+# def render_user_profile__edit(self, h, comp, *args):
+#     h.head << h.head.title(self.app_title)
 
-    with h.div(class_='home'), h.div(class_='grid-2'):
-        h << comp.render(h, 'menu')
-        with h.div(class_='boards'):
-            h << self.content.on_answer(comp.answer).render(h.AsyncRenderer())
-    return h.root
+#     with h.div(class_='home'), h.div(class_='grid-2'):
+#         h << comp.render(h, 'menu')
+#         with h.div(class_='boards'):
+#             h << self.content.on_answer(comp.answer).render(h.AsyncRenderer())
+#     return h.root
 
 
-@presentation.render_for(UserProfile, 'menu')
-def render_user_profile__menu(self, h, comp, *args):
-    with h.div(class_='menu'):
-        with h.ul:
-            for id_, entry in self.menu.iteritems():
-                with h.li:
-                    with h.a.action(self._on_menu_entry, id_):
-                        h << h.i(class_='icon icon-' + entry.icon)
-                        h << h.span(entry.label)
-                        if self.selected == id_:
-                            h << {'class': 'active'}
-    return h.root
+# @presentation.render_for(UserProfile, 'menu')
+# def render_user_profile__menu(self, h, comp, *args):
+#     with h.div(class_='menu'):
+#         with h.ul:
+#             for id_, entry in self.menu.iteritems():
+#                 with h.li:
+#                     with h.a.action(self._on_menu_entry, id_):
+#                         h << h.i(class_='icon icon-' + entry.icon)
+#                         h << h.span(entry.label)
+#                         if self.selected == id_:
+#                             h << {'class': 'active'}
+#     return h.root
 
 
 class BasicUserForm(editor.Editor):
@@ -516,7 +510,6 @@ class UserBoards(object):
     def handle_event(self, event):
         if event.is_kind_of(events.BoardAccessibilityChanged):
             return self.reload_boards()
-
 
 
 @presentation.render_for(UserBoards)

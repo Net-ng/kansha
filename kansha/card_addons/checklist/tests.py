@@ -16,3 +16,87 @@ from .comp import Checklists
 class ChecklistTest(CardExtensionTestCase):
     def create_instance(self, card, action_log):
         return Checklists(card, action_log)
+
+    def test_add_delete(self):
+        self.assertEqual(len(self.extension.checklists), 0)
+        self.extension.add_checklist()
+        self.assertEqual(len(self.extension.checklists), 1)
+        with self.assertRaises(IndexError):
+            self.extension.delete_checklist(1)
+        self.extension.delete_checklist(0)
+        self.assertEqual(len(self.extension.checklists), 0)
+
+    def test_title(self):
+        ck = self.extension.add_checklist()
+        ck.set_title(u'test')
+        self.assertEqual(ck.data.title, u'test')
+        self.assertEqual(ck.get_title(), u'test')
+
+    def test_items(self):
+        ck = self.extension.add_checklist()
+        self.assertEqual(ck.total_items, 0)
+        ck.add_item_from_str(u'test')
+        self.assertEqual(ck.total_items, 1)
+        ck.add_item_from_str(u'test2')
+        self.assertEqual(ck.total_items, 2)
+        ck.add_item_from_str(u'test3')
+        self.assertEqual(ck.total_items, 3)
+        ck.delete_index(1)
+        self.assertEqual(ck.total_items, 2)
+        ck.set_index(1)
+        self.assertEqual(ck.data.index, 1)
+        self.assertEqual(ck.items[0]().get_title(), u'test')
+        self.assertEqual(ck.items[1]().get_title(), u'test3')
+
+    def test_item(self):
+        ck = self.extension.add_checklist()
+        self.assertEqual(ck.total_items, 0)
+        self.assertEqual(ck.nb_items, 0)
+        self.assertEqual(ck.progress, 0)
+        ck.add_item_from_str(u'test')
+        self.assertEqual(ck.total_items, 1)
+        self.assertEqual(ck.nb_items, 0)
+        self.assertEqual(ck.progress, 0)
+        item = ck.items[0]()
+        self.assertEqual(item.get_title(), u'test')
+        item.set_title(u'test2')
+        self.assertEqual(item.get_title(), u'test2')
+        self.assertFalse(item.done)
+        item.set_done()
+        self.assertTrue(item.done)
+        self.assertEqual(ck.total_items, 1)
+        self.assertEqual(ck.nb_items, 1)
+        self.assertEqual(ck.progress, 100)
+        ck.add_item_from_str(u'test')
+        self.assertEqual(ck.progress, 50)
+        item.set_done()
+        self.assertFalse(item.done)
+
+    def test_copy(self):
+        ck = self.extension.add_checklist()
+        ck.set_title(u'test')
+        ck.set_index(0)
+        ck.add_item_from_str(u'test')
+        ck.add_item_from_str(u'test2')
+        ck.items[0]().set_title(u'test item')
+        item = ck.items[1]()
+        item.set_title(u'test item2')
+        item.set_done()
+        ck = self.extension.add_checklist()
+        ck.set_title(u'test2')
+        ck.set_index(1)
+        ck.add_item_from_str(u'test3')
+        cpy = self.extension.copy(self.card_copy, {})
+        self.assertEqual(len(cpy.checklists), 2)
+        self.assertEqual(cpy.total_items, 3)
+        self.assertEqual(cpy.nb_items, 0)
+        ck = cpy.checklists[0]()
+        self.assertEqual(ck.get_title(), u'test')
+        self.assertEqual(ck.data.index, 0)
+        item = ck.items[0]()
+        self.assertEqual(item.get_title(), u'test item')
+
+
+
+
+

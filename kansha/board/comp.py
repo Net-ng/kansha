@@ -186,6 +186,7 @@ class Board(events.EventHandlerMixIn):
         return template
 
     def copy(self, owner, additional_data):
+        """Create a new board that is a copy of self, without the archive."""
         new_data = self.data.copy(None)
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
@@ -203,9 +204,6 @@ class Board(events.EventHandlerMixIn):
         for column in cols:
             new_col = column.copy(new_board, additional_data)
             new_board.columns.append(component.Component(new_col))
-
-        new_board.archive_column = new_board.create_column(index=len(cols), title=_(u'Archive'))
-        new_board.archive_column.is_archive = True
 
         return new_board
 
@@ -293,8 +291,8 @@ class Board(events.EventHandlerMixIn):
         """
         return self.data.title
 
-    def mark_as_template(self):
-        self.data.is_template = True
+    def mark_as_template(self, template=True):
+        self.data.is_template = template
 
     def count_columns(self):
         """Return the number of columns
@@ -309,6 +307,8 @@ class Board(events.EventHandlerMixIn):
             - ``title`` -- the title of the new column
             - ``nb_cards`` -- the number of maximun cards on the colum
         """
+        if index < 0:
+            index = index + len(self.columns) + 1
         security.check_permissions('edit', self)
         if title == '':
             return False

@@ -15,7 +15,6 @@ from nagare import database
 from kansha.board.models import DataBoard
 from kansha.board import comp as board_module
 from kansha.board import boardsmanager
-from kansha.user import user_profile
 from . import helpers
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
@@ -43,15 +42,15 @@ class BoardTest(unittest.TestCase):
         helpers.set_dummy_context()
         board = helpers.create_board()
         self.assertIsNotNone(board.archive_column)
-        self.assertEqual(board.count_columns(), 3)
-        board.create_column(0, helpers.word())
         self.assertEqual(board.count_columns(), 4)
+        board.create_column(0, helpers.word())
+        self.assertEqual(board.count_columns(), 5)
 
     def test_add_column_ko(self):
         """Add a column with empty title to a board"""
         helpers.set_dummy_context()
         board = helpers.create_board()
-        self.assertEqual(board.count_columns(), 3)
+        self.assertEqual(board.count_columns(), 4)
         self.assertFalse(board.create_column(0, ''))
 
     def test_delete_column(self):
@@ -61,10 +60,10 @@ class BoardTest(unittest.TestCase):
         helpers.set_context(user)
         board = helpers.create_board()
         self.assertIsNotNone(board.archive_column)
-        self.assertEqual(board.count_columns(), 3)
+        self.assertEqual(board.count_columns(), 4)
         column = board.columns[0]
         board.delete_column(column)
-        self.assertEqual(board.count_columns(), 2)
+        self.assertEqual(board.count_columns(), 3)
 
     def test_set_visibility_1(self):
         """Test set visibility method 1
@@ -257,31 +256,32 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user()
         user2 = helpers.create_user('bis')
         board.add_member(user2, 'member')
+        boards_manager = helpers.get_boards_manager()
         self.assertTrue(board.has_manager(user))
         self.assertFalse(board.has_manager(user2))
 
         helpers.set_context(user)
-        user_boards = user_profile.UserBoards('', '', '', {}, user.get_user_data(), None, None, None, helpers.create_services())
-        self.assertNotIn(board.id, user_boards.last_modified_boards)
-        self.assertNotIn(board.id, user_boards.guest_boards)
-        self.assertIn(board.id, user_boards.my_boards)
-        self.assertNotIn(board.id, user_boards.archived_boards)
+        boards_manager.load_user_boards()
+        self.assertNotIn(board.id, boards_manager.last_modified_boards)
+        self.assertNotIn(board.id, boards_manager.guest_boards)
+        self.assertIn(board.id, boards_manager.my_boards)
+        self.assertNotIn(board.id, boards_manager.archived_boards)
 
         helpers.set_context(user2)
-        user_boards = user_profile.UserBoards('', '', '', {}, user2.get_user_data(), None, None, None, helpers.create_services())
-        self.assertNotIn(board.id, user_boards.last_modified_boards)
-        self.assertIn(board.id, user_boards.guest_boards)
-        self.assertNotIn(board.id, user_boards.my_boards)
-        self.assertNotIn(board.id, user_boards.archived_boards)
+        boards_manager.load_user_boards()
+        self.assertNotIn(board.id, boards_manager.last_modified_boards)
+        self.assertIn(board.id, boards_manager.guest_boards)
+        self.assertNotIn(board.id, boards_manager.my_boards)
+        self.assertNotIn(board.id, boards_manager.archived_boards)
 
         column = board.create_column(1, u'test')
         column.create_card(u'test')
-        user_boards.reload_boards()
-        self.assertIn(board.id, user_boards.last_modified_boards)
+        boards_manager.load_user_boards()
+        self.assertIn(board.id, boards_manager.last_modified_boards)
 
         board.archive()
-        user_boards.reload_boards()
-        self.assertIn(board.id, user_boards.archived_boards)
+        boards_manager.load_user_boards()
+        self.assertIn(board.id, boards_manager.archived_boards)
 
     def test_get_by(self):
         '''Test get_by_uri and get_by_id methods'''

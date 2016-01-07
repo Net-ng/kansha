@@ -818,6 +818,6 @@ def render_userboards(self, h, comp, *args):
             ).action(self.purge_archived_boards)
 
     h << h.script('YAHOO.kansha.app.hideOverlay();'
-                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_user_boards, render=0)).get('onclick'))
+                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.load_user_boards, render=0)).get('onclick'))
 
     return h.root

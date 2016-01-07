@@ -10,7 +10,7 @@
 
 from collections import OrderedDict
 
-from nagare import security, component
+from nagare import security, component, i18n
 
 from kansha import events
 
@@ -46,25 +46,21 @@ class BoardsManager(object):
                                   self.card_extensions, self.search_engine)
         return board
 
-    def copy_board(self, board, user, board_to_template=True):
-        data = {}
-        new_board = board.copy(user, data)
-        new_board.data.is_template = board_to_template
+    def create_board_from_template(self, template_id, user=None):
+        if user is None:
+            user = security.get_user()
+        template = self._services(
+            Board, template_id, self.app_title, self.app_banner, self.theme,
+            self.card_extensions, self.search_engine)
+        new_board = template.copy(user, {})
+        new_board.archive_column = new_board.create_column(index=-1, title=i18n._(u'Archive'))
+        new_board.archive_column.is_archive = True
+        new_board.mark_as_template(False)
         return new_board
 
-    #####
-
-    def create_board(self, board_id, comp):
-        """Create a new board from template for current user."""
-        b = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
-                           self.card_extensions, self.search_engine,
-                           load_data=False)
-        b.load_data()
-        new_board = b.copy(security.get_user(), {})
-        new_board.data.is_template = False
-        comp.answer(new_board.id)
-
-    def reload_user_boards(self):
+    def load_user_boards(self, user=None):
+        if user is None:
+            user = security.get_user()
         self.my_boards.clear()
         self.guest_boards.clear()
         self.archived_boards.clear()
@@ -88,7 +84,6 @@ class BoardsManager(object):
 
         last_5 = sorted(last_modifications.values(), reverse=True)[:5]
         self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
-        user = security.get_user()
         public, private = Board.get_templates_for(user.username, user.source)
         self.templates = {'public': [(b.id, b.template_title) for b in public],
                          'private': [(b.id, b.template_title) for b in private]}
@@ -100,4 +95,12 @@ class BoardsManager(object):
 
     def handle_event(self, event):
         if event.is_kind_of(events.BoardAccessChanged):
-            return self.reload_user_boards()
+            return self.load_user_boards()
+
+    #####
+
+    def create_board(self, board_id, comp):
+        """Create a new board from template for current user."""
+        new_board = self.create_board_from_template(board_id)
+        comp.answer(new_board.id)
+

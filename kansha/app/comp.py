@@ -72,7 +72,7 @@ class Kansha(object):
             - ``id_`` -- the id of the selected menu entry
         """
         if id_ == 'boards':
-            self.boards_manager.reload_user_boards()
+            self.boards_manager.load_user_boards()
         self.content.becomes(self.home_menu[id_].content)
         self.selected = id_
 

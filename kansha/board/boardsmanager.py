@@ -14,7 +14,7 @@ from nagare import security, component, i18n
 
 from kansha import events
 
-from .comp import Board
+from .comp import Board, BOARD_PRIVATE, BOARD_PUBLIC
 
 
 class BoardsManager(object):
@@ -57,6 +57,16 @@ class BoardsManager(object):
         new_board.archive_column.is_archive = True
         new_board.mark_as_template(False)
         return new_board
+
+    def create_template_from_board(self, board, title, description, shared, user=None):
+        if user is None:
+            user = security.get_user()
+        template = board.copy(user, {})
+        template.mark_as_template()
+        template.set_title(title)
+        template.set_description(description)
+        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        return template
 
     def load_user_boards(self, user=None):
         if user is None:

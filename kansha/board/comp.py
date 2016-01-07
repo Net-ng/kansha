@@ -12,6 +12,7 @@ import re
 import json
 import unicodedata
 from cStringIO import StringIO
+from functools import partial
 
 import xlwt
 from webob import exc
@@ -163,10 +164,10 @@ class Board(events.EventHandlerMixIn):
         if answer is not None:
             self.set_description(answer)
 
-    def save_template(self):
+    def save_template(self, comp):
         save_template_editor = SaveTemplateTask(self.get_title(),
                                                 self.get_description(),
-                                                self.save_as_template)
+                                                partial(self.save_as_template, comp))
         self.modal.call(popin.Modal(save_template_editor))
 
     def show_actionlog(self):
@@ -176,14 +177,9 @@ class Board(events.EventHandlerMixIn):
         preferences = BoardConfig(self)
         self.modal.call(popin.Modal(preferences))
 
-    def save_as_template(self, title, description, shared):
-        user = security.get_user()
-        template = self.copy(user, {})
-        template.mark_as_template()
-        template.set_title(title)
-        template.set_description(description)
-        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
-        return template
+    def save_as_template(self, comp, title, description, shared):
+        data = (title, description, shared)
+        return self.emit_event(comp, events.NewTemplateRequested, data)
 
     def copy(self, owner, additional_data):
         """Create a new board that is a copy of self, without the archive."""
@@ -245,13 +241,14 @@ class Board(events.EventHandlerMixIn):
         self.version += 1
         self.data.increase_version()
         if self.data.version - self.version != 0:
-            self.refresh()
+            self.refresh()  # when does that happen?
             self.version = self.data.version
             refresh = True
         return refresh
 
     def refresh(self):
         print "refresh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        print "if you see this message, please contact RTE."
         self.load_data()
 
     @property

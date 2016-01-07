@@ -156,7 +156,9 @@ class Kansha(object):
 
     def handle_event(self, event):
         if event.is_(events.BoardLeft) or event.is_(events.BoardArchived):
-            self.select_last_board()
+            return self.select_last_board()
+        elif event.is_(events.NewTemplateRequested):
+            return self.boards_manager.create_template_from_board(event.emitter, *event.data)
         log.info('Ignoring event %s', event)
 
 

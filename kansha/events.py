@@ -167,7 +167,17 @@ class BoardLeft(BoardAccessChanged):
     No payload.
     """
 
+
 # "Request" events
 class ParentTitleNeeded(Event):
     """The emitter needs context from parent in the form of a title string."""
+    pass
+
+
+class NewTemplateRequested(Event):
+    """
+    The user requested that a new template is created from the emitter.
+    Payload is tuple (template_title, template_description, shared_flag).
+    The receiver returns a new Template on success.
+    """
     pass

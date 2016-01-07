@@ -34,7 +34,7 @@ def render_Board_menu(self, h, comp, *args):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))
                 h << h.li(h.a(self.icons['edit_desc']).action(self.edit_description))
             if security.has_permissions('manage', self):
-                h << h.li(h.a(self.icons['save_template']).action(self.save_template))
+                h << h.li(h.a(self.icons['save_template']).action(self.save_template, comp))
 
             h << h.li(h.a(self.icons['export']).action(self.export))
             h << h.li(h.a(self.icons['history']).action(self.show_actionlog))

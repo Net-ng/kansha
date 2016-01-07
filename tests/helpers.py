@@ -136,7 +136,7 @@ def create_board():
     create_default_cards(board.data, user)
     user.add_board(board, "manager")
     board.set_title(word())
-    board.load_data()
+    board.load_children()
     return board
 
 

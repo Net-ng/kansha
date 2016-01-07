@@ -143,7 +143,7 @@ class BoardAccessChanged(Event):
 
 class BoardDeleted(BoardAccessChanged):
     """
-    The board has been deleted.
+    The board has been (or is about to be) deleted.
     No payload.
     """
 

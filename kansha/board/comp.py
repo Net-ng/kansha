@@ -66,7 +66,7 @@ class Board(events.EventHandlerMixIn):
 
     def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
                  assets_manager_service, mail_sender_service, services_service,
-                 load_data=True):
+                 load_children=True):
         """Initialization
 
         In:
@@ -94,8 +94,8 @@ class Board(events.EventHandlerMixIn):
 
         self.columns = []
         self.archive_column = None
-        if load_data:
-            self.load_data()
+        if load_children:
+            self.load_children()
 
         # Member part
         self.overlay_add_members = component.Component(
@@ -186,7 +186,7 @@ class Board(events.EventHandlerMixIn):
         new_data = self.data.copy(None)
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_data=False)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_children=False)
         new_board.add_member(owner, 'manager')
         additional_data['author'] = owner
 
@@ -224,7 +224,7 @@ class Board(events.EventHandlerMixIn):
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
-    def load_data(self):
+    def load_children(self):
         columns = []
         for c in self.data.columns:
             col = self._services(
@@ -249,7 +249,7 @@ class Board(events.EventHandlerMixIn):
     def refresh(self):
         print "refresh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         print "if you see this message, please contact RTE."
-        self.load_data()
+        self.load_children()
 
     @property
     def all_members(self):
@@ -450,20 +450,21 @@ class Board(events.EventHandlerMixIn):
         self.data.weighting_cards = 0
         self.data.weights = ''
 
-    def delete(self, comp=None):
-        """Deletes the board
+    def delete_clicked(self, comp):
+        return self.emit_event(comp, events.BoardDeleted)
+
+    def delete(self):
+        """Deletes the board.
+           Children must be loaded.
         """
-        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
-        if not self.columns:
-            self.load_data()
+        assert(self.columns)  # at least, contains the archive
         for column in self.columns:
             column().delete(purge=True)
         self.data.delete_history()
         self.data.delete_members()
         session.refresh(self.data)
         self.data.delete()
-        if comp:
-            self.emit_event(comp, events.BoardDeleted)
+
         return True
 
     def archive(self, comp=None):
@@ -670,6 +671,8 @@ class Board(events.EventHandlerMixIn):
         Remove member from board. If member is PendingUser then remove
         invitation.
 
+        Children must be loaded.
+
         In:
             - ``member`` -- Board Member instance to remove
         """
@@ -684,9 +687,7 @@ class Board(events.EventHandlerMixIn):
         remove_method[member.role](member)
 
         # remove member from columns
-        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
-        if not self.columns:
-            self.load_data()
+        assert(self.columns)
         for c in self.columns:
             c().remove_board_member(member)
 

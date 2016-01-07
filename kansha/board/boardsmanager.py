@@ -78,7 +78,7 @@ class BoardsManager(object):
         for board_id, in Board.get_all_board_ids(): # Comma is important
             board_obj = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
                                        self.card_extensions, self.search_engine,
-                                       load_data=False)
+                                       load_children=False)
             if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
                 board_comp = component.Component(board_obj)
                 if board_obj.archived:
@@ -100,11 +100,16 @@ class BoardsManager(object):
 
     def purge_archived_boards(self):
         for board in self.archived_boards.itervalues():
+            board().load_children()
             board().delete()
-        self.archived_boards = OrderedDict()
+        self.load_user_boards()
 
     def handle_event(self, event):
         if event.is_kind_of(events.BoardAccessChanged):
+            if event.is_(events.BoardDeleted):
+                board = event.emitter
+                board.load_children()
+                board.delete()
             return self.load_user_boards()
 
     #####

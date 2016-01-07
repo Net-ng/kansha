@@ -10,13 +10,11 @@
 
 import imghdr
 import peak.rules
-from collections import OrderedDict
 
-from nagare import ajax, component, editor, presentation, security, var
+from nagare import editor, presentation, security
 from nagare.i18n import _, _L
 
-from kansha import validator, events
-from kansha.board import comp as board
+from kansha import validator
 from kansha.authentication.database import validators, forms as registation_forms
 
 # from .user_cards import UserCards

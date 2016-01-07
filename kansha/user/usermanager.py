@@ -11,7 +11,7 @@ import random
 from datetime import datetime, timedelta
 
 from nagare.namespaces import xhtml
-from nagare import component, i18n, security
+from nagare import component, i18n
 
 from kansha.toolbox import autocomplete
 from .models import DataUser

@@ -182,7 +182,7 @@ def render_Board_archived_item(self, h, comp, *args):
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete, comp)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete_clicked, comp)
                 h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore, comp)
     return h.root
 

@@ -74,12 +74,14 @@ class DataAsset(Entity):
 
     @classmethod
     def set_cover(cls, card, asset):
+        cls.remove_cover(card)
         asset.cover = card
 
     @classmethod
     def remove_cover(cls, card):
         asset = cls.get_cover(card)
-        asset.cover = None
+        if asset is not None:
+            asset.cover = None
 
     @classmethod
     def get_by_filename(cls, filename):

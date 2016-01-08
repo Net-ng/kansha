@@ -8,9 +8,11 @@
 # this distribution.
 #--
 
-from elixir import using_options
 from elixir import ManyToOne
+from elixir import using_options
 from elixir import Field, Unicode
+from nagare.database import session
+
 
 from kansha.models import Entity
 
@@ -19,7 +21,13 @@ class DataCardWeight(Entity):
     using_options(tablename='card_weight')
 
     weight = Field(Unicode(255), default=u'')
-    card = ManyToOne('DataCard')
+    card = ManyToOne('DataCard', ondelete='cascade')
+
+    def copy(self, parent):
+        new_data = DataCardWeight(card=parent,
+                                  weight=self.weight)
+        session.flush()
+        return new_data
 
     @classmethod
     def get_data_by_card(cls, card):

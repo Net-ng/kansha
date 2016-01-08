@@ -40,3 +40,15 @@ class DataLabel(Entity):
         q = cls.query
         q = q.filter(cls.cards.contains(card))
         return q.all()
+
+    @classmethod
+    def add_to_card(cls, card, id):
+        label = cls.get(id)
+        if not card in label.cards:
+            label.cards.append(card)
+
+    @classmethod
+    def remove_from_card(cls, card, id):
+        label = cls.get(id)
+        if card in label.cards:
+            label.cards.remove(card)

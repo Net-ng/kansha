@@ -68,12 +68,19 @@ class Gallery(CardExtension):
                 self.assets.remove(a)
                 break
         DataAsset.remove(self.card.data, asset.filename)
+        asset.delete()
+
+    def delete(self):
+        for asset in self.assets:
+            self.assets_manager.delete(asset().filename)
+        DataAsset.remove_all(self.card.data)
+        self.assets = []
 
     def copy(self, parent, additional_data):
         new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
         for data_asset in DataAsset.get_all(self.card.data):
             new_asset_id = self.assets_manager.copy(data_asset.filename)
-            new_asset_data = DataAsset.add(new_asset_id, parent, additional_data['author'])
+            new_asset_data = DataAsset.add(new_asset_id, parent.data, additional_data['author'].get_user_data())
             new_extension.create_asset(new_asset_data)
             if data_asset.cover:
                 new_asset_data.cover = parent.data

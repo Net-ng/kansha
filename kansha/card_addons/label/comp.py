@@ -136,9 +136,9 @@ class CardLabels(CardExtension):
         """
         card = self.card.data
         if label_id in self.labels:
-            card.labels = [l for l in card.labels if l.id != label_id]
-            self.labels.pop(self.labels.index(label_id))
+            self.labels = [l.id for l in DataLabel.get_data_by_card(card) if l.id != label_id]
+            DataLabel.remove_from_card(card, label_id)
         else:
-            card.labels.append(DataLabel.get(label_id))
             self.labels.append(label_id)
             self.labels.sort()
+            DataLabel.add_to_card(card, label_id)

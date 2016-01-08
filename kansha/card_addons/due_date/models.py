@@ -8,9 +8,9 @@
 # this distribution.
 #--
 
-from elixir import using_options
 from elixir import ManyToOne
 from elixir import Field, Date
+from elixir import using_options
 
 from kansha.models import Entity
 
@@ -19,7 +19,7 @@ class DataCardDueDate(Entity):
     using_options(tablename='card_due_date')
 
     due_date = Field(Date, default=None)
-    card = ManyToOne('DataCard')
+    card = ManyToOne('DataCard', ondelete='cascade')
 
     @classmethod
     def get_data_by_card(cls, card):

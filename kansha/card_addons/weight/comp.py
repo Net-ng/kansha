@@ -37,6 +37,10 @@ class CardWeightEditor(CardExtension):
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
+    def copy(self, parent, additional_data):
+        self.get_data().copy(parent.data)
+        return super(CardWeightEditor, self).copy(parent, additional_data)
+
     def get_data(self):
         data = DataCardWeight.get_data_by_card(self.card.data)
         if data is None:

@@ -182,7 +182,10 @@ class Board(events.EventHandlerMixIn):
         return self.emit_event(comp, events.NewTemplateRequested, data)
 
     def copy(self, owner, additional_data):
-        """Create a new board that is a copy of self, without the archive."""
+        """
+        Create a new board that is a copy of self, without the archive.
+        Children must be loaded.
+        """
         new_data = self.data.copy(None)
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
@@ -196,6 +199,7 @@ class Board(events.EventHandlerMixIn):
             additional_data['labels'].append(new_label)
             new_board.labels.append(new_label)
 
+        assert(self.columns or self.data.template)
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
             new_col = column.copy(new_board, additional_data)
@@ -484,6 +488,8 @@ class Board(events.EventHandlerMixIn):
         return True
 
     def leave(self, comp=None):
+        """Children must be loaded."""
+        # FIXME: all member management function should live in another component than Board.
         user = security.get_user()
         for member in self.members:
             m_user = member().user().data
@@ -495,6 +501,8 @@ class Board(events.EventHandlerMixIn):
         self.data.remove_member(board_member)
         if user.is_manager(self):
             self.data.remove_manager(board_member)
+        if not self.columns:
+            self.load_children()
         for column in self.columns:
             column().remove_board_member(user)
         if comp:
@@ -644,12 +652,6 @@ class Board(events.EventHandlerMixIn):
         # remove from pending list
         self.pending = [p for p in self.pending if p() != member]
 
-        user = usermanager.UserManager.get_by_email(member.username)
-        if user:
-            user = usermanager.UserManager.get_app_user(user.username, data=user)
-            for column in self.columns:
-                column().remove_board_member(user)
-
         # remove invitation
         self.remove_invitation(member.username)
 
@@ -671,7 +673,7 @@ class Board(events.EventHandlerMixIn):
         Remove member from board. If member is PendingUser then remove
         invitation.
 
-        Children must be loaded.
+        Children must be loaded for propagation to the cards.
 
         In:
             - ``member`` -- Board Member instance to remove
@@ -687,7 +689,10 @@ class Board(events.EventHandlerMixIn):
         remove_method[member.role](member)
 
         # remove member from columns
-        assert(self.columns)
+        # FIXME: this function should live in a board extension that has its own data and
+        # should not rely on a full component tree.
+        if not (self.columns):
+            self.load_children()
         for c in self.columns:
             c().remove_board_member(member)
 

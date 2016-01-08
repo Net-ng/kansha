@@ -203,7 +203,7 @@ def render_Board_members(self, h, comp, *args):
         h << h.div(self.see_all_members_compact, class_='more compact')
         with h.span(class_='wide'):
             for m in self.all_members[:self.max_shown_members]:
-                h << m.on_answer(self.remove_member).render(h, 'overlay')
+                h << m.on_answer(self.handle_event, comp).render(h, 'overlay')
     return h.root
 
 
@@ -213,7 +213,7 @@ def render_Board_members_list_overlay(self, h, comp, *args):
     h << h.h2(_('All members'))
     with h.form:
         with h.div(class_="members"):
-            h << [m.on_answer(comp.answer).render(h) for m in self.all_members]
+            h << [m.on_answer(self.handle_event, comp).render(h) for m in self.all_members]
     return h.root
 
 
@@ -604,10 +604,7 @@ def render_BoardMember(self, h, comp, *args):
             lambda action: self.dispatch(action, application_url)
         ).render(h, model='%s' % self.role)
     else:
-        def dispatch(answer):
-            self.dispatch(answer, application_url)
-            comp.answer()
-        return h.div(self.user.on_answer(dispatch).render(h), class_='member')
+        return h.div(self.user.render(h), class_='member')
 
 
 @presentation.render_for(BoardMember, model="overlay")

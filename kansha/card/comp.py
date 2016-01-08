@@ -205,18 +205,6 @@ class Card(events.EventHandlerMixIn):
     def weighting_on(self):
         return self.board.weighting_cards
 
-    # TODO Calendar view should be a board extension
-    # Due Date
-    @property
-    def due_date(self):
-        ext = self.card_extensions['due_date']()
-        return ext.get_value()
-
-    @due_date.setter
-    def due_date(self, value):
-        ext = self.card_extensions['due_date']()
-        return ext.set_value(value)
-
 
 ############### Extension components ###################
 

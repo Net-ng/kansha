@@ -206,11 +206,13 @@ def render_new_card_add(self, h, comp, *args):
     return h.root
 
 
+# TODO should be in due_date extension
 @peak.rules.when(ajax.py2js, (Card,))
-def py2js(value, h):
-    if not value.due_date:
+def py2js(card, h):
+    due_date = dict(card.extensions)['due_date']().value
+    if not due_date:
         return None
-    due_date = ajax.py2js(value.due_date, h)
+    due_date = ajax.py2js(due_date, h)
 
     return u'{title:%s, editable:true, allDay: true, start: %s}' % (
-            ajax.py2js(value.get_title(), h).decode('utf-8'), due_date)
+            ajax.py2js(card.get_title(), h).decode('utf-8'), due_date)

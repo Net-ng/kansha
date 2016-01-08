@@ -26,12 +26,13 @@ class CardWeightEditor(CardExtension):
     WEIGHTING_FREE = 1
     WEIGHTING_LIST = 2
 
-    def __init__(self, target, action_log, *args):
+    def __init__(self, card, action_log, *args):
         """
         In:
          - ``target`` -- Card instance
         """
-        CardExtension.__init__(self, target, action_log)
+        CardExtension.__init__(self, card, action_log)
+        self.card = card
         self.weight = editor.Property(self.get_data().weight)
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')

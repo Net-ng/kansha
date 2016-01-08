@@ -43,27 +43,43 @@ class DataAsset(Entity):
     cover = ManyToOne('DataCard')
 
     @classmethod
-    def get_data_by_card(cls, card):
-        q = cls.query
-        q = q.filter_by(card=card)
-        return q.all()
+    def get_all(cls, card):
+        return cls.query.filter_by(card=card).all()
 
     @classmethod
-    def get_cover_for_card(cls, card):
-        q = cls.query
-        q = q.filter_by(cover=card)
-        return q.first()
+    def add(cls, filename, card, author):
+        return cls(filename=filename, card=card, author=author,
+                   creation_date=datetime.datetime.utcnow())
 
     @classmethod
-    def has_cover_for_card(cls, card):
+    def remove(cls, card, filename):
+        file = cls.get_by_filename(filename)
+        file.delete()
+
+    @classmethod
+    def remove_all(cls, card):
+        cls.query.filter_by(card=card).delete()
+
+    @classmethod
+    def has_cover(cls, card):
         q = cls.query
         q = q.filter_by(cover=card)
         return q.count() == 1
 
     @classmethod
-    def add_asset(cls, filename, card, author):
-        return cls(filename=filename, card=card.data, author=author.data,
-                   creation_date=datetime.datetime.utcnow())
+    def get_cover(cls, card):
+        q = cls.query
+        q = q.filter_by(cover=card)
+        return q.first()
+
+    @classmethod
+    def set_cover(cls, card, asset):
+        asset.cover = card
+
+    @classmethod
+    def remove_cover(cls, card):
+        asset = cls.get_cover(card)
+        asset.cover = None
 
     @classmethod
     def get_by_filename(cls, filename):

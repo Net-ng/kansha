@@ -202,16 +202,6 @@ class Card(events.EventHandlerMixIn):
 
     # Weight
 
-    @property
-    def weight(self):
-        return self.data.weight
-
-    @weight.setter
-    def weight(self, value):
-        values = {'from': self.data.weight, 'to': value, 'card': self.data.title}
-        self.action_log.add_history(security.get_user(), u'card_weight', values)
-        self.data.weight = value
-
     def weighting_on(self):
         return self.board.weighting_cards
 

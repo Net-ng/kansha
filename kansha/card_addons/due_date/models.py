@@ -18,7 +18,7 @@ from kansha.models import Entity
 class DataCardDueDate(Entity):
     using_options(tablename='card_due_date')
 
-    due_date = Field(Date, default=u'')
+    due_date = Field(Date, default=None)
     card = ManyToOne('DataCard')
 
     @classmethod

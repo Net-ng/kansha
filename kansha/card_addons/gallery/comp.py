@@ -44,26 +44,56 @@ class Gallery(CardExtension):
         """
         super(Gallery, self).__init__(card, action_log)
         self.assets_manager = assets_manager_service
-        self.data = DataGallery(self.card)
-
         self.assets = []
-        for data_asset in self.data.get_data():
-            self._create_asset_c(data_asset)
+        self.load_assets()
         self.comp_id = str(random.randint(10000, 100000))
         self.model = 'view'
         self.cropper = component.Component()
 
+    def load_assets(self):
+        for asset_data in DataAsset.get_all(self.card.data):
+            self.create_asset(asset_data)
+
+    def delete_asset(self, asset):
+        """Delete asset
+
+        Delete asset from card (component and overlay), database
+        and asset manager.
+
+        In:
+            - ``asset`` -- Asset to delete
+        """
+        for a in self.assets:
+            if a() is asset:
+                self.assets.remove(a)
+                break
+        DataAsset.remove(self.card.data, asset.filename)
+
     def copy(self, parent, additional_data):
         new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
-        for data_asset in self.data.get_data():
+        for data_asset in DataAsset.get_all(self.card.data):
             new_asset_id = self.assets_manager.copy(data_asset.filename)
-            new_asset_data = data_asset.add_asset(new_asset_id, parent, additional_data['author'])
-            new_extension._create_asset_c(new_asset_data)
+            new_asset_data = DataAsset.add(new_asset_id, parent, additional_data['author'])
+            new_extension.create_asset(new_asset_data)
             if data_asset.cover:
                 new_asset_data.cover = parent.data
         return new_extension
 
-    def _create_asset_c(self, data_asset):
+    def action(self, response):
+        action, asset = response[0], response[1]
+        if action == 'delete':
+            self.delete_asset(asset)
+        elif action == 'configure_cover':
+            self.configure_cover(asset)
+        elif action == 'make_cover':
+            left, top, width, height = response[2:]
+            self.make_cover(asset, left, top, width, height)
+        elif action == 'cancel_cover':
+            self.model = 'view'
+        elif action == 'remove_cover':
+            self.remove_cover(asset)
+
+    def create_asset(self, data_asset):
         asset = Asset(data_asset, self.assets_manager)
         asset_comp = component.Component(asset).on_answer(self.action)
         self.assets.append(asset_comp)
@@ -79,11 +109,12 @@ class Gallery(CardExtension):
             - The newly created Asset
         """
         validators.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
+        user = security.get_user()
         fileid = self.assets_manager.save(new_file.file.read(),
                                           metadata={'filename': new_file.filename, 'content-type': new_file.type})
         data = {'file': new_file.filename, 'card': self.card.get_title()}
-        self.action_log.add_history(security.get_user(), u'card_add_file', data)
-        return self._create_asset_c(self.data.add_asset(fileid))
+        self.action_log.add_history(user, u'card_add_file', data)
+        self.create_asset(DataAsset.add(fileid, self.card.data, user.get_user_data()))
 
     def add_assets(self, new_files):
         """Add new assets to the card
@@ -105,21 +136,7 @@ class Gallery(CardExtension):
         Return:
             - an Asset component
         """
-        return Asset(self.data.get_asset(filename), self.assets_manager)
-
-    def action(self, response):
-        action, asset = response[0], response[1]
-        if action == 'delete':
-            self.delete_asset(asset)
-        elif action == 'configure_cover':
-            self.configure_cover(asset)
-        elif action == 'make_cover':
-            left, top, width, height = response[2:]
-            self.make_cover(asset, left, top, width, height)
-        elif action == 'cancel_cover':
-            self.model = 'view'
-        elif action == 'remove_cover':
-            self.remove_cover(asset)
+        return Asset(DataAsset.get_by_filename(filename), self.assets_manager)
 
     def configure_cover(self, asset):
         self.model = 'crop'
@@ -136,17 +153,17 @@ class Gallery(CardExtension):
           - ``height`` -- Crop height
         """
         self.assets_manager.create_cover(asset.filename, left, top, width, height)
-        DataAsset.make_cover(asset)
+        DataAsset.set_cover(self.card.data, asset.data)
         for a in self.assets:
             a().is_cover = False
         asset.is_cover = True
         self.model = 'view'
 
     def get_cover(self):
-        if not DataAsset.has_cover_for_card(self.card.data):
+        if not DataAsset.has_cover(self.card.data):
             return None
 
-        return Asset(self.card.get_cover(), self.assets_manager)
+        return Asset(DataAsset.get_cover(self.card.data), self.assets_manager)
 
     def remove_cover(self, asset):
         """Don't use the asset as cover anymore
@@ -154,31 +171,9 @@ class Gallery(CardExtension):
         In :
           - ``asset`` -- The asset
         """
-        self.card.remove_cover()
+        DataAsset.remove_cover(self.card.data)
         asset.is_cover = False
         self.model = 'view'
-
-    def delete_asset(self, asset):
-        """Delete asset
-
-        Delete asset from card (component and overlay), database
-        and asset manager.
-
-        In:
-            - ``asset`` -- Asset to delete
-        """
-        for a in self.assets:
-            if a() == asset:
-                self.assets.remove(a)
-                self.assets_manager.delete(asset.filename)
-                self.data.delete(asset.filename)
-                break
-
-    def delete(self):
-        '''Delete all assets'''
-        for asset in self.data.get_data():
-            self.assets_manager.delete(asset.filename)
-        self.assets = []
 
 
 class Asset(object):

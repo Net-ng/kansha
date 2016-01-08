@@ -89,7 +89,6 @@ class Rules(common.Rules):
     @when(common.Rules.has_permission, "user is None and perm == 'view'  and isinstance(subject, Board)")
     def _(self, user, perm, board):
         """Test if user can see the board."""
-        # print board.is_public(), user, board.has_member(user), board.archived
         return board.is_public() or (user is not None and board.has_member(user) and not board.archived)
 
     @when(common.Rules.has_permission, "user and perm == 'manage' and isinstance(subject, Board)")

@@ -173,7 +173,7 @@ def render_card_dnd(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'action')
 def render_cardweighteditor(self, h, comp, *args):
-    self.update_runtime_config(comp)
+    self.configure(comp)
     if self.weighting_switch:
         h << self.action_button
     return h.root
@@ -233,7 +233,7 @@ def render_card_members(self, h, comp, *args):
     Then icon "more user" if necessary
     And at the end icon "add user"
     """
-    self.update_runtime_config(comp)
+    self.configure(comp)
     with h.div(class_='members'):
         h << h.script('''YAHOO.kansha.app.hideOverlay();''')
         for m in self.members[:self.max_shown_members]:

@@ -68,7 +68,6 @@ class Card(events.EventHandlerMixIn):
                                for name, extension in self.extensions]
         return new_card
 
-
     def refresh(self):
         """Refresh the sub components
         """
@@ -267,11 +266,11 @@ class CardWeightEditor(editor.Editor, CardExtension):
 
     @property
     def weighting_switch(self):
-        return self.runtime_config.get('weighting_cards', self.WEIGHTING_OFF)
+        return self.configurator.weighting_cards if self.configurator else self.WEIGHTING_OFF
 
     @property
     def allowed_weights(self):
-        return self.runtime_config.get('weights', '')
+        return self.configurator.weights if self.configurator else ''
 
     def commit(self):
         success = False
@@ -333,14 +332,14 @@ class CardMembers(CardExtension):
         return self.get_all_available_user_ids() | self.get_pending_user_ids() - set(user.id for user in self.card.members)
 
     def get_all_available_user_ids(self):
-        return self.runtime_config.get('available_user_ids', [])
+        return self.configurator.get_available_user_ids() if self.configurator else []
 
     def get_pending_user_ids(self):
-        return self.runtime_config.get('pending_user_ids', [])
+        return self.configurator.get_pending_user_ids() if self.configurator else []
 
     @property
     def member_stats(self):
-        return self.runtime_config.get('member_stats', {})
+        return self.configurator.get_member_stats() if self.configurator else {}
 
     @property
     def favorites(self):

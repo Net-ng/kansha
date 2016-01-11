@@ -92,7 +92,7 @@ def render_CardLabels_list(self, h, comp, *args):
     """Show labels inline with grey label (for card edit view)"""
     h << h.script('YAHOO.kansha.app.hideOverlay();')
     with h.span(class_='inline-labels'):
-        for label in self.card.get_available_labels():
+        for label in self.get_available_labels():
             model = 'color' if label.id in self.labels else 'inactive'
             h << component.Component(Label(label), model)
     return h.root
@@ -101,7 +101,7 @@ def render_CardLabels_list(self, h, comp, *args):
 @presentation.render_for(CardLabels)
 def render_CardLabels(self, h, comp, *args):
     """Add or remove labels to card"""
-    self.update_runtime_config(comp)
+    self.configure(comp)
     if security.has_permissions('edit', self.card):
         h << self.overlay
     else:

@@ -229,26 +229,13 @@ class Board(events.EventHandlerMixIn):
         return result
 
     def get_card_extension_config(self, entry_name):
-        config = {}
-        if entry_name == 'weight':
-            config = {
-                'weighting_cards': self.weighting_cards,
-                'weights': self.weights
-            }
-        elif entry_name == 'card_members':
-            config = {
-                'available_user_ids': self.get_available_user_ids(),
-                'pending_user_ids': self.get_pending_user_ids(),
-                'member_stats': self.get_member_stats()
-            }
-        elif entry_name == 'labels':
-            config = {
-                'available_labels': self.labels
-            }
+        # Board extensions are not extracted yet, so
+        # board itself implement their API.
+        # When board extension are OK, we'll return
+        # only the appropriate one given the entry name.
+        return self
 
-        return config
-
-      def switch_view(self):
+    def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
     def load_children(self):

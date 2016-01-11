@@ -14,7 +14,7 @@ from kansha.events import EventHandlerMixIn, Event
 
 class GetExtensionConfig(Event):
     """
-    Ask for runtime configuration of card extension.
+    Ask for runtime configurator of card extension.
     Payload is extension name (`entry_name`).
     """
 
@@ -25,7 +25,7 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
     def __init__(self, card, action_log):
         self.card = card
         self.action_log = action_log
-        self.runtime_config = {}
+        self.configurator = None
 
     def delete(self):
         pass
@@ -33,8 +33,9 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
     def copy(self, parent, additional_data):
             return self.__class__(parent, parent.action_log)
 
-    def update_runtime_config(self, comp):
-        self.runtime_config = self.emit_event(comp, GetExtensionConfig, self.entry_name)
+    def configure(self, comp):
+        if self.configurator is None:
+            self.configurator = self.emit_event(comp, GetExtensionConfig, self.entry_name)
 
     def new_card_position(self, value):
         pass

@@ -691,7 +691,7 @@ class Board(events.EventHandlerMixIn):
         # remove member from columns
         # FIXME: this function should live in a board extension that has its own data and
         # should not rely on a full component tree.
-        if not (self.columns):
+        if not self.columns:
             self.load_children()
         for c in self.columns:
             c().remove_board_member(member)

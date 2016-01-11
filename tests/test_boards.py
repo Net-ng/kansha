@@ -147,12 +147,13 @@ class BoardTest(unittest.TestCase):
         board = helpers.create_board()
         user = helpers.create_user()
         helpers.set_context(user)
-        template = board.save_as_template(title, description, False)
+        boards_manager = helpers.get_boards_manager()
+        template = boards_manager.create_template_from_board(board, title, description, False)
         self.assertEqual(template.data.title, title)
         self.assertEqual(template.data.description, description)
         self.assertTrue(template.data.is_template)
         self.assertEqual(template.data.visibility, board_module.BOARD_PRIVATE)
-        template = board.save_as_template(title, description, True)
+        template = boards_manager.create_template_from_board(board, title, description, True)
         self.assertEqual(template.data.visibility, board_module.BOARD_PUBLIC)
 
     def test_switch_view(self):

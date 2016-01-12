@@ -23,6 +23,7 @@ from nagare.namespaces import xhtml5
 from nagare import component, wsgi, security, config, log, i18n
 
 from kansha import exceptions
+from kansha.card import fts_schema
 from kansha.user import user_profile
 from kansha.authentication import login
 from kansha import services, notifications
@@ -217,6 +218,7 @@ class WSGIApp(wsgi.WSGIApp):
 
         # search_engine engine configuration
         self.search_engine = SearchEngine(**conf['search'])
+        fts_schema.Card.update_schema(self.card_extensions)
 
         # other
         self.security = SecurityManager(conf['application']['crypto_key'])

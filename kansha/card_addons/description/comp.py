@@ -8,6 +8,7 @@
 # this distribution.
 #--
 from kansha import validator
+from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
 from .models import DataCardDescription
@@ -32,7 +33,11 @@ class CardDescription(CardExtension):
         super(CardDescription, self).__init__(card, action_log)
         self.text = self.get_description()
 
-    def to_schema(self):
+    @staticmethod
+    def get_schema_def():
+        return schema.TEXT()
+
+    def to_document(self):
         return self.text
 
     def copy(self, parent, additional_data):

@@ -12,21 +12,25 @@ Model for full text search
 """
 
 from kansha.services.search import schema
+from kansha.services.components_repository import CardExtensions
 
 
 class Card(schema.Document):
     title = schema.TEXT(stored=True)
-    description = schema.TEXT
-    comments = schema.TEXT
-    labels = schema.TEXT
-    checklists = schema.TEXT
     board_id = schema.INT
     archived = schema.BOOLEAN
+
+    @classmethod
+    def update_schema(cls, card_extensions):
+        for name, extension in card_extensions.items():
+            field = extension.get_schema_def()
+            if field is not None:
+                cls.fields[name] = field
 
     @classmethod
     def from_model(cls, card):
         '''
         Create from card model
         '''
-        data = card.to_schema()
+        data = card.to_document()
         return cls(card.id, **data)

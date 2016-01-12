@@ -17,14 +17,24 @@ class CardExtension(plugin.Plugin):
         self.card = card
         self.action_log = action_log
 
-    def to_schema(self):
+    @staticmethod
+    def get_schema_def():
+        '''If the extension has to be indexed for it to be used in search engine, return some schema field
+        ie: return schema.TEXT for a text field'''
+        return None
+
+    def to_document(self):
+        '''How to transform extension value for it to be indexed'''
         return None
 
     def delete(self):
+        '''Happens when a card is deleted, use it to clean up files for example'''
         pass
 
     def copy(self, parent, additional_data):
-            return self.__class__(parent, parent.action_log)
+        '''Happens when a card is copied'''
+        return self.__class__(parent, parent.action_log)
 
     def new_card_position(self, value):
+        '''Happens when a card is moved on the board'''
         pass

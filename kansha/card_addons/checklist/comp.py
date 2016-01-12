@@ -16,6 +16,7 @@ from nagare.i18n import _
 from nagare import component, database, i18n, security
 
 from kansha import title
+from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
@@ -189,7 +190,11 @@ class Checklists(CardExtension):
         self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
 
-    def to_schema(self):
+    @staticmethod
+    def get_schema_def():
+        return schema.TEXT()
+
+    def to_document(self):
         return u'\n'.join(unicode(cl()) for cl in self.get_data())
 
     def get_data(self):

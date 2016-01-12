@@ -18,6 +18,7 @@ from nagare import component, security
 
 from kansha import validator
 from kansha.user import usermanager
+from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
@@ -121,7 +122,11 @@ class Comments(CardExtension):
         super(Comments, self).__init__(card, action_log)
         self.comments = [self._create_comment_component(data_comment) for data_comment in self.get_data()]
 
-    def to_schema(self):
+    @staticmethod
+    def get_schema_def():
+        return schema.TEXT()
+
+    def to_document(self):
         return u'\n'.join(comment().text for comment in self.comments)
 
     def get_data(self):

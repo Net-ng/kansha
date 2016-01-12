@@ -13,6 +13,7 @@ import random
 from nagare import component, var
 
 from kansha.toolbox import overlay
+from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
 from .models import DataLabel
@@ -92,9 +93,13 @@ class CardLabels(CardExtension):
         self.labels = [l.id for l in self.get_data()]
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
-                                                           lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
+                                                          lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
 
-    def to_schema(self):
+    @staticmethod
+    def get_schema_def():
+        return schema.TEXT()
+
+    def to_document(self):
         return u' '.join(label.title for label in self.data_labels)
 
     def get_data(self):

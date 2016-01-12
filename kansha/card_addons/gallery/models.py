@@ -45,7 +45,7 @@ class DataAsset(Entity):
 
     @classmethod
     def get_all(cls, card):
-        return cls.query.filter_by(card=card).all()
+        return cls.get_by(card=card).all()
 
     @classmethod
     def add(cls, filename, card, author):
@@ -59,7 +59,7 @@ class DataAsset(Entity):
 
     @classmethod
     def remove_all(cls, card):
-        cls.query.filter_by(card=card).delete()
+        cls.get_by(card=card).delete()
 
     @classmethod
     def has_cover(cls, card):

@@ -128,7 +128,7 @@ class DataBoard(Entity):
 
     @classmethod
     def get_by_uri(cls, uri):
-        return cls.query.filter_by(uri=uri).first()
+        return cls.get_by(uri=uri)
 
     def has_member(self, user):
         """Return True if user is member of the board
@@ -154,13 +154,13 @@ class DataBoard(Entity):
         return user.data in self.managers
 
     def remove_manager(self, board_member):
-        obj = DataBoardManager.query.filter_by(board=self, member=board_member.get_user_data()).first()
+        obj = DataBoardManager.get_by(board=self, member=board_member.get_user_data())
         if obj is not None:
             obj.delete()
         self.remove_member(board_member)
 
     def change_role(self, board_member, new_role):
-        obj = DataBoardManager.query.filter_by(board=self, member=board_member.get_user_data()).first()
+        obj = DataBoardManager.get_by(board=self, member=board_member.get_user_data())
         if new_role == 'manager':
             if obj is None:
                 obj = DataBoardManager(board=self, member=board_member.get_user_data())

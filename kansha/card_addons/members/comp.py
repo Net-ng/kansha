@@ -16,8 +16,8 @@ from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
 from kansha.board.comp import Board
-from kansha.services.actionlog.messages import render_event
 from kansha.cardextension import CardExtension
+from kansha.services.actionlog.messages import render_event
 
 
 @when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")

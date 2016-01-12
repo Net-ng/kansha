@@ -12,24 +12,27 @@ import cgi
 import sys
 import json
 import urlparse
+from collections import OrderedDict
 
 import webob
 import configobj
 import pkg_resources
 
-from nagare.i18n import _
+from nagare.i18n import _, _L
 from nagare.admin import command
 from nagare.namespaces import xhtml5
 from nagare import component, wsgi, security, config, log, i18n
 
+from kansha import events
 from kansha import exceptions
-from kansha.user import user_profile
+from kansha.menu import MenuEntry
 from kansha.authentication import login
 from kansha import services, notifications
 from kansha.services.search import SearchEngine
 from kansha.user.usermanager import UserManager
 from kansha.board.boardsmanager import BoardsManager
 from kansha.security import SecurityManager, Unauthorized
+from kansha.user.user_profile import get_userform  # !!!!!!!!!!!!!!!
 
 
 def run():
@@ -55,7 +58,23 @@ class Kansha(object):
         self.user_menu = component.Component(None)
         self.content = component.Component(None)
         self.user_manager = UserManager()
-        self.boards_manager = self._services(BoardsManager, self.app_title, self.app_banner, self.theme, card_extensions, self.search_engine)
+        self.boards_manager = self._services(
+            BoardsManager, self.app_title, self.app_banner, self.theme,
+            card_extensions, self.search_engine)
+
+        self.home_menu = OrderedDict()
+        self.selected = 'board'
+
+    def _on_menu_entry(self, id_):
+        """Select a configuration menu entry
+
+        In:
+            - ``id_`` -- the id of the selected menu entry
+        """
+        if id_ == 'boards':
+            self.boards_manager.load_user_boards()
+        self.content.becomes(self.home_menu[id_].content)
+        self.selected = id_
 
     def initialization(self):
         """ Initialize Kansha application
@@ -66,14 +85,28 @@ class Kansha(object):
         Return:
          - app initialized
         """
-        self.user_menu = component.Component(security.get_user())
-        if security.get_user() and self.content() is None:
+        user = security.get_user()
+        self.home_menu['boards'] = MenuEntry(
+            _L(u'Boards'),
+            'board',
+            self.boards_manager
+        )
+        self.home_menu['profile'] = MenuEntry(
+            _L(u'Profile'),
+            'user',
+            self._services(
+                get_userform(
+                    self.app_title, self.app_banner, self.theme, user.data.source
+                ),
+                user.data,
+            )
+        )
+        self.user_menu = component.Component(user)
+        if user and self.content() is None:
             self.select_last_board()
         return self
 
     def _select_board(self, board):
-        board.on_board_archive = self.select_last_board
-        board.on_board_leave = self.select_last_board
         self.content.becomes(board)
         # if user is logged, update is last board
         user = security.get_user()
@@ -91,6 +124,7 @@ class Kansha(object):
         board = self.boards_manager.get_by_id(id_)
         if board is not None and not board.archived:
             self._select_board(board)
+            self.selected = 'board'
         else:
             raise exceptions.BoardNotFound()
 
@@ -118,20 +152,13 @@ class Kansha(object):
         if data_board and not data_board.archived and data_board.has_member(user):
             self.select_board(data_board.id)
         else:
-            self.content.becomes(
-                self._services(
-                    user_profile.UserProfile,
-                    self.app_title,
-                    self.app_banner,
-                    self.theme,
-                    self.card_extensions,
-                    user.data,
-                    self.search_engine
-                ),
-                'edit'
-            )
+            self._on_menu_entry('boards')
 
     def handle_event(self, event):
+        if event.is_(events.BoardLeft) or event.is_(events.BoardArchived):
+            return self.select_last_board()
+        elif event.is_(events.NewTemplateRequested):
+            return self.boards_manager.create_template_from_board(event.emitter, *event.data)
         log.info('Ignoring event %s', event)
 
 

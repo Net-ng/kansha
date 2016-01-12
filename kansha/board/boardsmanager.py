@@ -8,7 +8,13 @@
 # this distribution.
 #--
 
-from .comp import Board
+from collections import OrderedDict
+
+from nagare import security, component, i18n
+
+from kansha import events
+
+from .comp import Board, BOARD_PRIVATE, BOARD_PUBLIC
 
 
 class BoardsManager(object):
@@ -19,6 +25,11 @@ class BoardsManager(object):
         self.card_extensions = card_extensions
         self.search_engine = search_engine
         self._services = services_service
+
+        self.last_modified_boards = {}
+        self.my_boards = {}
+        self.guest_boards = {}
+        self.archived_boards = {}
 
     def get_by_id(self, id_):
         board = None
@@ -35,8 +46,76 @@ class BoardsManager(object):
                                   self.card_extensions, self.search_engine)
         return board
 
-    def copy_board(self, board, user, board_to_template=True):
-        data = {}
-        new_board = board.copy(user, data)
-        new_board.data.is_template = board_to_template
+    def create_board_from_template(self, template_id, user=None):
+        if user is None:
+            user = security.get_user()
+        template = self._services(
+            Board, template_id, self.app_title, self.app_banner, self.theme,
+            self.card_extensions, self.search_engine)
+        new_board = template.copy(user, {})
+        new_board.archive_column = new_board.create_column(index=-1, title=i18n._(u'Archive'))
+        new_board.archive_column.is_archive = True
+        new_board.mark_as_template(False)
         return new_board
+
+    def create_template_from_board(self, board, title, description, shared, user=None):
+        if user is None:
+            user = security.get_user()
+        template = board.copy(user, {})
+        template.mark_as_template()
+        template.set_title(title)
+        template.set_description(description)
+        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
+        return template
+
+    def load_user_boards(self, user=None):
+        if user is None:
+            user = security.get_user()
+        self.my_boards.clear()
+        self.guest_boards.clear()
+        self.archived_boards.clear()
+        last_modifications = {}
+        for board_id, in Board.get_all_board_ids(): # Comma is important
+            board_obj = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
+                                       self.card_extensions, self.search_engine,
+                                       load_children=False)
+            if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
+                board_comp = component.Component(board_obj)
+                if board_obj.archived:
+                    self.archived_boards[board_id] = board_comp
+                else:
+                    last_activity = board_obj.get_last_activity()
+                    if last_activity is not None:
+                        last_modifications[board_id] = (last_activity, board_comp)
+                    if security.has_permissions('manage', board_obj):
+                        self.my_boards[board_id] = board_comp
+                    elif security.has_permissions('edit', board_obj):
+                        self.guest_boards[board_id] = board_comp
+
+        last_5 = sorted(last_modifications.values(), reverse=True)[:5]
+        self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
+        public, private = Board.get_templates_for(user.username, user.source)
+        self.templates = {'public': [(b.id, b.template_title) for b in public],
+                         'private': [(b.id, b.template_title) for b in private]}
+
+    def purge_archived_boards(self):
+        for board in self.archived_boards.itervalues():
+            board().load_children()
+            board().delete()
+        self.load_user_boards()
+
+    def handle_event(self, event):
+        if event.is_kind_of(events.BoardAccessChanged):
+            if event.is_(events.BoardDeleted):
+                board = event.emitter
+                board.load_children()
+                board.delete()
+            return self.load_user_boards()
+
+    #####
+
+    def create_board(self, board_id, comp):
+        """Create a new board from template for current user."""
+        new_board = self.create_board_from_template(board_id)
+        comp.answer(new_board.id)
+

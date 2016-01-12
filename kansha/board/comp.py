@@ -12,6 +12,7 @@ import re
 import json
 import unicodedata
 from cStringIO import StringIO
+from functools import partial
 
 import xlwt
 from webob import exc
@@ -65,8 +66,7 @@ class Board(events.EventHandlerMixIn):
 
     def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
                  assets_manager_service, mail_sender_service, services_service,
-                 on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, on_update_members=None, load_data=True):
+                 load_children=True):
         """Initialization
 
         In:
@@ -80,11 +80,6 @@ class Board(events.EventHandlerMixIn):
         self.theme = theme
         self.mail_sender = mail_sender_service
         self.id = id_
-        self.on_board_delete = on_board_delete
-        self.on_board_archive = on_board_archive
-        self.on_board_restore = on_board_restore
-        self.on_board_leave = on_board_leave
-        self.on_update_members = on_update_members
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine
         self._services = services_service
@@ -99,8 +94,8 @@ class Board(events.EventHandlerMixIn):
 
         self.columns = []
         self.archive_column = None
-        if load_data:
-            self.load_data()
+        if load_children:
+            self.load_children()
 
         # Member part
         self.overlay_add_members = component.Component(
@@ -169,10 +164,10 @@ class Board(events.EventHandlerMixIn):
         if answer is not None:
             self.set_description(answer)
 
-    def save_template(self):
+    def save_template(self, comp):
         save_template_editor = SaveTemplateTask(self.get_title(),
                                                 self.get_description(),
-                                                self.save_as_template)
+                                                partial(self.save_as_template, comp))
         self.modal.call(popin.Modal(save_template_editor))
 
     def show_actionlog(self):
@@ -182,20 +177,19 @@ class Board(events.EventHandlerMixIn):
         preferences = BoardConfig(self)
         self.modal.call(popin.Modal(preferences))
 
-    def save_as_template(self, title, description, shared):
-        user = security.get_user()
-        template = self.copy(user, {})
-        template.mark_as_template()
-        template.set_title(title)
-        template.set_description(description)
-        template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
-        return template
+    def save_as_template(self, comp, title, description, shared):
+        data = (title, description, shared)
+        return self.emit_event(comp, events.NewTemplateRequested, data)
 
     def copy(self, owner, additional_data):
+        """
+        Create a new board that is a copy of self, without the archive.
+        Children must be loaded.
+        """
         new_data = self.data.copy(None)
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_data=False)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_children=False)
         new_board.add_member(owner, 'manager')
         additional_data['author'] = owner
 
@@ -205,12 +199,11 @@ class Board(events.EventHandlerMixIn):
             additional_data['labels'].append(new_label)
             new_board.labels.append(new_label)
 
+        assert(self.columns or self.data.template)
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
             new_col = column.copy(new_board, additional_data)
             new_board.columns.append(component.Component(new_col))
-
-        new_board.archive_column = new_board.create_column(index=len(cols), title=_(u'Archive'), archive=True)
 
         return new_board
 
@@ -235,27 +228,15 @@ class Board(events.EventHandlerMixIn):
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
-    def load_data(self):
+    def load_children(self):
         columns = []
-        archive = None
         for c in self.data.columns:
             col = self._services(
                 column.Column, c.id, self, self.card_extensions,
                 self.action_log, self.search_engine, data=c)
-            if c.archive:
-                archive = col
-            else:
-                columns.append(component.Component(col))
-
-        if archive is not None:
-            self.archive_column = archive
-        elif not self.data.is_template:
-            # Create the unique archive column
-            last_idx = max(c.index for c in self.data.columns) if self.data.columns else -1
-            self.archive_column = self.create_column(index=last_idx + 1, title=_(u'Archive'), archive=True)
-
-        if self.archive and security.has_permissions('manage', self):
-            columns.append(component.Component(self.archive_column))
+            if col.is_archive:
+                self.archive_column = col
+            columns.append(component.Component(col))
 
         self.columns = columns
 
@@ -264,25 +245,15 @@ class Board(events.EventHandlerMixIn):
         self.version += 1
         self.data.increase_version()
         if self.data.version - self.version != 0:
-            self.refresh()
+            self.refresh()  # when does that happen?
             self.version = self.data.version
             refresh = True
         return refresh
 
     def refresh(self):
-        if self.archive:
-            self.columns = [component.Component(
-                self._services(
-                    column.Column, c.id, self,
-                    self.card_extensions, self.action_log, self.search_engine)
-                ) for c in self.data.columns]
-        else:
-            self.columns = [component.Component(
-                self._services(
-                    column.Column, c.id, self,
-                    self.card_extensions, self.action_log, self.search_engine)
-                ) for c in self.data.columns if not c.archive]
-
+        print "refresh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        print "if you see this message, please contact RTE."
+        self.load_children()
 
     @property
     def all_members(self):
@@ -321,18 +292,15 @@ class Board(events.EventHandlerMixIn):
         """
         return self.data.title
 
-    def set_visibility(self, visibility):
-        self.data.visibility = visibility
-
-    def mark_as_template(self):
-        self.data.is_template = True
+    def mark_as_template(self, template=True):
+        self.data.is_template = template
 
     def count_columns(self):
         """Return the number of columns
         """
         return len(self.columns)
 
-    def create_column(self, index, title, nb_cards=None, archive=False):
+    def create_column(self, index, title, nb_cards=None):
         """Create a new column in the board
 
         In:
@@ -340,16 +308,17 @@ class Board(events.EventHandlerMixIn):
             - ``title`` -- the title of the new column
             - ``nb_cards`` -- the number of maximun cards on the colum
         """
+        if index < 0:
+            index = index + len(self.columns) + 1
         security.check_permissions('edit', self)
         if title == '':
             return False
-        col = self.data.create_column(index, title, nb_cards, archive=archive)
+        col = self.data.create_column(index, title, nb_cards)
         col_obj = self._services(
             column.Column, col.id, self,
             self.card_extensions, self.action_log, self.search_engine)
-        if not archive or (archive and self.archive):
-            self.columns.insert(
-                index, component.Component(col_obj))
+        self.columns.insert(
+            index, component.Component(col_obj))
         self.increase_version()
         return col_obj
 
@@ -438,12 +407,12 @@ class Board(events.EventHandlerMixIn):
         return self.data.archived
 
     @property
-    def archive(self):
-        return self.data.archive
+    def show_archive(self):
+        return self.data.show_archive
 
-    def set_archive(self, value):
-        self.data.archive = value
-        self.refresh()
+    @show_archive.setter
+    def show_archive(self, value):
+        self.data.show_archive = value
         self.set_reload_search()
 
     def archive_card(self, card):
@@ -485,41 +454,42 @@ class Board(events.EventHandlerMixIn):
         self.data.weighting_cards = 0
         self.data.weights = ''
 
+    def delete_clicked(self, comp):
+        return self.emit_event(comp, events.BoardDeleted)
+
     def delete(self):
-        """Deletes the board
+        """Deletes the board.
+           Children must be loaded.
         """
-        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
-        if not self.columns:
-            self.load_data()
+        assert(self.columns)  # at least, contains the archive
         for column in self.columns:
             column().delete(purge=True)
         self.data.delete_history()
         self.data.delete_members()
         session.refresh(self.data)
         self.data.delete()
-        if self.on_board_delete is not None:
-            # if self.on_board_delete is None there is nothing
-            # to call after deletion
-            self.on_board_delete()
+
         return True
 
-    def archive_board(self):
+    def archive(self, comp=None):
         """Archive the board
         """
         self.data.archived = True
-        if self.on_board_archive is not None:
-            self.on_board_archive()
+        if comp:
+            self.emit_event(comp, events.BoardArchived)
         return True
 
-    def restore_board(self):
+    def restore(self, comp=None):
         """Unarchive the board
         """
         self.data.archived = False
-        if self.on_board_restore is not None:
-            self.on_board_restore()
+        if comp:
+            self.emit_event(comp, events.BoardRestored)
         return True
 
-    def leave(self):
+    def leave(self, comp=None):
+        """Children must be loaded."""
+        # FIXME: all member management function should live in another component than Board.
         user = security.get_user()
         for member in self.members:
             m_user = member().user().data
@@ -531,10 +501,12 @@ class Board(events.EventHandlerMixIn):
         self.data.remove_member(board_member)
         if user.is_manager(self):
             self.data.remove_manager(board_member)
+        if not self.columns:
+            self.load_children()
         for column in self.columns:
             column().remove_board_member(user)
-        if self.on_board_leave is not None:
-            self.on_board_leave()
+        if comp:
+            self.emit_event(comp, events.BoardLeft)
         return True
 
     def export(self):
@@ -675,45 +647,33 @@ class Board(events.EventHandlerMixIn):
          - ``role`` -- role's member (manager or member)
         """
         self.data.add_member(new_member, role)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_pending(self, member):
         # remove from pending list
         self.pending = [p for p in self.pending if p() != member]
 
-        user = usermanager.UserManager.get_by_email(member.username)
-        if user:
-            user = usermanager.UserManager.get_app_user(user.username, data=user)
-            for column in self.columns:
-                column().remove_board_member(user)
-
         # remove invitation
         self.remove_invitation(member.username)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_manager(self, manager):
         # remove from managers list
         self.managers = [p for p in self.managers if p() != manager]
         # remove manager from data part
         self.data.remove_manager(manager)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_member(self, member):
         # remove from members list
         self.members = [p for p in self.members if p() != member]
         # remove member from data part
         self.data.remove_member(member)
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_board_member(self, member):
         """Remove member from board
 
         Remove member from board. If member is PendingUser then remove
         invitation.
+
+        Children must be loaded for propagation to the cards.
 
         In:
             - ``member`` -- Board Member instance to remove
@@ -729,9 +689,10 @@ class Board(events.EventHandlerMixIn):
         remove_method[member.role](member)
 
         # remove member from columns
-        # FIXME: create a new board in the caller to operate on, instead of mutating the "light" version.
+        # FIXME: this function should live in a board extension that has its own data and
+        # should not rely on a full component tree.
         if not self.columns:
-            self.load_data()
+            self.load_children()
         for c in self.columns:
             c().remove_board_member(member)
 
@@ -748,8 +709,6 @@ class Board(events.EventHandlerMixIn):
 
         self.data.change_role(member, new_role)
         self.update_members()
-        if self.on_update_members:
-            self.on_update_members()
 
     def remove_invitation(self, email):
         """ Remove invitation
@@ -762,8 +721,6 @@ class Board(events.EventHandlerMixIn):
                 token.delete()
                 session.flush()
                 break
-        if self.on_update_members:
-            self.on_update_members()
 
     def invite_members(self, emails, application_url):
         """Invite somebody to this board,
@@ -771,16 +728,13 @@ class Board(events.EventHandlerMixIn):
         Create token used in invitation email.
         Store email in pending list.
 
-        In:
+        Params:
             - ``emails`` -- list of emails
-        Return:
-            - javascript to reload members and hide overlay
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
             invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
-        return 'reload_boards();'
 
     def resend_invitation(self, pending_member, application_url):
         """Resend an invitation,
@@ -913,7 +867,7 @@ class Board(events.EventHandlerMixIn):
         if query:
             condition = fts_schema.Card.match(query) & (fts_schema.Card.board_id == self.id)
             # do not query archived cards if archive column is hidden
-            if not self.archive:
+            if not self.show_archive:
                 condition &= (fts_schema.Card.archived == False)
             self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
             # make the difference between empty search and no results

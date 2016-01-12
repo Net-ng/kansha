@@ -12,9 +12,10 @@ from nagare.i18n import _, _N
 from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
-from kansha.toolbox import overlay, popin, remote
+from kansha.toolbox import overlay, remote
 from kansha.board.boardconfig import WeightsSequenceEditor
 
+from .boardsmanager import BoardsManager
 from .comp import (Board, BoardDescription, BoardMember,
                    Icon)
 from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
@@ -33,7 +34,7 @@ def render_Board_menu(self, h, comp, *args):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))
                 h << h.li(h.a(self.icons['edit_desc']).action(self.edit_description))
             if security.has_permissions('manage', self):
-                h << h.li(h.a(self.icons['save_template']).action(self.save_template))
+                h << h.li(h.a(self.icons['save_template']).action(self.save_template, comp))
 
             h << h.li(h.a(self.icons['export']).action(self.export))
             h << h.li(h.a(self.icons['history']).action(self.show_actionlog))
@@ -47,7 +48,7 @@ def render_Board_menu(self, h, comp, *args):
                             _("This board will be archived. Are you sure?")
                         ).decode('UTF-8')
                     )
-                ).action(self.archive_board))
+                ).action(self.archive, comp))
             else:
                 h << h.li(h.a(
                     self.icons['leave'],
@@ -57,7 +58,7 @@ def render_Board_menu(self, h, comp, *args):
                             _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                         ).decode('UTF-8')
                     )
-                ).action(self.leave))
+                ).action(self.leave, comp))
 
         h << h.span(_(u'Board'), class_="title", id='board-nav-menu')
     return h.root
@@ -166,10 +167,10 @@ def render_Board_item(self, h, comp, *args):
             h << self.comp_members.render(h, 'members')
 
             if security.has_permissions('manage', self):
-                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive_board)
+                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive, comp)
             else:
                 onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave, comp)
     return h.root
 
 
@@ -181,8 +182,8 @@ def render_Board_archived_item(self, h, comp, *args):
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete)
-                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore_board)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete_clicked, comp)
+                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore, comp)
     return h.root
 
 
@@ -202,7 +203,7 @@ def render_Board_members(self, h, comp, *args):
         h << h.div(self.see_all_members_compact, class_='more compact')
         with h.span(class_='wide'):
             for m in self.all_members[:self.max_shown_members]:
-                h << m.on_answer(self.remove_member).render(h, 'overlay')
+                h << m.on_answer(self.handle_event, comp).render(h, 'overlay')
     return h.root
 
 
@@ -212,8 +213,13 @@ def render_Board_members_list_overlay(self, h, comp, *args):
     h << h.h2(_('All members'))
     with h.form:
         with h.div(class_="members"):
-            h << [m.on_answer(comp.answer).render(h) for m in self.all_members]
+            h << [m.on_answer(self.handle_event, comp).render(h) for m in self.all_members]
     return h.root
+
+
+def invite_members(board, application_url, emails):
+    board.invite_members(emails, application_url)
+    return 'reload_boards();'
 
 
 @presentation.render_for(Board, "add_member_overlay")
@@ -226,9 +232,9 @@ def render_Board_add_member_overlay(self, h, comp, *args):
         with h.div(class_="favorites"):
             h << h.h3(_('Favorites'))
             with h.ul:
-                h << h.li([f.on_answer(lambda email: self.invite_members(email, application_url)) for f in friends])
+                h << h.li([f.on_answer(invite_members, self, application_url) for f in friends])
     with h.div(class_="members search"):
-        h << self.new_member.on_answer(lambda emails: self.invite_members(emails, application_url))
+        h << self.new_member.on_answer(invite_members, self, application_url)
 
     return h.root
 
@@ -296,6 +302,8 @@ def render_Board_columns(self, h, comp, *args):
             with h.div(id='lists'):
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
+                    if column().is_archive and not self.show_archive:
+                        continue
                     model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
@@ -569,9 +577,9 @@ def render_BoardProfile(self, h, comp, *args):
                         h << h.script('reload_columns();')
                         self._changed(False)
 
-                    active = 'active btn-primary' if self.board.archive else ''
+                    active = 'active btn-primary' if self.board.show_archive else ''
                     h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))
-                    active = 'active btn-primary' if not self.board.archive else ''
+                    active = 'active btn-primary' if not self.board.show_archive else ''
                     h << h.button(_('Hide'), class_='btn %s' % active).action(lambda: self.set_archive(0))
 
         with h.div(class_='panel-section'):
@@ -596,10 +604,7 @@ def render_BoardMember(self, h, comp, *args):
             lambda action: self.dispatch(action, application_url)
         ).render(h, model='%s' % self.role)
     else:
-        def dispatch(answer):
-            self.dispatch(answer, application_url)
-            comp.answer()
-        return h.div(self.user.on_answer(dispatch).render(h), class_='member')
+        return h.div(self.user.render(h), class_='member')
 
 
 @presentation.render_for(BoardMember, model="overlay")
@@ -746,4 +751,70 @@ def render_board_background_title_color_overlay(self, h, comp, *args):
         h << ' '
         h << h.button(_('Cancel'), class_='btn').action(lambda: None)
     h << h.script("YAHOO.kansha.app.addColorPicker(%s)" % ajax.py2js(i))
+    return h.root
+
+##### BoardsManager
+
+
+@presentation.render_for(BoardsManager)
+def render_userboards(self, h, comp, *args):
+    template = var.Var(u'')
+    h.head << h.head.title(self.app_title)
+
+    h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
+
+    if self.last_modified_boards:
+        h << h.h1(_(u'Last modified boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
+
+    h << h.h1(_(u'My boards'))
+    with h.ul(class_='board-labels'):
+        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
+
+    if self.guest_boards:
+        h << h.h1(_(u'Guest boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
+
+    with h.div(class_='new-board'):
+        with h.form:
+            h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
+            h << _(u' a new ')
+
+            if len(self.templates) > 1:
+                with h.select.action(template):
+                    with h.optgroup(label=_(u'Shared templates')):
+                        h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
+                    if self.templates['private']:
+                        with h.optgroup(label=_(u'My templates')):
+                            h << [h.option(tpl, value=id_) for id_, tpl in self.templates['private']]
+            else:
+                id_, tpl = self.templates.items()[0]
+                template(id_)
+                h << tpl
+
+            h << _(u' board')
+
+    if len(self.archived_boards):
+        h << h.h1(_('Archived boards'))
+
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'archived_item')
+                  for b in self.archived_boards.itervalues()]
+
+        with h.form:
+            h << h.button(
+                _('Delete'),
+                class_='delete',
+                onclick='return confirm(%s)' % ajax.py2js(
+                    _('These boards will be destroyed. Are you sure?')
+                ).decode('UTF-8'),
+                type='submit'
+            ).action(self.purge_archived_boards)
+
+    h << h.script('YAHOO.kansha.app.hideOverlay();'
+                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.load_user_boards, render=0)).get('onclick'))
+
     return h.root

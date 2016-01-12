@@ -198,11 +198,11 @@ def render_Board_members(self, h, comp, *args):
     with h.div(class_='members'):
         if security.has_permissions('Add Users', self):
             h << h.div(self.overlay_add_members, class_='add')
-        if len(self.all_members) > self.max_shown_members:
+        if len(self.all_members) > self.MAX_SHOWN_MEMBERS:
             h << h.div(self.see_all_members, class_='more wide')
         h << h.div(self.see_all_members_compact, class_='more compact')
         with h.span(class_='wide'):
-            for m in self.all_members[:self.max_shown_members]:
+            for m in self.all_members[:self.MAX_SHOWN_MEMBERS]:
                 h << m.on_answer(self.handle_event, comp).render(h, 'overlay')
     return h.root
 

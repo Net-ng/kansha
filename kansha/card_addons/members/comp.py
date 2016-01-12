@@ -40,7 +40,7 @@ class CardMembers(CardExtension):
 
     LOAD_PRIORITY = 90
 
-    max_shown_members = 3
+    MAX_SHOWN_MEMBERS = 3
 
     def __init__(self, card, action_log):
         """

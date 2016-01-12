@@ -101,7 +101,7 @@ class Column(events.EventHandlerMixIn):
             slot = event.data
             slot.becomes(card_bo)
             # card has been edited, reindex
-            scard = fts_schema.Card(**card.to_document())
+            scard = fts_schema.Card(**card_bo.to_document())
             self.search_engine.update_document(scard)
             self.search_engine.commit()
             self.emit_event(comp, events.SearchIndexUpdated)

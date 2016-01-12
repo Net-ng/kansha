@@ -13,9 +13,9 @@ from peak.rules import when
 from nagare.security import common
 from nagare import component, security
 
-from kansha.card.comp import Card
-from kansha.board.comp import Board
-from kansha.column.comp import Column
+from kansha.card import Card
+from kansha.board import Board
+from kansha.column import Column
 from kansha.toolbox import calendar_widget
 from kansha.cardextension import CardExtension
 

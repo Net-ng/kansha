@@ -17,9 +17,9 @@ from nagare.i18n import _
 from nagare.security import common
 from nagare import component, security, var
 
+from kansha import validator
 from kansha.user import usermanager
 from kansha.cardextension import CardExtension
-from kansha.authentication.database import validators
 from kansha.services.actionlog.messages import render_event
 
 from .models import DataAsset
@@ -116,7 +116,7 @@ class Gallery(CardExtension):
         Return:
             - The newly created Asset
         """
-        validators.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
+        validator.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
         user = security.get_user()
         fileid = self.assets_manager.save(new_file.file.read(),
                                           metadata={'filename': new_file.filename, 'content-type': new_file.type})

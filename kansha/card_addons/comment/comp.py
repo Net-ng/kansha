@@ -18,14 +18,14 @@ from nagare.security import common
 from nagare import component, security
 
 from kansha import validator
-from kansha.card.comp import Card
+from kansha.card import Card
+from kansha.board import Board
+from kansha.column import Column
 from kansha.user import usermanager
-from kansha.board.comp import Board
-from kansha.column.comp import Column
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
+from kansha.board import COMMENTS_MEMBERS, COMMENTS_PUBLIC
 from kansha.services.actionlog.messages import render_event
-from kansha.board.comp import COMMENTS_MEMBERS, COMMENTS_PUBLIC
 
 from .models import DataComment
 

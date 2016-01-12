@@ -11,8 +11,8 @@
 from nagare.i18n import _
 from nagare import presentation, component, ajax, var
 
+from kansha import validator
 from kansha.toolbox import overlay, remote
-from kansha.authentication.database import validators
 
 from .usermanager import NewMember
 from .comp import User, PendingUser
@@ -179,7 +179,7 @@ def render_NewMember(self, h, comp, *args):
             for email in members_to_add().split(','):
                 try:
                     email = email.strip()
-                    email = validators.validate_email(email)
+                    email = validator.validate_email(email)
                     emails.append(email)
                 except ValueError:
                     continue

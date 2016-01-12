@@ -17,9 +17,9 @@ from nagare.security import common
 from nagare import component, database, i18n, security
 
 from kansha import title
-from kansha.card.comp import Card
-from kansha.board.comp import Board
-from kansha.column.comp import Column
+from kansha.card import Card
+from kansha.board import Board
+from kansha.column import Column
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event

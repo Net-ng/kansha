@@ -8,3 +8,4 @@
 #--
 
 from . import view
+from .comp import Card, NewCard

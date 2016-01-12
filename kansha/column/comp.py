@@ -15,7 +15,7 @@ from kansha import title
 from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
-from kansha.card import (comp as card, fts_schema)
+from kansha.card import comp, fts_schema
 
 from .models import DataColumn
 
@@ -47,12 +47,12 @@ class Column(events.EventHandlerMixIn):
         self.cards = [
             component.Component(
                 self._services(
-                    card.Card, c.id, self,
+                    comp.Card, c.id, self,
                     self.card_extensions,
                     self.action_log, data=c))
                       for c in self.data.cards]
         self.new_card = component.Component(
-            card.NewCard(self))
+            comp.NewCard(self))
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
@@ -156,7 +156,7 @@ class Column(events.EventHandlerMixIn):
         member_stats = {}
         for c in self.cards:
             # Test if c() is a Card instance and not Popin instance
-            if isinstance(c(), card.Card):
+            if isinstance(c(), comp.Card):
                 for m in c().members:
                     username = m.username
                     member_stats[username] = member_stats.get(username, 0) + 1
@@ -172,7 +172,7 @@ class Column(events.EventHandlerMixIn):
             - ``member`` -- Board Member instance to remove
         """
         for c in self.cards:
-            if isinstance(c(), card.Card):
+            if isinstance(c(), comp.Card):
                 c().remove_board_member(member)
 
     def get_available_users(self):
@@ -269,7 +269,7 @@ class Column(events.EventHandlerMixIn):
             if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
             new_card = self.data.create_card(text, security.get_user().data)
-            card_obj = self._services(card.Card, new_card.id, self, self.card_extensions, self.action_log)
+            card_obj = self._services(comp.Card, new_card.id, self, self.card_extensions, self.action_log)
             self.cards.append(component.Component(card_obj, 'new'))
             values = {'column_id': self.id,
                       'column': self.get_title(),
@@ -293,7 +293,7 @@ class Column(events.EventHandlerMixIn):
 
     def refresh(self):
         self.cards = [component.Component(
-            self._services(card.Card, data_card.id, self, self.card_extensions, self.action_log, data=data_card)
+            self._services(comp.Card, data_card.id, self, self.card_extensions, self.action_log, data=data_card)
             ) for data_card in self.data.cards]
 
     def set_nb_cards(self, nb_cards):

@@ -61,7 +61,7 @@ class Board(events.EventHandlerMixIn):
 
     """Board component"""
 
-    max_shown_members = 4
+    MAX_SHOWN_MEMBERS = 4
     background_max_size = 3 * 1024  # in Bytes
 
     def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
@@ -112,7 +112,7 @@ class Board(events.EventHandlerMixIn):
                 h.span(number, class_='count'),
                 title=_("%s more...") % number)
 
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.max_shown_members),
+        self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.MAX_SHOWN_MEMBERS),
                                                                    lambda r: component.Component(self).render(r, model='members_list_overlay'),
                                                                    dynamic=False, cls='board-labels-overlay'))
         self.see_all_members_compact = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members)),

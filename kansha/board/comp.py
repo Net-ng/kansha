@@ -387,7 +387,7 @@ class Board(events.EventHandlerMixIn):
             security.get_user(),
             u'card_move', values)
         # reindex it in case it has been moved to the archive column
-        scard = fts_schema.Card.from_model(card.data)
+        scard = fts_schema.Card.from_model(card)
         self.search_engine.update_document(scard)
         self.search_engine.commit()
         session.flush()

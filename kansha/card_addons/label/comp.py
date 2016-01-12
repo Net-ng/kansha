@@ -94,6 +94,9 @@ class CardLabels(CardExtension):
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                            lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
 
+    def to_schema(self):
+        return u' '.join(label.title for label in self.data_labels)
+
     def get_data(self):
         return DataLabel.get_data_by_card(self.card.data)
 

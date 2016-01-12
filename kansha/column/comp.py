@@ -73,7 +73,7 @@ class Column(events.EventHandlerMixIn):
 
     def index_cards(self, cards):
         for card in cards:
-            scard = fts_schema.Card.from_model(card.data)
+            scard = fts_schema.Card.from_model(card)
             self.search_engine.add_document(scard)
         self.search_engine.commit()
 
@@ -101,7 +101,7 @@ class Column(events.EventHandlerMixIn):
             slot = event.data
             slot.becomes(card_bo)
             # card has been edited, reindex
-            scard = fts_schema.Card.from_model(card_bo.data)
+            scard = fts_schema.Card.from_model(card_bo)
             self.search_engine.update_document(scard)
             self.search_engine.commit()
             self.emit_event(comp, events.SearchIndexUpdated)

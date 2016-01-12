@@ -17,6 +17,9 @@ class CardExtension(plugin.Plugin):
         self.card = card
         self.action_log = action_log
 
+    def to_schema(self):
+        return None
+
     def delete(self):
         pass
 

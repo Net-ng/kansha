@@ -295,3 +295,15 @@ class BoardTest(unittest.TestCase):
         board = self.boards_manager.get_by_uri(orig_board.data.uri)
         self.assertEqual(orig_board.data.id, board.data.id)
         self.assertEqual(orig_board.data.title, board.data.title)
+
+    def test_card_to_schema(self):
+        helpers.set_dummy_context()
+        user = helpers.create_user()
+        helpers.set_context(user)
+        board = helpers.create_board()
+        column = board.create_column(1, u'test')
+        card = column.create_card(u'test')
+        data = card.to_schema()
+        self.assertEqual(data['title'], card.data.title)
+        self.assertEqual(data['board_id'], board.id)
+        self.assertEqual(data['archived'], column.is_archive)

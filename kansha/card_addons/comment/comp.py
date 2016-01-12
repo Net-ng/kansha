@@ -121,6 +121,9 @@ class Comments(CardExtension):
         super(Comments, self).__init__(card, action_log)
         self.comments = [self._create_comment_component(data_comment) for data_comment in self.get_data()]
 
+    def to_schema(self):
+        return u'\n'.join(comment().text for comment in self.comments)
+
     def get_data(self):
         return DataComment.get_data_by_card(self.card.data)
 

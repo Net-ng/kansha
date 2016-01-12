@@ -32,6 +32,9 @@ class CardDescription(CardExtension):
         super(CardDescription, self).__init__(card, action_log)
         self.text = self.get_description()
 
+    def to_schema(self):
+        return self.text
+
     def copy(self, parent, additional_data):
         self.get_data().copy(parent.data)
         return super(CardDescription, self).copy(parent, additional_data)

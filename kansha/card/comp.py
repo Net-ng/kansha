@@ -57,6 +57,14 @@ class Card(events.EventHandlerMixIn):
         self.extensions = ()
         self.refresh()
 
+    def to_schema(self):
+        data = {'title': self.get_title(),
+                'board_id': self.column.data.board.id,
+                'archived': self.column.is_archive}
+        for name, extension in self.extensions:
+            data.update({name: extension().to_schema()})
+        return data
+
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
         new_card = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)

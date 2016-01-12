@@ -189,6 +189,9 @@ class Checklists(CardExtension):
         self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
 
+    def to_schema(self):
+        return u'\n'.join(unicode(cl()) for cl in self.get_data())
+
     def get_data(self):
         return DataChecklist.get_data_by_card(self.card.data)
 

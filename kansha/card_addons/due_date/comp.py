@@ -52,19 +52,19 @@ class DueDate(CardExtension):
         self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
         self.calendar = component.Component(self.calendar)
 
-    def get_data(self):
-        data = DataCardDueDate.get_data_by_card(self.card.data)
+    @property
+    def data(self):
+        data = DataCardDueDate.get_by_card(self.card.data)
         if data is None:
             data = DataCardDueDate(card=self.card.data)
         return data
 
     def get_value(self):
-        return self.get_data().due_date
+        return self.data.due_date
 
     def set_value(self, value):
         '''Set the value to a new date (or None)'''
-        data = self.get_data()
-        data.due_date = value
+        self.data.due_date = value
         self.value = value
 
     def new_card_position(self, value):

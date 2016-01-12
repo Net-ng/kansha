@@ -90,7 +90,7 @@ class CardLabels(CardExtension):
         """
         super(CardLabels, self).__init__(card, action_log)
         self.comp_id = str(random.randint(10000, 100000))
-        self.labels = [l.id for l in self.get_data()]
+        self.labels = [l.id for l in self.data]
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
                                                           lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
@@ -102,8 +102,9 @@ class CardLabels(CardExtension):
     def to_document(self):
         return u' '.join(label.title for label in self.data_labels)
 
-    def get_data(self):
-        return DataLabel.get_data_by_card(self.card.data)
+    @property
+    def data(self):
+        return DataLabel.get_by_card(self.card.data)
 
     def copy(self, parent, additional_data):
         new_extension = super(CardLabels, self).copy(parent, additional_data)
@@ -144,7 +145,7 @@ class CardLabels(CardExtension):
         """
         card = self.card.data
         if label_id in self.labels:
-            self.labels = [l.id for l in DataLabel.get_data_by_card(card) if l.id != label_id]
+            self.labels = [l.id for l in DataLabel.get_by_card(card) if l.id != label_id]
             DataLabel.remove_from_card(card, label_id)
         else:
             self.labels.append(label_id)

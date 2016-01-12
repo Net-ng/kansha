@@ -40,16 +40,17 @@ class CardWeightEditor(CardExtension):
         """
         CardExtension.__init__(self, card, action_log)
         self.card = card
-        self.weight = editor.Property(self.get_data().weight)
+        self.weight = editor.Property(self.data.weight)
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
     def copy(self, parent, additional_data):
-        self.get_data().copy(parent.data)
+        self.data.copy(parent.data)
         return super(CardWeightEditor, self).copy(parent, additional_data)
 
-    def get_data(self):
-        data = DataCardWeight.get_data_by_card(self.card.data)
+    @property
+    def data(self):
+        data = DataCardWeight.get_by_card(self.card.data)
         if data is None:
             data = DataCardWeight(card=self.card.data)
         return data
@@ -65,6 +66,6 @@ class CardWeightEditor(CardExtension):
     def commit(self):
         success = False
         if self.weight.error is None:
-            self.get_data().weight = self.weight.value
+            self.data.weight = self.weight.value
             success = True
         return success

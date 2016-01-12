@@ -41,21 +41,21 @@ class CardDescription(CardExtension):
         return self.text
 
     def copy(self, parent, additional_data):
-        self.get_data().copy(parent.data)
+        self.data.copy(parent.data)
         return super(CardDescription, self).copy(parent, additional_data)
 
-    def get_data(self):
-        data = DataCardDescription.get_data_by_card(self.card.data)
+    @property
+    def data(self):
+        data = DataCardDescription.get_by_card(self.card.data)
         if data is None:
             data = DataCardDescription(card=self.card.data)
         return data
 
     def get_description(self):
-        return self.get_data().description
+        return self.data.description
 
     def set_description(self, text):
-        data = self.get_data()
-        data.description = text
+        self.data.description = text
 
     def change_text(self, text):
         """Edit the description

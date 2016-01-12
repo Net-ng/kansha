@@ -20,8 +20,9 @@ class DataGallery(object):
     def __init__(self, card):
         self.card = card
 
-    def get_data(self):
-        return DataAsset.get_data_by_card(self.card)
+    @property
+    def data(self):
+        return DataAsset.get_by_card(self.card)
 
     def get_asset(self, filename):
         return DataAsset.get_by_filename(filename)

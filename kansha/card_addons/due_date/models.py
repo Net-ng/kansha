@@ -22,7 +22,7 @@ class DataCardDueDate(Entity):
     card = ManyToOne('DataCard', ondelete='cascade')
 
     @classmethod
-    def get_data_by_card(cls, card):
+    def get_by_card(cls, card):
         q = cls.query
         q = q.filter_by(card=card)
         return q.first()

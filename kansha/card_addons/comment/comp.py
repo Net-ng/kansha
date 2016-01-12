@@ -151,7 +151,7 @@ class Comments(CardExtension):
             - ``comments`` -- the comments of the card
         """
         super(Comments, self).__init__(card, action_log)
-        self.comments = [self._create_comment_component(data_comment) for data_comment in self.get_data()]
+        self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 
     @staticmethod
     def get_schema_def():
@@ -160,8 +160,9 @@ class Comments(CardExtension):
     def to_document(self):
         return u'\n'.join(comment().text for comment in self.comments)
 
-    def get_data(self):
-        return DataComment.get_data_by_card(self.card.data)
+    @property
+    def data(self):
+        return DataComment.get_by_card(self.card.data)
 
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete_comment)

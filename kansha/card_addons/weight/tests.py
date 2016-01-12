@@ -20,6 +20,6 @@ class CardWeightTest(CardExtensionTestCase):
     def test_copy(self):
         self.extension.weight(u'25')
         self.extension.commit()
-        self.assertEqual(self.extension.get_data().weight, u'25')
+        self.assertEqual(self.extension.data.weight, u'25')
         cpy = self.extension.copy(self.card_copy, {})
         self.assertEqual(self.extension.weight(), cpy.weight())

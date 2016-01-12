@@ -34,8 +34,8 @@ def py2js(value, h):
 
 @peak.rules.when(ajax.py2js, (DueDate,))
 def py2js(value, h):
-    if value.value:
-        return ajax.py2js(value.value, h)
+    if value.due_date:
+        return ajax.py2js(value.due_date, h)
     return None
 
 
@@ -47,9 +47,9 @@ def render_DueDate(self, h, comp, model):
 @presentation.render_for(DueDate, model='badge')
 def render_DueDate_badge(self, h, *args):
     """Gallery badge for the card"""
-    if self.value:
+    if self.due_date:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-alarm'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), title=format_date(self.value, 'full'))
+            h << h.span(h.i(class_='icon-alarm'), ' ', self.get_days_count(), class_='label due-date ' + self.get_class(), title=format_date(self.due_date, 'full'))
     return h.root
 
 
@@ -57,11 +57,11 @@ def render_DueDate_badge(self, h, *args):
 def render_DueDate_button(self, h, comp, *args):
     if security.has_permissions('due_date', self.card):
         id_ = h.generate_id()
-        if self.value:
+        if self.due_date:
             classes = ['btn', 'btn-due-date', self.get_class()]
             with h.a(class_=u' '.join(classes), id_=id_).action(self.calendar().toggle):
                 h << h.i(class_='icon-alarm duedate-icon')
-                h << format_date(self.value, 'short')
+                h << format_date(self.due_date, 'short')
         else:
             with h.a(class_='btn', id_=id_).action(self.calendar().toggle):
                 h << h.i(class_='icon-alarm')

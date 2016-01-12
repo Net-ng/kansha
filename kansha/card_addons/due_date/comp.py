@@ -48,8 +48,8 @@ class DueDate(CardExtension):
             - ``card`` -- the object card
         """
         super(DueDate, self).__init__(card, action_log)
-        self.value = self.get_value()
-        self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
+        self.due_date = self.get_value()
+        self.calendar = calendar_widget.Calendar(self.due_date, allow_none=True)
         self.calendar = component.Component(self.calendar)
 
     @property
@@ -65,19 +65,19 @@ class DueDate(CardExtension):
     def set_value(self, value):
         '''Set the value to a new date (or None)'''
         self.data.due_date = value
-        self.value = value
+        self.due_date = value
 
     def new_card_position(self, value):
         self.set_value(value)
 
     def get_days_count(self):
         today = date.today()
-        diff = today - self.value
+        diff = today - self.due_date
         return diff.days
 
     def get_class(self):
         '''Get its css class depending on the amount of time between today and the value'''
-        if not self.value:
+        if not self.due_date:
             return ''
         diff = self.get_days_count()
         if diff < -1:

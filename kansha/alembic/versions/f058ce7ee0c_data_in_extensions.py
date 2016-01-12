@@ -18,7 +18,7 @@ from kansha.card_addons.description.models import DataCardDescription
 
 # revision identifiers, used by Alembic.
 revision = 'f058ce7ee0c'
-down_revision = '2b0edcfa57b4'
+down_revision = '361f9cbae3fc'
 
 def upgrade():
     bind = op.get_bind()

@@ -17,10 +17,10 @@ class VoteTest(CardExtensionTestCase):
     def create_instance(self, card, action_log):
         return Votes(card, action_log)
 
-    def test_vote_and_unvote(self):
-        self.extension.vote()
+    def test_toggle(self):
+        self.extension.toggle()
         self.assertEqual(self.extension.count_votes(), 1)
         self.assertTrue(self.extension.has_voted())
-        self.extension.unvote()
+        self.extension.toggle()
         self.assertEqual(self.extension.count_votes(), 0)
         self.assertFalse(self.extension.has_voted())

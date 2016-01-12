@@ -46,24 +46,17 @@ class Votes(CardExtension):
         '''Returns number of votes for a card'''
         return DataVote.count_votes(self.card.data)
 
-    def vote(self):
+    def toggle(self):
         '''Add a vote to the current card.
 
         Remove vote if user has already voted
         '''
         security.check_permissions('vote', self.card)
-        if not self.has_voted():
-            user = security.get_user()
-            DataVote(card=self.card.data, user=user.data)
-        else:
-            self.unvote()
-
-    def unvote(self):
-        '''Remove a vote to the current card'''
-        security.check_permissions('vote', self.card)
+        user = security.get_user()
         if self.has_voted():
-            user = security.get_user()
             DataVote.get_vote(self.card.data, user.data).delete()
+        else:
+            DataVote(card=self.card.data, user=user.data)
 
     def has_voted(self):
         '''Check if the current user already vote for this card'''

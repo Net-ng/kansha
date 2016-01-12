@@ -22,7 +22,7 @@ def render_Votes_edit(self, h, comp, *args):
             msg = _('Unvote (%s)') % self.count_votes()
         else:
             msg = _('Vote (%s)') % self.count_votes()
-        h << h.a(h.i(class_='icon-heart'), msg, class_='btn').action(self.vote)
+        h << h.a(h.i(class_='icon-heart'), msg, class_='btn').action(self.toggle)
     return h.root
 
 

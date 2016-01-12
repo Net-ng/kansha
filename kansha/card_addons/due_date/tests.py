@@ -21,7 +21,7 @@ class CardDueDateTest(CardExtensionTestCase):
 
     def test_due_date(self):
         today = date.today()
-        self.assertIsNone(self.extension.value)
+        self.assertIsNone(self.extension.due_date)
         self.assertIsNone(self.extension.get_value())
         self.extension.set_value(today)
         self.assertEqual(self.extension.get_value(), today)

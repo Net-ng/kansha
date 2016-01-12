@@ -58,7 +58,8 @@ class Card(events.EventHandlerMixIn):
         self.refresh()
 
     def to_document(self):
-        data = {'title': self.get_title(),
+        data = {'docid': self.id,
+                'title': self.get_title(),
                 'board_id': self.column.data.board.id,
                 'archived': self.column.is_archive}
         for name, extension in self.extensions:

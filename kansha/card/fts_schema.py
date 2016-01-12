@@ -26,11 +26,3 @@ class Card(schema.Document):
             field = extension.get_schema_def()
             if field is not None:
                 cls.fields[name] = field
-
-    @classmethod
-    def from_model(cls, card):
-        '''
-        Create from card model
-        '''
-        data = card.to_document()
-        return cls(card.id, **data)

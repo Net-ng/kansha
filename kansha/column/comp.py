@@ -319,6 +319,10 @@ class Column(events.EventHandlerMixIn):
     def is_archive(self):
         return self.data.archive
 
+    @is_archive.setter
+    def is_archive(self, value):
+        self.data.archive = value
+
 
 class NewColumnEditor(object):
 

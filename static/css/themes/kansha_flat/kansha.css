@@ -319,12 +319,13 @@ a:hover .ico-btn {
 
 .members .count {
     color: white;
-    font: 11px OpenSansLight;
+    font-size: 11px;
     font-weight: bold;
     background-color: #737373;
     border-radius: 10px;
     border: 2px solid white;
-    padding: 0px 5px 0 3px;
+    padding: 0px 4px;
+    display: inline-block;
 }
 
 .members .count:hover {
@@ -374,6 +375,6 @@ a:hover .ico-btn {
     background: white;
     border: 1px solid #808080;
     box-shadow: 0 0 5px #333;
-    padding: 8px 8px 8px 8px;
+    padding: 8px 15px;
 }
 /* End modal window */

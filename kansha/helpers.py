@@ -121,19 +121,22 @@ def create_services():
     return _services
 
 
+def get_boards_manager():
+    services = create_services()
+    return boardsmanager.BoardsManager('', '', '', {}, DummySearchEngine(None), services)
+
+
 def create_board():
     """Create boards with default columns and default cards
     """
     user = create_user()
-    services = create_services()
-    boards_manager = boardsmanager.BoardsManager('', '', '', {}, DummySearchEngine(None), services)
     template = board_models.create_template_todo()
-    template = boards_manager.get_by_id(template.id)
-    board = boards_manager.copy_board(template, user, False)
+    boards_manager = get_boards_manager()
+    board = boards_manager.create_board_from_template(template.id, user)
     create_default_cards(board.data, user)
     user.add_board(board, "manager")
     board.set_title(word())
-    board.load_data()
+    board.load_children()
     return board
 
 

@@ -8,16 +8,13 @@
 # this distribution.
 #--
 
-from collections import OrderedDict
 import imghdr
 import peak.rules
 
-from nagare import ajax, component, editor, presentation, security, var
+from nagare import editor, presentation, security
 from nagare.i18n import _, _L
 
 from kansha import validator
-from kansha.board import comp as board
-from kansha.menu import MenuEntry
 from kansha.authentication.database import validators, forms as registation_forms
 
 # from .user_cards import UserCards
@@ -26,82 +23,6 @@ from .usermanager import UserManager
 
 LANGUAGES = {'en': _L('english'),
              'fr': _L('french')}
-
-
-class UserProfile(object):
-
-    def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, services_service):
-        """
-        In:
-         - ``user`` -- user (DataUser instance)
-        """
-        self.app_title = app_title
-        self.menu = OrderedDict()
-        self.menu['boards'] = MenuEntry(
-            _L(u'Boards'),
-            'board',
-            services_service(
-                UserBoards,
-                app_title,
-                app_banner,
-                theme,
-                card_extensions,
-                user,
-                search_engine
-            )
-        )
-        # self.menu['my-cards'] = MenuEntry(
-        #     _L(u'My cards'),
-        #     'profile',
-        #     services_service(UserCards, user, search_engine, theme)
-        # )
-        self.menu['profile'] = MenuEntry(
-            _L(u'Profile'),
-            'user',
-            services_service(
-                get_userform(
-                    app_title, app_banner, theme, user.source
-                ),
-                user,
-            )
-        )
-
-        self.content = component.Component(None)
-        self._on_menu_entry(next(iter(self.menu)))
-
-    def _on_menu_entry(self, id_):
-        """Select a configuration menu entry
-
-        In:
-            - ``id_`` -- the id of the selected menu entry
-        """
-        self.content.becomes(self.menu[id_].content)
-        self.selected = id_
-
-
-@presentation.render_for(UserProfile, 'edit')
-def render_user_profile__edit(self, h, comp, *args):
-    h.head << h.head.title(self.app_title)
-
-    with h.div(class_='home'), h.div(class_='grid-2'):
-        h << comp.render(h, 'menu')
-        with h.div(class_='boards'):
-            h << self.content.on_answer(comp.answer).render(h.AsyncRenderer())
-    return h.root
-
-
-@presentation.render_for(UserProfile, 'menu')
-def render_user_profile__menu(self, h, comp, *args):
-    with h.div(class_='menu'):
-        with h.ul:
-            for id_, entry in self.menu.iteritems():
-                with h.li:
-                    with h.a.action(self._on_menu_entry, id_):
-                        h << h.i(class_='icon icon-' + entry.icon)
-                        h << h.span(entry.label)
-                        if self.selected == id_:
-                            h << {'class': 'active'}
-    return h.root
 
 
 class BasicUserForm(editor.Editor):
@@ -426,6 +347,7 @@ def get_userform(app_title, app_banner, theme, source):
 
     return factory_compatible_with_services
 
+
 class ExternalUserForm(BasicUserForm):
     pass
 
@@ -435,155 +357,3 @@ def get_userform(app_title, app_banner, theme, source):
     """ User form for application user
     """
     return ExternalUserForm
-
-
-class UserBoards(object):
-
-    def __init__(self, app_title, app_banner, theme, card_extensions, user, search_engine, mail_sender_service, assets_manager_service, services_service):
-        """ UserBoards
-
-        List of user's boards, and form to add new one board
-
-        In:
-         - ``app_title`` -- Application title
-         - ``app_banner`` -- Application banner
-         - ``theme`` -- Custom theme name
-         - ``user`` -- User whose boards will be listed
-         - ``mail_sender`` -- Mail sender
-         - ``assets_manager`` -- Assets manager service
-        """
-        self.app_title = app_title
-        self.app_banner = app_banner
-        self.theme = theme
-        self.card_extensions = card_extensions
-        self.mail_sender = mail_sender_service
-        self.assets_manager = assets_manager_service
-        self.user_id = user.username
-        self.user_source = user.source
-        self.search_engine = search_engine
-        self._services = services_service
-
-        self.last_modified_boards = {}
-        self.my_boards = {}
-        self.guest_boards = {}
-        self.archived_boards = {}
-
-        self.reload_boards()
-
-    def create_board(self, board_id, comp):
-        b = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
-                           self.card_extensions, self.search_engine,
-                           on_board_delete=self.reload_boards,
-                           on_board_archive=self.reload_boards,
-                           on_board_restore=self.reload_boards,
-                           on_board_leave=self.reload_boards,
-                           on_update_members=self.reload_boards,
-                           load_data=False)
-        b.load_data()
-        new_board = b.copy(security.get_user(), {})
-        new_board.data.is_template = False
-        comp.answer(new_board.id)
-
-    def reload_boards(self):
-        self.my_boards.clear()
-        self.guest_boards.clear()
-        self.archived_boards.clear()
-        last_modifications = {}
-        for board_id, in board.Board.get_all_board_ids(): # Comma is important
-            board_obj = self._services(board.Board, board_id, self.app_title, self.app_banner, self.theme,
-                                       self.card_extensions, self.search_engine,
-                                       on_board_delete=self.reload_boards,
-                                       on_board_archive=self.reload_boards,
-                                       on_board_restore=self.reload_boards,
-                                       on_board_leave=self.reload_boards,
-                                       on_update_members=self.reload_boards,
-                                       load_data=False)
-            if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
-                board_comp = component.Component(board_obj)
-                if board_obj.archived:
-                    self.archived_boards[board_id] = board_comp
-                else:
-                    last_activity = board_obj.get_last_activity()
-                    if last_activity is not None:
-                        last_modifications[board_id] = (last_activity, board_comp)
-                    if security.has_permissions('manage', board_obj):
-                        self.my_boards[board_id] = board_comp
-                    elif security.has_permissions('edit', board_obj):
-                        self.guest_boards[board_id] = board_comp
-
-        last_5 = sorted(last_modifications.values(), reverse=True)[:5]
-        self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
-
-        public, private = board.Board.get_templates_for(self.user_id, self.user_source)
-        self.templates = {'public': [(b.id, b.template_title) for b in public],
-                         'private': [(b.id, b.template_title) for b in private]}
-
-    def purge_archived_boards(self):
-        for board in self.archived_boards.itervalues():
-            board().on_board_delete = None  # don't call self.delete_board!
-            board().delete()
-        self.archived_boards = OrderedDict()
-
-
-@presentation.render_for(UserBoards)
-def render_userboards(self, h, comp, *args):
-    template = var.Var(u'')
-    h.head << h.head.title(self.app_title)
-
-    h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/%s/home.css' % self.theme)
-
-    if self.last_modified_boards:
-        h << h.h1(_(u'Last modified boards'))
-        with h.ul(class_='board-labels'):
-            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.last_modified_boards.itervalues()]
-
-    h << h.h1(_(u'My boards'))
-    with h.ul(class_='board-labels'):
-        h << [b.on_answer(comp.answer).render(h, 'item') for b in self.my_boards.itervalues()]
-
-    if self.guest_boards:
-        h << h.h1(_(u'Guest boards'))
-        with h.ul(class_='board-labels'):
-            h << [b.on_answer(comp.answer).render(h, 'item') for b in self.guest_boards.itervalues()]
-
-    with h.div(class_='new-board'):
-        with h.form:
-            h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
-            h << _(u' a new ')
-
-            if len(self.templates) > 1:
-                with h.select.action(template):
-                    with h.optgroup(label=_(u'Shared templates')):
-                        h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
-                    if self.templates['private']:
-                        with h.optgroup(label=_(u'My templates')):
-                            h << [h.option(tpl, value=id_) for id_, tpl in self.templates['private']]
-            else:
-                id_, tpl = self.templates.items()[0]
-                template(id_)
-                h << tpl
-
-            h << _(u' board')
-
-    if len(self.archived_boards):
-        h << h.h1(_('Archived boards'))
-
-        with h.ul(class_='board-labels'):
-            h << [b.render(h, 'archived_item')
-                  for b in self.archived_boards.itervalues()]
-
-        with h.form:
-            h << h.button(
-                _('Delete'),
-                class_='delete',
-                onclick='return confirm(%s)' % ajax.py2js(
-                    _('These boards will be destroyed. Are you sure?')
-                ).decode('UTF-8'),
-                type='submit'
-            ).action(self.purge_archived_boards)
-
-    h << h.script('YAHOO.kansha.app.hideOverlay();'
-                  'function reload_boards() { %s; }' % h.AsyncRenderer().a.action(ajax.Update(action=self.reload_boards, render=0)).get('onclick'))
-
-    return h.root

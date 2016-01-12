@@ -178,7 +178,7 @@ class BoardProfile(object):
         return notifications.notifications_allowed(security.get_user(), self.board)
 
     def set_archive(self, value):
-        self.board.set_archive(value)
+        self.board.show_archive = value
         self.board.set_reload_search()
         self._changed(True)
 

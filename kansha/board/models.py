@@ -65,7 +65,7 @@ class DataBoard(Entity):
     background_image = Field(Unicode(255))
     background_position = Field(Unicode(255))
     title_color = Field(Unicode(255))
-    archive = Field(Integer, default=0)
+    show_archive = Field(Integer, default=0)
     archived = Field(Boolean, default=False)
 
     weighting_cards = Field(Integer, default=0)

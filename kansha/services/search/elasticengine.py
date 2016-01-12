@@ -145,7 +145,7 @@ class ElasticSearchEngine(object):
         doc = 'doc' if update else '_source'
         op = {
             '_index': self.index,
-            '_type': document.__class__.__name__,
+            '_type': document.doc_type().type_name(),
             '_op_type': 'update' if update else 'create',
             '_id': document._id,
             doc: {k: getattr(document, k)
@@ -168,7 +168,7 @@ class ElasticSearchEngine(object):
         op = {
             '_op_type': 'delete',
             '_index': self.index,
-            '_type': doctype.__name__,
+            '_type': doctype.type_name(),
             '_id': docid
         }
         self._queue.append(op)
@@ -198,7 +198,7 @@ class ElasticSearchEngine(object):
         '''
         dsl = query(self.mapper)
         hits = self.es.search(index=self.index,
-                              doc_type=query.queried_doc.__name__,
+                              doc_type=query.queried_doc.type_name(),
                               body={'query': dsl},
                               size=size)
         res = [
@@ -233,7 +233,7 @@ class ElasticSearchEngine(object):
                 properties[name] = ESProperty(ftype)
                 if not ftype.stored:
                     excludes.append(name)
-            mappings[doctype.__name__] = {'properties': properties,
+            mappings[doctype.type_name()] = {'properties': properties,
                                           '_source': {"excludes": excludes}}
         settings = {
             "number_of_shards": 1,

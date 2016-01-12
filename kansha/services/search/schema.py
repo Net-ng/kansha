@@ -152,6 +152,13 @@ class Document(object):
         for fname, fvalue in self.fields.iteritems():
             setattr(self, fname, fields.get(fname, fvalue.default))
 
+    def doc_type(self):
+        return self.__class__
+
+    @classmethod
+    def type_name(cls):
+        return cls.__name__
+
     @classmethod
     def delta(cls, docid, **fields):
         '''
@@ -167,3 +174,72 @@ class Document(object):
     def match(cls, v):
         '''Full text specific: match any of the fields'''
         return MATCHANYQuery(cls, v)
+
+
+class AltDocument(object):
+    '''Document Type for documents instanciated by a Schema object.'''
+
+    def __init__(self, schema, fields, docid, **field_values):
+        self._id = docid
+        self.fields = fields
+        self.schema = schema
+        for name, field in fields.iteritems():
+            setattr(self, name, field_values.get(name, field.default))
+
+    def doc_type(self):
+        return self.schema
+
+
+class Schema(object):
+    '''Imperatively build a Document schema'''
+
+    def __init__(self, name):
+        self.name = name
+        self.fields = {}
+
+    def type_name(self):
+        return self.name
+
+    def add_field(self, name, field):
+        if isinstance(field, FieldType):
+            field.name = name
+            field.parent = self
+            self.fields[name] = field
+        elif isinstance(field, type) and issubclass(field, FieldType):
+            field_object = field()
+            field_object.name = name
+            field_object.parent = self
+            self.fields[name] = field_object
+
+    def __call__(self, docid, **fields):
+        '''
+        Document factory.
+        Instanciate new document.
+        The caller is responsible for giving a (preferably) unique id to the document.
+        The id is not part of the schema declaration and is mandatory.
+        it can be used to track the document's origin for example.
+        Fields values not specified to the constructor are set to their defaults.
+        Fields set to None are ignored (that is, in case of update,
+        they are left untouched in the index).
+        '''
+        return AltDocument(self, self.fields, docid, **fields)
+
+    def delta(self, docid, **fields):
+        '''
+        Alternate constructor to build delta documents.
+        Fields values not specified to the constructor are set to None.
+        '''
+        for fname in self.fields:
+            if fname not in fields:
+                fields[fname] = None
+        return self(docid, **fields)
+
+    def match(self, v):
+        '''Full text specific: match any of the fields'''
+        return MATCHANYQuery(self, v)
+
+    def __getattr__(self, name):
+        try:
+            return self.fields[name]
+        except KeyError:
+            raise AttributeError(name)

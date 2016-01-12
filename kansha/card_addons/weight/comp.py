@@ -7,11 +7,18 @@
 # this distribution.
 #--
 
+from peak.rules import when
 from nagare import component, editor, validator
 
 from kansha.cardextension import CardExtension
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataCardWeight
+
+
+@when(render_event, "action=='card_weight'")
+def render_event_card_weight(action, data):
+    return _(u'Card "%(card)s" has been weighted from (%(from)s) to (%(to)s)') % data
 
 
 class CardWeightEditor(CardExtension):

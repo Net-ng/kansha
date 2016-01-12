@@ -8,12 +8,24 @@
 #--
 
 from nagare.i18n import _
+from peak.rules import when
 from nagare import component, security
 
 from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
+from kansha.services.actionlog.messages import render_event
 from kansha.cardextension import CardExtension
+
+
+@when(render_event, "action=='card_add_member'")
+def render_event_card_add_member(action, data):
+    return _(u'User %(user)s has been assigned to card "%(card)s"') % data
+
+
+@when(render_event, "action=='card_remove_member'")
+def render_event_card_remove_member(action, data):
+    return _(u'User %(user)s has been unassigned from card "%(card)s"') % data
 
 
 class CardMembers(CardExtension):

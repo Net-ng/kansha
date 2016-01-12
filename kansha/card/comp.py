@@ -213,20 +213,3 @@ class Card(events.EventHandlerMixIn):
     def weighting_on(self):
         return self.board.weighting_cards
 
-
-############### Extension components ###################
-
-
-@when(render_event, "action=='card_weight'")
-def render_event_card_weight(action, data):
-    return _(u'Card "%(card)s" has been weighted from (%(from)s) to (%(to)s)') % data
-
-
-@when(render_event, "action=='card_add_member'")
-def render_event_card_add_member(action, data):
-    return _(u'User %(user)s has been assigned to card "%(card)s"') % data
-
-
-@when(render_event, "action=='card_remove_member'")
-def render_event_card_remove_member(action, data):
-    return _(u'User %(user)s has been unassigned from card "%(card)s"') % data

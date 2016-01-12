@@ -19,7 +19,7 @@ from .board.comp import Board  # Do not remove
 from .card.comp import Card  # Do not remove
 from .user.usermanager import UserManager
 from .column.comp import CardsCounter, Column  # Do not remove
-from .board.comp import COMMENTS_PUBLIC, COMMENTS_MEMBERS, VOTES_PUBLIC, VOTES_MEMBERS
+from .board.comp import COMMENTS_PUBLIC, COMMENTS_MEMBERS
 
 
 class Unauthorized(Exception):
@@ -91,86 +91,23 @@ class Rules(common.Rules):
         """Test if users is one of the board's managers"""
         return board.has_manager(user)
 
-    @when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
-    def _(self, user, perm, board):
-        """Test if users is one of the board's managers, if he is he can add new user to the board"""
-        return board.has_manager(user)
-
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Board)")
     def _(self, user, perm, board):
         """Test if users is one of the board's members"""
         return board.has_member(user)
 
-    @when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Board)")
-    def _(self, user, perm, board):
-        return ((board.has_member(user) and board.votes_allowed == VOTES_MEMBERS)
-                or ((board.votes_allowed == VOTES_PUBLIC) and user))
-
-    @when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Board)")
-    def _(self, user, perm, board):
-        return ((board.has_member(user) and board.comments_allowed == COMMENTS_MEMBERS)
-                or ((board.comments_allowed == COMMENTS_PUBLIC) and user))
-
-    @when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Board)")
-    def _(self, user, perm, board):
-        return board.has_member(user) and user
-
-    @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Board)")
-    def _(self, user, perm, board):
-        return board.has_member(user) and user
-
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Column)")
     def _(self, user, perm, column):
         return security.has_permissions('edit', column.board)
-
-    @when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Column)")
-    def _(self, user, perm, column):
-        return security.has_permissions('vote', column.board)
-
-    @when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Column)")
-    def _(self, user, perm, column):
-        return security.has_permissions('comment', column.board)
-
-    @when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Column)")
-    def _(self, user, perm, column):
-        return security.has_permissions('due_date', column.board)
-
-    @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Column)")
-    def _(self, user, perm, column):
-        return security.has_permissions('checklist', column.board)
 
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Card)")
     def _(self, user, perm, card):
         return security.has_permissions('edit', card.column)
 
-    @when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Card)")
-    def _(self, user, perm, card):
-        return security.has_permissions('vote', card.column)
-
-    @when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Card)")
-    def _(self, user, perm, card):
-        return security.has_permissions('comment', card.column)
-
-    @when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Card)")
-    def _(self, user, perm, card):
-        return security.has_permissions('due_date', card.column)
-
-    @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Card)")
-    def _(self, user, perm, card):
-        return security.has_permissions('checklist', card.column)
-
     @when(common.Rules.has_permission, "user and (perm == 'create_board')")
     def _(self, user, perm, subject):
         """If user is logged, he is allowed to create a board"""
         return True
-
-    @when(common.Rules.has_permission, "user and (perm == 'delete_comment')")
-    def _(self, user, perm, comment):
-        return comment.is_author(user)
-
-    @when(common.Rules.has_permission, "user and (perm == 'edit_comment')")
-    def _(self, user, perm, comment):
-        return comment.is_author(user)
 
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, CardsCounter)")
     def _(self, user, perm, CardsCounter):

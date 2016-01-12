@@ -8,11 +8,33 @@
 # this distribution.
 #--
 
-from nagare import database, security
+from nagare import security
+from peak.rules import when
+from nagare.security import common
 
+from kansha.card.comp import Card
+from kansha.board.comp import Board
+from kansha.column.comp import Column
 from kansha.cardextension import CardExtension
+from kansha.board.comp import VOTES_PUBLIC, VOTES_MEMBERS
 
 from .models import DataVote
+
+
+@when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Board)")
+def has_permission_Board_vote(self, user, perm, board):
+    return ((board.has_member(user) and board.votes_allowed == VOTES_MEMBERS)
+            or ((board.votes_allowed == VOTES_PUBLIC) and user))
+
+
+@when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Column)")
+def has_permission_Column_vote(self, user, perm, column):
+    return security.has_permissions('vote', column.board)
+
+
+@when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Card)")
+def has_permission_Card_vote(self, user, perm, card):
+    return security.has_permissions('vote', card.column)
 
 
 class Votes(CardExtension):

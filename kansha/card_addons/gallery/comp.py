@@ -14,6 +14,7 @@ from cgi import FieldStorage
 from webob.exc import HTTPOk
 
 from nagare.i18n import _
+from nagare.security import common
 from nagare import component, security, var
 
 from kansha.user import usermanager
@@ -21,7 +22,7 @@ from kansha.cardextension import CardExtension
 from kansha.authentication.database import validators
 from kansha.services.actionlog.messages import render_event
 
-from .models import DataGallery, DataAsset
+from .models import DataAsset
 
 
 IMAGE_CONTENT_TYPES = ('image/png', 'image/jpeg', 'image/pjpeg', 'image/gif')
@@ -233,3 +234,8 @@ class AssetCropper(object):
     def cancel(self, comp):
         comp.answer(('cancel_cover', self.asset))
 
+
+@when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Gallery)")
+def has_permission_Gallery_edit(self, user, perm, gallery):
+    """Test if description is editable"""
+    return security.has_permissions('edit', gallery.card)

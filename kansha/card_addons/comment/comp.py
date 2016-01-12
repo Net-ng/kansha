@@ -14,15 +14,46 @@ from peak.rules import when
 
 from nagare.i18n import _
 from nagare.database import session
+from nagare.security import common
 from nagare import component, security
 
 from kansha import validator
+from kansha.card.comp import Card
 from kansha.user import usermanager
+from kansha.board.comp import Board
+from kansha.column.comp import Column
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
+from kansha.board.comp import COMMENTS_MEMBERS, COMMENTS_PUBLIC
 
 from .models import DataComment
+
+
+@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Board)")
+def has_permission_Board_comment(self, user, perm, board):
+    return ((board.has_member(user) and board.comments_allowed == COMMENTS_MEMBERS)
+            or ((board.comments_allowed == COMMENTS_PUBLIC) and user))
+
+
+@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Column)")
+def has_permission_Column_comment(self, user, perm, column):
+    return security.has_permissions('comment', column.board)
+
+
+@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Card)")
+def has_permission_Card_comment(self, user, perm, card):
+    return security.has_permissions('comment', card.column)
+
+
+@when(common.Rules.has_permission, "user and (perm == 'delete_comment')")
+def has_permission_delete_comment(self, user, perm, comment):
+    return comment.is_author(user)
+
+
+@when(common.Rules.has_permission, "user and (perm == 'edit_comment')")
+def has_permission_edit_comment(self, user, perm, comment):
+    return comment.is_author(user)
 
 
 @when(render_event, "action=='card_add_comment'")

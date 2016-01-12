@@ -13,14 +13,33 @@ import random
 from peak.rules import when
 
 from nagare.i18n import _
+from nagare.security import common
 from nagare import component, database, i18n, security
 
 from kansha import title
+from kansha.card.comp import Card
+from kansha.board.comp import Board
+from kansha.column.comp import Column
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
 from .models import DataChecklist, DataChecklistItem
+
+
+@when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Board)")
+def has_permission_Board_checklist(self, user, perm, board):
+    return board.has_member(user) and user
+
+
+@when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Column)")
+def has_permission_Column_checklist(self, user, perm, column):
+    return security.has_permissions('checklist', column.board)
+
+
+@when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Card)")
+def has_permission_Card_checklist(self, user, perm, card):
+    return security.has_permissions('checklist', card.column)
 
 
 @when(render_event, "action=='card_add_list'")
@@ -195,7 +214,7 @@ class Checklists(CardExtension):
         return schema.TEXT()
 
     def to_document(self):
-        return u'\n'.join(unicode(cl()) for cl in self.get_data())
+        return u'\n'.join(unicode(cl) for cl in self.get_data())
 
     def get_data(self):
         return DataChecklist.get_data_by_card(self.card.data)

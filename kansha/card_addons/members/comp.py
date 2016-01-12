@@ -9,13 +9,21 @@
 
 from nagare.i18n import _
 from peak.rules import when
+from nagare.security import common
 from nagare import component, security
 
 from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
+from kansha.board.comp import Board
 from kansha.services.actionlog.messages import render_event
 from kansha.cardextension import CardExtension
+
+
+@when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
+def has_permission_Board_add_users(self, user, perm, board):
+    """Test if users is one of the board's managers, if he is he can add new user to the board"""
+    return board.has_manager(user)
 
 
 @when(render_event, "action=='card_add_member'")

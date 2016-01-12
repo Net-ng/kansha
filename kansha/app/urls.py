@@ -14,6 +14,7 @@ from nagare.i18n import _
 from kansha.exceptions import NotFound
 from kansha.authentication.database import forms
 from kansha.user.usermanager import UserManager
+
 from .comp import MainTask
 
 

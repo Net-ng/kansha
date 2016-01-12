@@ -214,7 +214,7 @@ class Checklists(CardExtension):
         return schema.TEXT()
 
     def to_document(self):
-        return u'\n'.join(unicode(cl) for cl in self.data)
+        return u'\n'.join(cl.to_document() for cl in self.data)
 
     @property
     def data(self):

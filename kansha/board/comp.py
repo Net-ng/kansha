@@ -30,7 +30,6 @@ from kansha.user.comp import PendingUser
 from kansha.toolbox import popin, overlay
 from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
-from kansha.cardextension import GetExtensionConfig
 
 from .boardconfig import BoardConfig
 from .templates import SaveTemplateTask
@@ -84,7 +83,14 @@ class Board(events.EventHandlerMixIn):
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine
         self._services = services_service
-        self.card_extensions = card_extensions
+        # Board extensions are not extracted yet, so
+        # board itself implement their API.
+        self.board_extensions = {
+            'weight': self,
+            'labels': self,
+            'members': self
+        }
+        self.card_extensions = card_extensions.set_configurators(self.board_extensions)
 
         self.action_log = ActionLog(self)
 
@@ -223,17 +229,8 @@ class Board(events.EventHandlerMixIn):
                 result = 'reload_search'
             else:
                 result = 'nop'
-        elif event.is_(GetExtensionConfig):
-            result = self.get_card_extension_config(event.data)
 
         return result
-
-    def get_card_extension_config(self, entry_name):
-        # Board extensions are not extracted yet, so
-        # board itself implement their API.
-        # When board extension are OK, we'll return
-        # only the appropriate one given the entry name.
-        return self
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'

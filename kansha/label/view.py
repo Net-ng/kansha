@@ -101,7 +101,6 @@ def render_CardLabels_list(self, h, comp, *args):
 @presentation.render_for(CardLabels)
 def render_CardLabels(self, h, comp, *args):
     """Add or remove labels to card"""
-    self.configure(comp)
     if security.has_permissions('edit', self.card):
         h << self.overlay
     else:

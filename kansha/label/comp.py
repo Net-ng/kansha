@@ -81,13 +81,13 @@ class CardLabels(CardExtension):
 
     LOAD_PRIORITY = 10
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """Initialization
 
         In:
           - ``card`` -- the card object (Card instance)
         """
-        super(CardLabels, self).__init__(card, action_log)
+        super(CardLabels, self).__init__(card, action_log, configurator)
         self.comp_id = str(random.randint(10000, 100000))
         self.labels = [l.id for l in card.get_datalabels()]
         self._comp = component.Component(self)

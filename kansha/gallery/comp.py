@@ -36,13 +36,13 @@ class Gallery(CardExtension):
 
     LOAD_PRIORITY = 40
 
-    def __init__(self, card, action_log, assets_manager_service):
+    def __init__(self, card, action_log, configurator, assets_manager_service):
         """Init method
 
         In:
             - ``card`` -- card component
         """
-        super(Gallery, self).__init__(card, action_log)
+        super(Gallery, self).__init__(card, action_log, configurator)
         self.assets_manager = assets_manager_service
         self.data = DataGallery(self.card)
 

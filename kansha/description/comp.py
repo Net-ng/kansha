@@ -21,13 +21,13 @@ class CardDescription(CardExtension):
 
     LOAD_PRIORITY = 20
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """Initialization
 
         In:
             - ``card`` -- the card
         """
-        super(CardDescription, self).__init__(card, action_log)
+        super(CardDescription, self).__init__(card, action_log, configurator)
         self.text = card.get_description()
 
     def change_text(self, text):

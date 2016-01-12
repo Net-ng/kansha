@@ -182,8 +182,8 @@ class Checklists(CardExtension):
 
     LOAD_PRIORITY = 30
 
-    def __init__(self, card, action_log):
-        super(Checklists, self).__init__(card, action_log)
+    def __init__(self, card, action_log, configurator):
+        super(Checklists, self).__init__(card, action_log, configurator)
         cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in card.get_datalists()]
         self.ck_cache = dict(cklists)
         self.checklists = [component.Component(clist) for __, clist in cklists]

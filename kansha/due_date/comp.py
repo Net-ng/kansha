@@ -19,13 +19,13 @@ class DueDate(CardExtension):
 
     LOAD_PRIORITY = 60
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """Initialization
 
         In:
             - ``card`` -- the object card
         """
-        super(DueDate, self).__init__(card, action_log)
+        super(DueDate, self).__init__(card, action_log, configurator)
         self.value = card.due_date
         self.calendar = calendar_widget.Calendar(self.value, allow_none=True)
         self.calendar = component.Component(self.calendar)

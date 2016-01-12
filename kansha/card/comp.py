@@ -73,8 +73,10 @@ class Card(events.EventHandlerMixIn):
         """
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.extensions = [(name, component.Component(self._services(extension, self, self.action_log)))
-                                for name, extension in self.card_extensions.items()]
+        self.extensions = [
+            (name, component.Component(extension))
+            for name, extension in self.card_extensions.items(self, self.action_log, self._services)
+        ]
 
     @property
     def data(self):
@@ -246,13 +248,13 @@ class CardWeightEditor(editor.Editor, CardExtension):
     WEIGHTING_FREE = 1
     WEIGHTING_LIST = 2
 
-    def __init__(self, target, action_log, *args):
+    def __init__(self, target, action_log, configurator):
         """
         In:
          - ``target`` -- Card instance
         """
         editor.Editor.__init__(self, target, self.fields)
-        CardExtension.__init__(self, target, action_log)
+        CardExtension.__init__(self, target, action_log, configurator)
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
@@ -298,12 +300,12 @@ class CardMembers(CardExtension):
 
     max_shown_members = 3
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """
         Card is a card business object.
         """
 
-        super(CardMembers, self).__init__(card, action_log)
+        super(CardMembers, self).__init__(card, action_log, configurator)
 
         # members part of the card
         self.overlay_add_members = component.Component(

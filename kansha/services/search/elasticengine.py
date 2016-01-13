@@ -29,7 +29,7 @@ class ESMapper(object):
     def match(self, field, value):
         return {'match': {field.name: {'query': value, 'operator': 'and'}}}
 
-    def matchany(self, doctype, value):
+    def matchany(self, schema, value):
         # _all does not make sense for fulltext searches
         # so we use a custom field for that: _full.
         # it only contains TEXT fields
@@ -145,7 +145,7 @@ class ElasticSearchEngine(object):
         doc = 'doc' if update else '_source'
         op = {
             '_index': self.index,
-            '_type': document.__class__.__name__,
+            '_type': document.schema_name,
             '_op_type': 'update' if update else 'create',
             '_id': document._id,
             doc: {k: getattr(document, k)
@@ -161,14 +161,14 @@ class ElasticSearchEngine(object):
         '''
         self._index(document)
 
-    def delete_document(self, doctype, docid):
+    def delete_document(self, schema, docid):
         '''
         Remove document from index and storage.
         '''
         op = {
             '_op_type': 'delete',
             '_index': self.index,
-            '_type': doctype.__name__,
+            '_type': schema.type_name,
             '_id': docid
         }
         self._queue.append(op)
@@ -197,12 +197,13 @@ class ElasticSearchEngine(object):
         Search the database.
         '''
         dsl = query(self.mapper)
+        schema = query.target_schema
         hits = self.es.search(index=self.index,
-                              doc_type=query.queried_doc.__name__,
+                              doc_type=schema.type_name,
                               body={'query': dsl},
                               size=size)
         res = [
-            (h['_score'], query.queried_doc.delta(h['_id'],
+            (h['_score'], schema.delta(h['_id'],
                                                   **h['_source']))
             for h in hits['hits']['hits']
         ]
@@ -212,11 +213,11 @@ class ElasticSearchEngine(object):
         if self.idx_manager.exists(self.index):
             self.idx_manager.delete(index=self.index)
 
-    def create_collection(self, schema):
+    def create_collection(self, schemas):
         '''
         Init the collections the first time.
         Just use once! Or you'll have to reindex all your documents.
-        Schema is a list of Document classes.
+        `schemas` is a list of Document classes or Schema instances.
         '''
 
         idx_manager = self.idx_manager
@@ -224,16 +225,16 @@ class ElasticSearchEngine(object):
             idx_manager.delete(index=self.index)
 
         mappings = {}
-        for doctype in schema:
+        for schema in schemas:
             properties = {'_full': {"type": "string",
                                     "index_analyzer":  "autocomplete",
                                     "search_analyzer": "standard"}}
             excludes = []
-            for name, ftype in doctype.fields.iteritems():
+            for name, ftype in schema.fields.iteritems():
                 properties[name] = ESProperty(ftype)
                 if not ftype.stored:
                     excludes.append(name)
-            mappings[doctype.__name__] = {'properties': properties,
+            mappings[schema.type_name] = {'properties': properties,
                                           '_source': {"excludes": excludes}}
         settings = {
             "number_of_shards": 1,

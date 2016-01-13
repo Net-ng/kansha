@@ -31,10 +31,10 @@ from .query import *
 
 class FieldType(object):
 
-    parent = None
-    name = ''
+    schema = None
 
-    def __init__(self, indexed=True, stored=False, default=None):
+    def __init__(self, name='', indexed=True, stored=False, default=None):
+        self.name = name
         self.indexed = indexed
         self.stored = stored
         if default is not None:
@@ -109,7 +109,7 @@ class DATETIME(FieldType):
     default = datetime.now()
 
 
-class _DocType(type):
+class _Schema(type):
 
     def __new__(cls, name, bases, dct):
         fields = {}
@@ -121,10 +121,11 @@ class _DocType(type):
                 val = aval()
                 val.name = aname
                 fields[aname] = dct[aname] = val
-        klass = super(_DocType, cls).__new__(cls, name, bases, dct)
+        klass = super(_Schema, cls).__new__(cls, name, bases, dct)
         klass.fields = fields
+        klass.type_name = name
         for v in fields.itervalues():
-            v.parent = klass
+            v.schema = klass
         return klass
 
 
@@ -133,10 +134,30 @@ class Document(object):
     '''
     Declarative class for documents.
 
-    The `fields` and `match` attributes are reserved: don't declare properties with those names!
+    The `fields`, 'delta' , 'type_name', 'schema' and `match` attributes are reserved: don't declare properties with those names!
+
+    Usage:
+
+        class MyDocument(schema.Document):
+            title = schema.TEXT(stored=True)
+            tags = schema.TEXT(stored=False)
+            pages = schema.INT(stored=True)
+            description = schema.TEXT
+            price = schema.FLOAT(stored=True, indexed=False)
+
+        doc1 = MyDocument(
+                    'doc1', title=u'Titre', tags=u'Un livre français best seller',
+                    pages=89, description=u'Description de qualité, avec des services.', price=10.0)
+        query = MyDocument.match(u'tests')
+        query = MyDocument.tags.match(u'best')
+        query = (MyDocument.pages == 89) | MyDocument.description.match(
+                    u'practices')
+
     '''
 
-    __metaclass__ = _DocType
+    __metaclass__ = _Schema
+
+    type_name = 'Document'
 
     def __init__(self, docid, **fields):
         '''
@@ -152,18 +173,127 @@ class Document(object):
         for fname, fvalue in self.fields.iteritems():
             setattr(self, fname, fields.get(fname, fvalue.default))
 
+    @property
+    def schema(self):
+        return self.__class__
+
+    @property
+    def schema_name(self):
+        return self.__class__.type_name
+
     @classmethod
     def delta(cls, docid, **fields):
         '''
         Alternate constructor to build delta documents.
         Fields values not specified to the constructor are set to None.
         '''
-        for fname in cls.fields:
-            if fname not in fields:
-                fields[fname] = None
+        for fname in set(cls.fields) - set(fields):
+            fields[fname] = None
         return cls(docid, **fields)
 
     @classmethod
     def match(cls, v):
         '''Full text specific: match any of the fields'''
         return MATCHANYQuery(cls, v)
+
+
+class AltDocument(object):
+    '''Document Type for documents instanciated by a Schema object.'''
+
+    def __init__(self, schema, fields, docid, **field_values):
+        self._id = docid
+        self.fields = fields
+        self.schema = schema
+        for name, field in fields.iteritems():
+            setattr(self, name, field_values.get(name, field.default))
+
+    @property
+    def schema_name(self):
+        return self.schema.type_name
+
+
+class Schema(object):
+    '''Imperatively build a Document schema.
+
+    Same reserved keywords as the Declarative Schema.
+
+    Usage:
+
+        TestDocument = schema.Schema(
+            'MyDocument',
+            schema.TEXT('title', stored=True),
+            schema.TEXT('tags', stored=False),
+            schema.INT('pages', stored=True),
+            schema.TEXT('description'),
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
+
+    or
+
+        # Incrementaly update schema "in place"
+        TestDocument = schema.Schema('MyDocument')
+        TestDocument.add_field(schema.TEXT('title', stored=True))
+        TestDocument.add_field(schema.TEXT('tags', stored=False))
+        TestDocument.add_field(schema.INT('pages', stored=True))
+        TestDocument.add_field(schema.TEXT('description'))
+        TestDocument.add_field(schema.FLOAT('price', stored=True, indexed=False))
+
+    or create new schema from existing one
+
+        TestDocument2 = TestDocument + schema.TEXT('author')
+        TestDocument2.type_name = 'IdentifiedDocument'
+
+    TestDocument is then used as if it was a Declarative Document schema.
+    '''
+
+    def __init__(self, name, *fields):
+        self.type_name = name
+        self.fields = {}
+        for field in fields:
+            self.add_field(field)
+
+    def add_field(self, field):
+        """Update schema in place."""
+        assert(field.name)
+        assert(field.name != 'schema')
+        assert(not hasattr(self, field.name))
+        field.schema = self
+        self.fields[field.name] = field
+
+    def __add__(self, field):
+        """Create a new augmented schema."""
+        new_schema = Schema(self.type_name, *self.fields.values())
+        new_schema.add_field(field)
+        return new_schema
+
+    def __call__(self, docid, **fields):
+        '''
+        Document factory.
+        Instanciate new document.
+        The caller is responsible for giving a (preferably) unique id to the document.
+        The id is not part of the schema declaration and is mandatory.
+        it can be used to track the document's origin for example.
+        Fields values not specified to the constructor are set to their defaults.
+        Fields set to None are ignored (that is, in case of update,
+        they are left untouched in the index).
+        '''
+        return AltDocument(self, self.fields, docid, **fields)
+
+    def delta(self, docid, **fields):
+        '''
+        Alternate constructor to build delta documents.
+        Fields values not specified to the constructor are set to None.
+        '''
+        for fname in set(self.fields) - set(fields):
+            fields[fname] = None
+        return self(docid, **fields)
+
+    def match(self, v):
+        '''Full text specific: match any of the fields'''
+        return MATCHANYQuery(self, v)
+
+    def __getattr__(self, name):
+        try:
+            return self.fields[name]
+        except KeyError:
+            raise AttributeError(name)

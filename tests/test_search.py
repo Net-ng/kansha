@@ -40,7 +40,7 @@ class TestSchema(unittest.TestCase):
         self.assertIsInstance(self.Doc.title, schema.TEXT)
         self.assertEqual(self.Doc.price.indexed, False)
         self.assertIsInstance(self.Doc.description, schema.TEXT)
-        self.assertEqual(self.Doc.title.parent, MyDocument)
+        self.assertEqual(self.Doc.title.schema, self.Doc)
         self.assertEqual(self.Doc.pages.name, 'pages')
 
     def test_instance_default_attributes(self):
@@ -59,6 +59,46 @@ class TestSchema(unittest.TestCase):
         self.assertEqual(doc.price, 5.6, u'attribute not set')
 
 
+class TestImpSchema(TestSchema):
+
+    def setUp(self):
+        TestDocument = schema.Schema('MyDocument')
+        TestDocument.add_field(schema.TEXT('title', stored=True))
+        TestDocument.add_field(schema.TEXT('tags', stored=False))
+        TestDocument.add_field(schema.INT('pages', stored=True))
+        TestDocument.add_field(schema.TEXT('description'))
+        TestDocument.add_field(schema.FLOAT('price', stored=True, indexed=False))
+        self.Doc = TestDocument
+
+
+class TestImpSchemaAltSyntax(TestSchema):
+
+    def setUp(self):
+        TestDocument = (
+            schema.Schema('MyDocument') +
+            schema.TEXT('title', stored=True) +
+            schema.TEXT('tags', stored=False) +
+            schema.INT('pages', stored=True) +
+            schema.TEXT('description') +
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
+        self.Doc = TestDocument
+
+
+class TestImpSchemaConstructor(TestSchema):
+
+    def setUp(self):
+        TestDocument = schema.Schema(
+            'MyDocument',
+            schema.TEXT('title', stored=True),
+            schema.TEXT('tags', stored=False),
+            schema.INT('pages', stored=True),
+            schema.TEXT('description'),
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
+        self.Doc = TestDocument
+
+
 class SearchTestCase(object):
 
     collection = u'test'
@@ -69,22 +109,24 @@ class SearchTestCase(object):
     def setUp(self):
         self.engine = self._create_search_engine()
         self.engine.create_collection([MyDocument, Person])
+        self.MyDocument = MyDocument
+        self.Person = Person
 
     def tearDown(self):
         self.engine.delete_collection()
 
     def load_documents(self):
         '''helper function'''
-        doc1 = MyDocument(
+        doc1 = self.MyDocument(
             'doc1', title=u'Titre', tags=u'Un livre français best seller',
             pages=89, description=u'Description de qualité, avec des services.', price=10.0)
-        doc2 = MyDocument(
+        doc2 = self.MyDocument(
             'doc2', title=u'Unit tests', tags=u'quality software',
             pages=89, description=u'Best practices and services.', price=9.90)
-        doc3 = Person(
+        doc3 = self.Person(
             'p1', firstname=u'John', lastname=u'Doe', height=180,
             weight=80.5, age=40)
-        doc4 = Person(
+        doc4 = self.Person(
             'p2', firstname=u'Joan', lastname=u'Watson', height=170,
             weight=60, age=42)
         self.engine.add_document(doc1)
@@ -98,18 +140,18 @@ class SearchTestCase(object):
 
     def test_remove_document(self):
         self.load_documents()
-        self.engine.delete_document(MyDocument, 'doc1')
+        self.engine.delete_document(self.MyDocument, 'doc1')
         self.engine.commit(sync=True)
-        query = MyDocument.match(u'best')
+        query = self.MyDocument.match(u'best')
         res = self.engine.search(query)
         self.assertEqual(len(res), 1)
 
     def test_update_document(self):
         self.load_documents()
-        doc = MyDocument.delta('doc1', title=u'Titre augmenté')
+        doc = self.MyDocument.delta('doc1', title=u'Titre augmenté')
         self.engine.update_document(doc)
         self.engine.commit(sync=True)
-        query = MyDocument.match(u'augmenté')
+        query = self.MyDocument.match(u'augmenté')
         res = self.engine.search(query)
         self.assertEqual(len(res), 1)
         assert(res[0][1].title == u'Titre augmenté'
@@ -117,10 +159,10 @@ class SearchTestCase(object):
 
     def test_match_all(self):
         self.load_documents()
-        query = MyDocument.match(u'best')
+        query = self.MyDocument.match(u'best')
         res = self.engine.search(query)
         self.assertEqual(len(res), 2)
-        query = MyDocument.match(u'tests')
+        query = self.MyDocument.match(u'tests')
         res = self.engine.search(query)
         self.assertEqual(res[0][1]._id, 'doc2')
         self.assertEqual(res[0][1].title, u'Unit tests')
@@ -128,58 +170,81 @@ class SearchTestCase(object):
 
     def test_match_field(self):
         self.load_documents()
-        query = MyDocument.tags.match(u'best')
+        query = self.MyDocument.tags.match(u'best')
         res = self.engine.search(query)
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0][1].title, u'Titre')
 
     def test_equal_field(self):
         self.load_documents()
-        res = self.engine.search(MyDocument.pages == 89)
+        res = self.engine.search(self.MyDocument.pages == 89)
         self.assertEqual(len(res), 2)
-        res = self.engine.search(Person.lastname == u'Doe')
+        res = self.engine.search(self.Person.lastname == u'Doe')
         self.assertEqual(len(res), 1)
 
     def test_unindexed_field(self):
         '''Would fails on SQLite for operators other than match'''
         self.load_documents()
-        res = self.engine.search(Person.age == 40)
+        res = self.engine.search(self.Person.age == 40)
         if not isinstance(self.engine, sqliteengine.SQLiteFTSEngine):
             self.assertEqual(len(res), 0)  # age not indexed
 
     def test_partial_match(self):
         self.load_documents()
-        res = self.engine.search(MyDocument.match(u'qualit'))
+        res = self.engine.search(self.MyDocument.match(u'qualit'))
         self.assertEqual(len(res), 2)
 
     def test_disjonction(self):
         '''Fails on SQLite if both use match'''
         self.load_documents()
-        query = (MyDocument.pages == 89) | MyDocument.description.match(
+        query = (self.MyDocument.pages == 89) | self.MyDocument.description.match(
             u'practices')
         res = self.engine.search(query)
         self.assertEqual(len(res), 2)
 
     def test_disjonction_fail(self):
         self.assertRaises(AssertionError, lambda: (
-            MyDocument.pages == 89) | Person.firstname.match(u'John'))
+            self.MyDocument.pages == 89) | self.Person.firstname.match(u'John'))
 
     def test_multiterm(self):
         '''All terms must be present'''
         self.load_documents()
-        query = MyDocument.match(u'quality services')
+        query = self.MyDocument.match(u'quality services')
         res = self.engine.search(query)
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0][1]._id, 'doc2')
-        query = MyDocument.match(u'quality description')
+        query = self.MyDocument.match(u'quality description')
         res = self.engine.search(query)
         self.assertEqual(len(res), 0)
 
     def test_special_chars(self):
         self.load_documents()
-        query = MyDocument.match('"best')
+        query = self.MyDocument.match('"best')
         res = self.engine.search(query)
         self.assertEqual(len(res), 2)
+
+
+class ImpSchemaSearchTestCase(SearchTestCase):
+
+    def setUp(self):
+        MyDocument_ = schema.Schema('MyDocument')
+        MyDocument_.add_field(schema.TEXT('title', stored=True))
+        MyDocument_.add_field(schema.TEXT('tags', stored=False))
+        MyDocument_.add_field(schema.INT('pages', stored=True))
+        MyDocument_.add_field(schema.TEXT('description'))
+        MyDocument_.add_field(schema.FLOAT('price', stored=True, indexed=False))
+
+        Person_ = schema.Schema('Person')
+        Person_.add_field(schema.KEYWORD('firstname', stored=True))
+        Person_.add_field(schema.KEYWORD('lastname', stored=True))
+        Person_.add_field(schema.FLOAT('height'))
+        Person_.add_field(schema.FLOAT('weight'))
+        Person_.add_field(schema.INT('age', stored=True, indexed=False))
+
+        self.engine = self._create_search_engine()
+        self.engine.create_collection([MyDocument_, Person_])
+        self.MyDocument = MyDocument_
+        self.Person = Person_
 
 
 class TestSQLiteEngine(SearchTestCase, unittest.TestCase):
@@ -189,6 +254,21 @@ class TestSQLiteEngine(SearchTestCase, unittest.TestCase):
 
 
 class TestElasticEngine(SearchTestCase, unittest.TestCase):
+
+    def _create_search_engine(self):
+        try:
+            return elasticengine.ElasticSearchEngine(self.collection)
+        except ValueError as exc:
+            self.skipTest(unicode(exc))
+
+
+class TestSQLiteEngineImpSchema(ImpSchemaSearchTestCase, unittest.TestCase):
+
+    def _create_search_engine(self):
+        return sqliteengine.SQLiteFTSEngine(self.collection, u'/tmp')
+
+
+class TestElasticEngineImpSchema(ImpSchemaSearchTestCase, unittest.TestCase):
 
     def _create_search_engine(self):
         try:

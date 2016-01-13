@@ -26,8 +26,8 @@ class SQLiteFTSMapper(object):
         # sqlite does not analyse, do it ourselves
         return (query, (unialpha.sub(u' ', value) + u'*',))
 
-    def matchany(self, doctype, value):
-        query = '%s match ?' % doctype.__name__
+    def matchany(self, schema, value):
+        query = '%s match ?' % schema.type_name
         return (query, (unialpha.sub(u' ', value) + u'*',))
 
     def eq(self, field, value):
@@ -111,13 +111,13 @@ class SQLiteFTSEngine(object):
     def add_document(self, document):
         '''
         Add a document to the data store, in collection (a.k.a. index)
-        `collection`, under the document type (a.k.a. schema) `doctype`.
+        `collection`, under the document type (a.k.a. schema) `schema`.
 
         '''
         c = self._get_cursor()
-        # neither doctype nor fields keys are user inputs, so this is safe
+        # neither schema nor fields keys are user inputs, so this is safe
         query_base = ('insert into %s(id,%s) values (%s)' %
-                      (document.__class__.__name__,
+                      (document.schema_name,
                        ','.join(document.fields.keys()),
                        ','.join(('?',) * (len(document.fields) + 1))
                        )
@@ -126,12 +126,12 @@ class SQLiteFTSEngine(object):
                                    for field in document.fields.iterkeys()]
         c.execute(query_base, params)
 
-    def delete_document(self, doctype, docid):
+    def delete_document(self, schema, docid):
         '''
         Remove document from index and storage.
         '''
         c = self._get_cursor()
-        c.execute('delete from %s where id=?' % doctype.__name__, (docid,))
+        c.execute('delete from %s where id=?' % schema.type_name, (docid,))
 
     def update_document(self, document):
         '''Update document'''
@@ -143,7 +143,7 @@ class SQLiteFTSEngine(object):
                 qset.append("%s = ?" % f)
                 params.append(v)
         query = 'update %s set %s where id=?' % (
-            document.__class__.__name__, ', '.join(qset))
+            document.schema_name, ', '.join(qset))
         params.append(document._id)
         c = self._get_cursor()
         c.execute(query, params)
@@ -169,52 +169,52 @@ class SQLiteFTSEngine(object):
         Search the database.
         '''
         where, params = query(self.mapper)
-        doctype = query.queried_doc
+        schema = query.target_schema
         c = self._get_cursor()
         sql = 'select id as docid, %s from %s where %s limit %s' % (
-            ', '.join(f.name for f in doctype.fields.itervalues()
+            ', '.join(f.name for f in schema.fields.itervalues()
                       if f.stored),
-            doctype.__name__, where, size
+            schema.type_name, where, size
         )
         c.execute(sql, params)
         fields = [d[0].lower() for d in c.description]
         # no score function in sqlite, so every result is given weight 1
-        l = [(1, doctype.delta(**dict(zip(fields, row))))
+        l = [(1, schema.delta(**dict(zip(fields, row))))
              for row in c.fetchall()]
         return l
 
     def delete_collection(self):
         self._dropdb()
 
-    def create_collection(self, schema):
+    def create_collection(self, schemas):
         '''
         Init the collections the first time.
         Just use once! Or you'll have to reindex all your documents.
-        Schema is a list of Document classes.
+        `schemas` is a list of Document classes or Schema instances.
         '''
         c = self._get_cursor()
-        for doctype in schema:
+        for schema in schemas:
             # no type declaration on FTS tables, so we ignore
-            # doctype.fields.values
-            c.execute('drop table if exists %s' % doctype.__name__)
+            # schema.fields.values
+            c.execute('drop table if exists %s' % schema.type_name)
             notindexed = ['notindexed=id']
-            for fname, field in doctype.fields.iteritems():
+            for fname, field in schema.fields.iteritems():
                 if not field.indexed:
                     notindexed.append("notindexed=" + fname)
             slversion = sqlite3.sqlite_version_info[:3]
             if slversion > (3, 8, 0):
                 c.execute(
                     '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7", %s);''' %
-                    (doctype.__name__,
-                     ','.join(doctype.fields.keys()),
+                    (schema.type_name,
+                     ','.join(schema.fields.keys()),
                      ','.join(notindexed))
                 )
             elif slversion > (3, 7, 7):
                 print "Warning: older version of sqlite3 detected, please upgrade to sqlite 3.8.0 or newer."
                 c.execute(
                     '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7");''' %
-                    (doctype.__name__,
-                     ','.join(doctype.fields.keys()))
+                    (schema.type_name,
+                     ','.join(schema.fields.keys()))
                 )
             else:
                 raise ImportError('Your version of sqlite3 is too old, please upgrade to sqlite 3.8.0 or newer.')

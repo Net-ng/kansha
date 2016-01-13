@@ -209,7 +209,7 @@ def render_new_card_add(self, h, comp, *args):
 # TODO should be in due_date extension
 @peak.rules.when(ajax.py2js, (Card,))
 def py2js(card, h):
-    due_date = dict(card.extensions)['due_date']().value
+    due_date = dict(card.extensions)['due_date']().due_date
     if not due_date:
         return None
     due_date = ajax.py2js(due_date, h)

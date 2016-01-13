@@ -29,10 +29,11 @@ def upgrade():
     elixir.metadata.bind = bind
     elixir.setup_all()
     elixir.create_all()
+    is_sqlite = bind.engine.name == 'sqlite'
 
     select = sa.text('SELECT id, description, due_date, weight FROM card')
     for card_id, description, due_date, weight in bind.execute(select):
-        if due_date is not None:
+        if due_date is not None and is_sqlite:
             due_date = time.strptime(due_date, '%Y-%m-%d')
             due_date = date(due_date.tm_year, due_date.tm_mon, due_date.tm_mday)
         DataCardDescription(card_id=card_id, description=description)
@@ -41,9 +42,10 @@ def upgrade():
 
     session.flush()
 
-    op.drop_column('card', 'description')
-    op.drop_column('card', 'due_date')
-    op.drop_column('card', 'weight')
+    if not is_sqlite: # SQLite doesn't support column dropping
+        op.drop_column('card', 'description')
+        op.drop_column('card', 'due_date')
+        op.drop_column('card', 'weight')
 
 
 def downgrade():

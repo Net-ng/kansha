@@ -543,13 +543,6 @@ div.history th {
 }
 /* End nb items */
 
-/* Resync content */
-#resync h2 {
-    color: inherit;
-    font: normal 30px OpenSansLight;
-}
-/* End resync content */
-
 /* Responsive */
 @media (max-width: 813px) {
     .row > .list {

@@ -32,9 +32,9 @@ from .query import *
 class FieldType(object):
 
     parent = None
-    name = ''
 
-    def __init__(self, indexed=True, stored=False, default=None):
+    def __init__(self, name='', indexed=True, stored=False, default=None):
+        self.name = name
         self.indexed = indexed
         self.stored = stored
         if default is not None:
@@ -201,6 +201,9 @@ class Schema(object):
         return self.name
 
     def add_field(self, name, field):
+
+        assert(name != 'doc_type')
+        assert(not hasattr(self, name))
         if isinstance(field, FieldType):
             field.name = name
             field.parent = self
@@ -210,6 +213,12 @@ class Schema(object):
             field_object.name = name
             field_object.parent = self
             self.fields[name] = field_object
+
+    def __add__(self, field):
+        """Alternate syntax. Requires named field instances."""
+        assert(field.name)
+        self.add_field(field.name, field)
+        return self
 
     def __call__(self, docid, **fields):
         '''

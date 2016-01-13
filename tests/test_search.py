@@ -70,6 +70,19 @@ class TestImpSchema(TestSchema):
         TestDocument.add_field('price', schema.FLOAT(stored=True, indexed=False))
         self.Doc = TestDocument
 
+class TestImpSchemaAltSyntax(TestSchema):
+
+    def setUp(self):
+        TestDocument = (
+            schema.Schema('MyDocument') +
+            schema.TEXT('title', stored=True) +
+            schema.TEXT('tags', stored=False) +
+            schema.INT('pages', stored=True) +
+            schema.TEXT('description') +
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
+        self.Doc = TestDocument
+
 
 class SearchTestCase(object):
 

@@ -134,7 +134,25 @@ class Document(object):
     '''
     Declarative class for documents.
 
-    The `fields` and `match` attributes are reserved: don't declare properties with those names!
+    The `fields`, 'delta' , 'type_name', 'doc_type' and `match` attributes are reserved: don't declare properties with those names!
+
+    Usage:
+
+        class MyDocument(schema.Document):
+            title = schema.TEXT(stored=True)
+            tags = schema.TEXT(stored=False)
+            pages = schema.INT(stored=True)
+            description = schema.TEXT
+            price = schema.FLOAT(stored=True, indexed=False)
+
+        doc1 = MyDocument(
+                    'doc1', title=u'Titre', tags=u'Un livre français best seller',
+                    pages=89, description=u'Description de qualité, avec des services.', price=10.0)
+        query = MyDocument.match(u'tests')
+        query = MyDocument.tags.match(u'best')
+        query = (MyDocument.pages == 89) | MyDocument.description.match(
+                    u'practices')
+
     '''
 
     __metaclass__ = _DocType
@@ -192,7 +210,32 @@ class AltDocument(object):
 
 
 class Schema(object):
-    '''Imperatively build a Document schema'''
+    '''Imperatively build a Document schema.
+
+    Same reserved keywords as the Declarative Schema.
+
+    Usage:
+
+        TestDocument = schema.Schema('MyDocument')
+        TestDocument.add_field('title', schema.TEXT(stored=True))
+        TestDocument.add_field('tags', schema.TEXT(stored=False))
+        TestDocument.add_field('pages', schema.INT(stored=True))
+        TestDocument.add_field('description', schema.TEXT)
+        TestDocument.add_field('price', schema.FLOAT(stored=True, indexed=False))
+
+    or
+
+        TestDocument = (
+            schema.Schema('MyDocument') +
+            schema.TEXT('title', stored=True) +
+            schema.TEXT('tags', stored=False) +
+            schema.INT('pages', stored=True) +
+            schema.TEXT('description') +
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
+
+    TestDocument is then used as if it was a Declarative Document schema.
+    '''
 
     def __init__(self, name):
         self.type_name = name

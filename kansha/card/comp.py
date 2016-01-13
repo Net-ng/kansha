@@ -79,7 +79,7 @@ class Card(events.EventHandlerMixIn):
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.extensions = [
             (name, component.Component(extension))
-            for name, extension in self.card_extensions.items(self, self.action_log, self._services)
+            for name, extension in self.card_extensions.instantiate_items(self, self.action_log, self._services)
         ]
 
     @property

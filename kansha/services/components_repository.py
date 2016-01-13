@@ -26,11 +26,11 @@ class CardExtensions(plugins.Plugins):
         repository.CONFIGURATORS = configurators
         return repository
 
-    def items(self, card, action_log, services_service):
+    def instantiate_items(self, card, action_log, services_service):
         """
         Return items as CardExtension instances for given card.
         """
         return [
             (name, services_service(klass, card, action_log, self.CONFIGURATORS.get(name)))
-            for name, klass in super(CardExtensions, self).items()
+            for name, klass in self.items()
         ]

@@ -378,3 +378,10 @@ a:hover .ico-btn {
     padding: 8px 15px;
 }
 /* End modal window */
+
+/* Resync content */
+#resync h2 {
+    color: inherit;
+    font: normal 30px OpenSansLight;
+}
+/* End resync content */

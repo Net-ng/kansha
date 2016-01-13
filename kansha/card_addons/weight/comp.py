@@ -40,7 +40,7 @@ class CardWeightEditor(CardExtension):
         """
         CardExtension.__init__(self, card, action_log, configurator)
         self.card = card
-        self.weight = editor.Property(self.data.weight)
+        self.weight = editor.Property(self.data.weight if self.data.weight else u'')
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 

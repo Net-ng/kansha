@@ -988,16 +988,6 @@ div.history th {
 }
 /* End nb items */
 
-/* Resync content */
-#resync .content {
-    padding: 10px 0;
-}
-
-#resync h2 {
-    line-height: 1.2;
-}
-/* End resync content */
-
 /* Responsive */
 @media all and (max-width: 1360px) {
     .list-header {

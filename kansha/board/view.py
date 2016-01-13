@@ -64,6 +64,7 @@ def render_Board_menu(self, h, comp, *args):
     return h.root
 
 
+@security.permissions('view')
 @presentation.render_for(Board)
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
@@ -77,7 +78,6 @@ def render_Board(self, h, comp, *args):
     h.head.javascript('searchinput', '''jQuery(document).ready(function ($) { $('#search').searchInput(); });''')
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
-    security.check_permissions('view', self)
     if security.has_permissions('edit', self):
         h << comp.render(h, "menu")
 

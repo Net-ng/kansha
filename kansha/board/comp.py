@@ -206,7 +206,7 @@ class Board(events.EventHandlerMixIn):
             additional_data['labels'].append(new_label)
             new_board.labels.append(new_label)
 
-        assert(self.columns or self.data.template)
+        assert(self.columns or self.data.is_template)
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
             new_col = column.copy(new_board, additional_data)
@@ -307,6 +307,7 @@ class Board(events.EventHandlerMixIn):
         """
         return len(self.columns)
 
+    @security.permissions('edit')
     def create_column(self, index, title, nb_cards=None):
         """Create a new column in the board
 
@@ -317,7 +318,6 @@ class Board(events.EventHandlerMixIn):
         """
         if index < 0:
             index = index + len(self.columns) + 1
-        security.check_permissions('edit', self)
         if title == '':
             return False
         col = self.data.create_column(index, title, nb_cards)
@@ -329,21 +329,20 @@ class Board(events.EventHandlerMixIn):
         self.increase_version()
         return col_obj
 
+    @security.permissions('edit')
     def delete_column(self, col_comp):
         """Delete a board's column
 
         In:
             - ``id_`` -- the id of the column to delete
         """
-
-        security.check_permissions('edit', self)
         self.columns.remove(col_comp)
         col_comp().delete()
         self.increase_version()
         return popin.Empty()
 
+    @security.permissions('edit')
     def update_card_position(self, data):
-        security.check_permissions('edit', self)
         data = json.loads(data)
 
         cols = {}
@@ -368,8 +367,8 @@ class Board(events.EventHandlerMixIn):
         self.search_engine.commit()
         session.flush()
 
+    @security.permissions('edit')
     def update_column_position(self, data):
-        security.check_permissions('edit', self)
         data = json.loads(data)
         cols = []
         found = None

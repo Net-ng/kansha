@@ -72,14 +72,15 @@ class Card(events.EventHandlerMixIn):
                                for name, extension in self.extensions]
         return new_card
 
-
     def refresh(self):
         """Refresh the sub components
         """
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.extensions = [(name, component.Component(self._services(extension, self, self.action_log)))
-                                for name, extension in self.card_extensions.items()]
+        self.extensions = [
+            (name, component.Component(extension))
+            for name, extension in self.card_extensions.items(self, self.action_log, self._services)
+        ]
 
     @property
     def data(self):
@@ -141,27 +142,10 @@ class Card(events.EventHandlerMixIn):
     # Feature methods, persistency #
     ################################
 
-    @property
-    def board(self):  # still needed by some extensions, no the card itself.
-        return self.column.board
-
     # Members
 
-    def get_available_users(self):
-        """
-        Return:
-            - a set of user (UserData instance)
-        """
-        return set(self.column.get_available_users()) | set(self.column.get_pending_users()) - set(self.data.members)
-
     def add_member(self, new_data_member):
-        data = self.data
-        added = False
-        if (new_data_member not in data.members and
-                new_data_member in self.get_available_users()):
-            data.members.append(new_data_member)
-            added = True
-        return added
+        self.data.members.append(new_data_member)
 
     def remove_member(self, data_member):
         self.data.remove_member(data_member)
@@ -169,27 +153,6 @@ class Card(events.EventHandlerMixIn):
     @property
     def members(self):
         return self.data.members
-
-    @property
-    def favorites(self):
-        """Return favorites users for a given card
-
-        Ask favorites to self.column
-        Store favorites in self._favorites to avoid CallbackLookupError
-
-        Return:
-            - list of favorites (usernames)
-        """
-        # to be optimized later if still exists
-        member_usernames = set(member.username for member in self.members)
-        # FIXME: don't reference parent
-        board_user_stats = [(nb_cards, username) for username, nb_cards in self.column.favorites.iteritems()]
-        board_user_stats.sort(reverse=True)
-        # Take the 5 most popular that are not already affected to this card
-        self._favorites = [username
-                           for (__, username) in board_user_stats
-                           if username not in member_usernames]
-        return self._favorites[:5]
 
     def remove_board_member(self, member):
         """Member removed from board
@@ -202,14 +165,3 @@ class Card(events.EventHandlerMixIn):
         """
         self.data.remove_member(member.get_user_data())
         self.refresh()  # brute force solution until we have proper communication between extensions
-
-    # Label methods
-
-    def get_available_labels(self):
-        return self.column.get_available_labels()
-
-    # Weight
-
-    def weighting_on(self):
-        return self.board.weighting_cards
-

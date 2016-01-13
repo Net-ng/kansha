@@ -143,14 +143,14 @@ class Comments(CardExtension):
     """Comments component
     """
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """Initialization
 
         In:
             - ``parent`` -- the parent card
             - ``comments`` -- the comments of the card
         """
-        super(Comments, self).__init__(card, action_log)
+        super(Comments, self).__init__(card, action_log, configurator)
         self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 
     @staticmethod

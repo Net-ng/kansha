@@ -82,13 +82,13 @@ class CardLabels(CardExtension):
 
     LOAD_PRIORITY = 10
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """Initialization
 
         In:
           - ``card`` -- the card object (Card instance)
         """
-        super(CardLabels, self).__init__(card, action_log)
+        super(CardLabels, self).__init__(card, action_log, configurator)
         self.comp_id = str(random.randint(10000, 100000))
         self.labels = [l.id for l in self.data]
         self._comp = component.Component(self)
@@ -132,7 +132,7 @@ class CardLabels(CardExtension):
     def get_available_labels(self):
         """Returns the labels available in the card's board
         """
-        return self.card.get_available_labels()
+        return self.configurator.labels if self.configurator else []
 
     def activate(self, label_id):
         """Adds/removes a label to the current card.

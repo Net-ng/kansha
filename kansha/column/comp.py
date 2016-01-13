@@ -136,17 +136,6 @@ class Column(events.EventHandlerMixIn):
             return i18n._(u'Archived cards')
         return self.data.title
 
-    @property
-    def favorites(self):
-        """Return favorites users for a given column
-
-        Ask favorites to board
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        return self.board.favorites
-
     def get_member_stats(self):
         """Return the most used users in this column
 
@@ -174,13 +163,6 @@ class Column(events.EventHandlerMixIn):
         for c in self.cards:
             if isinstance(c(), comp.Card):
                 c().remove_board_member(member)
-
-    def get_available_users(self):
-        """Return users authorized to be add on this column"""
-        return set(self.board.get_available_users())
-
-    def get_pending_users(self):
-        return set(self.board.get_pending_users())
 
     def delete(self, purge=False):
         """Delete itself"""
@@ -279,9 +261,6 @@ class Column(events.EventHandlerMixIn):
                 u'card_create', values)
             self.index_cards([card_obj])
             return card_obj
-
-    def get_available_labels(self):
-        return self.board.labels
 
     def change_index(self, new_index):
         """Change index of the column

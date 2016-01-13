@@ -119,6 +119,10 @@ class DataUser(Entity):
             self.change_password('passwd')
             self.email_to_confirm = None
 
+    @property
+    def id(self):
+        return self.username
+
     def update(self, fullname, email, picture=None):
         self.fullname = fullname
         if email:

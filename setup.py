@@ -91,7 +91,7 @@ setup(
       due_date = kansha.card_addons.due_date.comp:DueDate
       votes = kansha.card_addons.vote.comp:Votes
       weight = kansha.card_addons.weight:CardWeightEditor
-      card_members = kansha.card_addons.members:CardMembers
+      members = kansha.card_addons.members:CardMembers
 
       [nagare.applications]
       kansha = kansha.app:app

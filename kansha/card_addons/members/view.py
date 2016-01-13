@@ -23,9 +23,9 @@ def render_card_members(self, h, comp, *args):
     """
     with h.div(class_='members'):
         h << h.script('''YAHOO.kansha.app.hideOverlay();''')
-        for m in self.members[:self.MAX_SHOWN_MEMBERS]:
+        for m in self.members[:self.max_shown_members]:
             h << m.on_answer(self.remove_member).render(h, model="overlay-remove")
-        if len(self.members) > self.MAX_SHOWN_MEMBERS:
+        if len(self.members) > self.max_shown_members:
             h << h.div(self.see_all_members, class_='more')
         h << h.div(self.overlay_add_members, class_='add')
     return h.root
@@ -46,11 +46,11 @@ def render_card_members_read_only(self, h, comp, *args):
     And at the end icon "add user"
     """
     with h.div(class_='members'):
-        for m in self.members[:self.MAX_SHOWN_MEMBERS]:
+        for m in self.members[:self.max_shown_members]:
             member = m.render(h, 'avatar')
             member.attrib.update({'class': 'miniavatar unselectable'})
             h << member
-        if len(self.members) > self.MAX_SHOWN_MEMBERS:
+        if len(self.members) > self.max_shown_members:
             h << h.div(self.see_all_members, class_='more')
     return h.root
 
@@ -59,12 +59,12 @@ def render_card_members_read_only(self, h, comp, *args):
 def render_members_members_list_overlay(self, h, comp, *args):
     """Overlay to list all members"""
     h << h.h2(_('All members'))
-    with h.form:
-        with h.div(class_="members"):
-            if security.has_permissions('edit', self.card):
-                h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
-            else:
-                h << [m.render(h, "avatar") for m in self.members]
+    # with h.form:
+    with h.div(class_="members"):
+        if security.has_permissions('edit', self.card):
+            h << [m.on_answer(comp.answer).render(h, "remove") for m in self.members]
+        else:
+            h << [m.render(h, "avatar") for m in self.members]
     return h.root
 
 
@@ -90,7 +90,7 @@ def render_members_add_member_overlay(self, h, comp, *args):
 
 @presentation.render_for(CardMembers, 'more_users')
 def render_members_many_user(self, h, comp, *args):
-    number = len(self.card.members) - self.MAX_SHOWN_MEMBERS
+    number = len(self.card.members) - self.max_shown_members
     return h.span(
         h.i(class_='ico-btn icon-user'),
         h.span(number, class_='count'),

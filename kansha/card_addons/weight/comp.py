@@ -33,12 +33,12 @@ class CardWeightEditor(CardExtension):
     WEIGHTING_FREE = 1
     WEIGHTING_LIST = 2
 
-    def __init__(self, card, action_log, *args):
+    def __init__(self, card, action_log, configurator):
         """
         In:
          - ``target`` -- Card instance
         """
-        CardExtension.__init__(self, card, action_log)
+        CardExtension.__init__(self, card, action_log, configurator)
         self.card = card
         self.weight = editor.Property(self.data.weight)
         self.weight.validate(self.validate_weight)
@@ -62,6 +62,14 @@ class CardWeightEditor(CardExtension):
         if value:
             validator.IntValidator(value).to_int()
         return value
+
+    @property
+    def weighting_switch(self):
+        return self.configurator.weighting_cards if self.configurator else self.WEIGHTING_OFF
+
+    @property
+    def allowed_weights(self):
+        return self.configurator.weights if self.configurator else ''
 
     def commit(self):
         success = False

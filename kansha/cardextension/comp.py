@@ -9,13 +9,16 @@
 
 from nagare.services import plugin
 
+from kansha.events import EventHandlerMixIn
 
-class CardExtension(plugin.Plugin):
+
+class CardExtension(plugin.Plugin, EventHandlerMixIn):
     CATEGORY = 'card-extension'
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator=None):
         self.card = card
         self.action_log = action_log
+        self.configurator = configurator
 
     @staticmethod
     def get_schema_def():

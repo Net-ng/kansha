@@ -10,7 +10,7 @@
 from nagare.i18n import _
 from peak.rules import when
 from nagare.security import common
-from nagare import component, security
+from nagare import component, security, log
 
 from kansha import exceptions
 from kansha.toolbox import overlay
@@ -42,12 +42,12 @@ class CardMembers(CardExtension):
 
     MAX_SHOWN_MEMBERS = 3
 
-    def __init__(self, card, action_log):
+    def __init__(self, card, action_log, configurator):
         """
         Card is a card business object.
         """
 
-        super(CardMembers, self).__init__(card, action_log)
+        super(CardMembers, self).__init__(card, action_log, configurator)
 
         # members part of the card
         self.overlay_add_members = component.Component(
@@ -64,7 +64,26 @@ class CardMembers(CardExtension):
 
     def autocomplete_method(self, value):
         """ """
-        return [u for u in usermanager.UserManager.search(value) if u in self.card.get_available_users()]
+        available_user_ids = self.get_available_user_ids()
+        return [u for u in usermanager.UserManager.search(value) if u.id in available_user_ids]
+
+    def get_available_user_ids(self):
+        """Return user's which are authorized to be added on this card
+
+        Return:
+            - a set of user (UserData instance)
+        """
+        return self.get_all_available_user_ids() | self.get_pending_user_ids() - set(user.id for user in self.card.members)
+
+    def get_all_available_user_ids(self):
+        return self.configurator.get_available_user_ids() if self.configurator else []
+
+    def get_pending_user_ids(self):
+        return self.configurator.get_pending_user_ids() if self.configurator else []
+
+    @property
+    def member_stats(self):
+        return self.configurator.get_member_stats() if self.configurator else {}
 
     @property
     def favorites(self):
@@ -73,8 +92,18 @@ class CardMembers(CardExtension):
         Return:
             - list of favorites (User instances) wrappend on component
         """
+
+        # to be optimized later if still exists
+        member_usernames = set(member.username for member in self.card.members)
+        # FIXME: don't reference parent
+        board_user_stats = [(nb_cards, username) for username, nb_cards in self.member_stats.iteritems()]
+        board_user_stats.sort(reverse=True)
+        # Take the 5 most popular that are not already affected to this card
+        favorites = [username for (__, username) in board_user_stats
+                     if username not in member_usernames]
+
         self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend")
-                           for username in self.card.favorites]
+                           for username in favorites[:5]]
         return self._favorites
 
     def add_members(self, emails):
@@ -101,9 +130,14 @@ class CardMembers(CardExtension):
         Return:
             - the new DataMember added
         """
-        if self.card.add_member(new_data_member):
+        if (new_data_member not in self.card.members and
+            new_data_member.id in self.get_available_user_ids()):
+
+            self.card.add_member(new_data_member)
             log.debug('Adding %s to members' % (new_data_member.username,))
-            self.members.append(component.Component(usermanager.UserManager.get_app_user(new_data_member.username, data=new_data_member)))
+            self.members.append(
+                component.Component(usermanager.UserManager.get_app_user(
+                    new_data_member.username, data=new_data_member)))
 
     def remove_member(self, username):
         """Remove member username from card member"""

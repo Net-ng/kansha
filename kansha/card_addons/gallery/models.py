@@ -45,7 +45,7 @@ class DataAsset(Entity):
 
     @classmethod
     def get_all(cls, card):
-        return cls.get_by(card=card).all()
+        return cls.query.filter_by(card=card).all()
 
     @classmethod
     def add(cls, filename, card, author):

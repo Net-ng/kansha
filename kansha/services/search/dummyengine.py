@@ -24,15 +24,15 @@ class DummySearchEngine(object):
     def add_document(self, document):
         '''
         Add a document to the data store, in index (a.k.a. collection)
-        `index`, under the document type (a.k.a. schema) `doctype`.
+        `index`, under the document type (a.k.a. schema) `schema`.
         The document is a `schema.Document` instance.
         '''
         pass
 
-    def delete_document(self, doctype, docid):
+    def delete_document(self, schema, docid):
         '''
         Remove document from index and storage.
-        doctype is a `Document` class or a string corresponding to its name.
+        schema is a `Document` class or Schema object.
         '''
         pass
 
@@ -63,11 +63,11 @@ class DummySearchEngine(object):
         '''
         return []
 
-    def create_collection(self, schema):
+    def create_collection(self, schemas):
         '''
         Init the collections the first time.
         Just use once! Or you'll have to reindex all your documents.
-        Schema is a list of Document classes.
+        `schemas` is a list of Document classes or Schema instances.
         '''
         pass
 

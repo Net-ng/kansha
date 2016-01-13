@@ -31,7 +31,7 @@ from .query import *
 
 class FieldType(object):
 
-    parent = None
+    schema = None
 
     def __init__(self, name='', indexed=True, stored=False, default=None):
         self.name = name
@@ -109,7 +109,7 @@ class DATETIME(FieldType):
     default = datetime.now()
 
 
-class _DocType(type):
+class _Schema(type):
 
     def __new__(cls, name, bases, dct):
         fields = {}
@@ -121,11 +121,11 @@ class _DocType(type):
                 val = aval()
                 val.name = aname
                 fields[aname] = dct[aname] = val
-        klass = super(_DocType, cls).__new__(cls, name, bases, dct)
+        klass = super(_Schema, cls).__new__(cls, name, bases, dct)
         klass.fields = fields
         klass.type_name = name
         for v in fields.itervalues():
-            v.parent = klass
+            v.schema = klass
         return klass
 
 
@@ -134,7 +134,7 @@ class Document(object):
     '''
     Declarative class for documents.
 
-    The `fields`, 'delta' , 'type_name', 'doc_type' and `match` attributes are reserved: don't declare properties with those names!
+    The `fields`, 'delta' , 'type_name', 'schema' and `match` attributes are reserved: don't declare properties with those names!
 
     Usage:
 
@@ -155,7 +155,7 @@ class Document(object):
 
     '''
 
-    __metaclass__ = _DocType
+    __metaclass__ = _Schema
 
     type_name = 'Document'
 
@@ -174,8 +174,12 @@ class Document(object):
             setattr(self, fname, fields.get(fname, fvalue.default))
 
     @property
-    def doc_type(self):
+    def schema(self):
         return self.__class__
+
+    @property
+    def schema_name(self):
+        return self.__class__.type_name
 
     @classmethod
     def delta(cls, docid, **fields):
@@ -183,9 +187,8 @@ class Document(object):
         Alternate constructor to build delta documents.
         Fields values not specified to the constructor are set to None.
         '''
-        for fname in cls.fields:
-            if fname not in fields:
-                fields[fname] = None
+        for fname in set(cls.fields) - set(fields):
+            fields[fname] = None
         return cls(docid, **fields)
 
     @classmethod
@@ -205,8 +208,8 @@ class AltDocument(object):
             setattr(self, name, field_values.get(name, field.default))
 
     @property
-    def doc_type(self):
-        return self.schema
+    def schema_name(self):
+        return self.schema.type_name
 
 
 class Schema(object):
@@ -216,50 +219,52 @@ class Schema(object):
 
     Usage:
 
-        TestDocument = schema.Schema('MyDocument')
-        TestDocument.add_field('title', schema.TEXT(stored=True))
-        TestDocument.add_field('tags', schema.TEXT(stored=False))
-        TestDocument.add_field('pages', schema.INT(stored=True))
-        TestDocument.add_field('description', schema.TEXT)
-        TestDocument.add_field('price', schema.FLOAT(stored=True, indexed=False))
+        TestDocument = schema.Schema(
+            'MyDocument',
+            schema.TEXT('title', stored=True),
+            schema.TEXT('tags', stored=False),
+            schema.INT('pages', stored=True),
+            schema.TEXT('description'),
+            schema.FLOAT('price', stored=True, indexed=False)
+        )
 
     or
 
-        TestDocument = (
-            schema.Schema('MyDocument') +
-            schema.TEXT('title', stored=True) +
-            schema.TEXT('tags', stored=False) +
-            schema.INT('pages', stored=True) +
-            schema.TEXT('description') +
-            schema.FLOAT('price', stored=True, indexed=False)
-        )
+        # Incrementaly update schema "in place"
+        TestDocument = schema.Schema('MyDocument')
+        TestDocument.add_field(schema.TEXT('title', stored=True))
+        TestDocument.add_field(schema.TEXT('tags', stored=False))
+        TestDocument.add_field(schema.INT('pages', stored=True))
+        TestDocument.add_field(schema.TEXT('description'))
+        TestDocument.add_field(schema.FLOAT('price', stored=True, indexed=False))
+
+    or create new schema from existing one
+
+        TestDocument2 = TestDocument + schema.TEXT('author')
+        TestDocument2.type_name = 'IdentifiedDocument'
 
     TestDocument is then used as if it was a Declarative Document schema.
     '''
 
-    def __init__(self, name):
+    def __init__(self, name, *fields):
         self.type_name = name
         self.fields = {}
+        for field in fields:
+            self.add_field(field)
 
-    def add_field(self, name, field):
-
-        assert(name != 'doc_type')
-        assert(not hasattr(self, name))
-        if isinstance(field, FieldType):
-            field.name = name
-            field.parent = self
-            self.fields[name] = field
-        elif isinstance(field, type) and issubclass(field, FieldType):
-            field_object = field()
-            field_object.name = name
-            field_object.parent = self
-            self.fields[name] = field_object
+    def add_field(self, field):
+        """Update schema in place."""
+        assert(field.name)
+        assert(field.name != 'schema')
+        assert(not hasattr(self, field.name))
+        field.schema = self
+        self.fields[field.name] = field
 
     def __add__(self, field):
-        """Alternate syntax. Requires named field instances."""
-        assert(field.name)
-        self.add_field(field.name, field)
-        return self
+        """Create a new augmented schema."""
+        new_schema = Schema(self.type_name, *self.fields.values())
+        new_schema.add_field(field)
+        return new_schema
 
     def __call__(self, docid, **fields):
         '''
@@ -279,9 +284,8 @@ class Schema(object):
         Alternate constructor to build delta documents.
         Fields values not specified to the constructor are set to None.
         '''
-        for fname in self.fields:
-            if fname not in fields:
-                fields[fname] = None
+        for fname in set(self.fields) - set(fields):
+            fields[fname] = None
         return self(docid, **fields)
 
     def match(self, v):

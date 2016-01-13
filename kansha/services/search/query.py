@@ -27,7 +27,7 @@ class Query(object):
     def __init__(self, field, value):
         self.field = field
         self.value = value
-        self.queried_doc = self.field.parent
+        self.target_schema = self.field.schema
 
     def __call__(self, mapper):
         op = getattr(mapper, self.operation)
@@ -78,7 +78,7 @@ class MATCHANYQuery(Query):
     def __init__(self, doc, value):
         self.field = doc
         self.value = value
-        self.queried_doc = doc
+        self.target_schema = doc
 
 
 class PHRASEQuery(Query):
@@ -95,10 +95,10 @@ class ANDQuery(object):
     operation = 'and_'
 
     def __init__(self, q1, q2):
-        assert(q1.queried_doc == q2.queried_doc)
+        assert(q1.target_schema == q2.target_schema)
         self.q1 = q1
         self.q2 = q2
-        self.queried_doc = q1.queried_doc
+        self.target_schema = q1.target_schema
 
     def __call__(self, mapper):
         op = getattr(mapper, self.operation)

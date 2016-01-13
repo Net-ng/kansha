@@ -27,7 +27,7 @@ class SQLiteFTSMapper(object):
         return (query, (unialpha.sub(u' ', value) + u'*',))
 
     def matchany(self, doctype, value):
-        query = '%s match ?' % doctype.type_name()
+        query = '%s match ?' % doctype.type_name
         return (query, (unialpha.sub(u' ', value) + u'*',))
 
     def eq(self, field, value):
@@ -117,7 +117,7 @@ class SQLiteFTSEngine(object):
         c = self._get_cursor()
         # neither doctype nor fields keys are user inputs, so this is safe
         query_base = ('insert into %s(id,%s) values (%s)' %
-                      (document.doc_type().type_name(),
+                      (document.doc_type.type_name,
                        ','.join(document.fields.keys()),
                        ','.join(('?',) * (len(document.fields) + 1))
                        )
@@ -131,7 +131,7 @@ class SQLiteFTSEngine(object):
         Remove document from index and storage.
         '''
         c = self._get_cursor()
-        c.execute('delete from %s where id=?' % doctype.type_name(), (docid,))
+        c.execute('delete from %s where id=?' % doctype.type_name, (docid,))
 
     def update_document(self, document):
         '''Update document'''
@@ -143,7 +143,7 @@ class SQLiteFTSEngine(object):
                 qset.append("%s = ?" % f)
                 params.append(v)
         query = 'update %s set %s where id=?' % (
-            document.doc_type().type_name(), ', '.join(qset))
+            document.doc_type.type_name, ', '.join(qset))
         params.append(document._id)
         c = self._get_cursor()
         c.execute(query, params)
@@ -174,7 +174,7 @@ class SQLiteFTSEngine(object):
         sql = 'select id as docid, %s from %s where %s limit %s' % (
             ', '.join(f.name for f in doctype.fields.itervalues()
                       if f.stored),
-            doctype.type_name(), where, size
+            doctype.type_name, where, size
         )
         c.execute(sql, params)
         fields = [d[0].lower() for d in c.description]
@@ -196,7 +196,7 @@ class SQLiteFTSEngine(object):
         for doctype in schema:
             # no type declaration on FTS tables, so we ignore
             # doctype.fields.values
-            c.execute('drop table if exists %s' % doctype.type_name())
+            c.execute('drop table if exists %s' % doctype.type_name)
             notindexed = ['notindexed=id']
             for fname, field in doctype.fields.iteritems():
                 if not field.indexed:
@@ -205,7 +205,7 @@ class SQLiteFTSEngine(object):
             if slversion > (3, 8, 0):
                 c.execute(
                     '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7", %s);''' %
-                    (doctype.type_name(),
+                    (doctype.type_name,
                      ','.join(doctype.fields.keys()),
                      ','.join(notindexed))
                 )
@@ -213,7 +213,7 @@ class SQLiteFTSEngine(object):
                 print "Warning: older version of sqlite3 detected, please upgrade to sqlite 3.8.0 or newer."
                 c.execute(
                     '''CREATE VIRTUAL TABLE %s USING fts4(id, %s, prefix="3,5,7");''' %
-                    (doctype.type_name(),
+                    (doctype.type_name,
                      ','.join(doctype.fields.keys()))
                 )
             else:

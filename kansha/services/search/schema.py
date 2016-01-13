@@ -123,6 +123,7 @@ class _DocType(type):
                 fields[aname] = dct[aname] = val
         klass = super(_DocType, cls).__new__(cls, name, bases, dct)
         klass.fields = fields
+        klass.type_name = name
         for v in fields.itervalues():
             v.parent = klass
         return klass
@@ -138,6 +139,8 @@ class Document(object):
 
     __metaclass__ = _DocType
 
+    type_name = 'Document'
+
     def __init__(self, docid, **fields):
         '''
         Instanciate new document.
@@ -152,12 +155,9 @@ class Document(object):
         for fname, fvalue in self.fields.iteritems():
             setattr(self, fname, fields.get(fname, fvalue.default))
 
+    @property
     def doc_type(self):
         return self.__class__
-
-    @classmethod
-    def type_name(cls):
-        return cls.__name__
 
     @classmethod
     def delta(cls, docid, **fields):
@@ -186,6 +186,7 @@ class AltDocument(object):
         for name, field in fields.iteritems():
             setattr(self, name, field_values.get(name, field.default))
 
+    @property
     def doc_type(self):
         return self.schema
 
@@ -194,11 +195,8 @@ class Schema(object):
     '''Imperatively build a Document schema'''
 
     def __init__(self, name):
-        self.name = name
+        self.type_name = name
         self.fields = {}
-
-    def type_name(self):
-        return self.name
 
     def add_field(self, name, field):
 

@@ -199,7 +199,7 @@ class Board(events.EventHandlerMixIn):
             additional_data['labels'].append(new_label)
             new_board.labels.append(new_label)
 
-        assert(self.columns or self.data.template)
+        assert(self.columns or self.data.is_template)
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
             new_col = column.copy(new_board, additional_data)

@@ -15,11 +15,11 @@ from Crypto.Cipher import Blowfish
 from nagare import security
 from nagare.security import form_auth, common
 
-from .board.comp import Board  # Do not remove
-from .card.comp import Card  # Do not remove
+from .card import Card  # Do not remove
+from .board import Board  # Do not remove
 from .user.usermanager import UserManager
-from .column.comp import CardsCounter, Column  # Do not remove
-from .board.comp import COMMENTS_PUBLIC, COMMENTS_MEMBERS
+from .column import CardsCounter, Column  # Do not remove
+from .board import COMMENTS_PUBLIC, COMMENTS_MEMBERS
 
 
 class Unauthorized(Exception):

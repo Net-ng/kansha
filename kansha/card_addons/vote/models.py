@@ -29,10 +29,7 @@ class DataVote(Entity):
         Return:
             - DataVote instance
         '''
-        q = cls.query
-        q = q.filter(cls.user == user)
-        q = q.filter(cls.card == card)
-        return q.one()
+        return cls.get_by(user=user, card=card)
 
     @classmethod
     def has_voted(cls, card, user):
@@ -44,10 +41,7 @@ class DataVote(Entity):
         Return:
             - True if a vote is found, False otherwise
         '''
-        q = cls.query
-        q = q.filter(cls.user == user)
-        q = q.filter(cls.card == card)
-        return q.count() == 1
+        return cls.get_vote(card, user) is not None
 
     @classmethod
     def count_votes(cls, card):

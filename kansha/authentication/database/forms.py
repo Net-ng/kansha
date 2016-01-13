@@ -8,20 +8,21 @@
 # this distribution.
 #--
 
+import time
 import hashlib
 import textwrap
-import time
-import webob
-import configobj
 from datetime import datetime, timedelta
 
-from nagare import (presentation, editor, component, security, log, database)
+import webob
 from nagare.i18n import _
+from nagare import (presentation, editor, component, security, log, database)
 
-from . import validators, captcha
+from . import captcha
+from kansha import validator
 from kansha.user import usermanager
 from kansha.user.models import DataToken
 from kansha.services.authentication_repository import Authentication
+
 
 UserConfirmationTimeout = timedelta(hours=12)
 
@@ -146,10 +147,10 @@ class RegistrationForm(editor.Editor):
 
     def __init__(self, app_title, app_banner, theme):
         self.username = editor.Property('').validate(self.validate_username)
-        self.email = editor.Property('').validate(validators.validate_email)
-        self.fullname = editor.Property('').validate(validators.validate_non_empty_string)
-        self.password = editor.Property('').validate(validators.validate_password)
-        self.password_repeat = editor.Property('').validate(validators.validate_password)
+        self.email = editor.Property('').validate(validator.validate_email)
+        self.fullname = editor.Property('').validate(validator.validate_non_empty_string)
+        self.password = editor.Property('').validate(validator.validate_password)
+        self.password_repeat = editor.Property('').validate(validator.validate_password)
         self.init_captcha_image()
         self.captcha_text = editor.Property('').validate(self.validate_captcha)
         self.header = component.Component(Header(app_title, app_banner, theme))
@@ -162,7 +163,7 @@ class RegistrationForm(editor.Editor):
         self.captcha_date = datetime.now()
 
     def validate_username(self, value):
-        value = validators.validate_identifier(value)
+        value = validator.validate_identifier(value)
         # check that this user name does not exist
         u = usermanager.UserManager.get_by_username(value)
         if u:
@@ -266,8 +267,8 @@ class EmailRegistrationForm(editor.Editor):
     """Registration form for completing the email of a new external (and unconfirmed) user"""
 
     def __init__(self, app_title, app_banner, theme, username):
-        self.email = editor.Property('').validate(validators.validate_email)
-        self.email_repeat = editor.Property('').validate(validators.validate_email)
+        self.email = editor.Property('').validate(validator.validate_email)
+        self.email_repeat = editor.Property('').validate(validator.validate_email)
         self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
         self.username = username
@@ -399,14 +400,14 @@ class PasswordEditor(editor.Editor):
         self.old_password = editor.Property(
             '').validate(self.validate_old_password)
         self.password = editor.Property(
-            '').validate(validators.validate_password)
+            '').validate(validator.validate_password)
         self.password_repeat = editor.Property(
-            '').validate(validators.validate_password)
+            '').validate(validator.validate_password)
         self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
 
     def validate_old_password(self, value):
-        validators.validate_non_empty_string(value)
+        validator.validate_non_empty_string(value)
         if not self.user.check_password(value):
             raise ValueError(_("Invalid password"))
         return value
@@ -499,12 +500,12 @@ class PasswordResetForm(editor.Editor):
     def __init__(self, app_title, app_banner, theme, get_user_by_username):
         self._get_user_by_username = get_user_by_username
         self.username = editor.Property('').validate(self.validate_username)
-        self.email = editor.Property('').validate(validators.validate_email)
+        self.email = editor.Property('').validate(validator.validate_email)
         self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
 
     def validate_username(self, value):
-        value = validators.validate_identifier(value)
+        value = validator.validate_identifier(value)
 
         user = self._get_user_by_username(value)
         if not user:

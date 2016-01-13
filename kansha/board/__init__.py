@@ -7,4 +7,8 @@
 # this distribution.
 #--
 
-import view
+from . import view
+from .comp import (Board,
+                   BOARD_PUBLIC, BOARD_PRIVATE,
+                   COMMENTS_MEMBERS, COMMENTS_OFF,  COMMENTS_PUBLIC,
+                   VOTES_MEMBERS, VOTES_OFF, VOTES_PUBLIC)

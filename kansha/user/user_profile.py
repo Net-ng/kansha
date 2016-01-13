@@ -9,15 +9,14 @@
 #--
 
 import imghdr
-import peak.rules
 
-from nagare import editor, presentation, security
+import peak.rules
 from nagare.i18n import _, _L
+from nagare import editor, presentation, security
 
 from kansha import validator
-from kansha.authentication.database import validators, forms as registation_forms
+from kansha.authentication.database import forms as registation_forms
 
-# from .user_cards import UserCards
 from .usermanager import UserManager
 
 
@@ -138,11 +137,11 @@ class UserForm(BasicUserForm):
         self.mail_sender = mail_sender_service
         self.assets_manager = assets_manager_service
         self.username.validate(self.validate_username)
-        self.fullname.validate(validators.validate_non_empty_string)
+        self.fullname.validate(validator.validate_non_empty_string)
 
         # Add other properties (email to confirm, passwords...)
         self.email_to_confirm = editor.Property(
-            target.email).validate(validators.validate_email)
+            target.email).validate(validator.validate_email)
         self.old_password = editor.Property(
             '').validate(self.validate_old_password)
         self.password = editor.Property('').validate(self.validate_password)
@@ -158,7 +157,7 @@ class UserForm(BasicUserForm):
         Return:
          - username value if username is unique (else raise an exception)
         """
-        value = validators.validate_identifier(value)
+        value = validator.validate_identifier(value)
         # check that this user name does not exist
         user = self.user_manager.get_by_username(value)
         if user:
@@ -250,7 +249,7 @@ class UserForm(BasicUserForm):
             return None
 
         try:
-            validators.validate_file(
+            validator.validate_file(
                 new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
         except ValueError, e:
             error = e.message

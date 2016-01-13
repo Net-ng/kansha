@@ -12,11 +12,11 @@ from nagare import security
 from peak.rules import when
 from nagare.security import common
 
-from kansha.card.comp import Card
-from kansha.board.comp import Board
-from kansha.column.comp import Column
+from kansha.card import Card
+from kansha.board import Board
+from kansha.column import Column
 from kansha.cardextension import CardExtension
-from kansha.board.comp import VOTES_PUBLIC, VOTES_MEMBERS
+from kansha.board import VOTES_PUBLIC, VOTES_MEMBERS
 
 from .models import DataVote
 

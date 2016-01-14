@@ -46,6 +46,7 @@ class DataChecklist(Entity):
             self.items.append(DataChecklistItem(title=item.title,
                                                 index=item.index,
                                                 done=False))
+        database.session.flush()
 
     def __unicode__(self):
         titles = [item.title for item in self.items if item.title]

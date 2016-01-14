@@ -14,12 +14,13 @@ from .comp import CardWeightEditor
 
 
 class CardWeightTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log, configurator):
-        return CardWeightEditor(card, action_log, configurator)
+
+    extension_name = 'weight'
+    extension_class = CardWeightEditor
 
     def test_copy(self):
         self.extension.weight(u'25')
         self.extension.commit()
         self.assertEqual(self.extension.data.weight, u'25')
-        cpy = self.extension.copy(self.card_copy, {})
+        cpy = self.extension_copy
         self.assertEqual(self.extension.weight(), cpy.weight())

@@ -14,10 +14,10 @@ from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import Comments
 
-
 class CommentsTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log, configurator):
-        return Comments(card, action_log, configurator)
+
+    extension_name = 'comments'
+    extension_class = Comments
 
     def test_add_delete(self):
         self.assertEqual(len(self.extension.comments), 0)
@@ -36,5 +36,3 @@ class CommentsTest(CardExtensionTestCase):
         label.change_text(u'test2')
         self.assertEqual(label.text, u'test2')
         self.assertTrue(label.is_author(security.get_user()))
-
-

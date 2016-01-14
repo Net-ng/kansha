@@ -12,10 +12,10 @@ from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import Checklists
 
-
 class ChecklistTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log, configurator):
-        return Checklists(card, action_log, configurator)
+
+    extension_name = 'checklists'
+    extension_class = Checklists
 
     def test_add_delete(self):
         self.assertEqual(len(self.extension.checklists), 0)
@@ -86,7 +86,8 @@ class ChecklistTest(CardExtensionTestCase):
         ck.set_title(u'test2')
         ck.set_index(1)
         ck.add_item_from_str(u'test3')
-        cpy = self.extension.copy(self.card_copy, {})
+
+        cpy = self.extension_copy
         self.assertEqual(len(cpy.checklists), 2)
         self.assertEqual(cpy.total_items, 3)
         self.assertEqual(cpy.nb_items, 0)

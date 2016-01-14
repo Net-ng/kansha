@@ -39,7 +39,7 @@ class DataChecklist(Entity):
         q = q.order_by(cls.index)
         return q.all()
 
-    def copy(self, other):
+    def update(self, other):
         self.title = other.title
         self.index = other.index
         for item in other.items:
@@ -73,6 +73,10 @@ class DataChecklist(Entity):
     def delete_item(self, item):
         self.remove_item(item)
         item.delete()
+
+    def purge(self):
+        for item in self.items:
+            item.delete()
 
 
 class DataChecklistItem(Entity):

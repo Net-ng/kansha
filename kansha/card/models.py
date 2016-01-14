@@ -9,9 +9,8 @@
 #--
 
 from elixir import using_options
-from elixir import ManyToMany, ManyToOne, OneToMany, OneToOne
-from elixir import Field, Unicode, Integer, DateTime, Date, UnicodeText
-from sqlalchemy.orm import subqueryload
+from elixir import ManyToMany, ManyToOne
+from elixir import Field, Integer, DateTime, UnicodeText
 from nagare.database import session
 import datetime
 
@@ -30,23 +29,22 @@ class DataCard(Entity):
     # feature data to move to card extensions
     members = ManyToMany('DataUser')
 
-    def copy(self, parent):
-        new_data = DataCard(title=self.title,
-                            column=parent)
+    def update(self, other):
+        self.title = other.title
+        self.index = other.index
         session.flush()
-        return new_data
 
     # Methods for data belonging to card extensions
 
-    def make_cover(self, asset):
-        """
-        """
-        DataCard.get(self.id).cover = asset.data
+    # def make_cover(self, asset):
+    #     """
+    #     """
+    #     DataCard.get(self.id).cover = asset.data
 
-    def remove_cover(self):
-        """
-        """
-        DataCard.get(self.id).cover = None
+    # def remove_cover(self):
+    #     """
+    #     """
+    #     DataCard.get(self.id).cover = None
 
     def remove_member(self, datauser):
         if datauser in self.members:

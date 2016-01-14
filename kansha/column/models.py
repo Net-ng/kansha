@@ -33,13 +33,11 @@ class DataColumn(Entity):
                       collection_class=ordering_list('index'))
     board = ManyToOne('DataBoard', colname='board_id')
 
-    def copy(self, parent):
-        new_data = DataColumn(title=self.title,
-                              index=self.index,
-                              nb_max_cards=self.nb_max_cards,
-                              board=parent)
+    def update(self, other):
+        self.title = other.title
+        self.index = other.index
+        self.nb_max_cards = other.nb_max_cards
         session.flush()
-        return new_data
 
     @classmethod
     def create_column(cls, board, index, title, nb_cards=None, archive=False):

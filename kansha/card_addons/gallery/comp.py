@@ -69,7 +69,8 @@ class Gallery(CardExtension):
                 self.assets.remove(a)
                 break
         DataAsset.remove(self.card.data, asset.filename)
-        asset.delete()
+        # asset.delete()
+        self.assets_manager.delete(asset.filename)
 
     def delete(self):
         for asset in self.assets:
@@ -77,15 +78,13 @@ class Gallery(CardExtension):
         DataAsset.remove_all(self.card.data)
         self.assets = []
 
-    def copy(self, parent, additional_data):
-        new_extension = self.__class__(parent, parent.action_log, self.assets_manager)
-        for data_asset in DataAsset.get_all(self.card.data):
-            new_asset_id = self.assets_manager.copy(data_asset.filename)
-            new_asset_data = DataAsset.add(new_asset_id, parent.data, additional_data['author'].get_user_data())
-            new_extension.create_asset(new_asset_data)
-            if data_asset.cover:
-                new_asset_data.cover = parent.data
-        return new_extension
+    def update(self, other):
+        for asset_comp in other.assets:
+            asset = asset_comp()
+            new_asset = self._add_asset(asset.file_info)
+            if asset.is_cover:
+                cropper = asset.cropper_info
+                self.make_cover(new_asset, **cropper)
 
     def action(self, response):
         action, asset = response[0], response[1]
@@ -116,13 +115,16 @@ class Gallery(CardExtension):
         Return:
             - The newly created Asset
         """
-        validator.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
+        file_info = validator.validate_file(new_file, self.assets_manager.max_size, _(u'File must be less than %d KB'))
+        return self._add_asset(file_info)
+
+    def _add_asset(self, file_info):
         user = security.get_user()
-        fileid = self.assets_manager.save(new_file.file.read(),
-                                          metadata={'filename': new_file.filename, 'content-type': new_file.type})
-        data = {'file': new_file.filename, 'card': self.card.get_title()}
+        fileid = self.assets_manager.save(file_info['data'],
+                                          metadata={'filename': file_info['filename'], 'content-type': file_info['content_type']})
+        data = {'file': file_info['filename'], 'card': self.card.get_title()}
         self.action_log.add_history(user, u'card_add_file', data)
-        self.create_asset(DataAsset.add(fileid, self.card.data, user.get_user_data()))
+        return self.create_asset(DataAsset.add(fileid, self.card.data, user.get_user_data()))
 
     def add_assets(self, new_files):
         """Add new assets to the card
@@ -165,6 +167,16 @@ class Gallery(CardExtension):
         for a in self.assets:
             a().is_cover = False
         asset.is_cover = True
+        asset.update_metadata(
+            {
+                'cropper': {
+                    'left': left,
+                    'top': top,
+                    'width': width,
+                    'height': height
+                }
+            }
+        )
         self.model = 'view'
 
     def get_cover(self):
@@ -192,9 +204,31 @@ class Asset(object):
         self.author = component.Component(usermanager.UserManager.get_app_user(data_asset.author.username, data=data_asset.author))
         self.assets_manager = assets_manager_service
         self.is_cover = data_asset.cover is not None
+        self.metadata = self.assets_manager.get_metadata(self.filename)
+
+    @property
+    def content_type(self):
+        return self.metadata['content-type']
+
+    @property
+    def cropper_info(self):
+        return self.metadata['cropper']
+
+    def update_metadata(self, metadata):
+        self.metadata.update(metadata)
+        self.assets_manager.update_metadata(self.filename, self.metadata)
+
+    @property
+    def file_info(self):
+        data, meta_data = self.assets_manager.load(self.filename, None)
+        return {
+            'data': data,
+            'content_type': meta_data['content-type'],
+            'filename': meta_data['filename']
+        }
 
     def is_image(self):
-        return self.assets_manager.get_metadata(self.filename)['content-type'] in IMAGE_CONTENT_TYPES
+        return self.content_type in IMAGE_CONTENT_TYPES
 
     def download_asset(self, size=None):
         e = HTTPOk()

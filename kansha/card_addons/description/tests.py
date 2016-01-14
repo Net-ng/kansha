@@ -19,12 +19,12 @@ class CardDescriptionTest(CardExtensionTestCase):
 
     def test_change_desc(self):
         self.extension.set_description(u'test')
-        self.assertEqual(self.extension.get_description(), u'test')
+        self.assertEqual(self.extension.text, u'test')
         self.extension.change_text(u'test2')
-        self.assertEqual(self.extension.get_description(), u'<p>test2</p>')
+        self.assertEqual(self.extension.text, u'<p>test2</p>')
         self.assertEqual(self.extension.text, u'<p>test2</p>')
 
     def test_copy(self):
         self.extension.set_description(u'test')
         cpy = self.extension.copy(self.card_copy, {})
-        self.assertEqual(cpy.get_description(), u'test')
+        self.assertEqual(cpy.text, u'test')

@@ -198,3 +198,8 @@ class Comments(CardExtension):
         comment = comp()
         DataComment.get(comment.db_id).delete()
         session.flush()
+
+    def delete(self):
+        self.comments = []
+        for comment in self.data:
+            comment.delete()

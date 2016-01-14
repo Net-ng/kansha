@@ -46,6 +46,7 @@ def render(self, h, comp, *args):
             h << comp.render(h, self.model)
     return h.root
 
+
 @presentation.render_for(Gallery, 'view')
 def render_Gallery_view(self, h, comp, model):
     model = 'edit' if security.has_permissions('edit', self) else 'anonymous'

@@ -81,8 +81,8 @@ def render_CardLabels_header(self, h, comp, *args):
     """Show labels inline (used in card summary view)"""
     if self.colors:
         with h.div(class_='inline-labels'):
-            h << (component.Component(Label(d), model='color')
-                  for d in self.data_labels)
+            h << (component.Component(d, model='color')
+                  for d in self.labels)
     return h.root
 
 
@@ -92,7 +92,7 @@ def render_CardLabels_list(self, h, comp, *args):
     h << h.script('YAHOO.kansha.app.hideOverlay();')
     with h.span(class_='inline-labels'):
         for label in self.get_available_labels():
-            model = 'color' if label.id in self.labels else 'inactive'
+            model = 'color' if label in self.labels else 'inactive'
             h << component.Component(Label(label), model)
     return h.root
 
@@ -114,11 +114,11 @@ def render_CardLabels_overlay(self, h, comp, *args):
         for _i, label in enumerate(self.get_available_labels(), 1):
             with h.li:
                 cls = ['card-label-choose']
-                if label.id in self.labels:
+                if label in self.labels:
                     cls.append('active')
                 # Update the list of labels
                 action1 = ajax.Update(
-                    action=lambda label_id=label.id: self.activate(label_id))
+                    action=lambda label=label: self.activate(label))
                 # Refresh the list
                 action2 = ajax.Update(render=lambda r: comp.render(r, model='list'),
                                       component_to_update='list' + self.comp_id)

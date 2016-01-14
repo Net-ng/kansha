@@ -32,13 +32,6 @@ class SimpleAssetsManager(AssetsManager):
         self.baseurl = baseurl
         self.max_size = max_size
 
-    def copy(self, file_id):
-        data, metadata = self.load(file_id)
-        new_file_id = self.save(data, metadata=metadata)
-        self.save(data, new_file_id, metadata)
-        self.copy_cover(file_id, new_file_id)
-        return new_file_id
-
     def copy_cover(self, file_id, new_file_id):
         try:
             data, metadata = self.load(file_id, 'cover')
@@ -109,7 +102,8 @@ class SimpleAssetsManager(AssetsManager):
         return data, self.get_metadata(file_id)
 
     def update_metadata(self, file_id, metadata):
-        pass
+        with open(self._get_metadata_filename(file_id), "w") as f:
+            metadata = f.write(json.dumps(metadata))
 
     def get_metadata(self, file_id):
         with open(self._get_metadata_filename(file_id), "r") as f:

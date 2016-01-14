@@ -59,7 +59,9 @@ class DataAsset(Entity):
 
     @classmethod
     def remove_all(cls, card):
-        cls.get_by(card=card).delete()
+        q = cls.query
+        q = q.filter_by(card=card)
+        q.delete()
 
     @classmethod
     def has_cover(cls, card):

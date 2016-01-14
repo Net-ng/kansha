@@ -77,7 +77,7 @@ class DataBoard(Entity):
             return self.title
         return u'{0} ({1})'.format(self.title, self.managers[0].fullname)
 
-    def copy(self, parent):
+    def copy(self):
         new_data = DataBoard(title=self.title,
                              description=self.description,
                              background_position=self.background_position,
@@ -86,6 +86,10 @@ class DataBoard(Entity):
                              votes_allowed=self.votes_allowed,
                              weighting_cards=self.weighting_cards,
                              weights=self.weights)
+        session.flush()
+        # TODO: move to board extension
+        for label in self.labels:
+            new_data.labels.append(label.copy())
         session.flush()
         return new_data
 

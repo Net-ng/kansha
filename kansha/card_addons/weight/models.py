@@ -23,11 +23,9 @@ class DataCardWeight(Entity):
     weight = Field(Unicode(255), default=u'')
     card = ManyToOne('DataCard', ondelete='cascade')
 
-    def copy(self, parent):
-        new_data = DataCardWeight(card=parent,
-                                  weight=self.weight)
+    def update(self, other):
+        self.weight = other.weight
         session.flush()
-        return new_data
 
     @classmethod
     def get_by_card(cls, card):

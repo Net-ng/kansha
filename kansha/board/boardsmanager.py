@@ -52,7 +52,7 @@ class BoardsManager(object):
         template = self._services(
             Board, template_id, self.app_title, self.app_banner, self.theme,
             self.card_extensions, self.search_engine)
-        new_board = template.copy(user, {})
+        new_board = template.copy(user)
         new_board.archive_column = new_board.create_column(index=-1, title=i18n._(u'Archive'))
         new_board.archive_column.is_archive = True
         new_board.mark_as_template(False)
@@ -61,7 +61,7 @@ class BoardsManager(object):
     def create_template_from_board(self, board, title, description, shared, user=None):
         if user is None:
             user = security.get_user()
-        template = board.copy(user, {})
+        template = board.copy(user)
         template.mark_as_template()
         template.set_title(title)
         template.set_description(description)

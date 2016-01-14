@@ -36,16 +36,6 @@ class DataCard(Entity):
 
     # Methods for data belonging to card extensions
 
-    # def make_cover(self, asset):
-    #     """
-    #     """
-    #     DataCard.get(self.id).cover = asset.data
-
-    # def remove_cover(self):
-    #     """
-    #     """
-    #     DataCard.get(self.id).cover = None
-
     def remove_member(self, datauser):
         if datauser in self.members:
             self.members.remove(datauser)

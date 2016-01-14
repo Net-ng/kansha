@@ -35,7 +35,7 @@ class CardDescription(CardExtension):
 
     @staticmethod
     def get_schema_def():
-        return schema.TEXT()
+        return schema.Text(u'description')
 
     def to_document(self):
         return self.text

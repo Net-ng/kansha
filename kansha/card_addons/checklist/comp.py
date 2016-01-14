@@ -211,7 +211,7 @@ class Checklists(CardExtension):
 
     @staticmethod
     def get_schema_def():
-        return schema.TEXT()
+        return schema.Text(u'checklists')
 
     def to_document(self):
         return u'\n'.join(cl.to_document() for cl in self.data)

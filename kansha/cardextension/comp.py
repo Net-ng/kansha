@@ -23,7 +23,7 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
     @staticmethod
     def get_schema_def():
         '''If the extension has to be indexed for it to be used in search engine, return some schema field
-        ie: return schema.TEXT for a text field'''
+        ie: return schema.Text for a text field'''
         return None
 
     def to_document(self):

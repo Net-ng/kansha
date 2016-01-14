@@ -21,7 +21,7 @@ from nagare.i18n import _, format_date
 from nagare import component, log, security, var
 
 from kansha import title
-from kansha.card import fts_schema
+from kansha.card import Card
 from kansha.user import usermanager
 from kansha.services import ActionLog
 from kansha.column import comp as column
@@ -362,8 +362,7 @@ class Board(events.EventHandlerMixIn):
             security.get_user(),
             u'card_move', values)
         # reindex it in case it has been moved to the archive column
-        scard = fts_schema.Card(**card.to_document())
-        self.search_engine.update_document(scard)
+        self.search_engine.update_document(card.to_document())
         self.search_engine.commit()
         session.flush()
 
@@ -860,10 +859,10 @@ class Board(events.EventHandlerMixIn):
     def search(self, query):
         self.last_search = query
         if query:
-            condition = fts_schema.Card.match(query) & (fts_schema.Card.board_id == self.id)
+            condition = Card.schema.match(query) & (Card.schema.board_id == self.id)
             # do not query archived cards if archive column is hidden
             if not self.show_archive:
-                condition &= (fts_schema.Card.archived == False)
+                condition &= (Card.schema.archived == False)
             self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
             # make the difference between empty search and no results
             if not self.card_matches:

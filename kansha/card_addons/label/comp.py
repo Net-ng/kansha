@@ -97,7 +97,7 @@ class CardLabels(CardExtension):
 
     @staticmethod
     def get_schema_def():
-        return schema.TEXT()
+        return schema.Text('labels')
 
     def to_document(self):
         return u' '.join(label.title for label in self.data_labels)

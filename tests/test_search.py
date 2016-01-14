@@ -15,19 +15,19 @@ from kansha.services.search import schema, sqliteengine, elasticengine
 #TODO: test all types on schema, doc creation and search
 
 class MyDocument(schema.Document):
-    title = schema.TEXT(stored=True)
-    tags = schema.TEXT(stored=False)
-    pages = schema.INT(stored=True)
-    description = schema.TEXT
-    price = schema.FLOAT(stored=True, indexed=False)
+    title = schema.Text(stored=True)
+    tags = schema.Text(stored=False)
+    pages = schema.Int(stored=True)
+    description = schema.Text
+    price = schema.Float(stored=True, indexed=False)
 
 
 class Person(schema.Document):
-    firstname = schema.KEYWORD(stored=True)
-    lastname = schema.KEYWORD(stored=True)
-    height = schema.FLOAT
-    weight = schema.FLOAT
-    age = schema.INT(stored=True, indexed=False)
+    firstname = schema.Keyword(stored=True)
+    lastname = schema.Keyword(stored=True)
+    height = schema.Float
+    weight = schema.Float
+    age = schema.Int(stored=True, indexed=False)
 
 
 class TestSchema(unittest.TestCase):
@@ -37,17 +37,17 @@ class TestSchema(unittest.TestCase):
         self.Doc = MyDocument
 
     def test_class_attributes(self):
-        self.assertIsInstance(self.Doc.title, schema.TEXT)
+        self.assertIsInstance(self.Doc.title, schema.Text)
         self.assertEqual(self.Doc.price.indexed, False)
-        self.assertIsInstance(self.Doc.description, schema.TEXT)
+        self.assertIsInstance(self.Doc.description, schema.Text)
         self.assertEqual(self.Doc.title.schema, self.Doc)
         self.assertEqual(self.Doc.pages.name, 'pages')
 
     def test_instance_default_attributes(self):
         doc = self.Doc(1)
         self.assertEqual(
-            doc.title, schema.TEXT.default, u'default was not set')
-        self.assertEqual(doc.pages, schema.INT.default, u'default was not set')
+            doc.title, schema.Text.default, u'default was not set')
+        self.assertEqual(doc.pages, schema.Int.default, u'default was not set')
 
     def test_instance_attributes(self):
         doc = self.Doc('docid', title=u'Titre', tags=u'mot livre français',
@@ -63,11 +63,11 @@ class TestImpSchema(TestSchema):
 
     def setUp(self):
         TestDocument = schema.Schema('MyDocument')
-        TestDocument.add_field(schema.TEXT('title', stored=True))
-        TestDocument.add_field(schema.TEXT('tags', stored=False))
-        TestDocument.add_field(schema.INT('pages', stored=True))
-        TestDocument.add_field(schema.TEXT('description'))
-        TestDocument.add_field(schema.FLOAT('price', stored=True, indexed=False))
+        TestDocument.add_field(schema.Text('title', stored=True))
+        TestDocument.add_field(schema.Text('tags', stored=False))
+        TestDocument.add_field(schema.Int('pages', stored=True))
+        TestDocument.add_field(schema.Text('description'))
+        TestDocument.add_field(schema.Float('price', stored=True, indexed=False))
         self.Doc = TestDocument
 
 
@@ -76,11 +76,11 @@ class TestImpSchemaAltSyntax(TestSchema):
     def setUp(self):
         TestDocument = (
             schema.Schema('MyDocument') +
-            schema.TEXT('title', stored=True) +
-            schema.TEXT('tags', stored=False) +
-            schema.INT('pages', stored=True) +
-            schema.TEXT('description') +
-            schema.FLOAT('price', stored=True, indexed=False)
+            schema.Text('title', stored=True) +
+            schema.Text('tags', stored=False) +
+            schema.Int('pages', stored=True) +
+            schema.Text('description') +
+            schema.Float('price', stored=True, indexed=False)
         )
         self.Doc = TestDocument
 
@@ -90,11 +90,11 @@ class TestImpSchemaConstructor(TestSchema):
     def setUp(self):
         TestDocument = schema.Schema(
             'MyDocument',
-            schema.TEXT('title', stored=True),
-            schema.TEXT('tags', stored=False),
-            schema.INT('pages', stored=True),
-            schema.TEXT('description'),
-            schema.FLOAT('price', stored=True, indexed=False)
+            schema.Text('title', stored=True),
+            schema.Text('tags', stored=False),
+            schema.Int('pages', stored=True),
+            schema.Text('description'),
+            schema.Float('price', stored=True, indexed=False)
         )
         self.Doc = TestDocument
 
@@ -228,18 +228,18 @@ class ImpSchemaSearchTestCase(SearchTestCase):
 
     def setUp(self):
         MyDocument_ = schema.Schema('MyDocument')
-        MyDocument_.add_field(schema.TEXT('title', stored=True))
-        MyDocument_.add_field(schema.TEXT('tags', stored=False))
-        MyDocument_.add_field(schema.INT('pages', stored=True))
-        MyDocument_.add_field(schema.TEXT('description'))
-        MyDocument_.add_field(schema.FLOAT('price', stored=True, indexed=False))
+        MyDocument_.add_field(schema.Text('title', stored=True))
+        MyDocument_.add_field(schema.Text('tags', stored=False))
+        MyDocument_.add_field(schema.Int('pages', stored=True))
+        MyDocument_.add_field(schema.Text('description'))
+        MyDocument_.add_field(schema.Float('price', stored=True, indexed=False))
 
         Person_ = schema.Schema('Person')
-        Person_.add_field(schema.KEYWORD('firstname', stored=True))
-        Person_.add_field(schema.KEYWORD('lastname', stored=True))
-        Person_.add_field(schema.FLOAT('height'))
-        Person_.add_field(schema.FLOAT('weight'))
-        Person_.add_field(schema.INT('age', stored=True, indexed=False))
+        Person_.add_field(schema.Keyword('firstname', stored=True))
+        Person_.add_field(schema.Keyword('lastname', stored=True))
+        Person_.add_field(schema.Float('height'))
+        Person_.add_field(schema.Float('weight'))
+        Person_.add_field(schema.Int('age', stored=True, indexed=False))
 
         self.engine = self._create_search_engine()
         self.engine.create_collection([MyDocument_, Person_])

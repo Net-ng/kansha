@@ -45,7 +45,8 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
 
     def copy(self, parent, additional_data):
         '''Happens when a card is copied'''
-        return self.__class__(parent, parent.action_log)
+        configurators = parent.card_extensions.CONFIGURATORS
+        return self.__class__(parent, parent.action_log, configurators.get(self.entry_name))
 
     def new_card_position(self, value):
         '''Happens when a card is moved on the board'''

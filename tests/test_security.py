@@ -110,7 +110,7 @@ class BoardTest(unittest.TestCase):
         helpers.set_context()
 
         with self.assertRaises(Unauthorized):
-            component.Component(board).render(xhtml5.Renderer())
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())
 
     def test_rendering_security_view_board_2(self):
         """Test rendering security view board 2

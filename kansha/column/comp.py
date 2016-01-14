@@ -62,7 +62,7 @@ class Column(events.EventHandlerMixIn):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_column = self._services(Column, new_data.id, None, self.card_extensions, parent.action_log, self.search_engine, data=new_data)
+        new_column = self._services(Column, new_data.id, None, parent.card_extensions, parent.action_log, self.search_engine, data=new_data)
         cards_to_index = []
         for card in self.cards:
             new_card = card().copy(new_column, additional_data)

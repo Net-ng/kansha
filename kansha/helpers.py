@@ -32,6 +32,7 @@ from kansha.services.mail import DummyMailSender
 from kansha.services.search.dummyengine import DummySearchEngine
 from kansha.services.services_repository import ServicesRepository
 from kansha.services.dummyassetsmanager.dummyassetsmanager import DummyAssetsManager
+from kansha.services.components_repository import CardExtensions
 
 
 def setup_db(metadata):
@@ -123,7 +124,8 @@ def create_services():
 
 def get_boards_manager():
     services = create_services()
-    return boardsmanager.BoardsManager('', '', '', {}, DummySearchEngine(None), services)
+    card_extensions = CardExtensions()
+    return boardsmanager.BoardsManager('', '', '', card_extensions, DummySearchEngine(None), services)
 
 
 def create_board():

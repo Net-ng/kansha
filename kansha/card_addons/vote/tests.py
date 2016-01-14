@@ -14,8 +14,8 @@ from .comp import Votes
 
 
 class VoteTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return Votes(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return Votes(card, action_log, configurator)
 
     def test_toggle(self):
         self.extension.toggle()

@@ -16,8 +16,8 @@ from .comp import CardLabels
 
 
 class CardLabelsTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return CardLabels(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return CardLabels(card, action_log, configurator)
 
     def test_activate(self):
         self.assertTrue(self.extension.get_available_labels() > 0)

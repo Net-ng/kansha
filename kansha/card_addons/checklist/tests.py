@@ -14,8 +14,8 @@ from .comp import Checklists
 
 
 class ChecklistTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return Checklists(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return Checklists(card, action_log, configurator)
 
     def test_add_delete(self):
         self.assertEqual(len(self.extension.checklists), 0)

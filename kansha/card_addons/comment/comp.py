@@ -19,10 +19,10 @@ from nagare import component, security
 
 from kansha import validator
 from kansha.card import Card
-from kansha.board import Board
 from kansha.column import Column
 from kansha.user import usermanager
 from kansha.services.search import schema
+from kansha.board import Board, excel_export
 from kansha.cardextension import CardExtension
 from kansha.board import COMMENTS_MEMBERS, COMMENTS_PUBLIC
 from kansha.services.actionlog.messages import render_event
@@ -154,14 +154,6 @@ class Comments(CardExtension):
         self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 
     @staticmethod
-    def get_excel_title():
-        return _(u'Comments')
-
-    def write_excel_sheet(self, sheet, row, col, style):
-        comments = u'\n\n'.join(comment().text for comment in self.comments)
-        sheet.write(row, col, comments, style)
-
-    @staticmethod
     def get_schema_def():
         return schema.TEXT()
 
@@ -206,3 +198,14 @@ class Comments(CardExtension):
         comment = comp()
         DataComment.get(comment.db_id).delete()
         session.flush()
+
+
+@excel_export.get_extension_title_for(Comments)
+def get_extension_title_Comments(card_extension):
+    return _(u'Comments')
+
+
+@excel_export.write_extension_data_for(Comments)
+def write_extension_data_Comments(self, sheet, row, col, style):
+    comments = u'\n-----\n'.join(comment().text for comment in self.comments)
+    sheet.write(row, col, comments, style)

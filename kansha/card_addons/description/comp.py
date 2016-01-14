@@ -11,6 +11,7 @@
 from nagare.i18n import _
 
 from kansha import validator
+from kansha.board import excel_export
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
@@ -35,13 +36,6 @@ class CardDescription(CardExtension):
         """
         super(CardDescription, self).__init__(card, action_log, configurator)
         self.text = self.get_description()
-
-    @staticmethod
-    def get_excel_title():
-        return _(u'Description')
-
-    def write_excel_sheet(self, sheet, row, col, style):
-        sheet.write(row, col, self.get_description(), style)
 
     @staticmethod
     def get_schema_def():
@@ -87,3 +81,13 @@ class CardDescription(CardExtension):
         """Return False if the description if empty
         """
         return bool(self.text)
+
+
+@excel_export.get_extension_title_for(CardDescription)
+def get_extension_title_CardDescription(card_extension):
+    return _(u'Description')
+
+
+@excel_export.write_extension_data_for(CardDescription)
+def write_extension_data_CardDescription(self, sheet, row, col, style):
+    sheet.write(row, col, self.get_description(), style)

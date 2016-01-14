@@ -11,6 +11,7 @@ from nagare.i18n import _
 from peak.rules import when
 from nagare import component, editor, validator
 
+from kansha.board import Board, excel_export
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
@@ -45,13 +46,6 @@ class CardWeightEditor(CardExtension):
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
-    @staticmethod
-    def get_excel_title():
-        return _(u'Weight')
-
-    def write_excel_sheet(self, sheet, row, col, style):
-        sheet.write(row, col, self.weight(), style)
-
     def copy(self, parent, additional_data):
         self.data.copy(parent.data)
         return super(CardWeightEditor, self).copy(parent, additional_data)
@@ -85,3 +79,13 @@ class CardWeightEditor(CardExtension):
             self.data.weight = self.weight.value
             success = True
         return success
+
+
+@excel_export.get_extension_title_for(CardWeightEditor)
+def get_extension_title_CardWeightEditor(card_extension):
+    return _(u'Weight')
+
+
+@excel_export.write_extension_data_for(CardWeightEditor)
+def write_extension_data_CardWeightEditor(self, sheet, row, col, style):
+    sheet.write(row, col, self.weight(), style)

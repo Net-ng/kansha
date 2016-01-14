@@ -32,6 +32,7 @@ from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
 
 from .boardconfig import BoardConfig
+from .excel_export import ExcelExport
 from .templates import SaveTemplateTask
 from .models import DataBoard, DataBoardMember
 
@@ -516,51 +517,7 @@ class Board(events.EventHandlerMixIn):
         return True
 
     def export(self):
-        sheet_name = fname = unicodedata.normalize('NFKD', self.data.title).encode('ascii', 'ignore')
-        fname = re.sub('\W+', '_', fname.lower())
-        sheet_name = re.sub('\W+', ' ', sheet_name)
-        f = StringIO()
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet(sheet_name[:31])
-        sty = ''
-        header_sty = xlwt.easyxf(sty + 'font: bold on; align: wrap on, vert centre, horiz center;')
-        sty = xlwt.easyxf(sty)
-
-        extensions = []
-
-        titles = [_(u'Column'), _(u'Title')]
-        for name, cls in self.card_extensions.iteritems():
-            title = cls.get_excel_title()
-            if title is not None:
-                titles.append(title)
-                extensions.append(name)
-
-        for col, title in enumerate(titles):
-            ws.write(0, col, title, style=header_sty)
-        row = 1
-        for column in self.columns:
-            column = column()
-            colname = _('Archived cards') if column.is_archive else column.get_title()
-            for card in column.cards:
-                card = card()
-                ws.write(row, 0, colname, sty)
-                ws.write(row, 1, card.get_title(), sty)
-                card_extensions = dict(card.extensions)
-                for col, key in enumerate(extensions, 2):
-                    ext = card_extensions[key]()
-                    ext.write_excel_sheet(ws, row, col, sty)
-                row += 1
-        for col in xrange(len(titles)):
-            ws.col(col).width = 0x3000
-        ws.set_panes_frozen(True)
-        ws.set_horz_split_pos(1)
-        wb.save(f)
-        f.seek(0)
-        e = exc.HTTPOk()
-        e.content_type = 'application/vnd.ms-excel'
-        e.content_disposition = u'attachment;filename=%s.xls' % fname
-        e.body = f.getvalue()
-        raise e
+        return ExcelExport(self).download()
 
     @property
     def labels(self):

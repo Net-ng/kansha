@@ -16,8 +16,8 @@ from .comp import Comments
 
 
 class CommentsTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return Comments(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return Comments(card, action_log, configurator)
 
     def test_add_delete(self):
         self.assertEqual(len(self.extension.comments), 0)

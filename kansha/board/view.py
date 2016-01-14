@@ -64,11 +64,10 @@ def render_Board_menu(self, h, comp, *args):
     return h.root
 
 
-@security.permissions('view')
 @presentation.render_for(Board)
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
-
+    security.check_permissions('view', self)
     h.head.css_url('css/themes/board.css')
     h.head.css_url('css/themes/%s/board.css' % self.theme)
 

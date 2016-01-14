@@ -19,21 +19,21 @@ from kansha.services.actionlog import DummyActionLog
 
 
 class CardExtensionTestCase(unittest.TestCase):
-    def create_instance(self, card, action_log):
-        return CardExtension(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return CardExtension(card, action_log, configurator)
 
     @property
     def card_copy(self):
-        return self.card.copy(DummyParent(), {})
+        return self.card.copy(self.column, {})
 
     def setUp(self):
         database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
         helpers.setup_db(__metadata__)
         helpers.set_context(helpers.create_user())
-        board = helpers.create_board()
-        column = board.create_column(1, u'test')
+        self.board = board = helpers.create_board()
+        self.column = column = board.create_column(1, u'test')
         self.card = column.create_card(u'test')
-        self.extension = self.create_instance(self.card, DummyActionLog())
+        self.extension = self.create_instance(self.card, DummyActionLog(), board)
 
     def tearDown(self):
         helpers.teardown_db(__metadata__)

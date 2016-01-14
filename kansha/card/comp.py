@@ -67,7 +67,7 @@ class Card(events.EventHandlerMixIn):
 
     def copy(self, parent, additional_data):
         new_data = self.data.copy(parent.data)
-        new_card = self._services(Card, new_data.id, parent, {}, parent.action_log, data=new_data)
+        new_card = self._services(Card, new_data.id, parent, parent.card_extensions, parent.action_log, data=new_data)
         new_card.extensions = [(name, component.Component(extension().copy(new_card, additional_data)))
                                for name, extension in self.extensions]
         return new_card

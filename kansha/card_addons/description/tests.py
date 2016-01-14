@@ -14,8 +14,8 @@ from .comp import CardDescription
 
 
 class CardDescriptionTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return CardDescription(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return CardDescription(card, action_log, configurator)
 
     def test_change_desc(self):
         self.extension.set_description(u'test')

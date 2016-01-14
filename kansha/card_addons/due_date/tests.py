@@ -16,8 +16,8 @@ from .comp import DueDate
 
 
 class CardDueDateTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return DueDate(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return DueDate(card, action_log, configurator)
 
     def test_due_date(self):
         today = date.today()

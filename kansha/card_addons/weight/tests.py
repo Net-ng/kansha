@@ -14,8 +14,8 @@ from .comp import CardWeightEditor
 
 
 class CardWeightTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log):
-        return CardWeightEditor(card, action_log)
+    def create_instance(self, card, action_log, configurator):
+        return CardWeightEditor(card, action_log, configurator)
 
     def test_copy(self):
         self.extension.weight(u'25')

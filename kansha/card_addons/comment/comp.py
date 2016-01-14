@@ -154,6 +154,14 @@ class Comments(CardExtension):
         self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 
     @staticmethod
+    def get_excel_title():
+        return _(u'Comments')
+
+    def write_excel_sheet(self, sheet, row, col, style):
+        comments = u'\n\n'.join(comment().text for comment in self.comments)
+        sheet.write(row, col, comments, style)
+
+    @staticmethod
     def get_schema_def():
         return schema.TEXT()
 

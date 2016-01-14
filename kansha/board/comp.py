@@ -525,35 +525,30 @@ class Board(events.EventHandlerMixIn):
         sty = ''
         header_sty = xlwt.easyxf(sty + 'font: bold on; align: wrap on, vert centre, horiz center;')
         sty = xlwt.easyxf(sty)
-        titles = [_(u'Column'), _(u'Title'), _(u'Description'), _(u'Due date')]
 
-        if self.weighting_cards:
-            titles.append(_(u'Weight'))
-        titles.append(_(u'Comments'))
+        extensions = []
+
+        titles = [_(u'Column'), _(u'Title')]
+        for name, cls in self.card_extensions.iteritems():
+            title = cls.get_excel_title()
+            if title is not None:
+                titles.append(title)
+                extensions.append(name)
 
         for col, title in enumerate(titles):
             ws.write(0, col, title, style=header_sty)
         row = 1
-        max_len = len(titles)
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                colnumber = 0
-                ws.write(row, colnumber, _('Archived cards') if col.archive else col.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.description, sty)
-                colnumber += 1
-                ws.write(row, colnumber, format_date(card.due_date) if card.due_date else u'', sty)
-                colnumber += 1
-                if self.weighting_cards:
-                    ws.write(row, colnumber, card.weight, sty)
-                    colnumber += 1
-
-                for colno, comment in enumerate(card.comments, colnumber):
-                    ws.write(row, colno, comment.comment, sty)
-                    max_len = max(max_len, 4 + colno)
+        for column in self.columns:
+            column = column()
+            colname = _('Archived cards') if column.is_archive else column.get_title()
+            for card in column.cards:
+                card = card()
+                ws.write(row, 0, colname, sty)
+                ws.write(row, 1, card.get_title(), sty)
+                card_extensions = dict(card.extensions)
+                for col, key in enumerate(extensions, 2):
+                    ext = card_extensions[key]()
+                    ext.write_excel_sheet(ws, row, col, sty)
                 row += 1
         for col in xrange(len(titles)):
             ws.col(col).width = 0x3000

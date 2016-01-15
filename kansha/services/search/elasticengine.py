@@ -32,7 +32,7 @@ class ESMapper(object):
     def matchany(self, schema, value):
         # _all does not make sense for fulltext searches
         # so we use a custom field for that: _full.
-        # it only contains TEXT fields
+        # it only contains Text fields
         return {'match': {'_full': {'query': value, 'operator': 'and'}}}
 
     def eq(self, field, value):
@@ -84,17 +84,17 @@ class ESMapper(object):
         }
 
 FT2ES = {
-    schema.TEXT: {'type': 'string',
+    schema.Text: {'type': 'string',
                   "index_analyzer":  "autocomplete",
                   "search_analyzer": "standard",
                   'copy_to': '_full'},
-    schema.KEYWORD: {'type': 'string',
+    schema.Keyword: {'type': 'string',
                      'index': 'not_analyzed'},
-    schema.ATTACHMENT: {'type': 'attachment'},
-    schema.FLOAT: {'type': 'double'},
-    schema.INT: {'type': 'long'},
-    schema.BOOLEAN: {'type': 'boolean'},
-    schema.DATETIME: {'type': 'date'}
+    schema.Attachment: {'type': 'attachment'},
+    schema.Float: {'type': 'double'},
+    schema.Int: {'type': 'long'},
+    schema.Boolean: {'type': 'boolean'},
+    schema.Datetime: {'type': 'date'}
 }
 
 

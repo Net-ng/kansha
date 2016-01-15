@@ -12,6 +12,7 @@ from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import CardDescription
 
+
 class CardDescriptionTest(CardExtensionTestCase):
 
     extension_name = 'description'
@@ -28,3 +29,11 @@ class CardDescriptionTest(CardExtensionTestCase):
         self.extension.text = u'test'
         cpy = self.extension_copy
         self.assertEqual(cpy.text, u'test')
+
+    def test_to_indexable(self):
+        self.extension.text = u'some words'
+        self.assertEqual(self.extension.to_indexable(), u'some words')
+        self.extension.text = u'<b><i>so</i>me</b> <u>HTML</u>'
+        self.assertEqual(self.extension.to_indexable(), u'some HTML')
+        self.extension.text = u'éàü'
+        self.assertEqual(self.extension.to_indexable(), u'éàü')

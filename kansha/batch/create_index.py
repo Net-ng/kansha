@@ -33,19 +33,17 @@ from nagare.admin import util, command
 from kansha.card.comp import Card
 from kansha.column.comp import Column
 from kansha.card.models import DataCard
-from kansha.card.fts_schema import Card as SCard
 from kansha.services.actionlog import DummyActionLog
 
 
 def rebuild_index(app):
     # init index
     action_log = DummyActionLog()
-    app.search_engine.create_collection([SCard])
+    app.search_engine.create_collection([Card.schema])
     for card in DataCard.query:
         col = app._services(Column, card.column.id, card.column.board, app.card_extensions, action_log, app.search_engine, data=card.column)
         card = app._services(Card, card.id, col, app.card_extensions, action_log, data=card)
-        scard = SCard(**card.to_document())
-        app.search_engine.add_document(scard)
+        app.search_engine.add_document(card.to_document())
     app.search_engine.commit()
 
 

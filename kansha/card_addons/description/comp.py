@@ -12,6 +12,7 @@ from nagare.i18n import _
 
 from kansha import validator
 from kansha.board import excel_export
+from kansha.validator import clean_text
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
@@ -38,10 +39,11 @@ class CardDescription(CardExtension):
 
     @staticmethod
     def get_schema_def():
-        return schema.TEXT()
+        return schema.Text(u'description')
 
-    def to_document(self):
-        return self.text
+    def to_indexable(self):
+        desc = self.text
+        return clean_text(desc) if desc else u''
 
     def update(self, other):
         self.data.update(other.data)

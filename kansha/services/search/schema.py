@@ -12,9 +12,9 @@ Schemas are used to define Documents.
 Example usage:
 
 class MyDoc(Document):
-    title = TEXT(stored=True)
-    created = DATETIME
-    description = TEXT
+    title = Text(stored=True)
+    created = Datetime
+    description = Text
 
 doc = MyDoc(1001, title=u'Programming Python')
 The first argument is a mandatory, arbitrary id.
@@ -68,19 +68,19 @@ class FieldType(object):
         return PHRASEQuery(self, v)
 
 
-class TEXT(FieldType):
+class Text(FieldType):
 
     '''Fulltext field'''
     default = u''
 
 
-class KEYWORD(FieldType):
+class Keyword(FieldType):
 
     '''Exact match string'''
     default = u''
 
 
-class ATTACHMENT(FieldType):
+class Attachment(FieldType):
 
     '''
     File, as a file path unicode string, whose content
@@ -89,23 +89,23 @@ class ATTACHMENT(FieldType):
     default = None
 
 
-class NUMBER(FieldType):
+class Number(FieldType):
     pass
 
 
-class FLOAT(NUMBER):
+class Float(Number):
     default = 0.0
 
 
-class INT(NUMBER):
+class Int(Number):
     default = 0
 
 
-class BOOLEAN(FieldType):
+class Boolean(FieldType):
     default = True
 
 
-class DATETIME(FieldType):
+class Datetime(FieldType):
     default = datetime.now()
 
 
@@ -139,11 +139,11 @@ class Document(object):
     Usage:
 
         class MyDocument(schema.Document):
-            title = schema.TEXT(stored=True)
-            tags = schema.TEXT(stored=False)
-            pages = schema.INT(stored=True)
-            description = schema.TEXT
-            price = schema.FLOAT(stored=True, indexed=False)
+            title = schema.Text(stored=True)
+            tags = schema.Text(stored=False)
+            pages = schema.Int(stored=True)
+            description = schema.Text
+            price = schema.Float(stored=True, indexed=False)
 
         doc1 = MyDocument(
                     'doc1', title=u'Titre', tags=u'Un livre français best seller',
@@ -172,6 +172,7 @@ class Document(object):
         self._id = docid
         for fname, fvalue in self.fields.iteritems():
             setattr(self, fname, fields.get(fname, fvalue.default))
+
 
     @property
     def schema(self):
@@ -221,26 +222,26 @@ class Schema(object):
 
         TestDocument = schema.Schema(
             'MyDocument',
-            schema.TEXT('title', stored=True),
-            schema.TEXT('tags', stored=False),
-            schema.INT('pages', stored=True),
-            schema.TEXT('description'),
-            schema.FLOAT('price', stored=True, indexed=False)
+            schema.Text('title', stored=True),
+            schema.Text('tags', stored=False),
+            schema.Int('pages', stored=True),
+            schema.Text('description'),
+            schema.Float('price', stored=True, indexed=False)
         )
 
     or
 
         # Incrementaly update schema "in place"
         TestDocument = schema.Schema('MyDocument')
-        TestDocument.add_field(schema.TEXT('title', stored=True))
-        TestDocument.add_field(schema.TEXT('tags', stored=False))
-        TestDocument.add_field(schema.INT('pages', stored=True))
-        TestDocument.add_field(schema.TEXT('description'))
-        TestDocument.add_field(schema.FLOAT('price', stored=True, indexed=False))
+        TestDocument.add_field(schema.Text('title', stored=True))
+        TestDocument.add_field(schema.Text('tags', stored=False))
+        TestDocument.add_field(schema.Int('pages', stored=True))
+        TestDocument.add_field(schema.Text('description'))
+        TestDocument.add_field(schema.Float('price', stored=True, indexed=False))
 
     or create new schema from existing one
 
-        TestDocument2 = TestDocument + schema.TEXT('author')
+        TestDocument2 = TestDocument + schema.Text('author')
         TestDocument2.type_name = 'IdentifiedDocument'
 
     TestDocument is then used as if it was a Declarative Document schema.

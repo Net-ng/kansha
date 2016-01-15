@@ -14,6 +14,8 @@ from nagare import component, security
 
 from kansha import title
 from kansha import events
+from kansha.services.search import schema
+from kansha.services.actionlog.messages import render_event
 
 from .models import DataCard
 
@@ -35,6 +37,10 @@ class Card(events.EventHandlerMixIn):
 
     """Card component
     """
+    schema = schema.Schema('Card',
+                           schema.Text(u'title', stored=True),
+                           schema.Int('board_id'),
+                           schema.Boolean('archived'))
 
     def __init__(self, id_, column, card_extensions, action_log, services_service, data=None):
         """Initialization
@@ -53,13 +59,20 @@ class Card(events.EventHandlerMixIn):
         self.extensions = ()
         self.refresh()
 
+    @classmethod
+    def update_schema(cls, card_extensions):
+        for name, extension in card_extensions.iteritems():
+            field = extension.get_schema_def()
+            if field is not None:
+                cls.schema.add_field(field)
+
     def to_document(self):
         data = {'docid': self.id,
                 'title': self.get_title(),
                 'board_id': self.column.data.board.id,
                 'archived': self.column.is_archive}
-        data.update({name: extension().to_document() for name, extension in self.extensions})
-        return data
+        data.update({name: extension().to_indexable() for name, extension in self.extensions})
+        return self.schema(**data)
 
     def update(self, other):
         self.data.update(other.data)

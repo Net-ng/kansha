@@ -14,6 +14,7 @@ from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import Comments
 
+
 class CommentsTest(CardExtensionTestCase):
 
     extension_name = 'comments'
@@ -36,3 +37,12 @@ class CommentsTest(CardExtensionTestCase):
         label.change_text(u'test2')
         self.assertEqual(label.text, u'test2')
         self.assertTrue(label.is_author(security.get_user()))
+
+    def test_to_indexable(self):
+        self.extension.add(u'Comment 1')
+        self.extension.add(u'Comment 2')
+        self.extension.add(u'Comment 3')
+        self.assertEqual(self.extension.to_indexable(), u'''Comment 3
+Comment 2
+Comment 1''')
+

@@ -155,9 +155,9 @@ class Comments(CardExtension):
 
     @staticmethod
     def get_schema_def():
-        return schema.TEXT()
+        return schema.Text(u'comments')
 
-    def to_document(self):
+    def to_indexable(self):
         return u'\n'.join(comment().text for comment in self.comments)
 
     @property

@@ -15,7 +15,7 @@ from kansha import title
 from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
-from kansha.card import comp, fts_schema
+from kansha.card import comp
 
 from .models import DataColumn
 
@@ -73,7 +73,7 @@ class Column(events.EventHandlerMixIn):
 
     def index_cards(self, cards, update=False):
         for card in cards:
-            scard = fts_schema.Card(**card.to_document())
+            scard = card.to_document()
             if update:
                 self.search_engine.update_document(scard)
             else:
@@ -104,8 +104,7 @@ class Column(events.EventHandlerMixIn):
             slot = event.data
             slot.becomes(card_bo)
             # card has been edited, reindex
-            scard = fts_schema.Card(**card_bo.to_document())
-            self.search_engine.update_document(scard)
+            self.search_engine.update_document(card_bo.to_document())
             self.search_engine.commit()
             self.emit_event(comp, events.SearchIndexUpdated)
 
@@ -210,7 +209,7 @@ class Column(events.EventHandlerMixIn):
         card.action_log.add_history(
             security.get_user(),
             u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, card.id)
+        self.search_engine.delete_document(card.schema, card.id)
         self.search_engine.commit()
         card.delete()
         self.data.delete_card(card.data)
@@ -222,7 +221,7 @@ class Column(events.EventHandlerMixIn):
             card.action_log.add_history(
                 security.get_user(),
                 u'card_delete', values)
-            self.search_engine.delete_document(fts_schema.Card, card.id)
+            self.search_engine.delete_document(card.schema, card.id)
             card.delete()
         del self.cards[:]
         self.search_engine.commit()

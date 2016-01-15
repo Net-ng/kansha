@@ -203,8 +203,7 @@ class ElasticSearchEngine(object):
                               body={'query': dsl},
                               size=size)
         res = [
-            (h['_score'], schema.delta(h['_id'],
-                                                  **h['_source']))
+            (h['_score'], schema.delta(h['_id'], **h['_source']))
             for h in hits['hits']['hits']
         ]
         return res

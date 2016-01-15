@@ -21,6 +21,15 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
         self.configurator = configurator
 
     @staticmethod
+    def get_excel_title():
+        '''If the extension is exportable in Excel, return its column name'''
+        return None
+
+    def write_excel_sheet(self, sheet, row, col, style):
+        '''Write value in Excel sheet'''
+        pass
+
+    @staticmethod
     def get_schema_def():
         '''If the extension has to be indexed for it to be used in search engine, return some schema field
         ie: return schema.TEXT for a text field'''

@@ -7,7 +7,11 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+
+from nagare.i18n import _
+
 from kansha import validator
+from kansha.board import excel_export
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
@@ -77,3 +81,13 @@ class CardDescription(CardExtension):
         """Return False if the description if empty
         """
         return bool(self.text)
+
+
+@excel_export.get_extension_title_for(CardDescription)
+def get_extension_title_CardDescription(card_extension):
+    return _(u'Description')
+
+
+@excel_export.write_extension_data_for(CardDescription)
+def write_extension_data_CardDescription(self, sheet, row, col, style):
+    sheet.write(row, col, self.get_description(), style)

@@ -32,6 +32,7 @@ from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
 
 from .boardconfig import BoardConfig
+from .excel_export import ExcelExport
 from .templates import SaveTemplateTask
 from .models import DataBoard, DataBoardMember
 
@@ -516,56 +517,7 @@ class Board(events.EventHandlerMixIn):
         return True
 
     def export(self):
-        sheet_name = fname = unicodedata.normalize('NFKD', self.data.title).encode('ascii', 'ignore')
-        fname = re.sub('\W+', '_', fname.lower())
-        sheet_name = re.sub('\W+', ' ', sheet_name)
-        f = StringIO()
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet(sheet_name[:31])
-        sty = ''
-        header_sty = xlwt.easyxf(sty + 'font: bold on; align: wrap on, vert centre, horiz center;')
-        sty = xlwt.easyxf(sty)
-        titles = [_(u'Column'), _(u'Title'), _(u'Description'), _(u'Due date')]
-
-        if self.weighting_cards:
-            titles.append(_(u'Weight'))
-        titles.append(_(u'Comments'))
-
-        for col, title in enumerate(titles):
-            ws.write(0, col, title, style=header_sty)
-        row = 1
-        max_len = len(titles)
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                colnumber = 0
-                ws.write(row, colnumber, _('Archived cards') if col.archive else col.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.description, sty)
-                colnumber += 1
-                ws.write(row, colnumber, format_date(card.due_date) if card.due_date else u'', sty)
-                colnumber += 1
-                if self.weighting_cards:
-                    ws.write(row, colnumber, card.weight, sty)
-                    colnumber += 1
-
-                for colno, comment in enumerate(card.comments, colnumber):
-                    ws.write(row, colno, comment.comment, sty)
-                    max_len = max(max_len, 4 + colno)
-                row += 1
-        for col in xrange(len(titles)):
-            ws.col(col).width = 0x3000
-        ws.set_panes_frozen(True)
-        ws.set_horz_split_pos(1)
-        wb.save(f)
-        f.seek(0)
-        e = exc.HTTPOk()
-        e.content_type = 'application/vnd.ms-excel'
-        e.content_disposition = u'attachment;filename=%s.xls' % fname
-        e.body = f.getvalue()
-        raise e
+        return ExcelExport(self).download()
 
     @property
     def labels(self):

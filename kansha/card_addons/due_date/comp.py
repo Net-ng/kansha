@@ -11,12 +11,13 @@ from datetime import date
 
 from peak.rules import when
 from nagare.security import common
+from nagare.i18n import _, format_date
 from nagare import component, security
 
 from kansha.card import Card
-from kansha.board import Board
 from kansha.column import Column
 from kansha.toolbox import calendar_widget
+from kansha.board import Board, excel_export
 from kansha.cardextension import CardExtension
 
 from .models import DataCardDueDate
@@ -91,3 +92,14 @@ class DueDate(CardExtension):
         if diff > 1:
             return 'past'
         return ''
+
+
+@excel_export.get_extension_title_for(DueDate)
+def get_extension_title_DueDate(card_extension):
+    return _(u'Due date')
+
+
+@excel_export.write_extension_data_for(DueDate)
+def write_extension_data_DueDate(self, sheet, row, col, style):
+    value = self.get_value()
+    sheet.write(row, col, format_date(value) if value else u'', style)

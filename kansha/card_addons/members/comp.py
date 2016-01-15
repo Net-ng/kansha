@@ -20,6 +20,7 @@ from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
 
+# TODO: move this to board extension
 @when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
 def has_permission_Board_add_users(self, user, perm, board):
     """Test if users is one of the board's managers, if he is he can add new user to the board"""

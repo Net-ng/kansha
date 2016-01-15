@@ -19,31 +19,14 @@ from nagare import component, security
 
 from kansha import validator
 from kansha.card import Card
-from kansha.column import Column
 from kansha.user import usermanager
+from kansha.board import excel_export
 from kansha.services.search import schema
-from kansha.board import Board, excel_export
 from kansha.cardextension import CardExtension
 from kansha.board import COMMENTS_MEMBERS, COMMENTS_PUBLIC
 from kansha.services.actionlog.messages import render_event
 
 from .models import DataComment
-
-
-@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Board)")
-def has_permission_Board_comment(self, user, perm, board):
-    return ((board.has_member(user) and board.comments_allowed == COMMENTS_MEMBERS)
-            or ((board.comments_allowed == COMMENTS_PUBLIC) and user))
-
-
-@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Column)")
-def has_permission_Column_comment(self, user, perm, column):
-    return security.has_permissions('comment', column.board)
-
-
-@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Card)")
-def has_permission_Card_comment(self, user, perm, card):
-    return security.has_permissions('comment', card.column)
 
 
 @when(common.Rules.has_permission, "user and (perm == 'delete_comment')")
@@ -164,6 +147,10 @@ class Comments(CardExtension):
     def data(self):
         return DataComment.get_by_card(self.card.data)
 
+    @property
+    def allowed(self):
+        return self.configurator.comments_allowed
+
     def _create_comment_component(self, data_comment):
         return component.Component(Comment(data_comment)).on_answer(self.delete_comment)
 
@@ -173,7 +160,7 @@ class Comments(CardExtension):
         In:
             - ``v`` -- the comment content
         """
-        security.check_permissions('comment', self.card)
+        security.check_permissions('comment', self)
         if v is None:
             return
         v = v.strip()
@@ -214,3 +201,10 @@ def get_extension_title_Comments(card_extension):
 def write_extension_data_Comments(self, sheet, row, col, style):
     comments = u'\n-----\n'.join(comment().text for comment in self.comments)
     sheet.write(row, col, comments, style)
+
+
+# TODO: completely redefine security
+@when(common.Rules.has_permission, "user and perm == 'comment' and isinstance(subject, Comments)")
+def has_permission_Card_comment(self, user, perm, comments):
+    return ((security.has_permissions('edit', comments.card) and comments.allowed == COMMENTS_MEMBERS) or
+            (comments.allowed == COMMENTS_PUBLIC and user))

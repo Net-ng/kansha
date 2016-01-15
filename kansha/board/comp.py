@@ -89,7 +89,9 @@ class Board(events.EventHandlerMixIn):
         self.board_extensions = {
             'weight': self,
             'labels': self,
-            'members': self
+            'members': self,
+            'comments': self,
+            'votes': self
         }
         self.card_extensions = card_extensions.set_configurators(self.board_extensions)
 

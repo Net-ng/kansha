@@ -35,3 +35,10 @@ class CardLabelsTest(CardExtensionTestCase):
         cpy = self.extension.copy(self.card_copy, {'labels': self.extension.get_available_labels()})
         for label_id in label_ids:
             self.assertIn(label_id, cpy.labels)
+
+    def test_to_indexable(self):
+        label_id = self.extension.get_available_labels()[0].id
+        self.extension.activate(label_id)
+        label_id = self.extension.get_available_labels()[1].id
+        self.extension.activate(label_id)
+        self.assertEqual(self.extension.to_indexable(), u'Green Red')

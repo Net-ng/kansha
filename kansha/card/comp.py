@@ -70,7 +70,7 @@ class Card(events.EventHandlerMixIn):
                 'title': self.get_title(),
                 'board_id': self.column.data.board.id,
                 'archived': self.column.is_archive}
-        data.update({name: extension().to_document() for name, extension in self.extensions})
+        data.update({name: extension().to_indexable() for name, extension in self.extensions})
         return self.schema(**data)
 
     def copy(self, parent, additional_data):

@@ -53,7 +53,7 @@ class DataChecklist(Entity):
             titles.insert(0, self.title)
         return u'\n'.join(titles)
 
-    def to_document(self):
+    def to_indexable(self):
         return unicode(self)
 
     def add_item_from_str(self, text):

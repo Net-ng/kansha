@@ -213,8 +213,8 @@ class Checklists(CardExtension):
     def get_schema_def():
         return schema.Text(u'checklists')
 
-    def to_document(self):
-        return u'\n'.join(cl.to_document() for cl in self.data)
+    def to_indexable(self):
+        return u'\n'.join(cl.to_indexable() for cl in self.data)
 
     @property
     def data(self):

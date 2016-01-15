@@ -28,3 +28,11 @@ class CardDescriptionTest(CardExtensionTestCase):
         self.extension.set_description(u'test')
         cpy = self.extension.copy(self.card_copy, {})
         self.assertEqual(cpy.get_description(), u'test')
+
+    def test_to_indexable(self):
+        self.extension.set_description(u'some words')
+        self.assertEqual(self.extension.to_indexable(), u'some words')
+        self.extension.set_description(u'<b><i>so</i>me</b> <u>HTML</u>')
+        self.assertEqual(self.extension.to_indexable(), u'some HTML')
+        self.extension.set_description(u'éàü')
+        self.assertEqual(self.extension.to_indexable(), u'éàü')

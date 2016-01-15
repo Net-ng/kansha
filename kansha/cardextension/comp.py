@@ -26,7 +26,7 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
         ie: return schema.Text for a text field'''
         return None
 
-    def to_document(self):
+    def to_indexable(self):
         '''How to transform extension value for it to be indexed'''
         return None
 

@@ -60,21 +60,24 @@ class Column(events.EventHandlerMixIn):
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 
-    def copy(self, parent, additional_data):
-        new_data = self.data.copy(parent.data)
-        new_column = self._services(Column, new_data.id, None, parent.card_extensions, parent.action_log, self.search_engine, data=new_data)
+    def update(self, other):
+        self.data.update(other.data)
+        self.nb_card = var.Var(self.data.nb_max_cards)
         cards_to_index = []
-        for card in self.cards:
-            new_card = card().copy(new_column, additional_data)
-            cards_to_index.append(new_card)
-            new_column.cards.append(component.Component(new_card))
-        new_column.index_cards(cards_to_index)
-        return new_column
+        for card_comp in other.cards:
+            card = card_comp()
+            new_card = self.create_card(card.get_title())
+            new_card.update(card)
+            cards_to_index.append(card)
+        self.index_cards(cards_to_index, update=True)
 
-    def index_cards(self, cards):
+    def index_cards(self, cards, update=False):
         for card in cards:
             scard = fts_schema.Card(**card.to_document())
-            self.search_engine.add_document(scard)
+            if update:
+                self.search_engine.update_document(scard)
+            else:
+                self.search_engine.add_document(scard)
         self.search_engine.commit()
 
     def actions(self, action, comp):

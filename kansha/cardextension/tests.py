@@ -14,26 +14,35 @@ from nagare import database
 from elixir import metadata as __metadata__
 
 from kansha import helpers
-from kansha.cardextension import CardExtension
 from kansha.services.actionlog import DummyActionLog
 
 
 class CardExtensionTestCase(unittest.TestCase):
-    def create_instance(self, card, action_log, configurator):
-        return CardExtension(card, action_log, configurator)
+
+    extension_name = ''
+    extension_class = None
 
     @property
     def card_copy(self):
-        return self.card.copy(self.column, {})
+        new_card = self.column.create_card(self.card.get_title())
+        new_card.update(self.card)
+        return new_card
+
+    @property
+    def extension_copy(self):
+        new_card = self.card_copy
+        new_extension = dict(new_card.extensions)[self.extension_name]() if self.extension_name else None
+        return new_extension
 
     def setUp(self):
         database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
         helpers.setup_db(__metadata__)
         helpers.set_context(helpers.create_user())
-        self.board = board = helpers.create_board()
+        extensions = [(self.extension_name, self.extension_class)] if self.extension_name else []
+        self.board = board = helpers.create_board(extensions)
         self.column = column = board.create_column(1, u'test')
         self.card = column.create_card(u'test')
-        self.extension = self.create_instance(self.card, DummyActionLog(), board)
+        self.extension = dict(self.card.extensions)[self.extension_name]() if self.extension_name else None
 
     def tearDown(self):
         helpers.teardown_db(__metadata__)

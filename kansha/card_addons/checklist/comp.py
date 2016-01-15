@@ -131,6 +131,10 @@ class Checklist(object):
         self.new_item = component.Component(NewChecklistItem())
         self.new_item.on_answer(self.add_item_from_str)
 
+    def update(self, other):
+        self.data.update(other.data)
+        self.items = [component.Component(ChecklistItem(item.id, self.action_log, item)) for item in self.data.items]
+
     def add_item_from_str(self, text):
         if text is None or not text.strip():
             return
@@ -170,6 +174,12 @@ class Checklist(object):
     def set_index(self, index):
         self.data.index = index
         return self
+
+    def delete(self):
+        self.items = []
+        self.data.purge()
+        self.data.delete()
+
 
     @property
     def total_items(self):
@@ -220,20 +230,11 @@ class Checklists(CardExtension):
     def data(self):
         return DataChecklist.get_by_card(self.card.data)
 
-    def copy(self, parent, additional_data):
-        new_extension = super(Checklists, self).copy(parent, additional_data)
-        for index, checklist in enumerate(self.checklists):
+    def update(self, other):
+        for index, checklist in enumerate(other.checklists):
             checklist = checklist()
-            new_data_checklist = DataChecklist(card=parent.data,
-                                               title=checklist.data.title)
-            database.session.flush()
-            new_checklist = Checklist(new_data_checklist.id, self.action_log, new_data_checklist)
-            new_checklist.set_index(index)
-            for item in checklist.items:
-                item = item()
-                new_checklist.add_item_from_str(item.get_title())
-            new_extension.checklists.append(component.Component(new_checklist))
-        return new_extension
+            new_checklist = self.add_checklist()
+            new_checklist.update(checklist)
 
     @property
     def nb_items(self):
@@ -249,12 +250,16 @@ class Checklists(CardExtension):
         for i in range(index, len(self.checklists)):
             self.checklists[i]().set_index(i)
         data = {'list': cl.get_title(), 'card': self.card.get_title()}
-        cl.data.delete()
+        cl.delete()
         if data['list']:
             self.action_log.add_history(
                                       security.get_user(),
                                       u'card_delete_list',
                                       data)
+
+    def delete(self):
+        for checklist in self.ck_cache.values():
+            checklist.delete()
 
     def add_checklist(self):
         clist = DataChecklist(card=self.card.data)

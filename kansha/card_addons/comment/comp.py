@@ -199,6 +199,11 @@ class Comments(CardExtension):
         DataComment.get(comment.db_id).delete()
         session.flush()
 
+    def delete(self):
+        self.comments = []
+        for comment in self.data:
+            comment.delete()
+
 
 @excel_export.get_extension_title_for(Comments)
 def get_extension_title_Comments(card_extension):

@@ -14,10 +14,10 @@ from kansha.cardextension.tests import CardExtensionTestCase
 
 from .comp import DueDate
 
-
 class CardDueDateTest(CardExtensionTestCase):
-    def create_instance(self, card, action_log, configurator):
-        return DueDate(card, action_log, configurator)
+
+    extension_name = 'due_date'
+    extension_class = DueDate
 
     def test_due_date(self):
         today = date.today()
@@ -47,4 +47,3 @@ class CardDueDateTest(CardExtensionTestCase):
         self.assertEqual(self.extension.get_class(), 'yesterday')
         self.extension.set_value(today - timedelta(days=10))
         self.assertEqual(self.extension.get_class(), 'past')
-

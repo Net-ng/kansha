@@ -24,6 +24,10 @@ class AssetsManager(Service):
             'baseurl': 'string'
         }
 
+    THUMB_SIZE = (68, 68)
+    MEDIUM_WIDTH = 425
+    COVER_SIZE = (MEDIUM_WIDTH, 250)
+
     def copy(self, file_id):
         '''Copy a file from its file_id
 

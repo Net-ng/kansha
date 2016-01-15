@@ -22,11 +22,9 @@ class DataCardDescription(Entity):
     description = Field(UnicodeText, default=u'')
     card = ManyToOne('DataCard', ondelete='cascade')
 
-    def copy(self, parent):
-        new_data = DataCardDescription(card=parent,
-                                       description=self.description)
+    def update(self, other):
+        self.description = other.description
         session.flush()
-        return new_data
 
     @classmethod
     def get_by_card(cls, card):

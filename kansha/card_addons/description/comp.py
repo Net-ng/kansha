@@ -35,7 +35,6 @@ class CardDescription(CardExtension):
             - ``card`` -- the card
         """
         super(CardDescription, self).__init__(card, action_log, configurator)
-        self.text = self.get_description()
 
     @staticmethod
     def get_schema_def():
@@ -44,9 +43,8 @@ class CardDescription(CardExtension):
     def to_document(self):
         return self.text
 
-    def copy(self, parent, additional_data):
-        self.data.copy(parent.data)
-        return super(CardDescription, self).copy(parent, additional_data)
+    def update(self, other):
+        self.data.update(other.data)
 
     @property
     def data(self):
@@ -55,10 +53,12 @@ class CardDescription(CardExtension):
             data = DataCardDescription(card=self.card.data)
         return data
 
-    def get_description(self):
+    @property
+    def text(self):
         return self.data.description
 
-    def set_description(self, text):
+    @text.setter
+    def text(self, text):
         self.data.description = text
 
     def change_text(self, text):
@@ -75,7 +75,6 @@ class CardDescription(CardExtension):
         if text:
             text = validator.clean_html(text)
         self.text = text
-        self.set_description(text)
 
     def __nonzero__(self):
         """Return False if the description if empty
@@ -90,4 +89,4 @@ def get_extension_title_CardDescription(card_extension):
 
 @excel_export.write_extension_data_for(CardDescription)
 def write_extension_data_CardDescription(self, sheet, row, col, style):
-    sheet.write(row, col, self.get_description(), style)
+    sheet.write(row, col, self.text, style)

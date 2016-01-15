@@ -42,13 +42,13 @@ class CardWeightEditor(CardExtension):
         """
         CardExtension.__init__(self, card, action_log, configurator)
         self.card = card
-        self.weight = editor.Property(self.data.weight if self.data.weight else u'')
+        self.weight = editor.Property(self.data.weight or u'')
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
-    def copy(self, parent, additional_data):
-        self.data.copy(parent.data)
-        return super(CardWeightEditor, self).copy(parent, additional_data)
+    def update(self, other):
+        self.data.update(other.data)
+        self.weight(self.data.weight or u'')
 
     @property
     def data(self):

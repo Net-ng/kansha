@@ -122,18 +122,20 @@ def create_services():
     return _services
 
 
-def get_boards_manager():
+def get_boards_manager(extensions=[]):
     services = create_services()
     card_extensions = CardExtensions()
+    for name, extension in extensions:
+        card_extensions.register(name, extension)
     return boardsmanager.BoardsManager('', '', '', card_extensions, DummySearchEngine(None), services)
 
 
-def create_board():
+def create_board(card_extensions=[]):
     """Create boards with default columns and default cards
     """
     user = create_user()
     template = board_models.create_template_todo()
-    boards_manager = get_boards_manager()
+    boards_manager = get_boards_manager(card_extensions)
     board = boards_manager.create_board_from_template(template.id, user)
     create_default_cards(board.data, user)
     user.add_board(board, "manager")

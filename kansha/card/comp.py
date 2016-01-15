@@ -10,14 +10,10 @@
 
 import dateutil.parser
 
-from peak.rules import when
-
-from nagare.i18n import _
 from nagare import component, security
 
 from kansha import title
 from kansha import events
-from kansha.services.actionlog.messages import render_event
 
 from .models import DataCard
 
@@ -65,12 +61,13 @@ class Card(events.EventHandlerMixIn):
         data.update({name: extension().to_document() for name, extension in self.extensions})
         return data
 
-    def copy(self, parent, additional_data):
-        new_data = self.data.copy(parent.data)
-        new_card = self._services(Card, new_data.id, parent, parent.card_extensions, parent.action_log, data=new_data)
-        new_card.extensions = [(name, component.Component(extension().copy(new_card, additional_data)))
-                               for name, extension in self.extensions]
-        return new_card
+    def update(self, other):
+        self.data.update(other.data)
+        # extensions must align
+        extensions = zip(self.extensions, other.extensions)
+        for (name, my_extension), (name2, other_extension) in extensions:
+            assert(name == name2)  # should never raise
+            my_extension().update(other_extension())
 
     def refresh(self):
         """Refresh the sub components

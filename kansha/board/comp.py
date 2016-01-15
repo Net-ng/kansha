@@ -189,29 +189,22 @@ class Board(events.EventHandlerMixIn):
         data = (title, description, shared)
         return self.emit_event(comp, events.NewTemplateRequested, data)
 
-    def copy(self, owner, additional_data):
+    def copy(self, owner):
         """
         Create a new board that is a copy of self, without the archive.
         Children must be loaded.
         """
-        new_data = self.data.copy(None)
+        new_data = self.data.copy()
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
         new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_children=False)
         new_board.add_member(owner, 'manager')
-        additional_data['author'] = owner
-
-        additional_data['labels'] = []
-        for lbl in self.labels:
-            new_label = lbl.copy(new_board, additional_data)
-            additional_data['labels'].append(new_label)
-            new_board.labels.append(new_label)
 
         assert(self.columns or self.data.is_template)
         cols = [col() for col in self.columns if not col().is_archive]
         for column in cols:
-            new_col = column.copy(new_board, additional_data)
-            new_board.columns.append(component.Component(new_col))
+            new_column = new_board.create_column(-1, column.get_title())
+            new_column.update(column)
 
         return new_board
 

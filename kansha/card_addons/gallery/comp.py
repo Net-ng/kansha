@@ -21,6 +21,7 @@ from kansha import validator
 from kansha.user import usermanager
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
+from kansha.services.assetsmanager import AssetsManager
 
 from .models import DataAsset
 
@@ -212,7 +213,9 @@ class Asset(object):
 
     @property
     def cropper_info(self):
-        return self.metadata['cropper']
+        width, height = AssetsManager.COVER_SIZE
+        defaults = {'left': 0, 'top': 0, 'width': width, 'height': height}
+        return self.metadata.get('cropper', defaults)
 
     def update_metadata(self, metadata):
         self.metadata.update(metadata)

@@ -33,11 +33,12 @@ class BasicUserForm(editor.Editor):
 
     fields = {'username', 'email', 'fullname', 'language', 'picture', 'display_week_numbers'}
 
-    def __init__(self, target, *args):
+    def __init__(self, app_title, app_banner, theme, target, *args):
         """
         In:
          - ``target`` -- DataUser instance
         """
+        self.theme = theme
         super(BasicUserForm, self).__init__(target, self.fields)
         self.display_week_numbers.validate(validator.BoolValidator)
 
@@ -76,20 +77,23 @@ def render(self, h, comp, *args):
 
 @presentation.render_for(BasicUserForm, model='edit')
 def render(self, h, comp, *args):
-    with h.div:
+    h.head.css_url('css/themes/home.css')
+    h.head.css_url('css/themes/%s/home.css' % self.theme)
+
+    with h.div(class_='row'):
         with h.form.pre_action(self.pre_action):
             with h.ul:
                 with h.li:
-                    h << _('Username')
-                    h << h.input(disabled=True, value=self.username())
+                    h << (_('Username'), u' ',
+                          h.input(type='text', disabled=True, value=self.username()))
                 with h.li:
-                    h << _('Fullname')
-                    h << h.input(disabled=True, value=self.fullname())
+                    h << (_('Fullname'), u' ',
+                          h.input(type='text', disabled=True, value=self.fullname()))
                 with h.li:
-                    h << _('Email')
-                    h << h.input(disabled=True, value=self.email())
+                    h << (_('Email'), u' ',
+                          h.input(type='text', disabled=True, value=self.email()))
                 with h.li:
-                    h << _('Language')
+                    h << (_('Language'), u' ')
                     with h.select().action(self.language).error(self.language.error):
                         for (id, lang) in LANGUAGES.items():
                             if self.language() == id:
@@ -98,13 +102,13 @@ def render(self, h, comp, *args):
                                 h << h.option(_(lang), value=id)
                 if self.target.picture:
                     with h.li:
-                        h << _('Picture')
+                        h << (_('Picture'), u' ')
                         h << h.div(
                             h.img(src=self.target.picture, class_='avatar big'))
 
                 with h.li:
-                    h << h.label(_('Display week numbers in calendars'))
-                    h << h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers)
+                    h << (h.label(_('Display week numbers in calendars')), u' ',
+                          h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers))
 
             with h.div:
                 h << h.input(value=_('Save'), class_='btn btn-primary',
@@ -355,4 +359,7 @@ class ExternalUserForm(BasicUserForm):
 def get_userform(app_title, app_banner, theme, source):
     """ User form for application user
     """
-    return ExternalUserForm
+    def factory_compatible_with_services(target, services_service):
+        return services_service(ExternalUserForm, app_title, app_banner, theme, target)
+
+    return factory_compatible_with_services

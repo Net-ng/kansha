@@ -25,7 +25,7 @@ def render_event(action, data):
 
 @when(render_event, "action=='card_create'")
 def render_event_card_create(action, data):
-    return _(u'Card "%(card)s" has been added to column "%(column)s"') % data
+    return _(u'User %(author)s has added card "%(card)s" to column "%(column)s"') % data
 
 
 @when(render_event, "action=='card_delete'")
@@ -40,9 +40,9 @@ def render_event_card_archive(action, data):
 
 @when(render_event, "action=='card_move'")
 def render_event_card_move(action, data):
-    return _(u'Card "%(card)s" has been moved from column "%(from)s" to column "%(to)s"') % data
+    return _(u'User %(author)s has moved card "%(card)s" from column "%(from)s" to column "%(to)s"') % data
 
 
 @when(render_event, "action=='card_title'")
 def render_event_card_title(action, data):
-    return _(u'Card "%(from)s" has been renamed to "%(to)s"') % data
+    return _(u'User %(author)s has renamed card "%(from)s" to "%(to)s"') % data

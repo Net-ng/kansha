@@ -19,6 +19,7 @@ import re
 
 unialpha = re.compile('[\W_]+', re.UNICODE)
 
+
 class SQLiteFTSMapper(object):
 
     def match(self, field, value):

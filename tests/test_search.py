@@ -99,6 +99,60 @@ class TestImpSchemaConstructor(TestSchema):
         self.Doc = TestDocument
 
 
+class IndexCursor(object):
+
+    def __init__(self, testcase):
+        self.testcase = testcase
+        self.schema = ''
+        self.docid = 0
+        self.fields = {}
+        self.operation = ''
+
+    def insert(self, schema_name, docid, **fields):
+        self._action('insert', schema_name, docid, fields)
+
+    def update(self, schema_name, docid, **fields):
+        self._action('update', schema_name, docid, fields)
+
+    def _action(self, operation, schema_name, docid, fields):
+        self.schema = schema_name
+        self.docid = docid
+        self.fields = fields
+        self.operation = operation
+
+    def assert_match(self, operation, document):
+        self.testcase.assertEqual(operation, self.operation)
+        self.testcase.assertEqual(document.schema_name, self.schema)
+        self.testcase.assertEqual(document._id, self.docid)
+        for name, value in self.fields.iteritems():
+            self.testcase.assertEqual(getattr(document, name), value)
+
+
+class TestIndexableAPI(unittest.TestCase):
+
+    def setUp(self):
+        TestDocument = (
+            schema.Schema('MyDocument') +
+            schema.Text('title', stored=True) +
+            schema.Text('tags', stored=False) +
+            schema.Int('pages', stored=True) +
+            schema.Text('description') +
+            schema.Float('price', stored=True, indexed=False)
+        )
+        self.doc = TestDocument('docid', title=u'Titre', tags=u'mot livre français',
+                       pages=89, description=u'Description', price=5.6)
+
+    def test_insert(self):
+        cursor = IndexCursor(self)
+        self.doc.save(cursor)
+        cursor.assert_match('insert', self.doc)
+
+    def test_update(self):
+        cursor = IndexCursor(self)
+        self.doc.save(cursor, update=True)
+        cursor.assert_match('update', self.doc)
+
+
 class SearchTestCase(object):
 
     collection = u'test'

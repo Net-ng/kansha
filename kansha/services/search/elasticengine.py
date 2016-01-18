@@ -83,6 +83,33 @@ class ESMapper(object):
             }
         }
 
+
+class IndexCursor(object):
+
+    def __init__(self, index):
+        self.index = index
+        self.op = {}
+
+    def insert(self, schema_name, docid, **fields):
+        self._action(schema_name, docid, fields)
+
+    def update(self, schema_name, docid, **fields):
+        self._action(schema_name, docid, fields, update=True)
+
+    def _action(self, schema_name, docid, fields, update=False):
+        doc = 'doc' if update else '_source'
+        self.op = {
+            '_index': self.index,
+            '_type': schema_name,
+            '_op_type': 'update' if update else 'create',
+            '_id': docid,
+            doc: fields
+        }
+
+    def enqueue(self, queue):
+        queue.append(self.op)
+
+
 FT2ES = {
     schema.Text: {'type': 'string',
                   "index_analyzer":  "autocomplete",
@@ -142,17 +169,9 @@ class ElasticSearchEngine(object):
     def _index(self, document, update=False):
         # for efficiency, nothing is executed yet,
         # we prepare and queue the operation
-        doc = 'doc' if update else '_source'
-        op = {
-            '_index': self.index,
-            '_type': document.schema_name,
-            '_op_type': 'update' if update else 'create',
-            '_id': document._id,
-            doc: {k: getattr(document, k)
-                  for k in document.fields
-                  if getattr(document, k) is not None}
-        }
-        self._queue.append(op)
+        cursor = IndexCursor(self.index)
+        document.save(cursor, update)
+        cursor.enqueue(self._queue)
 
     def add_document(self, document):
         '''

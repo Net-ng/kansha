@@ -126,6 +126,7 @@ class IndexableDocument(object):
     def save(self, cursor, update=False):
         fields = dict(
             (name, getattr(self, name)) for name in self.fields
+            if getattr(self, name) is not None
         )
         if update:
             cursor.update(self.schema_name, docid=self._id, **fields)

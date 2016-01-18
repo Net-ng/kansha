@@ -77,7 +77,7 @@ class UserCards(object):
             action_log = DummyActionLog()
             self._cards = [
                 component.Component(
-                    self._services(card.Card, c.id, None, {}, action_log, data=c)
+                    self._services(card.Card, c.id, {}, action_log, data=c)
                 )
                 # FIXME: nosql in components!
                 for c in (self.user.cards.join(DataCard.column).

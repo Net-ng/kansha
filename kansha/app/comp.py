@@ -31,9 +31,9 @@ from kansha.authentication import login
 from kansha import services, notifications
 from kansha.services.search import SearchEngine
 from kansha.user.usermanager import UserManager
+from kansha.user.user_profile import get_userform  # !!!!!!!!!!!!!!!
 from kansha.board.boardsmanager import BoardsManager
 from kansha.security import SecurityManager, Unauthorized
-from kansha.user.user_profile import get_userform  # !!!!!!!!!!!!!!!
 
 
 def run():
@@ -372,10 +372,6 @@ class WSGIApp(wsgi.WSGIApp):
         if self.activity_monitor:
             events = services.ActionLog.get_events_for_data(None, hours)
             new_users = UserManager.get_all_users(hours)
-            # for event in events:
-            #     print event.board.title, notifications.render_event(event)
-            # for usr in new_users:
-            #     print usr.fullname, usr.username, usr.email, usr.registration_date
 
             if not (events or new_users):
                 return
@@ -384,15 +380,14 @@ class WSGIApp(wsgi.WSGIApp):
                 h << h.h1('Boards')
                 with h.ul:
                     for event in events:
+                        notif = event.to_string()
                         if event.card:
                             # IDs are interpreted as anchors since HTML4. So don't use the ID of
                             # the card as a URL fragment, because the browser
                             # jumps to it.
                             ev_url = urlparse.urljoin(url, event.board.url)
-                            notif = h.a(notifications.render_event(event), href='%s#id_card_%s' % (
-                                ev_url, event.card.id), style='text-decoration: none;')
-                        else:
-                            notif = notifications.render_event(event)
+                            id_ = '%s#id_card_%s' % (ev_url, event.card.id)
+                            notif = h.a(notif, href=id_, style='text-decoration: none;')
                         h << h.li(u'%s : ' % (event.board.title), notif)
                 h << h.h1('New users')
                 with h.table(border=1):

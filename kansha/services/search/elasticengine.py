@@ -24,7 +24,7 @@ else:
 from . import schema
 
 
-class ESMapper(object):
+class ESQueryMapper(object):
 
     def match(self, field, value):
         return {'match': {field.name: {'query': value, 'operator': 'and'}}}
@@ -157,7 +157,7 @@ class ElasticSearchEngine(object):
         else:
             self.es = Elasticsearch(hosts=[{'host': host, 'port': port}])
         self.idx_manager = IndicesClient(self.es)
-        self.mapper = ESMapper()
+        self.mapper = ESQueryMapper()
 
     # be persistence friendly
     def __getstate__(self):

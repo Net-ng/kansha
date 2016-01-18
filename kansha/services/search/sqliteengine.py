@@ -20,7 +20,7 @@ import re
 unialpha = re.compile('[\W_]+', re.UNICODE)
 
 
-class SQLiteFTSMapper(object):
+class SQLiteFTSQueryMapper(object):
 
     def match(self, field, value):
         query = '%s match ?' % field.name
@@ -119,7 +119,7 @@ class SQLiteFTSEngine(object):
         self.connection = sqlite3.connect(
             os.path.join(index_folder, collection + '.fts'))
         self._cursor = None
-        self.mapper = SQLiteFTSMapper()
+        self.mapper = SQLiteFTSQueryMapper()
 
     # be persistence friendly
     def __getstate__(self):

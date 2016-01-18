@@ -70,6 +70,38 @@ class SQLiteFTSMapper(object):
         return (query, params)
 
 
+class IndexCursor(object):
+
+    def __init__(self,  db_cursor):
+        self.db_cursor = db_cursor
+        self.query = ''
+        self.params = []
+
+    def insert(self, schema_name, docid, **fields):
+        # neither schema nor fields keys are user inputs, so this is safe
+        self.query = (
+            'insert into %s(id,%s) values (%s)' %
+            (
+                schema_name,
+                ','.join(fields.keys()),
+                ','.join(('?',) * (len(fields) + 1))
+            )
+        )
+        self.params = [docid] + [value for value in fields.itervalues()]
+
+    def update(self, schema_name, docid, **fields):
+        qset = []
+        for name, value in fields.iteritems():
+            qset.append("%s = ?" % name)
+            self.params.append(value)
+        self.query = 'update %s set %s where id=?' % (
+            schema_name, ', '.join(qset))
+        self.params.append(docid)
+
+    def execute(self):
+        self.db_cursor.execute(self.query, self.params)
+
+
 class SQLiteFTSEngine(object):
 
     '''
@@ -116,16 +148,9 @@ class SQLiteFTSEngine(object):
 
         '''
         c = self._get_cursor()
-        # neither schema nor fields keys are user inputs, so this is safe
-        query_base = ('insert into %s(id,%s) values (%s)' %
-                      (document.schema_name,
-                       ','.join(document.fields.keys()),
-                       ','.join(('?',) * (len(document.fields) + 1))
-                       )
-                      )
-        params = [document._id] + [getattr(document, field)
-                                   for field in document.fields.iterkeys()]
-        c.execute(query_base, params)
+        index_cursor = IndexCursor(c)
+        document.save(index_cursor)
+        index_cursor.execute()
 
     def delete_document(self, schema, docid):
         '''
@@ -136,18 +161,10 @@ class SQLiteFTSEngine(object):
 
     def update_document(self, document):
         '''Update document'''
-        params = []
-        qset = []
-        for f in document.fields:
-            v = getattr(document, f)
-            if v is not None:
-                qset.append("%s = ?" % f)
-                params.append(v)
-        query = 'update %s set %s where id=?' % (
-            document.schema_name, ', '.join(qset))
-        params.append(document._id)
         c = self._get_cursor()
-        c.execute(query, params)
+        index_cursor = IndexCursor(c)
+        document.save(index_cursor, update=True)
+        index_cursor.execute()
 
     def commit(self, sync=False):
         '''``sync`` option is ignored by this engine'''

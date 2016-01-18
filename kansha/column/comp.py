@@ -47,7 +47,7 @@ class Column(events.EventHandlerMixIn):
         self.cards = [
             component.Component(
                 self._services(
-                    comp.Card, c.id, self,
+                    comp.Card, c.id,
                     self.card_extensions,
                     self.action_log, data=c))
                       for c in self.data.cards]
@@ -73,7 +73,7 @@ class Column(events.EventHandlerMixIn):
 
     def index_cards(self, cards, update=False):
         for card in cards:
-            card.add_to_index(self.search_engine, update=update)
+            card.add_to_index(self.search_engine, self.board.id, update=update)
         self.search_engine.commit()
 
     def actions(self, action, comp):
@@ -100,7 +100,7 @@ class Column(events.EventHandlerMixIn):
             slot = event.data
             slot.becomes(card_bo)
             # card has been edited, reindex
-            card_bo.add_to_index(self.search_engine, update=True)
+            card_bo.add_to_index(self.search_engine, self.board.id, update=True)
             self.search_engine.commit()
             self.emit_event(comp, events.SearchIndexUpdated)
 
@@ -249,7 +249,7 @@ class Column(events.EventHandlerMixIn):
             if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
             new_card = self.data.create_card(text, security.get_user().data)
-            card_obj = self._services(comp.Card, new_card.id, self, self.card_extensions, self.action_log)
+            card_obj = self._services(comp.Card, new_card.id, self.card_extensions, self.action_log)
             self.cards.append(component.Component(card_obj, 'new'))
             values = {'column_id': self.id,
                       'column': self.get_title(),
@@ -270,7 +270,7 @@ class Column(events.EventHandlerMixIn):
 
     def refresh(self):
         self.cards = [component.Component(
-            self._services(comp.Card, data_card.id, self, self.card_extensions, self.action_log, data=data_card)
+            self._services(comp.Card, data_card.id, self.card_extensions, self.action_log, data=data_card)
             ) for data_card in self.data.cards]
 
     def set_nb_cards(self, nb_cards):

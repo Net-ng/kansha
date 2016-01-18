@@ -36,14 +36,15 @@ from kansha.card.models import DataCard
 from kansha.services.actionlog import DummyActionLog
 
 
+# FIXME: too low level
 def rebuild_index(app):
     # init index
     action_log = DummyActionLog()
     app.search_engine.create_collection([Card.schema])
     for card in DataCard.query:
-        col = app._services(Column, card.column.id, card.column.board, app.card_extensions, action_log, app.search_engine, data=card.column)
-        card = app._services(Card, card.id, col, app.card_extensions, action_log, data=card)
-        card.add_to_index(app.search_engine)
+        board_id = card.column.board.id
+        card = app._services(Card, card.id, app.card_extensions, action_log, data=card)
+        card.add_to_index(app.search_engine, board_id)
     app.search_engine.commit()
 
 

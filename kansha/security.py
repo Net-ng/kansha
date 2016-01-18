@@ -102,7 +102,7 @@ class Rules(common.Rules):
 
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Card)")
     def _(self, user, perm, card):
-        return security.has_permissions('edit', card.column)
+        return card.can_edit(user)
 
     @when(common.Rules.has_permission, "user and (perm == 'create_board')")
     def _(self, user, perm, subject):

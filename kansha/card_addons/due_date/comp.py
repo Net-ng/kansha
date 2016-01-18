@@ -15,27 +15,16 @@ from nagare.i18n import _, format_date
 from nagare import component, security
 
 from kansha.card import Card
-from kansha.column import Column
+from kansha.board import excel_export
 from kansha.toolbox import calendar_widget
-from kansha.board import Board, excel_export
 from kansha.cardextension import CardExtension
 
 from .models import DataCardDueDate
 
 
-@when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Board)")
-def has_permission_Board_due_date(self, user, perm, board):
-    return board.has_member(user) and user
-
-
-@when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Column)")
-def has_permission_Column_due_date(self, user, perm, column):
-    return security.has_permissions('due_date', column.board)
-
-
 @when(common.Rules.has_permission, "user and perm == 'due_date' and isinstance(subject, Card)")
 def has_permission_Card_due_date(self, user, perm, card):
-    return security.has_permissions('due_date', card.column)
+    return security.has_permissions('edit', card)
 
 
 class DueDate(CardExtension):

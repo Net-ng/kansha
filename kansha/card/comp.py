@@ -42,7 +42,7 @@ class Card(events.EventHandlerMixIn):
                            schema.Int('board_id'),
                            schema.Boolean('archived'))
 
-    def __init__(self, id_, column, card_extensions, action_log, services_service, data=None):
+    def __init__(self, id_, card_extensions, action_log, services_service, data=None):
         """Initialization
 
         In:
@@ -51,7 +51,6 @@ class Card(events.EventHandlerMixIn):
         """
         self.db_id = id_
         self.id = 'card_' + str(self.db_id)
-        self.column = column # still used by extensions, not by the card itself
         self.card_extensions = card_extensions
         self.action_log = action_log.for_card(self)
         self._services = services_service
@@ -59,11 +58,11 @@ class Card(events.EventHandlerMixIn):
         self.extensions = ()
         self.refresh()
 
-    def add_to_index(self, search_engine, update=False):
+    def add_to_index(self, search_engine, board_id, update=False):
         data = {'docid': self.id,
                 'title': self.get_title(),
-                'board_id': self.column.data.board.id,
-                'archived': self.column.is_archive}
+                'board_id': board_id,
+                'archived': self.archived}
         document = self.schema(**data)
         for name, extension in self.extensions:
             extension().update_document(document)
@@ -118,6 +117,13 @@ class Card(events.EventHandlerMixIn):
     @property
     def index(self):
         return self.data.index
+
+    def can_edit(self, user):
+        """
+        Has the user the permission to edit this card?
+        """
+        # if self.extensions is empty, ``all`` returns True, which is what we expect.
+        return all(extension().has_permission_on_card(user, 'edit') for __, extension in self.extensions)
 
     def set_title(self, title):
         """Set title

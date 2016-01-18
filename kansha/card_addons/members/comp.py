@@ -20,6 +20,7 @@ from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
 
+# TODO: move this to board extension
 @when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
 def has_permission_Board_add_users(self, user, perm, board):
     """Test if users is one of the board's managers, if he is he can add new user to the board"""
@@ -68,7 +69,7 @@ class CardMembers(CardExtension):
         return [u for u in usermanager.UserManager.search(value) if u.id in available_user_ids]
 
     def get_available_user_ids(self):
-        """Return user's which are authorized to be added on this card
+        """Return ids of users who are authorized to be added on this card
 
         Return:
             - a set of user (UserData instance)
@@ -152,3 +153,9 @@ class CardMembers(CardExtension):
                 self.members.remove(member)
                 values = {'user_id': member().username, 'user': member().data.fullname, 'card': self.card.get_title()}
                 self.action_log.add_history(security.get_user(), u'card_remove_member', values)
+
+    def has_permission_on_card(self, user, perm):
+        granted = True
+        if perm == 'edit':
+            granted = user and (user.id in self.get_all_available_user_ids())
+        return granted

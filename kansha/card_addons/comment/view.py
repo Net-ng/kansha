@@ -13,17 +13,6 @@ from nagare import ajax, presentation, security, var
 from .comp import Comments, Comment, Commentlabel
 
 
-@presentation.render_for(Comments)
-def render(self, h, comp, *args):
-    """Render card comments"""
-    with h.div(class_='card-extension-comments'):
-        h << h.div(comp.render(h, "badge"), class_='nbItems')
-        h << comp.on_answer(self.add).render(h, 'form') << h.hr
-        h << self.comments
-
-    return h.root
-
-
 @presentation.render_for(Comment)
 @presentation.render_for(Comment, model='flow')
 def render_comment(self, h, comp, model, *args):
@@ -81,7 +70,7 @@ def render_comment_label_form(self, h, comp, *args):
 @presentation.render_for(Comments, model='form')
 def render_comments_form(self, h, comp, *args):
     """Add a comment to the current card"""
-    if security.has_permissions('comment', self.card):
+    if security.has_permissions('comment', self):
         text = var.Var()
         with h.form:
             txt_id, buttons_id = h.generate_id(), h.generate_id()
@@ -114,4 +103,15 @@ def render_comments_badge(self, h, *args):
     if self.comments:
         with h.span(class_='badge'):
             h << h.span(h.i(class_='icon-comment'), ' ', len(self.comments), class_='label')
+    return h.root
+
+
+@presentation.render_for(Comments)
+def render(self, h, comp, *args):
+    """Render card comments"""
+    with h.div(class_='card-extension-comments'):
+        h << h.div(comp.render(h, "badge"), class_='nbItems')
+        h << comp.on_answer(self.add).render(h, 'form') << h.hr
+        h << self.comments
+
     return h.root

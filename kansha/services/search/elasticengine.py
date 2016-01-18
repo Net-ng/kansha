@@ -21,8 +21,6 @@ except ImportError:
 else:
     es_installed = True
 
-from . import schema
-
 
 class ESQueryMapper(object):
 
@@ -84,17 +82,91 @@ class ESQueryMapper(object):
         }
 
 
+class ESSchemaMapper(object):
+
+    FT2ES = {
+        'Text': {'type': 'string',
+                 'index_analyzer':  'autocomplete',
+                 'search_analyzer': 'standard',
+                 'copy_to': '_full'},
+        'Keyword': {'type': 'string',
+                    'index': 'not_analyzed'},
+        'Attachment': {'type': 'attachment'},
+        'Float': {'type': 'double'},
+        'Int': {'type': 'long'},
+        'Boolean': {'type': 'boolean'},
+        'Datetime': {'type': 'date'}
+    }
+
+    SETTINGS = {
+        "number_of_shards": 1,
+        "analysis": {
+            "filter": {
+                "autocomplete_filter": {
+                    "type":     "ngram",
+                    "min_gram": 1,
+                    "max_gram": 20
+                }
+            },
+            "analyzer": {
+                "autocomplete": {
+                    "type":      "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "autocomplete_filter"
+                    ]
+                }
+            }
+        }
+    }
+
+    def __init__(self, idx_manager):
+
+        self.idx_manager = idx_manager
+        self.mappings = {}
+
+    # Schema API
+
+    def define(self, schema_name):
+        properties = {'_full': {"type": "string",
+                                "index_analyzer":  "autocomplete",
+                                "search_analyzer": "standard"}}
+        excludes = []
+        self.mappings[schema_name] = {'properties': properties,
+                                      '_source': {"excludes": excludes}}
+
+    def define_field(self, schema_name, field_type, name, indexed, stored):
+        estype = dict(self.FT2ES[field_type])
+        if not indexed:
+            estype['index'] = 'no'
+        mapping = self.mappings[schema_name]
+        mapping['properties'][name] = estype
+        if not stored:
+            mapping['_source']['excludes'].append(name)
+
+    ## Specific API
+
+    def create(self, index):
+        body = {"mappings": self.mappings, "settings": self.SETTINGS}
+        self.idx_manager.create(index=index, body=body)
+
+
 class IndexCursor(object):
 
     def __init__(self, index):
         self.index = index
         self.op = {}
 
+    # Document API
+
     def insert(self, schema_name, docid, **fields):
         self._action(schema_name, docid, fields)
 
     def update(self, schema_name, docid, **fields):
         self._action(schema_name, docid, fields, update=True)
+
+    # Specific API
 
     def _action(self, schema_name, docid, fields, update=False):
         doc = 'doc' if update else '_source'
@@ -108,30 +180,6 @@ class IndexCursor(object):
 
     def enqueue(self, queue):
         queue.append(self.op)
-
-
-FT2ES = {
-    schema.Text: {'type': 'string',
-                  "index_analyzer":  "autocomplete",
-                  "search_analyzer": "standard",
-                  'copy_to': '_full'},
-    schema.Keyword: {'type': 'string',
-                     'index': 'not_analyzed'},
-    schema.Attachment: {'type': 'attachment'},
-    schema.Float: {'type': 'double'},
-    schema.Int: {'type': 'long'},
-    schema.Boolean: {'type': 'boolean'},
-    schema.Datetime: {'type': 'date'}
-}
-
-
-def ESProperty(ftype):
-    estype = dict(FT2ES[ftype.__class__])
-    if not ftype.indexed:
-        estype['index'] = 'no'
-    # ElasticSearch stores all the document by default, so we can ignore the
-    # stored attribute of field types here.
-    return estype
 
 
 class ElasticSearchEngine(object):
@@ -242,39 +290,8 @@ class ElasticSearchEngine(object):
         if idx_manager.exists(self.index):
             idx_manager.delete(index=self.index)
 
-        mappings = {}
+        mapper = ESSchemaMapper(idx_manager)
         for schema in schemas:
-            properties = {'_full': {"type": "string",
-                                    "index_analyzer":  "autocomplete",
-                                    "search_analyzer": "standard"}}
-            excludes = []
-            for name, ftype in schema.fields.iteritems():
-                properties[name] = ESProperty(ftype)
-                if not ftype.stored:
-                    excludes.append(name)
-            mappings[schema.type_name] = {'properties': properties,
-                                          '_source': {"excludes": excludes}}
-        settings = {
-            "number_of_shards": 1,
-            "analysis": {
-                "filter": {
-                    "autocomplete_filter": {
-                        "type":     "ngram",
-                        "min_gram": 1,
-                        "max_gram": 20
-                    }
-                },
-                "analyzer": {
-                    "autocomplete": {
-                        "type":      "custom",
-                        "tokenizer": "standard",
-                        "filter": [
-                            "lowercase",
-                            "autocomplete_filter"
-                        ]
-                    }
-                }
-            }
-        }
-        body = {"mappings": mappings, "settings": settings}
-        idx_manager.create(index=self.index, body=body)
+            schema.map(mapper)
+
+        mapper.create(self.index)

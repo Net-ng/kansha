@@ -40,6 +40,10 @@ class FieldType(object):
         if default is not None:
             self.default = default
 
+    @property
+    def type_name(self):
+        return self.__class__.__name__
+
     def __eq__(self, v):
         return EQQuery(self, v)
 
@@ -66,6 +70,15 @@ class FieldType(object):
 
     def match_phrase(self, v):
         return PHRASEQuery(self, v)
+
+    def map(self, schema_name, mapper):
+        mapper.define_field(
+            schema_name,
+            self.type_name,
+            self.name,
+            self.indexed,
+            self.stored
+        )
 
 
 class Text(FieldType):
@@ -224,6 +237,12 @@ class Document(IndexableDocument):
         '''Full text specific: match any of the fields'''
         return MATCHANYQuery(cls, v)
 
+    @classmethod
+    def map(cls, mapper):
+        mapper.define(cls.type_name)
+        for field in cls.fields.itervalues():
+            field.map(cls.type_name, mapper)
+
 
 class Schema(object):
     '''Imperatively build a Document schema.
@@ -310,3 +329,8 @@ class Schema(object):
             return self.fields[name]
         except KeyError:
             raise AttributeError(name)
+
+    def map(self, mapper):
+        mapper.define(self.type_name)
+        for field in self.fields.itervalues():
+            field.map(self.type_name, mapper)

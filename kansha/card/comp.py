@@ -59,7 +59,7 @@ class Card(events.EventHandlerMixIn):
         self.extensions = ()
         self.refresh()
 
-    def update_index(self, search_engine, update=False):
+    def add_to_index(self, search_engine, update=False):
         data = {'docid': self.id,
                 'title': self.get_title(),
                 'board_id': self.column.data.board.id,

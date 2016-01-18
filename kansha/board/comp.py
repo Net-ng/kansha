@@ -356,7 +356,7 @@ class Board(events.EventHandlerMixIn):
             security.get_user(),
             u'card_move', values)
         # reindex it in case it has been moved to the archive column
-        self.search_engine.update_document(card.to_document())
+        card.update_index(self.search_engine, True)
         self.search_engine.commit()
         session.flush()
 

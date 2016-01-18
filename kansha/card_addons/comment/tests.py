@@ -38,11 +38,13 @@ class CommentsTest(CardExtensionTestCase):
         self.assertEqual(label.text, u'test2')
         self.assertTrue(label.is_author(security.get_user()))
 
-    def test_to_indexable(self):
+    def test_update_document(self):
+        doc = self.card.schema(docid=None)
         self.extension.add(u'Comment 1')
         self.extension.add(u'Comment 2')
         self.extension.add(u'Comment 3')
-        self.assertEqual(self.extension.to_indexable(), u'''Comment 3
+        self.extension.update_document(doc)
+        self.assertEqual(doc.comments, u'''Comment 3
 Comment 2
 Comment 1''')
 

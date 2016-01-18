@@ -41,9 +41,9 @@ class CardDescription(CardExtension):
     def get_schema_def():
         return schema.Text(u'description')
 
-    def to_indexable(self):
+    def update_document(self, document):
         desc = self.text
-        return clean_text(desc) if desc else u''
+        document.description = clean_text(desc) if desc else u''
 
     def update(self, other):
         self.data.update(other.data)

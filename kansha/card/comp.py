@@ -59,20 +59,27 @@ class Card(events.EventHandlerMixIn):
         self.extensions = ()
         self.refresh()
 
+    def update_index(self, search_engine, update=False):
+        data = {'docid': self.id,
+                'title': self.get_title(),
+                'board_id': self.column.data.board.id,
+                'archived': self.column.is_archive}
+        document = self.schema(**data)
+        for name, extension in self.extensions:
+            extension().update_document(document)
+        if update:
+            search_engine.update_document(document)
+        else:
+            search_engine.add_document(document)
+        # Don't forget to commit after
+
+
     @classmethod
     def update_schema(cls, card_extensions):
         for name, extension in card_extensions.iteritems():
             field = extension.get_schema_def()
             if field is not None:
                 cls.schema.add_field(field)
-
-    def to_document(self):
-        data = {'docid': self.id,
-                'title': self.get_title(),
-                'board_id': self.column.data.board.id,
-                'archived': self.column.is_archive}
-        data.update({name: extension().to_indexable() for name, extension in self.extensions})
-        return self.schema(**data)
 
     def update(self, other):
         self.data.update(other.data)

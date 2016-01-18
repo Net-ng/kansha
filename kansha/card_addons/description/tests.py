@@ -30,10 +30,15 @@ class CardDescriptionTest(CardExtensionTestCase):
         cpy = self.extension_copy
         self.assertEqual(cpy.text, u'test')
 
-    def test_to_indexable(self):
+    def test_update_document(self):
+        doc = self.card.schema(docid=None)
         self.extension.text = u'some words'
-        self.assertEqual(self.extension.to_indexable(), u'some words')
+        self.extension.update_document(doc)
+        self.assertEqual(doc.description, u'some words')
         self.extension.text = u'<b><i>so</i>me</b> <u>HTML</u>'
-        self.assertEqual(self.extension.to_indexable(), u'some HTML')
+        self.extension.update_document(doc)
+        self.assertEqual(doc.description, u'some HTML')
+        self.assertEqual(doc.description, u'some HTML')
         self.extension.text = u'éàü'
-        self.assertEqual(self.extension.to_indexable(), u'éàü')
+        self.extension.update_document(doc)
+        self.assertEqual(doc.description, u'éàü')

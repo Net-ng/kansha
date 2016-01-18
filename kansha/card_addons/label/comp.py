@@ -103,8 +103,8 @@ class CardLabels(CardExtension):
     def get_schema_def():
         return schema.Text('labels')
 
-    def to_indexable(self):
-        return u' '.join(label.get_title() for label in self.labels)
+    def update_document(self, document):
+        document.labels = u' '.join(label.get_title() for label in self.labels)
 
     @property
     def data(self):

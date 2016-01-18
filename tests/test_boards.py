@@ -303,7 +303,7 @@ class BoardTest(unittest.TestCase):
         board = helpers.create_board()
         column = board.create_column(1, u'test')
         card = column.create_card(u'test')
-        doc = card.to_document()
+        doc = card.to_document(board.id)
         self.assertEqual(doc.title, card.data.title)
         self.assertEqual(doc.board_id, board.id)
         self.assertEqual(doc.archived, column.is_archive)

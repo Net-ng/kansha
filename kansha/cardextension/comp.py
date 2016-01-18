@@ -50,3 +50,6 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
     def new_card_position(self, value):
         '''Happens when a card is moved on the board'''
         pass
+
+    def has_permission_on_card(self, user, perm):
+        return True

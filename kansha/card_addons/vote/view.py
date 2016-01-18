@@ -17,7 +17,7 @@ from .comp import Votes
 @presentation.render_for(Votes, model='action')
 def render_Votes_edit(self, h, comp, *args):
     '''Add vote form'''
-    if security.has_permissions('vote', self.card):
+    if security.has_permissions('vote', self):
         if self.has_voted():
             msg = _('Unvote (%s)') % self.count_votes()
         else:

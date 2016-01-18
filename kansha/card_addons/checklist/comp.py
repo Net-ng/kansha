@@ -18,8 +18,6 @@ from nagare import component, database, i18n, security
 
 from kansha import title
 from kansha.card import Card
-from kansha.board import Board
-from kansha.column import Column
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
@@ -27,19 +25,9 @@ from kansha.services.actionlog.messages import render_event
 from .models import DataChecklist, DataChecklistItem
 
 
-@when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Board)")
-def has_permission_Board_checklist(self, user, perm, board):
-    return board.has_member(user) and user
-
-
-@when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Column)")
-def has_permission_Column_checklist(self, user, perm, column):
-    return security.has_permissions('checklist', column.board)
-
-
 @when(common.Rules.has_permission, "user and perm == 'checklist' and isinstance(subject, Card)")
 def has_permission_Card_checklist(self, user, perm, card):
-    return security.has_permissions('checklist', card.column)
+    return security.has_permissions('edit', card)
 
 
 @when(render_event, "action=='card_add_list'")

@@ -133,7 +133,7 @@ class UserForm(BasicUserForm):
          - ``target`` -- DataUser instance
          - ``mail_sender_service`` -- MailSender service
         """
-        super(UserForm, self).__init__(target, self.fields)
+        super(UserForm, self).__init__(app_title, app_banner, theme, target, self.fields)
 
         self.app_title = app_title
         self.app_banner = app_banner

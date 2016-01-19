@@ -154,8 +154,9 @@ class ESSchemaMapper(object):
 
 class IndexCursor(object):
 
-    def __init__(self, index):
+    def __init__(self, index, search_function=None):
         self.index = index
+        self.es_search = search_function
         self.op = {}
 
     # Document API
@@ -165,6 +166,25 @@ class IndexCursor(object):
 
     def update(self, schema_name, docid, **fields):
         self._action(schema_name, docid, fields, update=True)
+
+    # Query API
+
+    def search(self, schema_name, fields_to_load, mapped_query, limit):
+        """
+        ``fields_to_load`` is  a list of field names.
+        """
+        dsl = mapped_query
+        self.op = dict(index=self.index,
+                       doc_type=schema_name,
+                       body={'query': dsl},
+                       size=limit)
+
+    def get_results(self, result_factory):
+        hits = self.es_search(**self.op)
+        return [
+            (h['_score'], result_factory(h['_id'], **h['_source']))
+            for h in hits['hits']['hits']
+        ]
 
     # Specific API
 
@@ -263,17 +283,8 @@ class ElasticSearchEngine(object):
         '''
         Search the database.
         '''
-        dsl = query(self.mapper)
-        schema = query.target_schema
-        hits = self.es.search(index=self.index,
-                              doc_type=schema.type_name,
-                              body={'query': dsl},
-                              size=size)
-        res = [
-            (h['_score'], schema.delta(h['_id'], **h['_source']))
-            for h in hits['hits']['hits']
-        ]
-        return res
+        index_cursor = IndexCursor(self.index, self.es.search)
+        return query.search(index_cursor, self.mapper, size)
 
     def delete_collection(self):
         if self.idx_manager.exists(self.index):

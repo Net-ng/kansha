@@ -243,6 +243,10 @@ class Document(IndexableDocument):
         for field in cls.fields.itervalues():
             field.map(cls.type_name, mapper)
 
+    @classmethod
+    def iter_fields(cls):
+        return cls.fields.iteritems()
+
 
 class Schema(object):
     '''Imperatively build a Document schema.
@@ -334,3 +338,6 @@ class Schema(object):
         mapper.define(self.type_name)
         for field in self.fields.itervalues():
             field.map(self.type_name, mapper)
+
+    def iter_fields(self):
+        return self.fields.iteritems()

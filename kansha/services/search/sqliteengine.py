@@ -146,6 +146,27 @@ class IndexCursor(object):
             schema_name, ', '.join(qset))
         self.params.append(docid)
 
+    # Query API
+
+    def search(self, schema_name, fields_to_load, mapped_query, limit):
+        """
+        ``fields_to_load`` is  a list of field names.
+        """
+        where, params = mapped_query
+        self.query = 'select id as docid, %s from %s where %s limit %s' % (
+            ', '.join(field for field in fields_to_load),
+            schema_name, where, limit
+        )
+        self.params = params
+
+    def get_results(self, result_factory):
+        self.execute()
+        fields = [d[0].lower() for d in self.db_cursor.description]
+        # no score function in sqlite, so every result is given weight 1
+        scored_results = [(1, result_factory(**dict(zip(fields, row))))
+             for row in self.db_cursor.fetchall()]
+        return scored_results
+
     # Specific API
 
     def execute(self):
@@ -236,20 +257,8 @@ class SQLiteFTSEngine(object):
         '''
         Search the database.
         '''
-        where, params = query(self.mapper)
-        schema = query.target_schema
-        c = self._get_cursor()
-        sql = 'select id as docid, %s from %s where %s limit %s' % (
-            ', '.join(f.name for f in schema.fields.itervalues()
-                      if f.stored),
-            schema.type_name, where, size
-        )
-        c.execute(sql, params)
-        fields = [d[0].lower() for d in c.description]
-        # no score function in sqlite, so every result is given weight 1
-        l = [(1, schema.delta(**dict(zip(fields, row))))
-             for row in c.fetchall()]
-        return l
+        index_cursor = IndexCursor(self._get_cursor())
+        return query.search(index_cursor, self.mapper, size)
 
     def delete_collection(self):
         self._dropdb()

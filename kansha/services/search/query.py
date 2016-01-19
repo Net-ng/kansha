@@ -33,6 +33,12 @@ class Query(object):
         op = getattr(mapper, self.operation)
         return op(self.field, self.value)
 
+    def search(self, index_cursor, mapper, limit):
+        mapped_query = self(mapper)
+        fields_to_load = [name for name, field in self.target_schema.iter_fields() if field.stored]
+        index_cursor.search(self.target_schema.type_name, fields_to_load, mapped_query, limit)
+        return index_cursor.get_results(self.target_schema.delta)
+
     def __and__(self, other):
         return ANDQuery(self, other)
 
@@ -90,7 +96,7 @@ class INQuery(Query):
     operation = 'in_'
 
 
-class ANDQuery(object):
+class ANDQuery(Query):
 
     operation = 'and_'
 

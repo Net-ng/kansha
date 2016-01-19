@@ -218,8 +218,7 @@ class SQLiteFTSEngine(object):
         `collection`, under the document type (a.k.a. schema) `schema`.
 
         '''
-        c = self._get_cursor()
-        index_cursor = IndexCursor(c)
+        index_cursor = IndexCursor(self._get_cursor())
         document.save(index_cursor)
         index_cursor.execute()
 
@@ -232,8 +231,7 @@ class SQLiteFTSEngine(object):
 
     def update_document(self, document):
         '''Update document'''
-        c = self._get_cursor()
-        index_cursor = IndexCursor(c)
+        index_cursor = IndexCursor(self._get_cursor())
         document.save(index_cursor, update=True)
         index_cursor.execute()
 

@@ -20,7 +20,7 @@ from .models import DataCardWeight
 
 @when(render_event, "action=='card_weight'")
 def render_event_card_weight(action, data):
-    return _(u'Card "%(card)s" has been weighted from (%(from)s) to (%(to)s)') % data
+    return _(u'User %(author)s has weighted card "%(card)s" from (%(from)s) to (%(to)s)') % data
 
 
 class CardWeightEditor(CardExtension):

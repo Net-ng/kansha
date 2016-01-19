@@ -112,6 +112,9 @@ class ElasticSearchEngine(object):
     ElasticSearch Engine.
     '''
 
+    # make it compatible with services
+    LOAD_PRIORITY = 30
+
     def __init__(self, index, host=None, port=None):
         '''Only one host for now.'''
         if not es_installed:

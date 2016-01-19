@@ -44,7 +44,7 @@ class Kansha(object):
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, favicon, theme,
-                 card_extensions, search, services_service):
+                 card_extensions, services_service):
         """Initialization
         """
         self.app_title = app_title
@@ -52,7 +52,6 @@ class Kansha(object):
         self.favicon = favicon
         self.theme = theme
         self.card_extensions = card_extensions
-        self.search_engine = search
         self._services = services_service
 
         self.title = component.Component(self, 'tab')
@@ -61,7 +60,7 @@ class Kansha(object):
         self.user_manager = UserManager()
         self.boards_manager = self._services(
             BoardsManager, self.app_title, self.app_banner, self.theme,
-            card_extensions, self.search_engine)
+            card_extensions)
 
         self.home_menu = OrderedDict()
         self.selected = 'board'
@@ -164,10 +163,9 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, theme, config, card_extensions, search, services_service):
+    def __init__(self, app_title, theme, config, card_extensions, services_service):
         self.app_title = app_title
         self.theme = theme
-        self.search_engine = search
         self._services = services_service
         self.app_banner = config['pub_cfg']['banner']
         self.favicon = config['pub_cfg']['favicon']
@@ -178,7 +176,6 @@ class MainTask(component.Task):
             self.favicon,
             self.theme,
             card_extensions,
-            search
         )
         self.config = config
 
@@ -245,6 +242,7 @@ class WSGIApp(wsgi.WSGIApp):
 
         # search_engine engine configuration
         self.search_engine = SearchEngine(**conf['search'])
+        self._services.register('search_engine', self.search_engine)
         Card.update_schema(self.card_extensions)
 
         # other
@@ -276,7 +274,6 @@ class WSGIApp(wsgi.WSGIApp):
             self.theme,
             self.app_config,
             self.card_extensions,
-            self.search_engine,
             self._services
         )
 

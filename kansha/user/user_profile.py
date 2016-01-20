@@ -270,7 +270,7 @@ class UserForm(BasicUserForm):
 
         # Save new value
         self.assets_manager.save(new_file.file.read(), file_id=uid, metadata={
-            'filename': new_file.filename, 'content-type': new_file.type}, thumb_size=(100, 100))
+            'filename': new_file.filename, 'content-type': new_file.type}, THUMB_SIZE=(100, 100))
         self.picture(self.assets_manager.get_image_url(uid, size='thumb'))
 
 

@@ -23,8 +23,7 @@ def render(self, h, comp, *args):
     id_ = h.generate_id()
     kw = {'class': 'description', 'id': id_}
     if security.has_permissions('edit', self.card):
-        kw['onclick'] = h.a.action(
-            lambda: self.change_text(comp.call(model='edit'))).get('onclick')
+        kw['onclick'] = h.a.action(comp.becomes, model='edit').get('onclick')
     with h.div(**kw):
         if self.text:
             h << h.parse_htmlstring(self.text, fragment=True)
@@ -33,6 +32,11 @@ def render(self, h, comp, *args):
 
     h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
     return h.root
+
+
+def change_text(description, comp, text):
+    description.change_text(text)
+    comp.becomes(model=None)
 
 
 @presentation.render_for(CardDescription, model='edit')
@@ -45,9 +49,9 @@ def render(self, h, comp, *args):
             h << h.textarea(text(), id_=txt_id).action(text)
 
             with h.div(class_='buttons'):
-                h << h.button(_('Save'), class_='btn btn-primary').action(lambda: comp.answer(text()))
+                h << h.button(_('Save'), class_='btn btn-primary').action(lambda: change_text(self, comp, text()))
                 h << ' '
-                h << h.button(_('Cancel'), class_='btn').action(comp.answer)
+                h << h.button(_('Cancel'), class_='btn').action(change_text, self, comp, None)
                 h << h.script(
                     "YAHOO.kansha.app.init_ckeditor(%s, %s)" % (
                         ajax.py2js(txt_id),

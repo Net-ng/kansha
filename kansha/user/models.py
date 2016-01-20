@@ -13,8 +13,8 @@ import hashlib
 import random
 import string
 
+from elixir import Unicode, Integer, Field, DateTime
 from elixir import ManyToOne, ManyToMany, OneToOne, OneToMany
-from elixir import Unicode, Integer, Field, DateTime, Boolean
 from elixir import using_options
 
 from sqlalchemy import and_, func
@@ -88,7 +88,6 @@ class DataUser(Entity):
     _password = Field(Unicode(255), colname='password', nullable=True)
     registration_date = Field(DateTime, nullable=False)
     last_login = Field(DateTime, nullable=True)
-    display_week_numbers = Field(Boolean, default=False)
     board_members = OneToMany('DataBoardMember')
     boards = AssociationProxy(
         'board_members', 'board',

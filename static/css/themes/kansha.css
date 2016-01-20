@@ -21,6 +21,7 @@ input, select, textarea {
     box-sizing: border-box;
     padding: 4px 6px;
     margin: 0;
+    margin-right: 5px;
     resize: none;
     border-radius: 3px;
 }

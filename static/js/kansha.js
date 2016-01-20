@@ -590,7 +590,9 @@
                     eventDrop: function(calEvent, delta, revertFunc) {
                         calEvent.dropped_cb(calEvent.start.format());
                     },
-                    weekNumbers: displayWeekNumbers
+                    weekNumbers: displayWeekNumbers,
+                    weekNumberCalculation: "ISO",
+                    firstDay: 1 // ISO week
                 });
         },
 

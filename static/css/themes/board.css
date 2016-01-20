@@ -189,7 +189,7 @@ textarea.expanded {
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
     margin-left: 10px;
-    vertical-align: top
+    vertical-align: top;
 }
 
 .list.reduced .list-body,
@@ -1006,7 +1006,7 @@ div.history th {
         margin-top: 50px;
         margin-left: 0px;
     }
-    
+
     .bbody {
         top: 115px;
     }

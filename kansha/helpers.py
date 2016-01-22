@@ -119,6 +119,7 @@ def create_services():
     _services = ServicesRepository()
     _services.register('assets_manager', DummyAssetsManager())
     _services.register('mail_sender', DummyMailSender())
+    _services.register('search_engine', DummySearchEngine(None))
     return _services
 
 

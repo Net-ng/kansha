@@ -112,17 +112,6 @@ class Login(Authentication):
             security.set_user(None)
             u = None
         if u is not None:
-            if not u.has_avatar():
-                identicon = retricon(u.email.encode(), tiles=7, width=140)
-                icon_file = BytesIO()
-                identicon.save(icon_file, 'PNG')
-                uid = u.username
-                self.assets_manager.save(
-                    icon_file.getvalue(),
-                    uid,
-                    {'filename': '%s.png' % uid})
-                picture = self.assets_manager.get_image_url(uid, 'thumb')
-                u.data.picture = picture
             database.session.flush()
             comp.answer(u)
         else:
@@ -160,7 +149,8 @@ class RegistrationForm(editor.Editor):
 
     """Registration form for creating a new (unconfirmed) user"""
 
-    def __init__(self, app_title, app_banner, theme):
+    def __init__(self, app_title, app_banner, theme, assets_manager_service):
+        self.assets_manager = assets_manager_service
         self.username = editor.Property('').validate(self.validate_username)
         self.email = editor.Property('').validate(self.validate_email)
         self.fullname = editor.Property('').validate(validator.validate_non_empty_string)
@@ -220,11 +210,22 @@ class RegistrationForm(editor.Editor):
             self.error_message = _(u'Unable to process. Check your input below.')
             return None
 
+        identicon = retricon(self.email.value.encode(), tiles=7, width=140)
+        icon_file = BytesIO()
+        identicon.save(icon_file, 'PNG')
+        uid = self.username.value
+        self.assets_manager.save(
+            icon_file.getvalue(),
+            uid,
+            {'filename': '%s.png' % uid})
+        picture = self.assets_manager.get_image_url(uid, 'thumb')
+
         # register the user in the database
-        u = self.user_manager.create_user(username=self.username.value,
+        u = self.user_manager.create_user(username=uid,
                                           password=self.password.value,
                                           fullname=self.fullname.value,
-                                          email=self.email.value)
+                                          email=self.email.value,
+                                          picture=picture)
         return u
 
     def on_ok(self, comp, application_url):
@@ -890,7 +891,7 @@ class RegistrationTask(component.Task):
 
     """A task that handles the user registration process"""
 
-    def __init__(self, app_title, app_banner, theme, mail_sender_service, moderator='', username=''):
+    def __init__(self, app_title, app_banner, theme, mail_sender_service, assets_manager_service, moderator='', username=''):
         '''
         Register a new user (`username` not provided)
         or register email for an existing unconfirmed user (`username` provided).
@@ -900,6 +901,7 @@ class RegistrationTask(component.Task):
         self.app_banner = app_banner
         self.theme = theme
         self.mail_sender = mail_sender_service
+        self.assets_manager = assets_manager_service
         self.moderator = moderator
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
@@ -926,7 +928,7 @@ class RegistrationTask(component.Task):
                     )
                 )
             else:
-                username, application_url = comp.call(RegistrationForm(self.app_title, self.app_banner, self.theme))
+                username, application_url = comp.call(RegistrationForm(self.app_title, self.app_banner, self.theme, self.assets_manager))
             if username:
                 confirmation = self._create_email_confirmation(username, application_url)
                 confirmation.send_email(self.mail_sender)

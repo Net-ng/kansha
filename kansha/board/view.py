@@ -260,8 +260,7 @@ def render_Board_columns(self, h, comp, *args):
     with h.div(id='viewport-wrapper'):
         with h.div(class_='clearfix', id='viewport'):
             h << h.div(id='calendar')
-            display_week_numbers = security.get_user().display_week_numbers
-            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % ajax.py2js(display_week_numbers))
+            h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % ajax.py2js(True, h))
     for column in self.columns:
         h << column.render(h, 'calendar')
     return h.root

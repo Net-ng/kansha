@@ -31,7 +31,7 @@ class BasicUserForm(editor.Editor):
     View all fields but you can modify language only
     """
 
-    fields = {'username', 'email', 'fullname', 'language', 'picture', 'display_week_numbers'}
+    fields = {'username', 'email', 'fullname', 'language', 'picture'}
 
     def __init__(self, app_title, app_banner, theme, target, *args):
         """
@@ -40,7 +40,6 @@ class BasicUserForm(editor.Editor):
         """
         self.theme = theme
         super(BasicUserForm, self).__init__(target, self.fields)
-        self.display_week_numbers.validate(validator.BoolValidator)
 
     def commit(self):
         super(BasicUserForm, self).commit(self.fields)
@@ -62,13 +61,6 @@ class BasicUserForm(editor.Editor):
         state['_target'] = None
         return state
 
-    def pre_action(self):
-        """Actions done before form submit
-
-         - Reset display_week_numbers to False
-        """
-        self.display_week_numbers(False)
-
 
 @presentation.render_for(BasicUserForm)
 def render(self, h, comp, *args):
@@ -81,7 +73,7 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
     with h.div(class_='row'):
-        with h.form.pre_action(self.pre_action):
+        with h.form:
             with h.ul:
                 with h.li:
                     h << (_('Username'), u' ',
@@ -105,10 +97,6 @@ def render(self, h, comp, *args):
                         h << (_('Picture'), u' ')
                         h << h.div(
                             h.img(src=self.target.picture, class_='avatar big'))
-
-                with h.li:
-                    h << (h.label(_('Display week numbers in calendars')), u' ',
-                          h.input(type='checkbox').selected(self.display_week_numbers.value).action(self.display_week_numbers))
 
             with h.div:
                 h << h.input(value=_('Save'), class_='btn btn-primary',
@@ -280,7 +268,7 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
     with h.div(class_='row'):
-        with h.form.pre_action(self.pre_action):
+        with h.form:
             with h.ul:
                 with h.li:
                     h << (_('Username'), ' ',
@@ -328,11 +316,6 @@ def render(self, h, comp, *args):
                     h << (_('Repeat new password'), ' ',
                           h.input(type='password').action(self.password_repeat)
                           .error(self.password_repeat.error))
-
-                with h.li:
-                    week_numbers_id = h.generate_id('week_numbers_')
-                    h << h.label(_('Display week numbers in calendars'), for_=week_numbers_id)
-                    h << h.input(type='checkbox', id=week_numbers_id).selected(self.display_week_numbers.value).action(self.display_week_numbers)
 
             with h.div(class_=''):
                 h << h.input(_('Save'),

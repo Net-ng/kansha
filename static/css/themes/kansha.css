@@ -31,11 +31,6 @@ input[type=radio] {
     width: auto;
 }
 
-select {
-    height: 30px;
-    line-height: 30px;
-}
-
 a, a:hover, a:visited, a:hover i { text-decoration: none; }
 
 ul { padding: 0; }

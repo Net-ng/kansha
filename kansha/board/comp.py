@@ -65,7 +65,7 @@ class Board(events.EventHandlerMixIn):
     MAX_SHOWN_MEMBERS = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine,
+    def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine_service,
                  assets_manager_service, mail_sender_service, services_service,
                  load_children=True):
         """Initialization
@@ -82,7 +82,7 @@ class Board(events.EventHandlerMixIn):
         self.mail_sender = mail_sender_service
         self.id = id_
         self.assets_manager = assets_manager_service
-        self.search_engine = search_engine
+        self.search_engine = search_engine_service
         self._services = services_service
         # Board extensions are not extracted yet, so
         # board itself implement their API.
@@ -199,7 +199,7 @@ class Board(events.EventHandlerMixIn):
         new_data = self.data.copy()
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, self.search_engine, load_children=False)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, load_children=False)
         new_board.add_member(owner, 'manager')
 
         assert(self.columns or self.data.is_template)
@@ -236,7 +236,7 @@ class Board(events.EventHandlerMixIn):
         for c in self.data.columns:
             col = self._services(
                 column.Column, c.id, self, self.card_extensions,
-                self.action_log, self.search_engine, data=c)
+                self.action_log, data=c)
             if col.is_archive:
                 self.archive_column = col
             columns.append(component.Component(col))
@@ -319,7 +319,7 @@ class Board(events.EventHandlerMixIn):
         col = self.data.create_column(index, title, nb_cards)
         col_obj = self._services(
             column.Column, col.id, self,
-            self.card_extensions, self.action_log, self.search_engine)
+            self.card_extensions, self.action_log)
         self.columns.insert(
             index, component.Component(col_obj))
         self.increase_version()

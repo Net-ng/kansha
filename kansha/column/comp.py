@@ -25,7 +25,7 @@ class Column(events.EventHandlerMixIn):
     """Column component
     """
 
-    def __init__(self, id_, board, card_extensions, action_log, search_engine, services_service, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, search_engine_service, services_service, data=None):
         """Initialization
 
         In:
@@ -38,7 +38,7 @@ class Column(events.EventHandlerMixIn):
         self.nb_card = var.Var(self.data.nb_max_cards)
         self._services = services_service
         self.action_log = action_log
-        self.search_engine = search_engine
+        self.search_engine = search_engine_service
         self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
         self.title = component.Component(

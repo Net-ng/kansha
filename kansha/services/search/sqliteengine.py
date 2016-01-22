@@ -76,6 +76,9 @@ class SQLiteFTSEngine(object):
     Sufficient in most cases.
     '''
 
+    # make it compatible with services
+    LOAD_PRIORITY = 30
+
     def __init__(self, index, index_folder):
         assert(index.isalnum())
         self.init_state(index, index_folder)

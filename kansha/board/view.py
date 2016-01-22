@@ -580,17 +580,17 @@ def render_BoardProfile(self, h, comp, *args):
                     active = 'active btn-primary' if not self.board.show_archive else ''
                     h << h.button(_('Hide'), class_='btn %s' % active).action(lambda: self.set_archive(0))
 
-        with h.div(class_='panel-section'):
-            h << h.div(_(u'Notifications'), class_='panel-section-title')
-            h << h.p(_(u'You will be notified by email of changes made in this board to cards'))
-            with h.form:
-                with h.div(class_='btn-group'):
-                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_OFF else ''
-                    h << h.button(_('None'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_OFF)
-                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_MINE else ''
-                    h << h.button(_('Affected to me'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_MINE)
-                    active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_ALL else ''
-                    h << h.button(_('All'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_ALL)
+    with h.div(class_='panel-section'):
+        h << h.div(_(u'Notifications'), class_='panel-section-title')
+        h << h.p(_(u'You will be notified by email of changes made in this board to cards'))
+        with h.form:
+            with h.div(class_='btn-group'):
+                active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_OFF else ''
+                h << h.button(_('None'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_OFF)
+                active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_MINE else ''
+                h << h.button(_('Affected to me'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_MINE)
+                active = 'active btn-primary' if self.notifications_allowed == notifications.NOTIFY_ALL else ''
+                h << h.button(_('All'), class_='btn %s' % active).action(self.allow_notifications, notifications.NOTIFY_ALL)
     return h.root
 
 

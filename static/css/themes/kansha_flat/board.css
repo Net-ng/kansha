@@ -54,6 +54,10 @@
     background:  rgba(229, 229, 229, 0.9);
 }
 
+.archive {
+    background: #d8d8d8;
+}
+
 .list.reduced .list-header {
     border-bottom: 1px solid #EAEAEA;
 }

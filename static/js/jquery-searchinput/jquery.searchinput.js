@@ -88,6 +88,8 @@
                 resizeHandler(inputEl, iconEl);
             });
 
+            // this line by net-ng
+            $('.header').bind("DOMSubtreeModified", function() {computeIconOffset(inputEl, iconEl);});
             /*
              * Observer for watching display property change on the input element.
              */

@@ -35,9 +35,9 @@ class CardExtension(plugin.Plugin, EventHandlerMixIn):
         ie: return schema.Text for a text field'''
         return None
 
-    def to_indexable(self):
-        '''How to transform extension value for it to be indexed'''
-        return None
+    def update_document(self, document):
+        '''Add extension value to document that will be indexed'''
+        pass
 
     def delete(self):
         '''Happens when a card is deleted, use it to clean up files for example'''

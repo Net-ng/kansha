@@ -97,7 +97,8 @@ class ChecklistTest(CardExtensionTestCase):
         item = ck.items[0]()
         self.assertEqual(item.get_title(), u'test item')
 
-    def test_to_indexable(self):
+    def test_update_document(self):
+        doc = self.card.schema(docid=None)
         ck = self.extension.add_checklist()
         ck.set_title(u'test list')
         ck.add_item_from_str(u'test item')
@@ -107,7 +108,8 @@ class ChecklistTest(CardExtensionTestCase):
         ck.set_title(u'test list 2')
         ck.add_item_from_str(u'test item 3')
         ck.add_item_from_str(u'test item 4')
-        self.assertEqual(self.extension.to_indexable(), u'''test list
+        self.extension.update_document(doc)
+        self.assertEqual(doc.checklists, u'''test list
 test item
 test item 2
 test list 2

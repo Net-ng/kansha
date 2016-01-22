@@ -44,7 +44,7 @@ def rebuild_index(app):
     for card in DataCard.query:
         board_id = card.column.board.id
         card = app._services(Card, card.id, app.card_extensions, action_log, data=card)
-        app.search_engine.add_document(card.to_document(board_id))
+        card.add_to_index(app.search_engine, board_id)
     app.search_engine.commit()
 
 

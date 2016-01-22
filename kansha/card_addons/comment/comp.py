@@ -140,8 +140,8 @@ class Comments(CardExtension):
     def get_schema_def():
         return schema.Text(u'comments')
 
-    def to_indexable(self):
-        return u'\n'.join(comment().text for comment in self.comments)
+    def update_document(self, document):
+        document.comments = u'\n'.join(comment().text for comment in self.comments)
 
     @property
     def data(self):

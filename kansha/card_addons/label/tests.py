@@ -36,9 +36,11 @@ class CardLabelsTest(CardExtensionTestCase):
         for labela, labelb in labels2:
             assert(labela.get_title() == labelb.get_title())
 
-    def test_to_indexable(self):
+    def test_update_document(self):
+        doc = self.card.schema(docid=None)
         label = self.extension.get_available_labels()[0]
         self.extension.activate(label)
         label = self.extension.get_available_labels()[1]
         self.extension.activate(label)
-        self.assertEqual(self.extension.to_indexable(), u'Green Red')
+        self.extension.update_document(doc)
+        self.assertEqual(doc.labels, u'Green Red')

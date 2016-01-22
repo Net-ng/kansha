@@ -73,11 +73,7 @@ class Column(events.EventHandlerMixIn):
 
     def index_cards(self, cards, update=False):
         for card in cards:
-            scard = card.to_document(self.board.id)
-            if update:
-                self.search_engine.update_document(scard)
-            else:
-                self.search_engine.add_document(scard)
+            card.add_to_index(self.search_engine, self.board.id, update=update)
         self.search_engine.commit()
 
     def actions(self, action, comp):
@@ -104,7 +100,7 @@ class Column(events.EventHandlerMixIn):
             slot = event.data
             slot.becomes(card_bo)
             # card has been edited, reindex
-            self.search_engine.update_document(card_bo.to_document(self.board.id))
+            card_bo.add_to_index(self.search_engine, self.board.id, update=True)
             self.search_engine.commit()
             self.emit_event(comp, events.SearchIndexUpdated)
 

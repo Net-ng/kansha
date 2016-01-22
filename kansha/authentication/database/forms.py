@@ -13,6 +13,9 @@ import hashlib
 import textwrap
 from datetime import datetime, timedelta
 
+from io import BytesIO
+from retricon import retricon
+
 import webob
 from nagare.i18n import _
 from nagare import (presentation, editor, component, security, log, database)
@@ -76,7 +79,8 @@ class Login(Authentication):
         'default_password': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, theme, services_service):
+    def __init__(self, app_title, app_banner, theme, assets_manager_service, services_service):
+        self.assets_manager = assets_manager_service
         self._error_message = ''
         self.registration_task = services_service(RegistrationTask, app_title, app_banner,
                                                   theme,
@@ -108,6 +112,17 @@ class Login(Authentication):
             security.set_user(None)
             u = None
         if u is not None:
+            if not u.has_avatar():
+                identicon = retricon(u.email.encode(), tiles=7, width=140)
+                icon_file = BytesIO()
+                identicon.save(icon_file, 'PNG')
+                uid = u.username
+                self.assets_manager.save(
+                    icon_file.getvalue(),
+                    uid,
+                    {'filename': '%s.png' % uid})
+                picture = self.assets_manager.get_image_url(uid, 'thumb')
+                u.data.picture = picture
             database.session.flush()
             comp.answer(u)
         else:

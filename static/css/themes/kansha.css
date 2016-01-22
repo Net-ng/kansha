@@ -21,6 +21,7 @@ input, select, textarea {
     box-sizing: border-box;
     padding: 4px 6px;
     margin: 0;
+    margin-right: 5px;
     resize: none;
     border-radius: 3px;
 }
@@ -28,11 +29,6 @@ input, select, textarea {
 input[type=checkbox],
 input[type=radio] {
     width: auto;
-}
-
-select {
-    height: 30px;
-    line-height: 30px;
 }
 
 a, a:hover, a:visited, a:hover i { text-decoration: none; }

@@ -367,7 +367,7 @@ a:hover .ico-btn {
 
 /* Modal window */
 .modal {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .modal > div {

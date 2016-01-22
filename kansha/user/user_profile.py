@@ -76,16 +76,16 @@ def render(self, h, comp, *args):
         with h.form:
             with h.ul:
                 with h.li:
-                    h << (_('Username'), u' ',
+                    h << (h.label(_('Username')),
                           h.input(type='text', disabled=True, value=self.username()))
                 with h.li:
-                    h << (_('Fullname'), u' ',
+                    h << (h.label(_('Fullname')),
                           h.input(type='text', disabled=True, value=self.fullname()))
                 with h.li:
-                    h << (_('Email'), u' ',
+                    h << (h.label(_('Email')),
                           h.input(type='text', disabled=True, value=self.email()))
                 with h.li:
-                    h << (_('Language'), u' ')
+                    h << (h.label(_('Language')))
                     with h.select().action(self.language).error(self.language.error):
                         for (id, lang) in LANGUAGES.items():
                             if self.language() == id:
@@ -94,7 +94,7 @@ def render(self, h, comp, *args):
                                 h << h.option(_(lang), value=id)
                 if self.target.picture:
                     with h.li:
-                        h << (_('Picture'), u' ')
+                        h << (h.label(_('Picture')))
                         h << h.div(
                             h.img(src=self.target.picture, class_='avatar big'))
 
@@ -271,18 +271,18 @@ def render(self, h, comp, *args):
         with h.form:
             with h.ul:
                 with h.li:
-                    h << (_('Username'), ' ',
+                    h << (h.label(_('Username')),
                           h.input(type='text', readonly=True, value=self.username()))
                 with h.li:
-                    h << (_('Fullname'), ' ',
+                    h << (h.label(_('Fullname')),
                           h.input(type='text', value=self.fullname()).action(self.fullname))
                 with h.li:
-                    h << (_('Email'), ' ',
+                    h << (h.label(_('Email')),
                           h.input(type='text', value=self.email_to_confirm()).action(self.email_to_confirm).error(self.email_to_confirm.error))
                     if hasattr(self.email_to_confirm, 'info'):
                         h << h.span(
                             self.email_to_confirm.info, class_='info-message')
-                with h.li(_('Language')):
+                with h.li(h.label(_('Language'))):
                     with h.select().action(self.language).error(self.language.error):
                         for (id, lang) in LANGUAGES.items():
                             if self.language() == id:
@@ -291,7 +291,7 @@ def render(self, h, comp, *args):
                                 h << h.option(lang, value=id)
 
                 with h.li:
-                    h << _('Picture')
+                    h << h.label(_('Picture'))
                     picture = self.target.get_picture()
                     if picture:
                         with h.label(for_='picture'):
@@ -301,7 +301,7 @@ def render(self, h, comp, *args):
                         .error(self.picture.error)
 
                 with h.li:
-                    h << (_('Old Password'), ' ',
+                    h << (h.label(_('Old Password')),
                           # FF hack, don't save my password please
                           h.input(type='password', style='display:none'),
                           h.input(type='password').action(self.old_password)
@@ -310,10 +310,10 @@ def render(self, h, comp, *args):
                         h << h.span(
                             self.password_repeat.info, class_='info-message')
                 with h.li:
-                    h << (_('New password'), ' ',
+                    h << (h.label(_('New password')),
                           h.input(type='password').action(self.password).error(self.password.error))
                 with h.li:
-                    h << (_('Repeat new password'), ' ',
+                    h << (h.label(_('Repeat new password')),
                           h.input(type='password').action(self.password_repeat)
                           .error(self.password_repeat.error))
 

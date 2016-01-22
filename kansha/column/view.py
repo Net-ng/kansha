@@ -98,7 +98,7 @@ def render_column_overlay(self, h, comp, *args):
 @presentation.render_for(Column, model='header')
 def render_column_header(self, h, comp, *args):
     with h.div(class_='title'):
-        h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
+        h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
     h << self.card_counter
     return h.root
 

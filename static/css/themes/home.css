@@ -71,7 +71,7 @@
 .boards input[type=file],
 .boards select,
 .boards textarea {
-    width: 100%;
+    width: 40%;
 }
 
 /* Board labels */

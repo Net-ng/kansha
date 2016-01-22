@@ -25,7 +25,7 @@
 /* Board */
 .board .board-title {
     color: inherit;
-    font: normal 33px OpenSansLight;
+    font: normal 33px OpenSansSemibold;
 }
 
 .board .board-title a,
@@ -51,7 +51,11 @@
 .list {
     border-radius: 3px;
     border: 1px solid #d8d8d8;
-    background: #e5e5e5;
+    background:  rgba(229, 229, 229, 0.9);
+}
+
+.archive {
+    background: #d8d8d8;
 }
 
 .list.reduced .list-header {
@@ -112,8 +116,9 @@
 .list-marker {
     border-radius: 3px;
 	margin: 0px 0 0 10px;
-    border: 1px solid #c8c8c8;
-    background-color: #dfdcdc;
+    border: 2px solid #c0c0c0;
+    background-color: #e5e5e5;
+    opacity: 0.3;
     box-shadow: inset #b5b5b5 2px 1px 1px;
 }
 /* End lists */

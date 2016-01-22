@@ -249,6 +249,9 @@ class WSGIApp(wsgi.WSGIApp):
         self._services.register('search_engine', self.search_engine)
         Card.update_schema(self.card_extensions)
 
+        # Make assets_manager available to kansha-admin commands
+        self.assets_manager = self._services['assets_manager']
+
         # other
         self.security = SecurityManager(conf['application']['crypto_key'])
         self.debug = conf['application']['debug']

@@ -71,6 +71,7 @@ setup(
       alembic-upgrade = kansha.alembic.admin:AlembicUpgradeCommand
       create-index = kansha.batch.create_index:ReIndex
       save-config = kansha.batch.save_config:SaveConfig
+      create-demo = kansha.batch.create_demo:CreateDemo
 
       [kansha.services]
       authentication = kansha.services.authentication_repository:AuthenticationsRepository

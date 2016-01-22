@@ -92,12 +92,6 @@ class UserManager(object):
             token_gen.reset_token(token.token)
         return user
 
-    def populate(self):
-        # Create users
-        for i in xrange(1, 4):
-            user = self.create_user(u'user%d' % i, u'password', u'user %d' % i, u'user%d@net-ng.com' % i)
-            user.confirm_email()
-
 ###### TODO: Move the defintions below somewhere else ##########
 
 class NewMember(object):

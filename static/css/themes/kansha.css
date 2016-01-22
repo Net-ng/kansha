@@ -129,8 +129,8 @@ i.icon {
 .board-labels .avatar img,
 .card .avatar img,
 .card-actions .avatar img {
-    max-height: 24px;
-    max-width: 24px;
+    max-height: 21px;
+    max-width: 21px;
 }
 
 /*Error page*/

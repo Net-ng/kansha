@@ -24,6 +24,8 @@
     display: inline-block;
     visibility: hidden;
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 .home .boards ul.board-labels li:hover .add,

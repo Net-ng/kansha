@@ -40,6 +40,10 @@ class FieldType(object):
         if default is not None:
             self.default = default
 
+    @property
+    def type_name(self):
+        return self.__class__.__name__
+
     def __eq__(self, v):
         return EQQuery(self, v)
 
@@ -66,6 +70,15 @@ class FieldType(object):
 
     def match_phrase(self, v):
         return PHRASEQuery(self, v)
+
+    def map(self, schema_name, mapper):
+        mapper.define_field(
+            schema_name,
+            self.type_name,
+            self.name,
+            self.indexed,
+            self.stored
+        )
 
 
 class Text(FieldType):
@@ -109,7 +122,35 @@ class Datetime(FieldType):
     default = datetime.now()
 
 
+class IndexableDocument(object):
+    '''Document Type for documents instanciated by a Schema object.'''
+
+    def __init__(self, schema, fields, docid, **field_values):
+        self._id = docid
+        self.fields = fields
+        self.schema = schema
+        for name, field in fields.iteritems():
+            setattr(self, name, field_values.get(name, field.default))
+
+    @property
+    def schema_name(self):
+        return self.schema.type_name
+
+    def save(self, cursor, update=False):
+        fields = dict(
+            (name, getattr(self, name)) for name in self.fields
+            if getattr(self, name) is not None
+        )
+        if update:
+            cursor.update(self.schema_name, docid=self._id, **fields)
+        else:
+            cursor.insert(self.schema_name, docid=self._id, **fields)
+
+
 class _Schema(type):
+    """
+    Meta-class
+    """
 
     def __new__(cls, name, bases, dct):
         fields = {}
@@ -129,7 +170,7 @@ class _Schema(type):
         return klass
 
 
-class Document(object):
+class Document(IndexableDocument):
 
     '''
     Declarative class for documents.
@@ -173,7 +214,6 @@ class Document(object):
         for fname, fvalue in self.fields.iteritems():
             setattr(self, fname, fields.get(fname, fvalue.default))
 
-
     @property
     def schema(self):
         return self.__class__
@@ -197,20 +237,15 @@ class Document(object):
         '''Full text specific: match any of the fields'''
         return MATCHANYQuery(cls, v)
 
+    @classmethod
+    def map(cls, mapper):
+        mapper.define(cls.type_name)
+        for field in cls.fields.itervalues():
+            field.map(cls.type_name, mapper)
 
-class AltDocument(object):
-    '''Document Type for documents instanciated by a Schema object.'''
-
-    def __init__(self, schema, fields, docid, **field_values):
-        self._id = docid
-        self.fields = fields
-        self.schema = schema
-        for name, field in fields.iteritems():
-            setattr(self, name, field_values.get(name, field.default))
-
-    @property
-    def schema_name(self):
-        return self.schema.type_name
+    @classmethod
+    def iter_fields(cls):
+        return cls.fields.iteritems()
 
 
 class Schema(object):
@@ -278,7 +313,7 @@ class Schema(object):
         Fields set to None are ignored (that is, in case of update,
         they are left untouched in the index).
         '''
-        return AltDocument(self, self.fields, docid, **fields)
+        return IndexableDocument(self, self.fields, docid, **fields)
 
     def delta(self, docid, **fields):
         '''
@@ -298,3 +333,11 @@ class Schema(object):
             return self.fields[name]
         except KeyError:
             raise AttributeError(name)
+
+    def map(self, mapper):
+        mapper.define(self.type_name)
+        for field in self.fields.itervalues():
+            field.map(self.type_name, mapper)
+
+    def iter_fields(self):
+        return self.fields.iteritems()

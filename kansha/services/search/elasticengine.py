@@ -21,10 +21,8 @@ except ImportError:
 else:
     es_installed = True
 
-from . import schema
 
-
-class ESMapper(object):
+class ESQueryMapper(object):
 
     def match(self, field, value):
         return {'match': {field.name: {'query': value, 'operator': 'and'}}}
@@ -83,28 +81,125 @@ class ESMapper(object):
             }
         }
 
-FT2ES = {
-    schema.Text: {'type': 'string',
-                  "index_analyzer":  "autocomplete",
-                  "search_analyzer": "standard",
-                  'copy_to': '_full'},
-    schema.Keyword: {'type': 'string',
-                     'index': 'not_analyzed'},
-    schema.Attachment: {'type': 'attachment'},
-    schema.Float: {'type': 'double'},
-    schema.Int: {'type': 'long'},
-    schema.Boolean: {'type': 'boolean'},
-    schema.Datetime: {'type': 'date'}
-}
+
+class ESSchemaMapper(object):
+
+    FT2ES = {
+        'Text': {'type': 'string',
+                 'index_analyzer':  'autocomplete',
+                 'search_analyzer': 'standard',
+                 'copy_to': '_full'},
+        'Keyword': {'type': 'string',
+                    'index': 'not_analyzed'},
+        'Attachment': {'type': 'attachment'},
+        'Float': {'type': 'double'},
+        'Int': {'type': 'long'},
+        'Boolean': {'type': 'boolean'},
+        'Datetime': {'type': 'date'}
+    }
+
+    SETTINGS = {
+        "number_of_shards": 1,
+        "analysis": {
+            "filter": {
+                "autocomplete_filter": {
+                    "type":     "ngram",
+                    "min_gram": 1,
+                    "max_gram": 20
+                }
+            },
+            "analyzer": {
+                "autocomplete": {
+                    "type":      "custom",
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "autocomplete_filter"
+                    ]
+                }
+            }
+        }
+    }
+
+    def __init__(self, idx_manager):
+
+        self.idx_manager = idx_manager
+        self.mappings = {}
+
+    # Schema API
+
+    def define(self, schema_name):
+        properties = {'_full': {"type": "string",
+                                "index_analyzer":  "autocomplete",
+                                "search_analyzer": "standard"}}
+        excludes = []
+        self.mappings[schema_name] = {'properties': properties,
+                                      '_source': {"excludes": excludes}}
+
+    def define_field(self, schema_name, field_type, name, indexed, stored):
+        estype = dict(self.FT2ES[field_type])
+        if not indexed:
+            estype['index'] = 'no'
+        mapping = self.mappings[schema_name]
+        mapping['properties'][name] = estype
+        if not stored:
+            mapping['_source']['excludes'].append(name)
+
+    ## Specific API
+
+    def create(self, index):
+        body = {"mappings": self.mappings, "settings": self.SETTINGS}
+        self.idx_manager.create(index=index, body=body)
 
 
-def ESProperty(ftype):
-    estype = dict(FT2ES[ftype.__class__])
-    if not ftype.indexed:
-        estype['index'] = 'no'
-    # ElasticSearch stores all the document by default, so we can ignore the
-    # stored attribute of field types here.
-    return estype
+class IndexCursor(object):
+
+    def __init__(self, index, search_function=None):
+        self.index = index
+        self.es_search = search_function
+        self.op = {}
+
+    # Document API
+
+    def insert(self, schema_name, docid, **fields):
+        self._action(schema_name, docid, fields)
+
+    def update(self, schema_name, docid, **fields):
+        self._action(schema_name, docid, fields, update=True)
+
+    # Query API
+
+    def search(self, schema_name, fields_to_load, mapped_query, limit):
+        """
+        ``fields_to_load`` is  a list of field names.
+        """
+        dsl = mapped_query
+        self.op = dict(index=self.index,
+                       doc_type=schema_name,
+                       body={'query': dsl},
+                       size=limit)
+
+    def get_results(self, result_factory):
+        hits = self.es_search(**self.op)
+        return [
+            (h['_score'], result_factory(h['_id'], **h['_source']))
+            for h in hits['hits']['hits']
+        ]
+
+    # Specific API
+
+    def _action(self, schema_name, docid, fields, update=False):
+        doc = 'doc' if update else '_source'
+        self.op = {
+            '_index': self.index,
+            '_type': schema_name,
+            '_op_type': 'update' if update else 'create',
+            '_id': docid,
+            doc: fields
+        }
+
+    def enqueue(self, queue):
+        queue.append(self.op)
 
 
 class ElasticSearchEngine(object):
@@ -133,7 +228,7 @@ class ElasticSearchEngine(object):
         else:
             self.es = Elasticsearch(hosts=[{'host': host, 'port': port}])
         self.idx_manager = IndicesClient(self.es)
-        self.mapper = ESMapper()
+        self.mapper = ESQueryMapper()
 
     # be persistence friendly
     def __getstate__(self):
@@ -145,17 +240,9 @@ class ElasticSearchEngine(object):
     def _index(self, document, update=False):
         # for efficiency, nothing is executed yet,
         # we prepare and queue the operation
-        doc = 'doc' if update else '_source'
-        op = {
-            '_index': self.index,
-            '_type': document.schema_name,
-            '_op_type': 'update' if update else 'create',
-            '_id': document._id,
-            doc: {k: getattr(document, k)
-                  for k in document.fields
-                  if getattr(document, k) is not None}
-        }
-        self._queue.append(op)
+        cursor = IndexCursor(self.index)
+        document.save(cursor, update)
+        cursor.enqueue(self._queue)
 
     def add_document(self, document):
         '''
@@ -199,18 +286,8 @@ class ElasticSearchEngine(object):
         '''
         Search the database.
         '''
-        dsl = query(self.mapper)
-        schema = query.target_schema
-        hits = self.es.search(index=self.index,
-                              doc_type=schema.type_name,
-                              body={'query': dsl},
-                              size=size)
-        res = [
-            (h['_score'], schema.delta(h['_id'],
-                                                  **h['_source']))
-            for h in hits['hits']['hits']
-        ]
-        return res
+        index_cursor = IndexCursor(self.index, self.es.search)
+        return query.search(index_cursor, self.mapper, size)
 
     def delete_collection(self):
         if self.idx_manager.exists(self.index):
@@ -227,39 +304,8 @@ class ElasticSearchEngine(object):
         if idx_manager.exists(self.index):
             idx_manager.delete(index=self.index)
 
-        mappings = {}
+        mapper = ESSchemaMapper(idx_manager)
         for schema in schemas:
-            properties = {'_full': {"type": "string",
-                                    "index_analyzer":  "autocomplete",
-                                    "search_analyzer": "standard"}}
-            excludes = []
-            for name, ftype in schema.fields.iteritems():
-                properties[name] = ESProperty(ftype)
-                if not ftype.stored:
-                    excludes.append(name)
-            mappings[schema.type_name] = {'properties': properties,
-                                          '_source': {"excludes": excludes}}
-        settings = {
-            "number_of_shards": 1,
-            "analysis": {
-                "filter": {
-                    "autocomplete_filter": {
-                        "type":     "ngram",
-                        "min_gram": 1,
-                        "max_gram": 20
-                    }
-                },
-                "analyzer": {
-                    "autocomplete": {
-                        "type":      "custom",
-                        "tokenizer": "standard",
-                        "filter": [
-                            "lowercase",
-                            "autocomplete_filter"
-                        ]
-                    }
-                }
-            }
-        }
-        body = {"mappings": mappings, "settings": settings}
-        idx_manager.create(index=self.index, body=body)
+            schema.map(mapper)
+
+        mapper.create(self.index)

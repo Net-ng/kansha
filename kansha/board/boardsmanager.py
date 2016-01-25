@@ -30,6 +30,7 @@ class BoardsManager(object):
         self.my_boards = {}
         self.guest_boards = {}
         self.archived_boards = {}
+        self.templates = {}
 
     def get_by_id(self, id_):
         board = None
@@ -96,7 +97,7 @@ class BoardsManager(object):
         self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
         public, private = Board.get_templates_for(user.username, user.source)
         self.templates = {'public': [(b.id, b.template_title) for b in public],
-                         'private': [(b.id, b.template_title) for b in private]}
+                          'private': [(b.id, b.template_title) for b in private]}
 
     def purge_archived_boards(self):
         for board in self.archived_boards.itervalues():

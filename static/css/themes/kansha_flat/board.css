@@ -407,6 +407,14 @@ span.nomatches {
 /* End board view switch zone (calendar / columns / search) */
 
 /* History */
+#action-log select:first-child {
+    width: calc(33.33% - 1em);
+}
+
+#action-log select:last-child {
+    width: 66.66%;
+}
+
 div.history {
     font-size: 12px;
 }

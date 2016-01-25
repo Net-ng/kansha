@@ -60,9 +60,9 @@ Kansha features can be activated and customized with a configuration file like t
     # authenticate with LDAP
     [[ldaplogin]]
     activated = <<AUTH_LDAP>>
-    server = <<AUTH_LDAP_SERVER>>
+    host = <<AUTH_LDAP_SERVER>>
     users_base_dn = <<AUTH_LDAP_USERS_BASE_DN>>
-    cls = <<AUTH_LDAP_CLASS>>
+    schema = <<AUTH_LDAP_CLASS>>
 
     # authenticate with third party apps
     [[oauthlogin]]

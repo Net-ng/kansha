@@ -7,8 +7,8 @@
 # this distribution.
 # --
 
-from nagare.i18n import _, _N
-from nagare import presentation, var, ajax, security, component
+from nagare.i18n import _
+from nagare import presentation, ajax, security, component
 
 from .comp import Gallery, Asset, AssetCropper
 
@@ -138,8 +138,8 @@ def render_asset(self, h, comp, model, *args):
 def render_Asset_thumb(self, h, comp, model, *args):
     with h.div(class_='asset'):
         action = h.a.action(lambda: comp.answer(('delete', self))).get('onclick')
-        onclick = ajax.py2js(_(u'Are you sure you want to delete this file?'), h)
-        onclick = u'if (confirm(%s)) { %s }' % (onclick, action)
+        onclick = _(u'Are you sure you want to delete this file?')
+        onclick = u'if (confirm("%s")) { %s }' % (onclick, action)
         with h.a(class_='delete', title=_(u'Delete'), href='#', onclick=onclick):
             h << h.i(class_='icon-cancel')
         if self.is_image():

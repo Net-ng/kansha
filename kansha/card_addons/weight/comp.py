@@ -9,9 +9,9 @@
 
 from nagare.i18n import _
 from peak.rules import when
-from nagare import component, editor, validator
+from nagare import component, editor, validator, security
 
-from kansha.board import Board, excel_export
+from kansha.board import excel_export
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
@@ -76,7 +76,9 @@ class CardWeightEditor(CardExtension):
     def commit(self):
         success = False
         if self.weight.error is None:
+            values = {'from': self.data.weight, 'to': self.weight.value, 'card': self.card.get_title()}
             self.data.weight = self.weight.value
+            self.action_log.add_history(security.get_user(), u'card_weight', values)
             success = True
         return success
 

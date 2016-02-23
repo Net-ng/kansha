@@ -190,6 +190,8 @@ i.icon {
     position: relative;
     padding: 18px 20px 12px 20px;
     z-index: 25;
+    height: 69px;
+    overflow: auto;
 }
 
 .nav-menu:hover .actions {
@@ -214,7 +216,7 @@ i.icon {
     display: inline-block;
     border-top: 2px solid white;
     border-bottom: 2px solid white;
-    margin: 0 10px;
+    margin: 0 6px;
     padding: 5px 0 5px 5px;
     cursor: pointer;
     white-space: nowrap;

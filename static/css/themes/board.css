@@ -1118,3 +1118,11 @@ div.history th {
         width: calc(100% - 150px);
     }
 }
+
+/* Full calendar fixes */
+.fc-day-grid-event>.fc-content {
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+}

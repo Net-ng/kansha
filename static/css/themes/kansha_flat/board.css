@@ -175,6 +175,11 @@ a.card-label:hover {
 /* End card drag n drop */
 
 /* Editor */
+.card-edition .description a {
+    color: #009fed;
+    text-decoration: underline;
+}
+
 .card-edit-form .header,
 .card-edit-form .header a,
 .card-edit-form .header a:hover {

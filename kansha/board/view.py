@@ -762,24 +762,10 @@ def render_userboards(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
-    if self.last_modified_boards:
-        h << h.h1(_(u'Last modified boards'))
-        with h.ul(class_='board-labels'):
-            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
-
-    h << h.h1(_(u'My boards'))
-    with h.ul(class_='board-labels'):
-        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
-
-    if self.guest_boards:
-        h << h.h1(_(u'Guest boards'))
-        with h.ul(class_='board-labels'):
-            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
-
     with h.div(class_='new-board'):
         with h.form:
             h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
-            h << _(u' a new ')
+            h << (u' ', _(u'a new'), u' ')
 
             if len(self.templates) > 1:
                 with h.select.action(template):
@@ -793,7 +779,21 @@ def render_userboards(self, h, comp, *args):
                 template(id_)
                 h << tpl
 
-            h << _(u' board')
+            h << (u' ', _(u'board'))
+
+    if self.last_modified_boards:
+        h << h.h1(_(u'Last modified boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
+
+    h << h.h1(_(u'My boards'))
+    with h.ul(class_='board-labels'):
+        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
+
+    if self.guest_boards:
+        h << h.h1(_(u'Guest boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
 
     if len(self.archived_boards):
         h << h.h1(_('Archived boards'))

@@ -55,6 +55,11 @@
     text-align: right;
 }
 
+.home .new-board {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #c0c0c0;
+}
+
 .home .new-board select {
     width: auto;
 }

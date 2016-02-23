@@ -984,7 +984,7 @@ msgid "Create"
 msgstr "Créer"
 
 #: kansha/board/view.py:782
-msgid " a new "
+msgid "a new"
 msgstr "un nouveau"
 
 #: kansha/board/view.py:786
@@ -996,7 +996,7 @@ msgid "My templates"
 msgstr "Mes modèles"
 
 #: kansha/board/view.py:796
-msgid " board"
+msgid "board"
 msgstr "tableau"
 
 #: kansha/board/view.py:799

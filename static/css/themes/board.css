@@ -863,7 +863,6 @@ div.history th {
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
     text-align: center;
-    display: block;
     margin-right: 2px;
 }
 

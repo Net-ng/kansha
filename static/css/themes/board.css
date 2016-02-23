@@ -973,6 +973,10 @@ div.history th {
     display: inline-block;
 }
 
+.panel-section.background img {
+    max-height: 300px;
+}
+
 .panel-section.background:first-child div:last-child {
     margin-top: 5px;
 }

@@ -191,7 +191,6 @@ i.icon {
     padding: 18px 20px 12px 20px;
     z-index: 25;
     height: 69px;
-    overflow: auto;
 }
 
 .nav-menu:hover .actions {

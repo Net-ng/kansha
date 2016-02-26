@@ -863,7 +863,6 @@ div.history th {
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
     text-align: center;
-    display: block;
     margin-right: 2px;
 }
 
@@ -971,6 +970,10 @@ div.history th {
 .panel-section.background div div:first-child,
 .panel-section.background div div:nth-child(2) {
     display: inline-block;
+}
+
+.panel-section.background img {
+    max-height: 300px;
 }
 
 .panel-section.background:first-child div:last-child {
@@ -1114,4 +1117,12 @@ div.history th {
     .board .board-title .title-form input {
         width: calc(100% - 150px);
     }
+}
+
+/* Full calendar fixes */
+.fc-day-grid-event>.fc-content {
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
 }

@@ -21,13 +21,13 @@ Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and a
 Quickstart
 ----------
 
-**Latest stable release is version 1.0.5**
+**Latest stable release is version 1.0.6**
 
 `Try Kansha online <http://demo.kansha.org>`_ or install it on a computer:
 
 * Run the latest stable release with Docker::
 
-   docker run -p 8080:8080 netng/kansha:v1.0.5
+   docker run -p 8080:8080 netng/kansha:v1.0.6
 
 * Install and run a stable release from Pypi: see the `installation documentation <http://kansha.readthedocs.org/en/stable/install.html>`_
 * Or run from the latest source: see the `developper documentation <http://kansha.readthedocs.org/en/latest/devsetup.html>`_

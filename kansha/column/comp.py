@@ -172,15 +172,15 @@ class Column(events.EventHandlerMixIn):
         DataColumn.delete_column(self.data)
 
     def remove_card(self, card):
-        self.cards.pop(card.index)
-        self.data.remove_card(card.data)
+        self.cards.remove(card)
+        self.data.remove_card(card().data)
 
     def remove_card_by_id(self, card_id):
         """Remove card and return corresponding Component."""
         # find component
         card_comp = filter(lambda x: x().id == card_id, self.cards)[0]
         try:
-            self.remove_card(card_comp())
+            self.remove_card(card_comp)
         except (IndexError, ValueError):
             raise ValueError(u'Card has been deleted or does not belong to this list anymore')
         return card_comp

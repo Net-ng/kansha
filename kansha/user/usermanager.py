@@ -102,17 +102,21 @@ class UserManager(object):
         return user
 
     def populate(self):
+        now = datetime.now()
         user1 = self.create_user(
             u'user1', u'password', u'user 1', u'user1@net-ng.com')
         user1.confirm_email()
+        user1.last_login=now
 
         user2 = self.create_user(
             u'user2', u'password', u'user 2', u'user2@net-ng.com')
         user2.confirm_email()
+        user2.last_login=now
 
         user3 = self.create_user(
             u'user3', u'password', u'user 3', u'user3@net-ng.com')
         user3.confirm_email()
+        user3.last_login=now
 
         user1.boards[0].title = u"Welcome Board User1"
         user2.boards[0].title = u"Welcome Board User2"

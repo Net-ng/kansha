@@ -3,6 +3,7 @@ python:
 - '2.7'
 env:
   - secure: "Ewud3hGfwNN44mosPPQA0hqHB99K1SnQ2zS84LFtVxKbNjOu7CTQ8GjK3LkFHFkhLh0WjjwMf4fBwPuDovjT0BpPiGG7sIQ3P4Bp6E4lONy9pLXhT1yK2g9ZM6qsz/Db9fFyiYLveZmaEoy3De9sCvei1YnpyLQ0GhRpo+LsNdd9V20lWC4U2b7jPIcrgJy9Z65DT9qNNMBqoe/S2irkxpNk/Trl+9JVqHK0roKsgrfb8kNOL/rKU1zgxicy1FfBquPY0CIcTc7bC2EaOGY/xtLN7d0cVxTjME9L90dc/1mpU4EKptu15xj/R32+WUmVgWs1fjrs2uKY59+4GO7+SCM3cjWd9Gh6LN6Ci6SuP2Hu+aV1UQg0C411t2xcUttaXyRMd9u1ud39omrEhAphtmvrK+iUwmxMepIcbIzZFDCxid/M6wDaDf/6HpCrdgB+AlDRBK/vAAHtCpvpYymRVbtFJAkZotlGaUUx/uolKCJ54bn6jeNylvEvk0AdU1nDFw5I4NxFDWf9IHfpzOXCZExp2IHZ91Ifejb4cvioxh9mrXv0tA7UyPqc8odcDqgJ2P+/ipmF2sClhq6ttL5nG3hmylOY3SGhgKpI/f3S0HCOoBbHfpdn5cE05F4v6P+DabxVftQFT4VbHHcEBhaaSL3FzUzrihXTtCV6y/L/Kd0="
+sudo: required
 addons:
   apt:
     packages:
@@ -25,7 +26,7 @@ cache:
 services:
 - elasticsearch
 before_install:
-  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.2.deb && dpkg -i --force-confnew elasticsearch-2.3.2.deb && service elasticsearch restart
+  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.2.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.2.deb && service elasticsearch restart
 install:
 - pip install --upgrade pip
 - pip install Babel configobj dateutils docutils flup lxml Pillow pycrypto python-memcached pytz oauth2 requests webob xlwt

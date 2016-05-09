@@ -37,7 +37,7 @@ def answer_on_menu(self, comp, user, v):
             self.app_banner,
             self.custom_css,
             user.data,
-            self.mail_sender, 
+            self.mail_sender,
             self.assets_manager,
             self.search_engine
         )
@@ -152,7 +152,8 @@ def render(self, h, comp, *args):
                         h << self.content
             with h.div(class_='credits'):
                 with h.div(class_='container'):
-                    h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
+                    h << h.a(self.app_title, href='http://www.kansha.org', target='_blank') << (u' v%s - \u00a9 ' % VERSION)
+                    h << h.a('Net-ng', href='http://www.net-ng.com', target='_blank') << (' %d' % datetime.date.today().year)
     else:
         with h.body(class_='yui-skin-sam'):
             h << h.div(id="mask")

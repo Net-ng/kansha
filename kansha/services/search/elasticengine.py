@@ -86,7 +86,7 @@ class ESSchemaMapper(object):
 
     FT2ES = {
         'Text': {'type': 'string',
-                 'index_analyzer':  'autocomplete',
+                 'analyzer':  'autocomplete',
                  'search_analyzer': 'standard',
                  'copy_to': '_full'},
         'Keyword': {'type': 'string',
@@ -130,7 +130,7 @@ class ESSchemaMapper(object):
 
     def define(self, schema_name):
         properties = {'_full': {"type": "string",
-                                "index_analyzer":  "autocomplete",
+                                "analyzer":  "autocomplete",
                                 "search_analyzer": "standard"}}
         excludes = []
         self.mappings[schema_name] = {'properties': properties,

@@ -170,7 +170,8 @@ def render_kansha(self, h, comp, *args):
                                 h << self.content.on_answer(self.select_board).render(h.AsyncRenderer())
             with h.div(class_='credits'):
                 with h.div(class_='container'):
-                    h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
+                    h << h.a(self.app_title, href='http://www.kansha.org', target='_blank') << (u' v%s - \u00a9 ' % VERSION)
+                    h << h.a('Net-ng', href='http://www.net-ng.com', target='_blank') << (' %d' % datetime.date.today().year)
 
     h.head.javascript_url('js/nagare.js')
 

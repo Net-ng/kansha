@@ -93,6 +93,7 @@ def render_Login(self, h, comp, *args):
         with h.div(class_='message'):
             h << h.parse_htmlstring(self.disclaimer) if self.disclaimer else u''
         with h.div(class_='credits'):
-            h << h.span(u'%s v%s - \u00a9 Net-ng %d' % (self.app_title, VERSION, datetime.date.today().year))
+            h << h.a(self.app_title, href='http://www.kansha.org', target='_blank') << (u' v%s - \u00a9 ' % VERSION)
+            h << h.a('Net-ng', href='http://www.net-ng.com', target='_blank') << (' %d' % datetime.date.today().year)
 
     return h.root

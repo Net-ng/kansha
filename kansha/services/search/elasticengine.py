@@ -85,7 +85,7 @@ class ESMapper(object):
 
 FT2ES = {
     schema.TEXT: {'type': 'string',
-                  "index_analyzer":  "autocomplete",
+                  "analyzer":  "autocomplete",
                   "search_analyzer": "standard",
                   'copy_to': '_full'},
     schema.KEYWORD: {'type': 'string',
@@ -226,7 +226,7 @@ class ElasticSearchEngine(object):
         mappings = {}
         for doctype in schema:
             properties = {'_full': {"type": "string",
-                                    "index_analyzer":  "autocomplete",
+                                    "analyzer":  "autocomplete",
                                     "search_analyzer": "standard"}}
             excludes = []
             for name, ftype in doctype.fields.iteritems():

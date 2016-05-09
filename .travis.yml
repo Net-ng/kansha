@@ -24,6 +24,8 @@ cache:
   - $HOME/.cache/pip
 services:
 - elasticsearch
+before_install:
+  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-2.3.2.deb && dpkg -i --force-confnew elasticsearch-2.3.2.deb && service elasticsearch restart
 install:
 - pip install --upgrade pip
 - pip install Babel configobj dateutils docutils flup lxml Pillow pycrypto python-memcached pytz oauth2 requests webob xlwt

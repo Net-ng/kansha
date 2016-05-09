@@ -217,6 +217,8 @@ index_folder
 ElasticSearch backend
 ^^^^^^^^^^^^^^^^^^^^^
 
+Requires ElasticSearch version 2.3.0 or above.
+
 You need to install the python driver first::
 
     $ <VENV_DIR>/bin/easy_install kansha[elastic]

@@ -226,7 +226,7 @@ class ElasticSearchEngine(object):
         mappings = {}
         for doctype in schema:
             properties = {'_full': {"type": "string",
-                                    "analyzer":  "autocomplete",
+                                    "analyzer": "autocomplete",
                                     "search_analyzer": "standard"}}
             excludes = []
             for name, ftype in doctype.fields.iteritems():
@@ -240,14 +240,14 @@ class ElasticSearchEngine(object):
             "analysis": {
                 "filter": {
                     "autocomplete_filter": {
-                        "type":     "ngram",
+                        "type": "ngram",
                         "min_gram": 1,
                         "max_gram": 20
                     }
                 },
                 "analyzer": {
                     "autocomplete": {
-                        "type":      "custom",
+                        "type": "custom",
                         "tokenizer": "standard",
                         "filter": [
                             "lowercase",

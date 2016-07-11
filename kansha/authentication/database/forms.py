@@ -147,7 +147,7 @@ class RegistrationForm(editor.Editor):
 
     def __init__(self, app_title, app_banner, theme):
         self.username = editor.Property('').validate(self.validate_username)
-        self.email = editor.Property('').validate(validator.validate_email)
+        self.email = editor.Property('').validate(self.validate_email)
         self.fullname = editor.Property('').validate(validator.validate_non_empty_string)
         self.password = editor.Property('').validate(validator.validate_password)
         self.password_repeat = editor.Property('').validate(validator.validate_password)
@@ -168,6 +168,14 @@ class RegistrationForm(editor.Editor):
         u = usermanager.UserManager.get_by_username(value)
         if u:
             raise ValueError(_("Username %s is not available. Please choose another one.")
+                             % value)
+        return value
+
+    def validate_email(self, value):
+        validator.validate_email(value)
+        u = usermanager.UserManager.get_by_email(value)
+        if u:
+            raise ValueError(_(u"This email address (%s) is already registered.")
                              % value)
         return value
 
@@ -219,12 +227,12 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='fields'):
                 fields = (
                     (_('Username'), 'username', 'text', self.username),
-                    (_('Email address'), 'email', 'text', self.email),
-                    (_('Fullname'), 'fullname', 'text', self.fullname),
                     (_('Password'),
-                        'password', 'password', self.password),
+                     'password', 'password', self.password),
                     (_('Password (repeat)'), 'password-repeat',
-                        'password', self.password_repeat)
+                     'password', self.password_repeat),
+                    (_('Email address'), 'email', 'text', self.email),
+                    (_('Fullname'), 'fullname', 'text', self.fullname)
                 )
                 for label, css_class, input_type, property in fields:
                     with h.div(class_='%s-field field' % css_class):

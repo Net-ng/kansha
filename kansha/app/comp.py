@@ -237,6 +237,7 @@ class WSGIApp(wsgi.WSGIApp):
 
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
+        self.app_name = conf['application']['name']
         self.theme = conf['application']['theme']
         self.application_path = conf['application']['path']
 
@@ -305,6 +306,7 @@ class WSGIApp(wsgi.WSGIApp):
         data = {'text': u'', 'status': 200,
                 'go_back': _(u'Go back'),
                 'app_title': self.app_title,
+                'app_name': self.app_name,
                 'theme': self.theme}
         if exc_class == Unauthorized:
             status = 403

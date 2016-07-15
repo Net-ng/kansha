@@ -29,6 +29,7 @@ before_install:
   - "/tmp/elasticsearch/bin/elasticsearch -d -D es.path.data=/tmp -D es.discovery.zen.ping.multicast.enabled=false"
 install:
 - pip install --upgrade pip
+- easy_install -U setuptools
 - pip install Babel configobj dateutils docutils flup lxml Pillow pycrypto python-memcached pytz oauth2 requests webob xlwt
 - easy_install .
 - pip install elasticsearch

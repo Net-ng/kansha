@@ -9,6 +9,7 @@
 #--
 
 import unittest
+import sys
 
 from nagare import database, i18n, security, component
 from nagare.namespaces import xhtml5
@@ -117,6 +118,9 @@ class BoardTest(unittest.TestCase):
 
         Test rendering (Board private / user member)
         """
+        # stackless only
+        if 'Stackless' not in sys.version:
+            return
         helpers.set_dummy_context()  # to be able to create board
         board = helpers.create_board()
         board.set_visibility(board_module.BOARD_PRIVATE)

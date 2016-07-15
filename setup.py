@@ -51,6 +51,7 @@ setup(
         'xlwt',
         'Paste'
     ),
+    dependency_links=['vendors/nagare-services-1.1.1.tar.gz'],
     extras_require={'test': ('nose',),
                     'htmldocs': ('sphinx',),
                     'debug': ('WebError',),

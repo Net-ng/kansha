@@ -583,6 +583,11 @@
         create_board_calendar: function (calendar, displayWeekNumbers) {
             calendar.fullCalendar(
                 {
+                    header: {
+                        left: 'title',
+                        center: '',
+                        right: 'today prev,next,month,basicWeek'
+                    },
                     aspectRatio: 2,
                     eventClick: function (calEvent, jsEvent, view) {
                         calEvent.clicked_cb();

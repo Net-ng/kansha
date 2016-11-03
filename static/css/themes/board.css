@@ -1120,9 +1120,19 @@ div.history th {
 }
 
 /* Full calendar fixes */
-.fc-day-grid-event>.fc-content {
-    width: 100%;
+.fc-month-view .fc-day-grid-event>.fc-content {
+    width: 95%;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding: 2px;
+    margin: 0;
+}
+
+.fc-basicWeek-view .fc-day-grid-event>.fc-content {
+    width: 95%;
+    font-size: larger;
+    min-height: 3em;
+    padding: 0.5em;
+    white-space: normal;
     margin: 0;
 }

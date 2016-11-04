@@ -321,7 +321,7 @@ class WSGIApp(wsgi.WSGIApp):
             status = 500
             text = _(unicode(e.message))
         else:
-            raise e
+            raise
         # Raise exception if debug
         if self.debug:
             raise

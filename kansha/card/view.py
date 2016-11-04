@@ -132,9 +132,14 @@ def render_card_delete(self, h, comp, model):
 
 
 @presentation.render_for(Card, 'calendar')
-def render(self, h, comp, *args):
-    card = ajax.py2js(self, h)
-    if card:
+def render_in_calendar(self, h, comp, *args):
+    # TODO should be in due_date extension
+    due_date = dict(self.extensions)['due_date']().due_date
+    if due_date:
+        due_date = ajax.py2js(due_date, h)
+        parent_title = self.emit_event(comp, events.ParentTitleNeeded) or ''
+        card = u'{title:%s, editable:true, allDay: true, start: %s}' % (
+            ajax.py2js(u'{} ({})'.format(self.data.title, parent_title), h).decode('utf-8'), due_date)
         clicked_cb = h.a.action(
             lambda: self.emit_event(comp, events.CardClicked, comp)
         ).get('onclick')
@@ -154,6 +159,7 @@ def render(self, h, comp, *args):
             'clicked_cb': clicked_cb,
             'dropped_cb': dropped_cb
         })
+
     return h.root
 
 
@@ -204,15 +210,3 @@ def render_new_card_add(self, h, comp, *args):
     h << h.script("""document.getElementById(%s).focus(); """ % ajax.py2js(id_))
 
     return h.root
-
-
-# TODO should be in due_date extension
-@peak.rules.when(ajax.py2js, (Card,))
-def py2js(card, h):
-    due_date = dict(card.extensions)['due_date']().due_date
-    if not due_date:
-        return None
-    due_date = ajax.py2js(due_date, h)
-
-    return u'{title:%s, editable:true, allDay: true, start: %s}' % (
-            ajax.py2js(card.get_title(), h).decode('utf-8'), due_date)

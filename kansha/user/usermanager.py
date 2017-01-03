@@ -13,9 +13,9 @@ from datetime import datetime, timedelta
 from nagare.namespaces import xhtml
 from nagare import component, i18n
 
-from kansha.toolbox import autocomplete
-from .models import DataUser
 from .comp import User
+from .models import DataUser
+from kansha.toolbox import autocomplete
 
 
 class UserManager(object):
@@ -91,6 +91,7 @@ class UserManager(object):
                 token.board.add_member(user)
             token_gen.reset_token(token.token)
         return user
+
 
 ###### TODO: Move the defintions below somewhere else ##########
 

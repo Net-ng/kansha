@@ -18,15 +18,11 @@
 
 
 """
-Create and (re)build the search index for cards.
-It is safe to run it anytime.
+Create the demo users.
 Registered as a nagare-admin command.
 Usage :
-nagare-admin create-index <app name | config file>
+nagare-admin create-demo <app name | config file>
 """
-from io import BytesIO
-
-from retricon import retricon
 import pkg_resources
 
 from nagare import database
@@ -43,17 +39,11 @@ def create_demo(app):
     for i in xrange(1, 4):
         email = u'user%d@net-ng.com' % i
         username = u'user%d' % i
-        identicon = retricon(email.encode(), tiles=7, width=140)
-        icon_file = BytesIO()
-        identicon.save(icon_file, 'PNG')
-        assets_manager.save(
-            icon_file.getvalue(),
-            username,
-            {'filename': '%s.png' % username})
-        picture = assets_manager.get_image_url(username, 'thumb')
-        user = user_manager.create_user(username, u'password', u'user %d' % i, email, picture=picture)
+        user = user_manager.create_user(username, u'password', u'user %d' % i, email)
         user.confirm_email()
-    database.session.flush()
+        appuser = user_manager.get_app_user(username, user)
+        appuser.reset_avatar(assets_manager)
+        database.session.flush()
     # demo templates
     # TODO
 

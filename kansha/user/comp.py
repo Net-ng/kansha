@@ -8,12 +8,22 @@
 # this distribution.
 # --
 
+import hashlib
+from io import BytesIO
 from datetime import datetime
+
+import identicon
 
 from nagare import i18n
 from nagare.security import common as security_common
 
 from .models import DataToken, DataUser
+
+
+def int_hash(string):
+    sha = hashlib.sha256()
+    sha.update(string)
+    return int(sha.hexdigest(), 16)
 
 
 class User(security_common.User):
@@ -104,6 +114,17 @@ class User(security_common.User):
          - URL or URI of the picture
         """
         return self.data.get_picture()
+
+    def reset_avatar(self, assets_manager_service):
+        avatar = identicon.render_identicon(int_hash(self.data.email or self.data.email_to_confirm),
+                                            48)
+        icon_file = BytesIO()
+        avatar.save(icon_file, 'PNG')
+        assets_manager_service.save(
+            icon_file.getvalue(),
+            self.data.username,
+            {'filename': '%s.png' % self.data.username})
+        self.data.picture = assets_manager_service.get_image_url(self.data.username, 'thumb')
 
     @property
     def fullname(self):

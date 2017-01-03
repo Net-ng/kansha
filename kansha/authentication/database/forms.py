@@ -13,9 +13,6 @@ import hashlib
 import textwrap
 from datetime import datetime, timedelta
 
-from io import BytesIO
-from retricon import retricon
-
 import webob
 from nagare.i18n import _
 from nagare import (presentation, editor, component, security, log, database)
@@ -210,22 +207,13 @@ class RegistrationForm(editor.Editor):
             self.error_message = _(u'Unable to process. Check your input below.')
             return None
 
-        identicon = retricon(self.email.value.encode(), tiles=7, width=140)
-        icon_file = BytesIO()
-        identicon.save(icon_file, 'PNG')
-        uid = self.username.value
-        self.assets_manager.save(
-            icon_file.getvalue(),
-            uid,
-            {'filename': '%s.png' % uid})
-        picture = self.assets_manager.get_image_url(uid, 'thumb')
-
         # register the user in the database
-        u = self.user_manager.create_user(username=uid,
+        u = self.user_manager.create_user(username=self.username.value,
                                           password=self.password.value,
                                           fullname=self.fullname.value,
-                                          email=self.email.value,
-                                          picture=picture)
+                                          email=self.email.value)
+        appuser = self.user_manager.get_app_user(self.username.value, u)
+        appuser.reset_avatar(self.assets_manager)
         return u
 
     def on_ok(self, comp, application_url):

@@ -342,7 +342,7 @@ class WSGIApp(wsgi.WSGIApp):
           - ``response`` -- the web response object
           - ``async`` -- is an XHR request ?
         """
-        # log.exception("\n%s" % request)
+        log.exception("\n%s" % request)
         if self.debug:
             raise
 

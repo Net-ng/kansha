@@ -583,6 +583,7 @@
         create_board_calendar: function (calendar, displayWeekNumbers) {
             calendar.fullCalendar(
                 {
+                    defaultView: 'basicWeek',
                     header: {
                         left: 'title',
                         center: '',
@@ -590,7 +591,7 @@
                     },
                     aspectRatio: 2,
                     eventClick: function (calEvent, jsEvent, view) {
-                        calEvent.clicked_cb();
+                        calEvent.clicked_cb(view);
                     },
                     eventDrop: function(calEvent, delta, revertFunc) {
                         calEvent.dropped_cb(calEvent.start.format());

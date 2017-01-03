@@ -262,7 +262,8 @@ def render_Board_columns(self, h, comp, *args):
             h << h.div(id='calendar')
             h << h.script("""YAHOO.kansha.app.create_board_calendar($('#calendar'), %s)""" % ajax.py2js(True, h))
     for column in self.columns:
-        h << column.render(h, 'calendar')
+        if not column().is_archive:
+            h << column.render(h, 'calendar')
     return h.root
 
 

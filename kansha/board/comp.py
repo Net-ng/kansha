@@ -423,7 +423,6 @@ class Board(events.EventHandlerMixIn):
             - ``card`` -- card to archive
         """
         self.archive_column.append_card(card)
-        self.archive_column.refresh()
 
     @property
     def weighting_cards(self):

@@ -11,7 +11,10 @@
 import cgi
 import sys
 import json
+import time
+import pstats
 import urlparse
+import cProfile as profile
 from collections import OrderedDict
 
 import webob
@@ -288,8 +291,17 @@ class WSGIApp(wsgi.WSGIApp):
         if ('state=' in query) and (('code=' in query) or ('error=' in query)):
             request = webob.Request(environ)
             environ['QUERY_STRING'] += ('&' + request.params['state'])
-
-        return super(WSGIApp, self).__call__(environ, start_response)
+        if self.debug:
+            perf = profile.Profile()
+            start = time.time()
+            ret = perf.runcall(super(WSGIApp, self).__call__, environ, start_response)
+            if time.time() - start > 1:
+                stats = pstats.Stats(perf)
+                stats.sort_stats('cumtime')
+                stats.print_stats(40)
+            return ret
+        else:
+            return super(WSGIApp, self).__call__(environ, start_response)
 
     def on_exception(self, request, response):
         exc_class, e = sys.exc_info()[:2]

@@ -72,7 +72,6 @@ class Card(events.EventHandlerMixIn):
             search_engine.add_document(document)
         # Don't forget to commit after
 
-
     @classmethod
     def update_schema(cls, card_extensions):
         for name, extension in card_extensions.iteritems():
@@ -101,6 +100,7 @@ class Card(events.EventHandlerMixIn):
     @property
     def data(self):
         """Return the card object from the database
+        PRIVATE
         """
         if self._data is None:
             self._data = DataCard.get(self.db_id)

@@ -7,7 +7,6 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 # --
-import peak
 
 from nagare.i18n import _
 from nagare import ajax, presentation, security, var

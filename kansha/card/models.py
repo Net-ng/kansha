@@ -27,7 +27,7 @@ class DataCard(Entity):
     column = ManyToOne('DataColumn')
 
     # feature data to move to card extensions
-    members = ManyToMany('DataUser')
+    members = ManyToMany('DataUser', lazy='subquery')
 
     def update(self, other):
         self.title = other.title

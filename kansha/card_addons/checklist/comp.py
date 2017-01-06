@@ -168,20 +168,19 @@ class Checklist(object):
         self.data.purge()
         self.data.delete()
 
-
     @property
     def total_items(self):
         return len(self.items)
 
     @property
-    def nb_items(self):
+    def total_items_done(self):
         return len([item for item in self.items if item().done])
 
     @property
     def progress(self):
         if not self.items:
             return 0
-        return self.nb_items * 100 / self.total_items
+        return self.total_items_done * 100 / self.total_items
 
     @property
     def data(self):
@@ -202,10 +201,15 @@ class Checklists(CardExtension):
 
     def __init__(self, card, action_log, configurator):
         super(Checklists, self).__init__(card, action_log, configurator)
-        cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in self.data]
-        self.ck_cache = dict(cklists)
-        self.checklists = [component.Component(clist) for __, clist in cklists]
         self.comp_id = str(random.randint(10000, 100000))
+        self.ck_cache = {}
+        self.checklists = []
+
+    def load_children(self):
+        if not self.checklists:
+            cklists = [(clist.id, Checklist(clist.id, self.action_log, clist)) for clist in self.data]
+            self.ck_cache = dict(cklists)
+            self.checklists = [component.Component(clist) for __, clist in cklists]
 
     @staticmethod
     def get_schema_def():
@@ -225,12 +229,12 @@ class Checklists(CardExtension):
             new_checklist.update(checklist)
 
     @property
-    def nb_items(self):
-        return sum([cl().nb_items for cl in self.checklists])
+    def total_items(self):
+        return DataChecklist.total_items(self.card.data)
 
     @property
-    def total_items(self):
-        return sum([cl().total_items for cl in self.checklists])
+    def total_items_done(self):
+        return DataChecklist.total_items_done(self.card.data)
 
     def delete_checklist(self, index):
         cl = self.checklists.pop(index)()

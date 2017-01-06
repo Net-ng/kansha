@@ -79,6 +79,14 @@ class DataChecklist(Entity):
         for item in self.items:
             item.delete()
 
+    @staticmethod
+    def total_items(card):
+        return DataChecklistItem.total_items(card)
+
+    @staticmethod
+    def total_items_done(card):
+        return DataChecklistItem.total_items_done(card)
+
 
 class DataChecklistItem(Entity):
     using_options(tablename='checklist_items')
@@ -93,3 +101,13 @@ class DataChecklistItem(Entity):
         item = cls(title=text.strip())
         database.session.flush()
         return item
+
+    @classmethod
+    def total_items(cls, card):
+        return cls.query.join(DataChecklist).filter(DataChecklist.card==card).count()
+
+    @classmethod
+    def total_items_done(cls, card):
+        return cls.query.join(DataChecklist).filter(DataChecklist.card==card).filter(
+            DataChecklistItem.done == True).count()
+

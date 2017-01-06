@@ -31,6 +31,7 @@ def render_file(self, h, comp, size, **kw):
         res.append(h.span(metadata['filename']))
     return res
 
+
 CONTENT_TYPES = {'image/png': render_image,
                  'image/jpeg': render_image,
                  'image/pjpeg': render_image,
@@ -39,6 +40,7 @@ CONTENT_TYPES = {'image/png': render_image,
 
 @presentation.render_for(Gallery)
 def render(self, h, comp, *args):
+    self.load_assets()
     with h.div(id='gal' + self.comp_id):
         with h.div(class_='nbItems'):
             h << comp.render(h, model='badge')
@@ -64,7 +66,17 @@ def render_Gallery_crop(self, h, comp, model):
 def render_cover(self, h, comp, model):
     cover = self.get_cover()
     if cover:
-        h << h.p(component.Component(self.get_cover(), model='cover'), class_='cover')
+        h << h.p(component.Component(cover, model='cover'), class_='cover')
+    return h.root
+
+
+@presentation.render_for(Gallery, model='badge')
+def render_gallery_badge(self, h, *args):
+    """Gallery badge for the card"""
+    num_assets = self.num_assets
+    if num_assets:
+        with h.span(class_='badge'):
+            h << h.span(h.i(class_='icon-file'), ' ', num_assets, class_='label')
     return h.root
 
 
@@ -106,15 +118,6 @@ def render_download(self, h, comp, *args):
 
             h << h.input(id=input_id, class_='hidden', type="file", name="file", multiple="multiple", maxlength="100",).action(self.add_assets)
             h << h.input(class_='hidden', id=submit_id, type="submit").action(submit_action)
-    return h.root
-
-
-@presentation.render_for(Gallery, model='badge')
-def render_gallery_badge(self, h, *args):
-    """Gallery badge for the card"""
-    if self.assets:
-        with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-file'), ' ', len(self.assets), class_='label')
     return h.root
 
 

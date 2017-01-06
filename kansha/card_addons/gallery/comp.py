@@ -47,14 +47,18 @@ class Gallery(CardExtension):
         super(Gallery, self).__init__(card, action_log, configurator)
         self.assets_manager = assets_manager_service
         self.assets = []
-        self.load_assets()
         self.comp_id = str(random.randint(10000, 100000))
         self.model = 'view'
         self.cropper = component.Component()
 
+    @property
+    def num_assets(self):
+        return DataAsset.count_for(self.card.data)
+
     def load_assets(self):
-        for asset_data in DataAsset.get_all(self.card.data):
-            self.create_asset(asset_data)
+        if not self.assets:
+            for asset_data in DataAsset.get_all(self.card.data):
+                self.create_asset(asset_data)
 
     def delete_asset(self, asset):
         """Delete asset
@@ -80,6 +84,7 @@ class Gallery(CardExtension):
         self.assets = []
 
     def update(self, other):
+        other.load_assets()
         for asset_comp in other.assets:
             asset = asset_comp()
             new_asset = self._add_asset(asset.file_info)
@@ -181,10 +186,11 @@ class Gallery(CardExtension):
         self.model = 'view'
 
     def get_cover(self):
-        if not DataAsset.has_cover(self.card.data):
+        cover_data = DataAsset.get_cover(self.card.data)
+        if not cover_data:
             return None
 
-        return Asset(DataAsset.get_cover(self.card.data), self.assets_manager)
+        return Asset(cover_data, self.assets_manager)
 
     def remove_cover(self, asset):
         """Don't use the asset as cover anymore

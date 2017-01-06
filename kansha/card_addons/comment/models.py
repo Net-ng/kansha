@@ -11,6 +11,7 @@
 from elixir import using_options
 from elixir import ManyToOne
 from elixir import Field, UnicodeText, DateTime
+from sqlalchemy import func
 
 from kansha.models import Entity
 
@@ -30,4 +31,11 @@ class DataComment(Entity):
         q = cls.query
         q = q.filter_by(card=card)
         q = q.order_by(cls.creation_date.desc())
-        return q.all()
+        return q
+
+    @classmethod
+    def total_comments(cls, card):
+        q = cls.query
+        q = q.filter_by(card=card)
+        # query.count() is sloooow, so we use an alternate method
+        return q.with_entities(func.count()).scalar()

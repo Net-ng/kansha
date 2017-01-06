@@ -15,6 +15,7 @@ from elixir import ManyToOne
 from elixir import OneToMany
 from elixir import Unicode
 from elixir import using_options
+from sqlalchemy import func
 from sqlalchemy.ext.orderinglist import ordering_list
 
 from nagare import database
@@ -104,10 +105,13 @@ class DataChecklistItem(Entity):
 
     @classmethod
     def total_items(cls, card):
-        return cls.query.join(DataChecklist).filter(DataChecklist.card==card).count()
+        # query.count() is sloooow, so we use an alternate method
+        q = cls.query.join(DataChecklist).filter(DataChecklist.card == card)
+        return q.with_entities(func.count()).scalar()
 
     @classmethod
     def total_items_done(cls, card):
-        return cls.query.join(DataChecklist).filter(DataChecklist.card==card).filter(
-            DataChecklistItem.done == True).count()
-
+        # query.count() is sloooow, so we use an alternate method
+        q = cls.query.join(DataChecklist).filter(DataChecklist.card == card).filter(
+            DataChecklistItem.done == True)
+        return q.with_entities(func.count()).scalar()

@@ -223,6 +223,7 @@ class Checklists(CardExtension):
         return DataChecklist.get_by_card(self.card.data)
 
     def update(self, other):
+        other.load_children()
         for index, checklist in enumerate(other.checklists):
             checklist = checklist()
             new_checklist = self.add_checklist()

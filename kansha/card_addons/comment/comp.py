@@ -137,7 +137,6 @@ class Comments(CardExtension):
         self.comments = []
 
     def load_children(self):
-        print 'load children'
         if not self.comments:
             self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 

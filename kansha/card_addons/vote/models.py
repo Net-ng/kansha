@@ -8,8 +8,9 @@
 # this distribution.
 #--
 
-from elixir import using_options
+from sqlalchemy import func
 from elixir import ManyToOne
+from elixir import using_options
 
 from kansha.models import Entity
 
@@ -47,4 +48,4 @@ class DataVote(Entity):
     def count_votes(cls, card):
         q = cls.query
         q = q.filter(cls.card == card)
-        return q.count()
+        return q.with_entities(func.count()).scalar()

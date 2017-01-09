@@ -31,7 +31,7 @@ class DataColumn(Entity):
     nb_max_cards = Field(Integer)
     archive = Field(Boolean, default=False)
     cards = OneToMany('DataCard', order_by='index',  # cascade='delete',
-                      collection_class=ordering_list('index'))
+                      collection_class=ordering_list('index'), lazy='subquery')
     board = ManyToOne('DataBoard', colname='board_id')
 
     def update(self, other):

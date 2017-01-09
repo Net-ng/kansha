@@ -35,6 +35,7 @@ class Label(object):
         """
         self.id = data.id
         self._changed = var.Var(False)
+        self._data = data
 
     @property
     def data(self):
@@ -43,7 +44,13 @@ class Label(object):
         Return:
          - the DataLabel instance
         """
-        return DataLabel.get(self.id)
+        if self._data is None:
+            self._data = DataLabel.get(self.id)
+        return self._data
+
+    def __getstate__(self):
+        self._data = None
+        return self.__dict__
 
     @property
     def index(self):

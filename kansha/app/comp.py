@@ -298,7 +298,7 @@ class WSGIApp(wsgi.WSGIApp):
             if time.time() - start > 1:
                 stats = pstats.Stats(perf)
                 stats.sort_stats('cumtime')
-                stats.print_stats(40)
+                stats.print_stats(60)
             return ret
         else:
             return super(WSGIApp, self).__call__(environ, start_response)

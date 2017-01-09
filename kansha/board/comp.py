@@ -8,16 +8,11 @@
 # this distribution.
 # --
 
-import re
 import json
-import unicodedata
-from cStringIO import StringIO
 from functools import partial
 
-import xlwt
-from webob import exc
+from nagare.i18n import _
 from nagare.database import session
-from nagare.i18n import _, format_date
 from nagare import component, log, security, var
 
 from kansha import title
@@ -81,6 +76,7 @@ class Board(events.EventHandlerMixIn):
         self.theme = theme
         self.mail_sender = mail_sender_service
         self.id = id_
+        self._data = None
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine_service
         self._services = services_service
@@ -520,9 +516,16 @@ class Board(events.EventHandlerMixIn):
 
     @property
     def data(self):
-        """Return the board object from database
+        """Return the board object from the database
+        PRIVATE
         """
-        return DataBoard.get(self.id)
+        if self._data is None:
+            self._data = DataBoard.get(self.id)
+        return self._data
+
+    def __getstate__(self):
+        self._data = None
+        return self.__dict__
 
     def allow_comments(self, v):
         """Changes permission to add comments

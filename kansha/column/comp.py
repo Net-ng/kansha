@@ -44,13 +44,7 @@ class Column(events.EventHandlerMixIn):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [
-            component.Component(
-                self._services(
-                    comp.Card, c.id,
-                    self.card_extensions,
-                    self.action_log, data=c))
-                      for c in self.data.cards]
+        self._cards = None
         self.new_card = component.Component(
             comp.NewCard(self))
 
@@ -59,6 +53,18 @@ class Column(events.EventHandlerMixIn):
             lambda r: r.i(class_='icon-target2'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
+
+    @property
+    def cards(self):
+        if self._cards is None:
+            self._cards = [
+                component.Component(
+                    self._services(
+                        comp.Card, c.id,
+                        self.card_extensions,
+                        self.action_log, data=c))
+                for c in self.data.cards]
+        return self._cards
 
     def update(self, other):
         self.data.update(other.data)

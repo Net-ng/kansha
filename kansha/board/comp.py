@@ -597,7 +597,7 @@ class Board(events.EventHandlerMixIn):
         """ Add new member to the board
 
         In:
-         - ``new_member`` -- user to add (DataUser instance)
+         - ``new_member`` -- user to add
          - ``role`` -- role's member (manager or member)
         """
         self.data.add_member(new_member, role)

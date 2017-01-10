@@ -12,6 +12,7 @@ import cgi
 import sys
 import json
 import urlparse
+import urllib
 from collections import OrderedDict
 
 import webob
@@ -283,10 +284,17 @@ class WSGIApp(wsgi.WSGIApp):
             self.set_locale(security.get_user().get_locale())
 
     def __call__(self, environ, start_response):
-        query = environ['QUERY_STRING']
-        if ('state=' in query) and (('code=' in query) or ('error=' in query)):
-            request = webob.Request(environ)
-            environ['QUERY_STRING'] += ('&' + request.params['state'])
+        query = dict(urlparse.parse_qsl(environ['QUERY_STRING'], True))
+
+        if ('state' in query) and (('code' in query) or ('error' in query)):
+            state = query.pop('state')
+
+            environ['QUERY_STRING'] = urllib.urlencode(query)
+            environ['QUERY_STRING'] += '&' + state
+            environ['REQUEST_METHOD'] = 'POST'
+
+            # PATH_INFO cannot be empty or else Nagare will enter in `on_incomplete_url`
+            environ['PATH_INFO'] = environ['PATH_INFO'] or '/'
 
         return super(WSGIApp, self).__call__(environ, start_response)
 

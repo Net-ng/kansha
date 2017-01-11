@@ -324,27 +324,6 @@
             }
         },
 
-        deleteCard: function (deleteFunction, card_id, column_id) {
-            //Close popin
-            if (NS.app.popin) {
-                deleteFunction();
-                NS.app.popin.destroy();
-                NS.app.popin = null;
-                // Remove the mask
-                YAHOO.util.Dom.setStyle('mask', 'display', 'none');
-            }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
-            }
-            //Remove card from column
-            var el = Dom.get(card_id),
-                dndCard = el.parentNode.parentNode,
-                parent = dndCard.parentNode;
-            parent.removeChild(dndCard);
-            NS.app.countCards(column_id);
-            increase_version();
-        },
-
         archiveCard: function (deleteFunction) {
             //Close popin
             if (NS.app.popin) {

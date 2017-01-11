@@ -35,6 +35,7 @@ class Label(object):
         """
         self.id = data.id
         self._changed = var.Var(False)
+        self._data = data
 
     @property
     def data(self):
@@ -43,7 +44,17 @@ class Label(object):
         Return:
          - the DataLabel instance
         """
-        return DataLabel.get(self.id)
+        if self._data is None:
+            self._data = DataLabel.get(self.id)
+        return self._data
+
+    def __getstate__(self):
+        self._data = None
+        return self.__dict__
+
+    @property
+    def index(self):
+        return self.data.index
 
     def get_color(self):
         return self.data.color
@@ -97,7 +108,8 @@ class CardLabels(CardExtension):
         self.comp_id = str(random.randint(10000, 100000))
         self._comp = component.Component(self)
         self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
-                                                          lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
+                                                           lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
+        self.labels = [Label(label) for label in self.data]
 
     @staticmethod
     def get_schema_def():
@@ -116,12 +128,6 @@ class CardLabels(CardExtension):
         for label in self.get_available_labels():
             if label.get_title() in active_labels:
                 self.activate(label)
-
-    @property
-    def labels(self):
-        """Returns the Label instances
-        """
-        return [Label(label) for label in self.data]
 
     @property
     def colors(self):
@@ -143,9 +149,13 @@ class CardLabels(CardExtension):
         """
         if label in self.labels:
             label.remove(self.card)
+            self.labels.remove(label)
         else:
             label.add(self.card)
+            self.labels.append(label)
+            self.labels.sort(key=lambda l: l.index)
 
     def delete(self):
         for label in self.labels:
             label.remove(self.card)
+        self.labels = []

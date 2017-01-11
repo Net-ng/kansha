@@ -10,6 +10,7 @@
 
 from datetime import datetime
 
+from sqlalchemy import func
 from elixir import using_options
 from elixir import ManyToOne, OneToMany
 from elixir import Field, Unicode, Integer, Boolean
@@ -30,7 +31,7 @@ class DataColumn(Entity):
     nb_max_cards = Field(Integer)
     archive = Field(Boolean, default=False)
     cards = OneToMany('DataCard', order_by='index',  # cascade='delete',
-                      collection_class=ordering_list('index'))
+                      collection_class=ordering_list('index'), lazy='subquery')
     board = ManyToOne('DataBoard', colname='board_id')
 
     def update(self, other):
@@ -105,4 +106,4 @@ class DataColumn(Entity):
 
     def get_cards_count(self):
         q = DataCard.query.filter(DataCard.column_id == self.id)
-        return q.count()
+        return q.with_entities(func.count()).scalar()

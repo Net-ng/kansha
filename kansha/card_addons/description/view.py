@@ -40,7 +40,7 @@ def change_text(description, comp, text):
 
 
 @presentation.render_for(CardDescription, model='edit')
-def render(self, h, comp, *args):
+def render_edit(self, h, comp, *args):
     """Render description component in edit mode"""
     text = var.Var(self.text)
     with h.div(class_="description"):
@@ -62,7 +62,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(CardDescription, model='badge')
-def render(self, h, *args):
+def render_badge(self, h, *args):
     """Render description component as a card badge"""
     if self.text:
         with h.span(class_='badge'):

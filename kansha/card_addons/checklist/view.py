@@ -46,6 +46,7 @@ def render_Checklists_button(self, h, comp, model):
 @presentation.render_for(Checklists)
 def render_Checklists(self, h, comp, model):
     h.head.javascript_url('checklists/js/checklists.js')
+    self.load_children()
     with h.div(id_='clist' + self.comp_id):
         if security.has_permissions('checklist', self.card):
 
@@ -72,9 +73,10 @@ def render_Checklists(self, h, comp, model):
 
 @presentation.render_for(Checklists, 'badge')
 def render_Checklists_badge(self, h, comp, model):
-    if self.checklists:
+    total_items = self.total_items
+    if total_items:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-list'), ' ', self.nb_items, ' / ', self.total_items, class_='label')
+            h << h.span(h.i(class_='icon-list'), ' ', self.total_items_done, ' / ', total_items, class_='label')
     return h.root
 
 

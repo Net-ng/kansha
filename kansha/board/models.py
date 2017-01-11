@@ -46,7 +46,7 @@ class DataBoard(Entity):
     title = Field(Unicode(255))
     is_template = Field(Boolean, default=False)
     columns = OneToMany('DataColumn', order_by="index",
-                        cascade='delete')
+                        cascade='delete', lazy='subquery')
     labels = OneToMany('DataLabel', order_by='index')
     comments_allowed = Field(Integer, default=1)
     votes_allowed = Field(Integer, default=1)

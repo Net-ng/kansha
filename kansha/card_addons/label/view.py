@@ -93,7 +93,7 @@ def render_CardLabels_list(self, h, comp, *args):
     with h.span(class_='inline-labels'):
         for label in self.get_available_labels():
             model = 'color' if label in self.labels else 'inactive'
-            h << component.Component(Label(label), model)
+            h << component.Component(label, model)
     return h.root
 
 

@@ -105,28 +105,13 @@ def render_card_edit(self, h, comp, *args):
 def render_card_delete(self, h, comp, model):
     if security.has_permissions('edit', self) and not self.archived:
         with h.form:
-            close_func = ajax.js(
-                'function (){%s;}' %
-                h.a.action(self.emit_event, comp, events.CardArchived).get('onclick')
-            )
-            h << h.button(
+            h << h.SyncRenderer().button(
                 h.i(class_='icon-trashcan'),
                 _('Delete'),
-                class_='btn delete',
-                onclick=(
-                    "if (confirm(%(confirm_msg)s)) {"
-                    "   YAHOO.kansha.app.archiveCard(%(close_func)s);"
-                    "   reload_columns();"
-                    "}"
-                    "return false" %
-                    {
-                        'close_func': ajax.py2js(close_func),
-                        'confirm_msg': ajax.py2js(
-                            _(u'This card will be deleted. Are you sure?')
-                        ).decode('UTF-8')
-                    }
-                )
-            )
+                onclick='return confirm(%s)' % ajax.py2js(
+                    _(u'This card will be deleted. Are you sure?')
+                ).decode('UTF-8'),
+                class_='btn delete').action(self.emit_event, comp, events.CardArchived)
     return h.root
 
 

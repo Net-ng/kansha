@@ -15,6 +15,7 @@ from elixir import ManyToOne
 from elixir import OneToMany
 from elixir import Unicode
 from elixir import using_options
+from sqlalchemy import func
 from sqlalchemy.ext.orderinglist import ordering_list
 
 from nagare import database
@@ -79,6 +80,14 @@ class DataChecklist(Entity):
         for item in self.items:
             item.delete()
 
+    @staticmethod
+    def total_items(card):
+        return DataChecklistItem.total_items(card)
+
+    @staticmethod
+    def total_items_done(card):
+        return DataChecklistItem.total_items_done(card)
+
 
 class DataChecklistItem(Entity):
     using_options(tablename='checklist_items')
@@ -93,3 +102,16 @@ class DataChecklistItem(Entity):
         item = cls(title=text.strip())
         database.session.flush()
         return item
+
+    @classmethod
+    def total_items(cls, card):
+        # query.count() is sloooow, so we use an alternate method
+        q = cls.query.join(DataChecklist).filter(DataChecklist.card == card)
+        return q.with_entities(func.count()).scalar()
+
+    @classmethod
+    def total_items_done(cls, card):
+        # query.count() is sloooow, so we use an alternate method
+        q = cls.query.join(DataChecklist).filter(DataChecklist.card == card).filter(
+            DataChecklistItem.done == True)
+        return q.with_entities(func.count()).scalar()

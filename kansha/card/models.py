@@ -27,7 +27,7 @@ class DataCard(Entity):
     column = ManyToOne('DataColumn')
 
     # feature data to move to card extensions
-    members = ManyToMany('DataUser')
+    members = ManyToMany('DataUser', lazy='subquery')
 
     def update(self, other):
         self.title = other.title
@@ -43,3 +43,18 @@ class DataCard(Entity):
     @property
     def archived(self):
         return self.column.archive
+
+
+class DummyDataCard(object):
+
+    def __init__(self, title='dummy card', creation_date=datetime.datetime.utcnow()):
+        self.title = title
+        self.creation_date = creation_date
+        self.index = 0
+
+    def update(self, othen):
+        print 'update!'
+
+    @property
+    def archived(self):
+        return False

@@ -9,7 +9,10 @@
 #--
 
 import datetime
+
+from sqlalchemy import func
 from elixir import ManyToOne, Field, Unicode, DateTime, using_options
+
 from nagare import security
 
 from kansha.models import Entity
@@ -45,7 +48,11 @@ class DataAsset(Entity):
 
     @classmethod
     def get_all(cls, card):
-        return cls.query.filter_by(card=card).all()
+        return cls.query.filter_by(card=card)
+
+    @classmethod
+    def count_for(cls, card):
+        return cls.get_all(card).with_entities(func.count()).scalar()
 
     @classmethod
     def add(cls, filename, card, author):
@@ -62,12 +69,6 @@ class DataAsset(Entity):
         q = cls.query
         q = q.filter_by(card=card)
         q.delete()
-
-    @classmethod
-    def has_cover(cls, card):
-        q = cls.query
-        q = q.filter_by(cover=card)
-        return q.count() == 1
 
     @classmethod
     def get_cover(cls, card):

@@ -100,15 +100,17 @@ def render_comments_form(self, h, comp, *args):
 @presentation.render_for(Comments, model='badge')
 def render_comments_badge(self, h, *args):
     """Comment badge for the card"""
-    if self.comments:
+    num_comments = self.num_comments
+    if num_comments:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-comment'), ' ', len(self.comments), class_='label')
+            h << h.span(h.i(class_='icon-comment'), ' ', num_comments, class_='label')
     return h.root
 
 
 @presentation.render_for(Comments)
 def render(self, h, comp, *args):
     """Render card comments"""
+    self.load_children()
     with h.div(class_='card-extension-comments'):
         h << h.div(comp.render(h, "badge"), class_='nbItems')
         h << comp.on_answer(self.add).render(h, 'form') << h.hr

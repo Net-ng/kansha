@@ -134,13 +134,18 @@ class Comments(CardExtension):
             - ``comments`` -- the comments of the card
         """
         super(Comments, self).__init__(card, action_log, configurator)
-        self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
+        self.comments = []
+
+    def load_children(self):
+        if not self.comments:
+            self.comments = [self._create_comment_component(data_comment) for data_comment in self.data]
 
     @staticmethod
     def get_schema_def():
         return schema.Text(u'comments')
 
     def update_document(self, document):
+        self.load_children()
         document.comments = u'\n'.join(comment().text for comment in self.comments)
 
     @property
@@ -191,6 +196,10 @@ class Comments(CardExtension):
         for comment in self.data:
             comment.delete()
 
+    @property
+    def num_comments(self):
+        return DataComment.total_comments(self.card.data)
+
 
 @excel_export.get_extension_title_for(Comments)
 def get_extension_title_Comments(card_extension):
@@ -199,6 +208,7 @@ def get_extension_title_Comments(card_extension):
 
 @excel_export.write_extension_data_for(Comments)
 def write_extension_data_Comments(self, sheet, row, col, style):
+    self.load_children()
     comments = u'\n-----\n'.join(comment().text for comment in self.comments)
     sheet.write(row, col, comments, style)
 

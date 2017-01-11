@@ -44,13 +44,7 @@ class Column(events.EventHandlerMixIn):
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [
-            component.Component(
-                self._services(
-                    comp.Card, c.id,
-                    self.card_extensions,
-                    self.action_log, data=c))
-                      for c in self.data.cards]
+        self._cards = None
         self.new_card = component.Component(
             comp.NewCard(self))
 
@@ -59,6 +53,18 @@ class Column(events.EventHandlerMixIn):
             lambda r: r.i(class_='icon-target2'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
+
+    @property
+    def cards(self):
+        if self._cards is None:
+            self._cards = [
+                component.Component(
+                    self._services(
+                        comp.Card, c.id,
+                        self.card_extensions,
+                        self.action_log, data=c))
+                for c in self.data.cards]
+        return self._cards
 
     def update(self, other):
         self.data.update(other.data)
@@ -171,7 +177,7 @@ class Column(events.EventHandlerMixIn):
                 self.archive_card(card())
         DataColumn.delete_column(self.data)
 
-    def remove_card(self, card):
+    def remove_card_comp(self, card):
         self.cards.remove(card)
         self.data.remove_card(card().data)
 
@@ -180,7 +186,7 @@ class Column(events.EventHandlerMixIn):
         # find component
         card_comp = filter(lambda x: x().id == card_id, self.cards)[0]
         try:
-            self.remove_card(card_comp)
+            self.remove_card_comp(card_comp)
         except (IndexError, ValueError):
             raise ValueError(u'Card has been deleted or does not belong to this list anymore')
         return card_comp
@@ -234,10 +240,10 @@ class Column(events.EventHandlerMixIn):
         In:
             - ``c`` -- card to delete
         """
-        self.cards = [card for card in self.cards if c != card()]
+        self._cards = [card for card in self.cards if c != card()]
         values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
         c.action_log.add_history(security.get_user(), u'card_archive', values)
-        self.board.archive_card(c)
+        self.board.archive_card(c, self)
 
     def create_card(self, text=''):
         """Create a new card
@@ -268,13 +274,7 @@ class Column(events.EventHandlerMixIn):
         """
         self.data.index = new_index
 
-    def refresh(self):
-        self.cards = [component.Component(
-            self._services(comp.Card, data_card.id, self.card_extensions, self.action_log, data=data_card)
-            ) for data_card in self.data.cards]
-
     def set_nb_cards(self, nb_cards):
-
         self.data.nb_max_cards = int(nb_cards) if nb_cards else None
 
     @property

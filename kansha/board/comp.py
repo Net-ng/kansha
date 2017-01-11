@@ -212,7 +212,7 @@ class Board(events.EventHandlerMixIn):
             # actually delete the column
             result = self.delete_column(event.data)
         elif event.is_(events.CardArchived):
-            result = self.archive_card(event.emitter)
+            result = self.archive_card(event.emitter, event.last_relay)
         elif event.is_(events.SearchIndexUpdated):
             result = self.set_reload_search()
         elif event.is_(events.CardDisplayed):
@@ -412,13 +412,16 @@ class Board(events.EventHandlerMixIn):
         self.data.show_archive = value
         self.set_reload_search()
 
-    def archive_card(self, card):
+    def archive_card(self, card, from_column):
         """Archive card
 
         In:
             - ``card`` -- card to archive
         """
         self.archive_column.append_card(card)
+        values = {'column_id': from_column.id, 'column': from_column.get_title(),
+                  'card': card.get_title()}
+        card.action_log.add_history(security.get_user(), u'card_archive', values)
         # reindex it
         card.add_to_index(self.search_engine, self.id, update=True)
         self.search_engine.commit()

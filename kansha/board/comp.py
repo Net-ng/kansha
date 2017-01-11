@@ -425,6 +425,7 @@ class Board(events.EventHandlerMixIn):
         # reindex it
         card.add_to_index(self.search_engine, self.id, update=True)
         self.search_engine.commit()
+        self.increase_version()
 
     @property
     def weighting_cards(self):

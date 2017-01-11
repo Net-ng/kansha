@@ -243,7 +243,7 @@ class Column(events.EventHandlerMixIn):
         self._cards = [card for card in self.cards if c != card()]
         values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
         c.action_log.add_history(security.get_user(), u'card_archive', values)
-        self.board.archive_card(c)
+        self.board.archive_card(c, self)
 
     def create_card(self, text=''):
         """Create a new card

@@ -419,6 +419,9 @@ class Board(events.EventHandlerMixIn):
             - ``card`` -- card to archive
         """
         self.archive_column.append_card(card)
+        # reindex it
+        card.add_to_index(self.search_engine, self.id, update=True)
+        self.search_engine.commit()
 
     @property
     def weighting_cards(self):

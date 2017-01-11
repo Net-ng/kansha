@@ -324,22 +324,6 @@
             }
         },
 
-        archiveCard: function (deleteFunction) {
-            //Close popin
-            if (NS.app.popin) {
-                deleteFunction();
-                NS.app.popin.destroy();
-                NS.app.popin = null;
-                // Remove the mask
-                YAHOO.util.Dom.setStyle('mask', 'display', 'none');
-            }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
-            }
-
-            increase_version();
-        },
-
         /**
          * Select the content of a form element
          */

@@ -748,21 +748,6 @@ class Board(events.EventHandlerMixIn):
         self._best_friends = [component.Component(usermanager.UserManager.get_app_user(u.username), "friend") for u in best_friends]
         return self._best_friends
 
-    def get_member_stats(self):
-        """Return the most used users in this column.
-
-        Ask most used users to columns
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        member_stats = {}
-        for c in self.columns:
-            column_member_stats = c().get_member_stats()
-            for username in column_member_stats:
-                member_stats[username] = member_stats.get(username, 0) + column_member_stats[username]
-        return member_stats
-
     def get_available_user_ids(self):
         """Return list of member
 

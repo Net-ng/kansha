@@ -97,7 +97,6 @@ class DataUser(Entity):
         'board_managers', 'board',
         creator=lambda board: DataBoardManager(board=board))
     last_board = OneToOne('DataBoard', inverse='last_users')
-    cards = ManyToMany('DataCard', inverse='members', lazy='dynamic')
     history = OneToMany('DataHistory')
 
     def __init__(self, username, password, fullname, email,

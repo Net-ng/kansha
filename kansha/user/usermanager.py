@@ -21,13 +21,15 @@ from .comp import User
 class UserManager(object):
 
     @classmethod
-    def get_app_user(cls, username, data=None):
+    def get_app_user(cls, username=None, data=None):
         """Return User instance"""
         if not data:
             data = cls.get_by_username(username)
+        else:
+            username = data.username
         if data.source != 'application':
             # we need to set a passwd for nagare auth
-            user =  User(username, 'passwd', data=data)
+            user = User(username, 'passwd', data=data)
         else:
             user = User(username, data=data)
         return user

@@ -368,6 +368,18 @@ a.card-label:hover {
 }
 /* End card gallery */
 
+/* Card description */
+
+.description li {
+    list-style: inherit;
+}
+
+.description ul ul {
+    list-style-type: circle;
+}
+
+/* End card description */
+
 /* End cards */
 
 /* Board view switch zone (calendar / columns / search) */

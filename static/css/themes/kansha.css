@@ -36,6 +36,11 @@ a, a:hover, a:visited, a:hover i { text-decoration: none; }
 ul { padding: 0; }
 li { padding: 3px 0; }
 
+
+.description ul, .description ol {
+    margin-left: 2em;
+}
+
 label {
     display: block;
     margin-bottom: 5px;

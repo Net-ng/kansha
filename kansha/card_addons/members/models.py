@@ -50,6 +50,7 @@ class DataMembership(Entity):
     def remove_member(cls, card, username):
         user = DataUser.get_by_username(username)
         if user:
-            membership = DataMembership.get((user, card))
+            membership = DataMembership.query.filter(DataMembership.user == user,
+                                                     DataMembership.card == card)
             if membership:
                 membership.delete()

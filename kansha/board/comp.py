@@ -588,7 +588,7 @@ class Board(events.EventHandlerMixIn):
         Return:
          - True if user is member of the board
         """
-        return self.data.has_member(user)
+        return self.data.has_member(user.data)
 
     def has_manager(self, user):
         """Return True if user is manager of the board
@@ -598,7 +598,7 @@ class Board(events.EventHandlerMixIn):
         Return:
          - True if user is manager of the board
         """
-        return self.data.has_manager(user)
+        return self.data.has_manager(user.data)
 
     def add_member(self, new_member, role='member'):
         """ Add new member to the board
@@ -747,21 +747,6 @@ class Board(events.EventHandlerMixIn):
         best_friends = user.best_friends(already_in, 5)
         self._best_friends = [component.Component(usermanager.UserManager.get_app_user(u.username), "friend") for u in best_friends]
         return self._best_friends
-
-    def get_member_stats(self):
-        """Return the most used users in this column.
-
-        Ask most used users to columns
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        member_stats = {}
-        for c in self.columns:
-            column_member_stats = c().get_member_stats()
-            for username in column_member_stats:
-                member_stats[username] = member_stats.get(username, 0) + column_member_stats[username]
-        return member_stats
 
     def get_available_user_ids(self):
         """Return list of member

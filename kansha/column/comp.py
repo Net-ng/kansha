@@ -140,21 +140,6 @@ class Column(events.EventHandlerMixIn):
             return i18n._(u'Archived cards')
         return self.data.title
 
-    def get_member_stats(self):
-        """Return the most used users in this column
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        member_stats = {}
-        for c in self.cards:
-            # Test if c() is a Card instance and not Popin instance
-            if isinstance(c(), comp.Card):
-                for m in c().members:
-                    username = m.username
-                    member_stats[username] = member_stats.get(username, 0) + 1
-        return member_stats
-
     def remove_board_member(self, member):
         """Remove member from board
 

@@ -19,6 +19,8 @@ from kansha.board.comp import Board
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
+from .models import DataMembership
+
 
 # TODO: move this to board extension
 @when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
@@ -55,13 +57,14 @@ class CardMembers(CardExtension):
             overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user'), r.span(_(u'+'), class_='count')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members')
-        self.members = [component.Component(usermanager.UserManager.get_app_user(member.username, data=member))
-                        for member in card.members]
+        self.members = [component.Component(usermanager.UserManager.get_app_user(data=membership.user))
+                        for membership in DataMembership.get_for_card(self.card.data)]
 
         self.see_all_members = component.Component(
             overlay.Overlay(lambda r: component.Component(self).render(r, model='more_users'),
                             lambda r: component.Component(self).on_answer(self.remove_member).render(r, model='members_list_overlay'),
                             dynamic=False, cls='card-overlay'))
+        self._favorites = []
 
     def autocomplete_method(self, value):
         """ """
@@ -72,9 +75,9 @@ class CardMembers(CardExtension):
         """Return ids of users who are authorized to be added on this card
 
         Return:
-            - a set of user (UserData instance)
+            - a set of ids
         """
-        return self.get_all_available_user_ids() | self.get_pending_user_ids() - set(user.id for user in self.card.members)
+        return self.get_all_available_user_ids() | self.get_pending_user_ids() - set(user().id for user in self.members)
 
     def get_all_available_user_ids(self):
         return self.configurator.get_available_user_ids() if self.configurator else []
@@ -83,76 +86,48 @@ class CardMembers(CardExtension):
         return self.configurator.get_pending_user_ids() if self.configurator else []
 
     @property
-    def member_stats(self):
-        return self.configurator.get_member_stats() if self.configurator else {}
-
-    @property
     def favorites(self):
         """Return favorites users for a given card
 
         Return:
-            - list of favorites (User instances) wrappend on component
+            - list of favorites (User instances) wrapped in component
         """
 
         # to be optimized later if still exists
-        member_usernames = set(member.username for member in self.card.members)
-        # FIXME: don't reference parent
-        board_user_stats = [(nb_cards, username) for username, nb_cards in self.member_stats.iteritems()]
-        board_user_stats.sort(reverse=True)
+        member_usernames = set(member().username for member in self.members)
         # Take the 5 most popular that are not already affected to this card
-        favorites = [username for (__, username) in board_user_stats
-                     if username not in member_usernames]
+        favorites = [userdata for userdata in DataMembership.favorites_for(self.card.data)
+                     if userdata.username not in member_usernames]
 
-        self._favorites = [component.Component(usermanager.UserManager.get_app_user(username), "friend")
-                           for username in favorites[:5]]
+        # store component for callback lookup
+        self._favorites = [component.Component(usermanager.UserManager.get_app_user(data=userdata), "friend")
+                           for userdata in favorites[:5]]
         return self._favorites
 
     def add_members(self, emails):
         """Add new members from emails
 
         In:
-            - ``emails`` -- emails in string separated by "," or list of strings
-        Return:
-            - JS code, reload card and hide overlay
+            - ``emails`` -- list of strings
         """
-        members = []
-        # Get all users with emails
-        members = filter(None, map(usermanager.UserManager.get_by_email, emails))
-        for new_data_member in members:
-            self.add_member(new_data_member)
-            values = {'user_id': new_data_member.username, 'user': new_data_member.fullname, 'card': self.card.get_title()}
+
+        memberships = DataMembership.add_members_from_emails(self.card.data, emails)
+
+        for member in (usermanager.UserManager.get_app_user(data=ms.user) for ms in memberships):
+            values = {'user_id': member.username, 'user': member.fullname, 'card': self.card.get_title()}
             self.action_log.add_history(security.get_user(), u'card_add_member', values)
-
-    def add_member(self, new_data_member):
-        """Attach new member to card
-
-        In:
-            - ``new_data_member`` -- UserData instance
-        Return:
-            - the new DataMember added
-        """
-        if (new_data_member not in self.card.members and
-            new_data_member.id in self.get_available_user_ids()):
-
-            self.card.add_member(new_data_member)
-            log.debug('Adding %s to members' % (new_data_member.username,))
-            self.members.append(
-                component.Component(usermanager.UserManager.get_app_user(
-                    new_data_member.username, data=new_data_member)))
+            self.members.append(component.Component(member))
 
     def remove_member(self, username):
         """Remove member username from card member"""
-        data_member = usermanager.UserManager.get_by_username(username)
-        if not data_member:
-            raise exceptions.KanshaException(_("User not found : %s" % username))
-
-        log.debug('Removing %s from card %s' % (username, self.card.id))
-        self.card.remove_member(data_member)
+        DataMembership.remove_member(self.card.data, username)
         for member in self.members:
             if member().username == username:
                 self.members.remove(member)
-                values = {'user_id': member().username, 'user': member().data.fullname, 'card': self.card.get_title()}
+                values = {'user_id': member().username, 'user': member().data.fullname,
+                          'card': self.card.get_title()}
                 self.action_log.add_history(security.get_user(), u'card_remove_member', values)
+                break
 
     def has_permission_on_card(self, user, perm):
         granted = True

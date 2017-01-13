@@ -142,7 +142,7 @@ class DataBoard(Entity):
         Return:
          - True if user is member of the board
         """
-        return user.data in self.members
+        return user in self.members
 
     def remove_member(self, board_member):
         board_member.delete()
@@ -155,7 +155,7 @@ class DataBoard(Entity):
         Return:
          - True if user is manager of the board
         """
-        return user.data in self.managers
+        return user in self.managers
 
     def remove_manager(self, board_member):
         obj = DataBoardManager.get_by(board=self, member=board_member.get_user_data())

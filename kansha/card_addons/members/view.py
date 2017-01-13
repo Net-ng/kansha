@@ -77,11 +77,12 @@ def _add_members(member_ext, members):
 def render_members_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Add members'))
-    if self.favorites:
+    favorites = self.favorites
+    if favorites:
         with h.div(class_='favorites'):
             h << h.h3(_('Suggestions'))
             with h.ul:
-                for favorite in self.favorites:
+                for favorite in favorites:
                     h << h.li(favorite.on_answer(lambda members: _add_members(self, members)))
     with h.div(class_='members search'):
         h << self.new_member.on_answer(lambda members: _add_members(self, members))

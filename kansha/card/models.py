@@ -26,19 +26,10 @@ class DataCard(Entity):
     creation_date = Field(DateTime, default=datetime.datetime.utcnow)
     column = ManyToOne('DataColumn')
 
-    # feature data to move to card extensions
-    members = ManyToMany('DataUser', lazy='subquery')
-
     def update(self, other):
         self.title = other.title
         self.index = other.index
         session.flush()
-
-    # Methods for data belonging to card extensions
-
-    def remove_member(self, datauser):
-        if datauser in self.members:
-            self.members.remove(datauser)
 
     @property
     def archived(self):

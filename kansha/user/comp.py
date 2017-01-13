@@ -122,6 +122,10 @@ class User(security_common.User):
         """
         return ''.join([n[0].upper() for n in self.data.fullname.split()])
 
+    @property
+    def fullname(self):
+        return self.data.fullname
+
     def best_friends(self, exclude_list=(), size=None):
         """ Return user's friends
 

@@ -153,7 +153,7 @@ class Kansha(object):
         """
         user = security.get_user()
         data_board = user.get_last_board()
-        if data_board and not data_board.archived and data_board.has_member(user):
+        if data_board and not data_board.archived and data_board.has_member(user.data):
             self.select_board(data_board.id)
         else:
             self._on_menu_entry('boards')

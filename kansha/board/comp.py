@@ -588,7 +588,7 @@ class Board(events.EventHandlerMixIn):
         Return:
          - True if user is member of the board
         """
-        return self.data.has_member(user)
+        return self.data.has_member(user.data)
 
     def has_manager(self, user):
         """Return True if user is manager of the board
@@ -598,7 +598,7 @@ class Board(events.EventHandlerMixIn):
         Return:
          - True if user is manager of the board
         """
-        return self.data.has_manager(user)
+        return self.data.has_manager(user.data)
 
     def add_member(self, new_member, role='member'):
         """ Add new member to the board

@@ -69,8 +69,7 @@ def create_boards_from_templates(user, folder):
                                 author=user,
                                 creation_date=datetime.utcnow(),
                                 card=card)
-        board.members.append(user)
-        board.managers.append(user)
+        board.add_member(user, role='manager')
         database.session.flush()
 
 

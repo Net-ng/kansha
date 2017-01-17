@@ -126,27 +126,6 @@ class User(security_common.User):
     def fullname(self):
         return self.data.fullname
 
-    def best_friends(self, exclude_list=(), size=None):
-        """ Return user's friends
-
-        Return users which have most boards in common with user
-
-        In:
-         - ``size`` -- list size (None for all)
-        Return:
-         - list of Users (User Instances)
-        """
-        return self.data.best_friends(exclude_list, size)
-
-    def add_board(self, board, role="member"):
-        """Add board to user's board lists
-
-        In:
-         - ``board`` -- DataBoard instance to add
-         - ``role`` -- user is member or manager
-        """
-        self.data.add_board(board.data, role)
-
     def is_manager(self, board):
         """Return True if user is manager of the board
 

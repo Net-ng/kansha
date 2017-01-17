@@ -9,4 +9,4 @@
 
 
 from . import view
-from .comp import CardMembers
+from .comp import CardMembers, Membership

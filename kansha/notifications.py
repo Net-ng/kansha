@@ -8,6 +8,8 @@
 # this distribution.
 # --
 
+#FIXME: this should be a board extension
+
 from __future__ import absolute_import
 
 import urlparse
@@ -17,7 +19,7 @@ from nagare import database
 from nagare.i18n import _, _L
 from nagare.namespaces import xhtml
 
-from kansha.user.models import DataBoardMember
+from kansha.card_addons.members import Membership
 
 
 # Levels
@@ -41,39 +43,34 @@ GROUP_MESSAGES = {
 }
 
 
-def get_board_member(user, board):
-    query = DataBoardMember.query
-    query = query.filter_by(member=user.data)
-    query = query.filter_by(board=board.data)
-    return query.first()
-
-
 def allow_notifications(user, board, level):
-    get_board_member(user, board).notify = level
+    member = Membership.search(board, user)
+    if member:
+        member.notify = level
 
 
 def notifications_allowed(user, board):
-    return get_board_member(user, board).notify
+    member = Membership.search(board, user)
+    return member.notify if member else NOTIFY_OFF
 
 
 def get_subscribers():
-    q = database.session.query(DataBoardMember)
-    q = q.filter(sa.or_(DataBoardMember.notify == NOTIFY_ALL,
-                        DataBoardMember.notify == NOTIFY_MINE))
-    return q
+    return Membership.subscribers()
 
 
+# FIXME: subscriber should be a business object, not a data
 def filter_events(events, subscriber):
     if subscriber.notify == NOTIFY_ALL:
-        return [event for event in events]
+        return events
     elif subscriber.notify == NOTIFY_MINE:
-        user_cards = set([card.id for card in subscriber.member.cards])
+        user_cards = set([card.id for card in subscriber.cards])
         return [event for event in events if event.card_id in user_cards]
     return []
 
 
 # renders
 
+# FIXME: use business objects, not raw data
 def generate_email(app_title, board, user, hours, url, events):
     ret = []
     data = {'board': board.title, 'hours': hours, 'url': urlparse.urljoin(

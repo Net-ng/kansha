@@ -95,7 +95,7 @@ class BoardsManager(object):
 
         last_5 = sorted(last_modifications.values(), reverse=True)[:5]
         self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
-        public, private = Board.get_templates_for(user.username, user.source)
+        public, private = Board.get_templates_for(user)
         self.templates = {'public': [(b.id, b.template_title) for b in public],
                           'private': [(b.id, b.template_title) for b in private]}
 

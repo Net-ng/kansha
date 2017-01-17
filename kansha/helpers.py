@@ -139,7 +139,7 @@ def create_board(card_extensions=[]):
     boards_manager = get_boards_manager(card_extensions)
     board = boards_manager.create_board_from_template(template.id, user)
     create_default_cards(board.data, user)
-    user.add_board(board, "manager")
+    board.add_member(user, "manager")
     board.set_title(word())
     board.load_children()
     return board

@@ -9,24 +9,15 @@
 
 from nagare.i18n import _
 from peak.rules import when
-from nagare.security import common
 from nagare import component, security, log
 
 from kansha import exceptions
 from kansha.toolbox import overlay
 from kansha.user import usermanager
-from kansha.board.comp import Board
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
 from .models import DataMembership
-
-
-# TODO: move this to board extension
-@when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
-def has_permission_Board_add_users(self, user, perm, board):
-    """Test if users is one of the board's managers, if he is he can add new user to the board"""
-    return board.has_manager(user)
 
 
 @when(render_event, "action=='card_add_member'")
@@ -37,6 +28,43 @@ def render_event_card_add_member(action, data):
 @when(render_event, "action=='card_remove_member'")
 def render_event_card_remove_member(action, data):
     return _(u'User %(user)s has been unassigned from card "%(card)s"') % data
+
+
+class Membership(object):
+
+    def __init__(self, data):
+        self.id = data.id
+        self._data = data
+
+    @property
+    def data(self):
+        """Return the board object from the database
+        PRIVATE
+        """
+        if self._data is None:
+            self._data = DataMembership.get(self.id)
+        return self._data
+
+    def __getstate__(self):
+        self._data = None
+        return self.__dict__
+
+    @property
+    def notify(self):
+        return self.data.notify
+
+    @notify.setter
+    def notify(self, level):
+        self.data.notify = level
+
+    @classmethod
+    def search(cls, board, user):
+        data = DataMembership.search(board.data, user.data)
+        return cls(data) if data else None
+
+    @classmethod
+    def subscribers(cls):
+        return (cls(data) for data in DataMembership.subscribers())
 
 
 class CardMembers(CardExtension):
@@ -111,7 +139,7 @@ class CardMembers(CardExtension):
             - ``emails`` -- list of strings
         """
 
-        memberships = DataMembership.add_members_from_emails(self.card.data, emails)
+        memberships = DataMembership.add_card_members_from_emails(self.card.data, emails)
 
         for member in (usermanager.UserManager.get_app_user(data=ms.user) for ms in memberships):
             values = {'user_id': member.username, 'user': member.fullname, 'card': self.card.get_title()}
@@ -120,7 +148,7 @@ class CardMembers(CardExtension):
 
     def remove_member(self, username):
         """Remove member username from card member"""
-        DataMembership.remove_member(self.card.data, username)
+        DataMembership.remove_card_member(self.card.data, username)
         for member in self.members:
             if member().username == username:
                 self.members.remove(member)

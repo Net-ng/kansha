@@ -225,13 +225,7 @@ def invite_members(board, application_url, emails):
 def render_Board_add_member_overlay(self, h, comp, *args):
     """Overlay to add member"""
     h << h.h2(_('Invite members'))
-    friends = self.get_friends(security.get_user())
     application_url = h.request.application_url
-    if friends:
-        with h.div(class_="favorites"):
-            h << h.h3(_('Favorites'))
-            with h.ul:
-                h << h.li([f.on_answer(invite_members, self, application_url) for f in friends])
     with h.div(class_="members search"):
         h << self.new_member.on_answer(invite_members, self, application_url)
 

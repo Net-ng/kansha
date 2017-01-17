@@ -140,19 +140,6 @@ class Column(events.EventHandlerMixIn):
             return i18n._(u'Archived cards')
         return self.data.title
 
-    def remove_board_member(self, member):
-        """Remove member from board
-
-        Remove member from board. If member is PendingUser then remove
-        invitation.
-
-        In:
-            - ``member`` -- Board Member instance to remove
-        """
-        for c in self.cards:
-            if isinstance(c(), comp.Card):
-                c().remove_board_member(member)
-
     def delete(self, purge=False):
         """Delete itself"""
         if purge:

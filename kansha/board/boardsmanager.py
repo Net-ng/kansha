@@ -76,7 +76,7 @@ class BoardsManager(object):
         self.guest_boards.clear()
         self.archived_boards.clear()
         last_modifications = {}
-        for board_id, in Board.get_all_board_ids(): # Comma is important
+        for board_id, in Board.get_all_board_ids(user): # Comma is important
             board_obj = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
                                        self.card_extensions,
                                        load_children=False)

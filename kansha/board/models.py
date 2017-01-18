@@ -138,8 +138,10 @@ class DataBoard(Entity):
         self.background_image = image or u''
 
     @classmethod
-    def get_all_board_ids(cls):
-        return session.query(cls.id).filter_by(is_template=False).order_by(cls.title)
+    def get_all_board_ids(cls, user):
+        query = session.query(cls.id).join(DataMembership)
+        query = query.filter(cls.is_template == False, DataMembership.user == user)
+        return query.order_by(cls.title)
 
     @classmethod
     def get_templates_for(cls, user, public_value):
@@ -194,10 +196,7 @@ class DataBoard(Entity):
         DataMembership.remove_member(board=self, user=user)
 
     def change_role(self, user, new_role):
-        ms = DataMembership.get_by(board=self, user=user)
-        if ms:
-            ms.manager = (new_role == 'manager')
-        session.flush()
+        DataMembership.change_role(self, user, new_role == 'manager')
 
     def add_member(self, user, role='member'):
         """ Add new member to the board

@@ -22,7 +22,7 @@ def render_ActionLog(self, h, comp, *args):
 @presentation.render_for(ActionLog, 'history')
 def render_ActionLog_history(self, h, *_args):
     h << h.h2(_('Action log'))
-    board = self.board#.data
+    board = self.board
     with h.div(id='action-log'):
         with h.form:
             with h.select(onchange=ajax.Update(action=self.user_id)):

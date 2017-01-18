@@ -112,3 +112,10 @@ class DataMembership(Entity):
     @classmethod
     def delete_members(cls, board):
         cls.query(board=board).delete(synchronize_session=False)
+
+    @classmethod
+    def change_role(cls, board, user, manager):
+        ms = cls.get_by(board=board, user=user)
+        if ms:
+            ms.manager = manager
+            database.session.flush()

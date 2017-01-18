@@ -268,15 +268,16 @@ class Board(events.EventHandlerMixIn):
         Recreate overlays
         """
         data = self.data
-        #FIXME: user Membership components
+        #FIXME: use Membership components
         managers = []
         simple_members = []
         for manager, memberships in itertools.groupby(data.board_members,
                                                       lambda item: item.manager):
+            # we use extend because the board_members are not reordered in case of change
             if manager:
-                managers = [membership.user for membership in memberships]
+                managers.extend([membership.user for membership in memberships])
             else:
-                simple_members = [membership.user for membership in memberships]
+                simple_members.extend([membership.user for membership in memberships])
         simple_members.sort(key=lambda m: (m.fullname, m.email))
         self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(data=member), self, 'member'))
                         for member in simple_members]
@@ -795,8 +796,8 @@ class Board(events.EventHandlerMixIn):
             self.card_matches = set()
 
     @staticmethod
-    def get_all_board_ids():
-        return DataBoard.get_all_board_ids()
+    def get_all_board_ids(user):
+        return DataBoard.get_all_board_ids(user.data)
 
     @staticmethod
     def get_templates_for(user):

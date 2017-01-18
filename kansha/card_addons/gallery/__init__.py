@@ -9,4 +9,3 @@
 
 from . import view
 from .comp import Gallery
-from .models import DataAsset, DataGallery

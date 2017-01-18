@@ -13,16 +13,11 @@ import hashlib
 import random
 import string
 
-from elixir import Unicode, Integer, Field, DateTime
-from elixir import ManyToOne, ManyToMany, OneToOne, OneToMany
+from elixir import Unicode, Field, DateTime
+from elixir import ManyToOne, OneToOne, OneToMany
 from elixir import using_options
 
-from sqlalchemy import and_, func
-from sqlalchemy.orm import aliased
 from sqlalchemy.dialects.mysql import VARCHAR
-from sqlalchemy.ext.associationproxy import AssociationProxy
-
-from nagare import database
 
 from kansha.models import Entity
 

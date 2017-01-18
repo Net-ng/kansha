@@ -144,16 +144,6 @@ class Gallery(CardExtension):
             for new_file in new_files:
                 self.add_asset(new_file)
 
-    def get_asset(self, filename):
-        """Return Asset component which match with filename
-
-        In:
-            - ``filename`` -- file id
-        Return:
-            - an Asset component
-        """
-        return Asset(DataAsset.get_by_filename(filename), self.assets_manager)
-
     def configure_cover(self, asset):
         self.model = 'crop'
         self.cropper.call(AssetCropper(asset))
@@ -239,24 +229,12 @@ class Asset(object):
     def is_image(self):
         return self.content_type in IMAGE_CONTENT_TYPES
 
-    def download_asset(self, size=None):
-        e = HTTPOk()
-        data, meta_data = self.assets_manager.load(self.filename, size)
-        e.body = data
-        e.content_type = str(meta_data['content-type'])
-        e.title = meta_data['filename']
-        #e.headers['Cache-Control'] = 'max-age=0, must-revalidate, no-cache, no-store'
-        raise e
-
     @property
     def data(self):
         return DataAsset.get_by_filename(self.filename)
 
     def cancel(self, comp, answer):
         comp.answer()
-
-    def end_crop(self, comp, answer):
-        comp.answer(('make_cover', self, answer))
 
 
 class AssetCropper(object):

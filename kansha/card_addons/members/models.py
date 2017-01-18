@@ -65,7 +65,6 @@ class DataMembership(Entity):
         query = query.outerjoin(DataCardMembership)
         query = query.group_by(DataUser.username, DataUser.source)
         query = query.order_by(func.count(DataUser.username).desc())
-        print query
         return query
 
     @classmethod

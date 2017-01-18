@@ -35,7 +35,6 @@ class Column(events.EventHandlerMixIn):
         self._data = data
         self.id = 'list_' + str(self.db_id)
         self.board = board
-        self.nb_card = var.Var(self.data.nb_max_cards)
         self._services = services_service
         self.action_log = action_log
         self.search_engine = search_engine_service
@@ -68,7 +67,6 @@ class Column(events.EventHandlerMixIn):
 
     def update(self, other):
         self.data.update(other.data)
-        self.nb_card = var.Var(self.data.nb_max_cards)
         cards_to_index = []
         for card_comp in other.cards:
             card = card_comp()

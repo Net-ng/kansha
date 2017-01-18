@@ -307,6 +307,7 @@ class Board(events.EventHandlerMixIn):
 
     def count_columns(self):
         """Return the number of columns
+        (used in unit tests only)
         """
         return len(self.columns)
 

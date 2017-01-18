@@ -43,7 +43,7 @@ class DummyDataCard(object):
         self.creation_date = creation_date
         self.index = 0
 
-    def update(self, othen):
+    def update(self, other):
         print 'update!'
 
     @property

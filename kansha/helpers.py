@@ -63,12 +63,6 @@ def word(length=20):
     return u''.join(random.sample(string.ascii_letters, length))
 
 
-def integer():
-    """Random integer generator
-    """
-    return random.randint(1, 10000)
-
-
 class DummySecurityManager(security.common.Rules):
 
     """

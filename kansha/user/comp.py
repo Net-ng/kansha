@@ -97,14 +97,6 @@ class User(security_common.User):
         """
         return self.data.last_board
 
-    def has_avatar(self):
-        """Return True if user have an avatar
-
-        Return:
-         - True if user have an avatar
-        """
-        return self.data.picture is not None
-
     def get_avatar(self):
         """Return picture
 
@@ -112,15 +104,6 @@ class User(security_common.User):
          - URL or URI of the picture
         """
         return self.data.get_picture()
-
-    @property
-    def initials(self):
-        """ Return user's intials
-
-        Return:
-         - a string with initials made with user full name
-        """
-        return ''.join([n[0].upper() for n in self.data.fullname.split()])
 
     @property
     def fullname(self):

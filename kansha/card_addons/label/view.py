@@ -16,10 +16,6 @@ from kansha.toolbox import overlay
 from .comp import Label, CardLabels
 
 
-def html_hex_to_rgb_tuple(hex_str):
-    return tuple(ord(c) for c in hex_str.replace('#', '').decode('hex'))
-
-
 def color_style(self):
     return 'background-color:%s' % self.data.color
 

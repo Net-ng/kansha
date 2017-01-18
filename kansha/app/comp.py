@@ -18,7 +18,6 @@ import urlparse
 import cProfile as profile
 from collections import OrderedDict
 
-import webob
 import configobj
 import pkg_resources
 

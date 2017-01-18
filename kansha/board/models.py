@@ -54,7 +54,7 @@ class DataBoard(Entity):
     visibility = Field(Integer, default=0)
     version = Field(Integer, default=0, server_default='0')
     # provisional
-    board_members = OneToMany('DataMembership', lazy='subquery')
+    board_members = OneToMany('DataMembership', lazy='subquery', order_by=('manager'))
     uri = Field(Unicode(255), index=True, unique=True)
     last_users = ManyToOne('DataUser', order_by=('fullname', 'email'))
     pending = OneToMany('DataToken', order_by='username')
@@ -69,14 +69,18 @@ class DataBoard(Entity):
     weighting_cards = Field(Integer, default=0)
     weights = Field(Unicode(255), default=u'')
 
-    _members = None
-    _managers = None
-
     @property
     def template_title(self):
-        if not self.managers or self.visibility == 0:
+        manager = self.get_first_manager()
+        if not manager or self.visibility == 0:
             return self.title
-        return u'{0} ({1})'.format(self.title, self.managers[0].fullname)
+        return u'{0} ({1})'.format(self.title, manager.fullname)
+
+    def get_first_manager(self):
+        if not self.board_members:
+            return None
+        potential_manager = self.board_members[-1]
+        return potential_manager.user if potential_manager.manager else None
 
     def copy(self):
         new_data = DataBoard(title=self.title,
@@ -163,45 +167,28 @@ class DataBoard(Entity):
 
     ############# Membership management; belong to a board extension
 
-    #provisional
-    @property
-    def members(self):
-        if self._members is None:
-            self._members = [membership.user for membership in self.board_members]
-        return self._members
-
-    #provisional
-    @property
-    def managers(self):
-        if self._managers is None:
-            self._managers = [membership.user for membership in self.board_members if
-                              membership.manager]
-        return self._managers
-
     def delete_members(self):
-        for member in self.board_members:
-            session.delete(member)
-        session.flush()
+        DataMembership.delete_members(self)
 
     def has_member(self, user):
         """Return True if user is member of the board
 
         In:
-         - ``user`` -- user to test (User instance)
+         - ``user`` -- user to test (DataUser instance)
         Return:
          - True if user is member of the board
         """
-        return user in self.members
+        return DataMembership.has_member(self, user)
 
     def has_manager(self, user):
         """Return True if user is manager of the board
 
         In:
-         - ``user`` -- user to test (User instance)
+         - ``user`` -- user to test (DataUser instance)
         Return:
          - True if user is manager of the board
         """
-        return user in self.managers
+        return DataMembership.has_member(self, user, manager=True)
 
     def remove_member(self, user):
         DataMembership.remove_member(board=self, user=user)
@@ -210,6 +197,7 @@ class DataBoard(Entity):
         ms = DataMembership.get_by(board=self, user=user)
         if ms:
             ms.manager = (new_role == 'manager')
+        session.flush()
 
     def add_member(self, user, role='member'):
         """ Add new member to the board

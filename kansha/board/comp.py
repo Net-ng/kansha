@@ -9,6 +9,7 @@
 # --
 
 import json
+import itertools
 from functools import partial
 
 from nagare.i18n import _
@@ -268,13 +269,19 @@ class Board(events.EventHandlerMixIn):
         """
         data = self.data
         #FIXME: user Membership components
-        members = [dbm.user for dbm in data.board_members]
-        members = [member for member in set(members) - set(data.managers)]
-        members.sort(key=lambda m: (m.fullname, m.email))
-        self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'member'))
-                        for member in members]
-        self.managers = [component.Component(BoardMember(usermanager.UserManager.get_app_user(member.username, data=member), self, 'manager' if len(data.managers) != 1 else 'last_manager'))
-                         for member in data.managers]
+        managers = []
+        simple_members = []
+        for manager, memberships in itertools.groupby(data.board_members,
+                                                      lambda item: item.manager):
+            if manager:
+                managers = [membership.user for membership in memberships]
+            else:
+                simple_members = [membership.user for membership in memberships]
+        simple_members.sort(key=lambda m: (m.fullname, m.email))
+        self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(data=member), self, 'member'))
+                        for member in simple_members]
+        self.managers = [component.Component(BoardMember(usermanager.UserManager.get_app_user(data=member), self, 'manager' if len(managers) != 1 else 'last_manager'))
+                         for member in managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
                         for token in data.pending]
 
@@ -860,6 +867,10 @@ class BoardMember(object):
     @property
     def username(self):
         return self.user().username
+
+    @property
+    def fullname(self):
+        return self.user().fullname
 
     @property
     def email(self):

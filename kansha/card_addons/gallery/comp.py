@@ -130,7 +130,7 @@ class Gallery(CardExtension):
                                           metadata={'filename': file_info['filename'], 'content-type': file_info['content_type']})
         data = {'file': file_info['filename'], 'card': self.card.get_title()}
         self.action_log.add_history(user, u'card_add_file', data)
-        return self.create_asset(DataAsset.add(fileid, self.card.data, user.get_user_data()))
+        return self.create_asset(DataAsset.add(fileid, self.card.data, user.data))
 
     def add_assets(self, new_files):
         """Add new assets to the card

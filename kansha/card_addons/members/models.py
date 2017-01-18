@@ -28,17 +28,20 @@ class DataCardMembership(Entity):
     using_options(tablename='membership_cards__card')
     membership = ManyToOne('DataMembership', ondelete='cascade', required=True)
     card = ManyToOne('DataCard', ondelete='cascade', required=True)
-    using_table_options(sa.UniqueConstraint('membership_id', 'card_id', name='uix_1'))
+    using_table_options(sa.UniqueConstraint('membership_id', 'card_id', name='card_membership_ix'))
 
 
 class DataMembership(Entity):
     using_options(tablename='membership')
-    board = ManyToOne('DataBoard', ondelete='cascade')
-    user = ManyToOne(DataUser, ondelete='cascade')
+    board = ManyToOne('DataBoard', ondelete='cascade', required=True)
+    user = ManyToOne(DataUser, ondelete='cascade', required=True)
     card_memberships = OneToMany(DataCardMembership, cascade='delete, delete-orphan')
+    # provisional, for notifications until they are refactored
     cards = association_proxy('card_memberships', 'card')
     manager = Field(Boolean, default=False, nullable=False)
     notify = Field(Integer, default=NOTIFY_MINE)
+    using_table_options(
+        sa.UniqueConstraint('board_id', 'user_username', 'user_source', name='membership_ix'))
 
     @classmethod
     def get_for_card(cls, card):
@@ -59,9 +62,10 @@ class DataMembership(Entity):
         query = query.join(DataMembership)
         # In the future, cards will be linked to boards directly, so demeter won't be hurt anymore
         query = query.filter(DataMembership.board == card.column.board)
-        query = query.join(DataCardMembership)
+        query = query.outerjoin(DataCardMembership)
         query = query.group_by(DataUser.username, DataUser.source)
         query = query.order_by(func.count(DataUser.username).desc())
+        print query
         return query
 
     @classmethod
@@ -99,3 +103,12 @@ class DataMembership(Entity):
         if membership:
             membership.delete()
             database.session.flush()
+
+    @classmethod
+    def has_member(cls, board, user, manager=False):
+        membership = cls.get_by(board=board, user=user)
+        return (bool(membership) and membership.manager) if manager else bool(membership)
+
+    @classmethod
+    def delete_members(cls, board):
+        cls.query(board=board).delete(synchronize_session=False)

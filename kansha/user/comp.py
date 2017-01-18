@@ -41,8 +41,8 @@ class User(security_common.User):
         self._data = None
         return self.__dict__
 
-    def get_user_data(self):
-        return self.data
+    def __eq__(self, other):
+        return self.username == other.username
 
     @property
     def email(self):
@@ -125,16 +125,6 @@ class User(security_common.User):
     @property
     def fullname(self):
         return self.data.fullname
-
-    def is_manager(self, board):
-        """Return True if user is manager of the board
-
-        In:
-         - ``board`` -- DataBoard instance
-        Return:
-         - True if user is manager of the board
-        """
-        return board in self.data.managed_boards
 
     @property
     def last_login(self):

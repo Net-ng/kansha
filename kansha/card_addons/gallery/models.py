@@ -13,28 +13,7 @@ import datetime
 from sqlalchemy import func
 from elixir import ManyToOne, Field, Unicode, DateTime, using_options
 
-from nagare import security
-
 from kansha.models import Entity
-
-
-class DataGallery(object):
-
-    def __init__(self, card):
-        self.card = card
-
-    @property
-    def data(self):
-        return DataAsset.get_by_card(self.card)
-
-    def get_asset(self, filename):
-        return DataAsset.get_by_filename(filename)
-
-    def add_asset(self, filename):
-        return DataAsset.add_asset(filename, self.card, security.get_user())
-
-    def delete(self, filename):
-        DataAsset.get(filename).delete()
 
 
 class DataAsset(Entity):

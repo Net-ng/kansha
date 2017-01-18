@@ -52,16 +52,6 @@ def before(d, start, strict=True):
     return d <= start
 
 
-def after(d, end, strict=True):
-    '''is ``d`` after ``end``
-    In:
-        - strict -- ``d`` must be after if True else after or equal
-    '''
-    if strict:
-        return d > end
-    return d >= end
-
-
 class Calendar(object):
 
     def __init__(self, d=None, min_date=None, allow_none=False):
@@ -95,12 +85,6 @@ class Calendar(object):
         self.toggle()
         self.date = None
         comp.answer(self.date)
-
-    @property
-    def str_date(self):
-        if self.date is None:
-            return u''
-        return i18n.format_date(self.date, 'short')
 
     def is_authorized_date(self, d):
         if self.min_date is not None and before(d, self.min_date):

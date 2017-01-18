@@ -22,19 +22,19 @@ def render_ActionLog(self, h, comp, *args):
 @presentation.render_for(ActionLog, 'history')
 def render_ActionLog_history(self, h, *_args):
     h << h.h2(_('Action log'))
-    board = self.board.data
+    board = self.board
     with h.div(id='action-log'):
         with h.form:
             with h.select(onchange=ajax.Update(action=self.user_id)):
                 h << h.option(_('all users'), value='')
-                for member in board.members:
-                    h << h.option(member.fullname, value=member.username).selected(
+                for member in board.all_members:
+                    h << h.option(member().fullname, value=member().username).selected(
                         self.user_id())
-            with h.select(onchange=ajax.Update(action=lambda x: self.card_id(int(x)))):
+            with h.select(onchange=ajax.Update(action=lambda x: self.card_id(x))):
                 h << h.option(_('all cards'), value=0)
                 for col in board.columns:
-                    for card in col.cards:
-                        h << h.option(card.title, value=card.id).selected(
+                    for card in col().cards:
+                        h << h.option(card().get_title(), value=card().id).selected(
                             self.card_id())
         with h.div(class_='history'):
             with h.table(class_='table table-striped table-hover'):

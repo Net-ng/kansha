@@ -88,7 +88,7 @@ class UserManager(object):
         token_gen = forms.TokenGenerator(email, u'invite board')
         for token in token_gen.get_tokens():
             if token_gen.check_token(token.token) and token.board:
-                user.add_board(token.board)
+                token.board.add_member(user)
             token_gen.reset_token(token.token)
         return user
 

@@ -41,8 +41,8 @@ class User(security_common.User):
         self._data = None
         return self.__dict__
 
-    def get_user_data(self):
-        return self.data
+    def __eq__(self, other):
+        return self.username == other.username
 
     @property
     def email(self):
@@ -125,37 +125,6 @@ class User(security_common.User):
     @property
     def fullname(self):
         return self.data.fullname
-
-    def best_friends(self, exclude_list=(), size=None):
-        """ Return user's friends
-
-        Return users which have most boards in common with user
-
-        In:
-         - ``size`` -- list size (None for all)
-        Return:
-         - list of Users (User Instances)
-        """
-        return self.data.best_friends(exclude_list, size)
-
-    def add_board(self, board, role="member"):
-        """Add board to user's board lists
-
-        In:
-         - ``board`` -- DataBoard instance to add
-         - ``role`` -- user is member or manager
-        """
-        self.data.add_board(board.data, role)
-
-    def is_manager(self, board):
-        """Return True if user is manager of the board
-
-        In:
-         - ``board`` -- DataBoard instance
-        Return:
-         - True if user is manager of the board
-        """
-        return board in self.data.managed_boards
 
     @property
     def last_login(self):

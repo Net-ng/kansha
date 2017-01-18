@@ -57,7 +57,8 @@ class ActionLog(object):
     # view API
     def get_history(self):
         'internal'
-        return DataHistory.get_history(self.board.data, cardid=self.card_id(), username=self.user_id())
+        card_id = self.card_id()[5:] if self.card_id() else None
+        return DataHistory.get_history(self.board.data, cardid=card_id, username=self.user_id())
 
 
 class DummyActionLog(ActionLog):

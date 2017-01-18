@@ -18,7 +18,6 @@ import urlparse
 import cProfile as profile
 from collections import OrderedDict
 
-import webob
 import configobj
 import pkg_resources
 
@@ -160,7 +159,7 @@ class Kansha(object):
 
     def handle_event(self, event):
         if event.is_(events.BoardLeft) or event.is_(events.BoardArchived):
-            return self.select_last_board()
+            return self._on_menu_entry('boards')
         elif event.is_(events.NewTemplateRequested):
             return self.boards_manager.create_template_from_board(event.emitter, *event.data)
         log.info('Ignoring event %s', event)
@@ -371,7 +370,9 @@ class WSGIApp(wsgi.WSGIApp):
         mail_sender = self._services['mail_sender']
         # Group users by board
         boards = {}
-        for subscriber in notifications.get_subscribers():
+        for subscriber_bo in notifications.get_subscribers():
+            # FIXME: don't use the data directly
+            subscriber = subscriber_bo.data
             boards.setdefault(subscriber.board.id, {'board': subscriber.board,
                                                     'subscribers': []})['subscribers'].append(subscriber)
 
@@ -382,11 +383,11 @@ class WSGIApp(wsgi.WSGIApp):
                     data = notifications.filter_events(events, subscriber)
                     if not data:
                         continue
-                    locale = UserManager.get_app_user(subscriber.member.username).get_locale()
+                    locale = UserManager.get_app_user(subscriber.user.username).get_locale()
                     self.set_locale(locale)
                     subject, content, content_html = notifications.generate_email(self.app_title, board['board'],
-                                                                                  subscriber.member, hours, url, data)
-                    mail_sender.send(subject, [subscriber.member.email], content, content_html)
+                                                                                  subscriber.user, hours, url, data)
+                    mail_sender.send(subject, [subscriber.user.email], content, content_html)
         if self.activity_monitor:
             events = services.ActionLog.get_events_for_data(None, hours)
             new_users = UserManager.get_all_users(hours)

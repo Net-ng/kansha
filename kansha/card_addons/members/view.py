@@ -91,7 +91,7 @@ def render_members_add_member_overlay(self, h, comp, *args):
 
 @presentation.render_for(CardMembers, 'more_users')
 def render_members_many_user(self, h, comp, *args):
-    number = len(self.card.members) - self.MAX_SHOWN_MEMBERS
+    number = len(self.members) - self.MAX_SHOWN_MEMBERS
     return h.span(
         h.i(class_='ico-btn icon-user'),
         h.span(number, class_='count'),

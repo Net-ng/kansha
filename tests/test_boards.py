@@ -171,11 +171,9 @@ class BoardTest(unittest.TestCase):
         """Test has member 1"""
         helpers.set_dummy_context()
         board = helpers.create_board()
-        user = helpers.create_user()
+        user = helpers.create_user('bis')
         helpers.set_context(user)
-        data = board.data  # don't collect
-        members = data.members
-        members.append(user.data)
+        board.add_member(user)
         self.assertTrue(board.has_member(user))
 
     # def test_has_member_2(self):
@@ -195,8 +193,7 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user('bis')
         helpers.set_context(user)
         self.assertFalse(board.has_manager(user))
-        user.data.managed_boards.append(board.data)
-        user.data.boards.append(board.data)
+        board.add_member(user, role='manager')
         self.assertTrue(board.has_manager(user))
 
     def test_has_manager_2(self):
@@ -207,10 +204,9 @@ class BoardTest(unittest.TestCase):
         helpers.set_context(user)
         user_2 = helpers.create_user(suffixe='2')
         self.assertFalse(board.has_manager(user))
-        data = board.data  # don't collect
-        data.managers.append(user_2.data)
-        data.members.append(user_2.data)
+        board.add_member(user_2, role='manager')
         database.session.flush()
+        self.assertTrue(board.has_manager(user_2))
         self.assertFalse(board.has_manager(user))
 
     def test_add_member_1(self):
@@ -233,7 +229,8 @@ class BoardTest(unittest.TestCase):
 
         def find_board_member():
             for member in board.all_members:
-                if member().get_user_data().username == user.username:
+                print member().user(), user
+                if member().user() == user:
                     return member()
 
         member = find_board_member()

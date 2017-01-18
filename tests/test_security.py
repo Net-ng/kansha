@@ -81,8 +81,7 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PRIVATE)
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
         self.assertTrue(security.has_permissions('view', board))
 
     def test_view_board_5(self):
@@ -96,8 +95,7 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PUBLIC)
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
         self.assertTrue(security.has_permissions('view', board))
 
     def test_rendering_security_view_board_1(self):
@@ -127,8 +125,7 @@ class BoardTest(unittest.TestCase):
         user = helpers.create_user('bis')
         helpers.set_context(user)
 
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
 
         with i18n.Locale('en', 'US'):
             component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())

@@ -72,8 +72,8 @@ class Column(events.EventHandlerMixIn):
             card = card_comp()
             new_card = self.create_card(card.get_title())
             new_card.update(card)
-            cards_to_index.append(card)
-        self.index_cards(cards_to_index, update=True)
+            cards_to_index.append(new_card)
+        self.index_cards(cards_to_index)
 
     def index_cards(self, cards, update=False):
         for card in cards:
@@ -90,7 +90,8 @@ class Column(events.EventHandlerMixIn):
         self.emit_event(comp, events.SearchIndexUpdated)
 
     def ui_create_card(self, comp, title):
-        self.create_card(title)
+        card = self.create_card(title)
+        self.index_cards([card])
         self.emit_event(comp, events.SearchIndexUpdated)
 
     def on_event(self, comp, event):
@@ -233,7 +234,6 @@ class Column(events.EventHandlerMixIn):
             card_obj.action_log.add_history(
                 security.get_user(),
                 u'card_create', values)
-            self.index_cards([card_obj])
             return card_obj
 
     def change_index(self, new_index):

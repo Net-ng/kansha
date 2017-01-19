@@ -201,13 +201,13 @@ i.icon {
 .nav-menu:hover .actions {
 }
 
-.nav-menu .title {
+.menu-title {
     position: absolute;
     padding: 0 10px 5px 10px;
     white-space: nowrap;
     z-index: 30;
 }
-.nav-menu .title .avatar {
+.menu-title .avatar {
     height: 30px;
     width: 30px;
     vertical-align: middle;

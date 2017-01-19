@@ -49,7 +49,7 @@ def render_kansha_menu(self, h, comp, *args):
                 h << h.li(h.a(_(u"Login"), href=h.request.application_url))
 
         # Tab part
-        h << h.span(self.title.render(h.AsyncRenderer()), class_="title", id='kansha-nav-menu')
+        h << h.span(self.title.render(h.AsyncRenderer()), class_="menu-title", id='kansha-nav-menu')
     return h.root
 
 

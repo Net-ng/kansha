@@ -36,7 +36,7 @@ def render_Board_menu(self, h, comp, *args):
             if security.has_permissions('manage', self):
                 h << h.li(h.a(self.icons['save_template']).action(self.save_template, comp))
 
-            h << h.li(h.a(self.icons['export']).action(self.export))
+            h << h.li(h.SyncRenderer().a(self.icons['export']).action(self.export))
             h << h.li(h.a(self.icons['history']).action(self.show_actionlog))
 
             if security.has_permissions('manage', self):

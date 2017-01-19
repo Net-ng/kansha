@@ -25,7 +25,7 @@ class Login(Authentication):
         'host': 'string(default="localhost")',
         'port': 'integer(default=389)',
         'users_base_dn': 'string(default="")',
-        'schema': 'string(default="kansha.authentication.ldap:NngLDAPAuth")'
+        'schema': 'string(default="kansha.authentication.ldap.ldap_auth:NngLDAPAuth")'
     }
 
     def __init__(self, app_title, app_banner, theme, assets_manager_service):

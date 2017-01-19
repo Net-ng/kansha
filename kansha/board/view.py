@@ -40,7 +40,7 @@ def render_Board_menu(self, h, comp, *args):
             h << h.li(h.a(self.icons['history']).action(self.show_actionlog))
 
             if security.has_permissions('manage', self):
-                h << h.li(h.a(
+                h << h.li(h.SyncRenderer().a(
                     self.icons['archive'],
                     onclick=(
                         'return confirm(%s)' %
@@ -50,7 +50,7 @@ def render_Board_menu(self, h, comp, *args):
                     )
                 ).action(self.archive, comp))
             else:
-                h << h.li(h.a(
+                h << h.li(h.SyncRenderer().a(
                     self.icons['leave'],
                     onclick=(
                         "return confirm(%s)" %
@@ -61,6 +61,7 @@ def render_Board_menu(self, h, comp, *args):
                 ).action(self.leave, comp))
 
         h << h.span(_(u'Board'), class_="title", id='board-nav-menu')
+        h << self.modal
     return h.root
 
 
@@ -78,9 +79,7 @@ def render_Board(self, h, comp, *args):
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
     if security.has_permissions('edit', self):
-        h << comp.render(h, "menu")
-
-    h << self.modal
+        h << comp.render(h.AsyncRenderer(), "menu")
 
     with h.div(class_='board'):
         if self.background_image_url:

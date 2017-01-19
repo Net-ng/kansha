@@ -70,9 +70,9 @@ def render_SaveTemplateEditor_loading(self, h, comp, *args):
         h << h.img(src='img/ajax-loader.gif')
         h << _(u'Please wait while board is saved...')
 
-    update = ajax.Update(action=self.save, render='saved', component_to_update=id_)
-    h << h.script(h.AsyncRenderer().a.action(update).get('onclick').replace('return ', ''))
+    h << h.script(h.a.action(comp.answer).get('onclick').replace('return ', ''))
     return h.root
+
 
 @presentation.render_for(SaveTemplateEditor, 'saved')
 def render_SaveTemplateEditor_saved(self, h, comp, *args):
@@ -95,4 +95,7 @@ class SaveTemplateTask(component.Task):
         answer = comp.call(template_editor)
         if answer:
             comp.call(template_editor, 'loading')
+            template_editor.save()
+            comp.call(template_editor, 'saved')
+        print 'done'
         comp.answer()

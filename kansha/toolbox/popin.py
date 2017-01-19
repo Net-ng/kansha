@@ -57,7 +57,7 @@ def render(self, h, comp, model):
 
     with h.div(style='display: none'):
         with h.div(id=self.id):
-            self.comp.on_answer(comp.answer) # Popin is transparent
+            self.comp.on_answer(comp.answer)  # Popin is transparent
             h << self.comp.render(h.AsyncRenderer(), model=self.model)
 
     h << h.script(
@@ -68,22 +68,40 @@ def render(self, h, comp, model):
 
 
 class Modal(object):
-    def __init__(self, comp):
+    def __init__(self, comp, force_refresh=False):
         if not isinstance(comp, component.Component):
             comp = component.Component(comp)
         self.comp = comp
+        self.force_refresh = force_refresh
+        self.plugged = False
+
+    def plug(self, comp):
+        if not self.plugged:
+            self.comp.on_answer(comp.answer)
+            self.plugged = True
 
 
 @presentation.render_for(Modal)
 def render_PopinV2(self, h, comp, model):
+    self.plug(comp)
     with h.div(class_='modal', id_='modal'):
         with h.div:
-            h << self.comp.on_answer(comp.answer)
-    h << h.script('''$("#modal").click(function(e) {
-    if ($(e.target).hasClass('modal')) {
-        window.location = "%s";
-    }
-});''' % h.a.action(comp.answer).get('href'))
+            if self.force_refresh:
+                h << self.comp.render(h.SyncRenderer())
+            else:
+                h << self.comp
+    if self.force_refresh:
+        h << h.script('''$("#modal").click(function(e) {
+        if ($(e.target).hasClass('modal')) {
+            window.location = "%s";
+        }
+    });''' % h.SyncRenderer().a.action(comp.answer).get('href'))
+    else:
+        h << h.script('''$("#modal").click(function(e) {
+        if ($(e.target).hasClass('modal')) {
+           %s;
+        }
+    });''' % h.a.action(comp.answer).get('onclick'))
     return h.root
 
 

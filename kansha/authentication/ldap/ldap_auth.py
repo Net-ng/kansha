@@ -13,7 +13,6 @@ try:
     import ldap
 except ImportError:
     ldap = None
-import sys
 import types
 
 
@@ -90,7 +89,9 @@ class NngLDAPAuth(LDAPAuth):
         profile['uid'] = ldap_result['uid'][0]
         profile['name'] = ldap_result['displayName'][0].decode('utf-8')
         profile['email'] = ldap_result['mail'][0]
-        profile['picture'] = ldap_result['jpegPhoto'][0] if 'jpegPhoto' in ldap_result else None
+        profile['picture'] = ldap_result['jpegPhoto'][0] if ('jpegPhoto' in ldap_result and
+                                                             ldap_result['jpegPhoto']) else None
+        c.unbind()
         return profile
 
 
@@ -131,6 +132,7 @@ class ADLDAPAuth(LDAPAuth):
         profile['uid'] = ldap_result['sAMAccountName'][0]
         profile['name'] = ldap_result['displayName'][0].decode('utf-8')
         profile['email'] = ldap_result.get('mail', [''])[0]
-        profile['picture'] = ldap_result['thumbnailPhoto'][0] if 'thumbnailPhoto' in ldap_result else None
+        profile['picture'] = ldap_result['thumbnailPhoto'][0] if ('thumbnailPhoto' in ldap_result and
+                                                                  ldap_result['thumbnailPhoto']) else None
         c.unbind()
         return profile

@@ -42,7 +42,7 @@ class Login(Authentication):
             # if user exists update data
             if profile['picture']:
                 self.assets_manager.save(profile['picture'], uid,
-                                        {'filename': uid})
+                                         {'filename': uid})
                 picture = self.assets_manager.get_image_url(uid, 'thumb')
             else:
                 picture = None

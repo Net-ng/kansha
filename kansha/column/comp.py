@@ -104,10 +104,11 @@ class Column(events.EventHandlerMixIn):
             card_bo = event.emitter
             slot = event.data
             slot.becomes(card_bo)
-            # card has been edited, reindex
-            card_bo.add_to_index(self.search_engine, self.board.id, update=True)
-            self.search_engine.commit()
-            self.emit_event(comp, events.SearchIndexUpdated)
+            # if card has been edited, reindex
+            if security.has_permissions('edit', card_bo):
+                card_bo.add_to_index(self.search_engine, self.board.id, update=True)
+                self.search_engine.commit()
+                self.emit_event(comp, events.SearchIndexUpdated)
 
     @property
     def data(self):

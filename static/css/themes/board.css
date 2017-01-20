@@ -465,6 +465,7 @@ textarea.expanded {
 
 .card-edit-form .description p {
     margin: 0;
+    overflow-wrap: break-word;
 }
 
 .card-edit-form textarea {

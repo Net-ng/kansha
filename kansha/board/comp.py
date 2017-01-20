@@ -162,7 +162,7 @@ class Board(events.EventHandlerMixIn):
     # Main menu actions
     def add_list(self):
         new_column_editor = column.NewColumnEditor(len(self.columns))
-        answer = self.modal.call(popin.Modal(new_column_editor))
+        answer = self.modal.call(popin.Modal(new_column_editor, force_refresh=True))
         if answer:
             index, title, nb_cards = answer
             self.create_column(index, title, nb_cards if nb_cards else None)
@@ -184,7 +184,7 @@ class Board(events.EventHandlerMixIn):
 
     def show_preferences(self):
         preferences = BoardConfig(self)
-        self.modal.call(popin.Modal(preferences))
+        self.modal.call(popin.Modal(preferences, force_refresh=True))
 
     def save_as_template(self, comp, title, description, shared):
         data = (title, description, shared)

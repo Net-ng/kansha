@@ -49,8 +49,8 @@ class DataHistory(Entity):
     data = Field(JSONType)
 
     board = ManyToOne('DataBoard', ondelete='cascade')
-    card = ManyToOne('DataCard', ondelete='cascade')
-    user = ManyToOne('DataUser', ondelete='cascade')
+    card = ManyToOne('DataCard', ondelete='cascade', required=True)
+    user = ManyToOne('DataUser', ondelete='cascade', required=True)
 
     def to_string(self):
         data = self.data.copy()

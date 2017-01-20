@@ -214,7 +214,7 @@ a:hover .ico-btn {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
 }
 
-.nav-menu .title {
+.menu-title {
     background: white;
     font: normal 25px OpenSansSemiBold;
     border-radius: 0 0 10px 10px;
@@ -222,7 +222,7 @@ a:hover .ico-btn {
     border-top: none;
 }
 
-.nav-menu:hover .title {
+.nav-menu:hover .menu-title {
     color: #5C5C5C;
 }
 

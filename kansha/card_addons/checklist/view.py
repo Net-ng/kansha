@@ -20,10 +20,8 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
     with h.form(class_='new-item-form'):
         id_ = h.generate_id()
         h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
-        h << h.button(_(u'Save'),
+        h << h.button(_(u'Add'),
                       class_='btn btn-primary').action(lambda: comp.answer(text()))
-        h << ' '
-        h << h.button(_(u'Cancel'), class_='btn').action(comp.answer)
 
     if self.focus:
         h << h.script("YAHOO.util.Dom.get(%s).focus()" % ajax.py2js(id_))
@@ -67,7 +65,10 @@ def render_Checklists(self, h, comp, model):
             id_ = h.generate_id()
             with h.div(class_='checklists', id=id_):
                 for index, clist in enumerate(self.checklists):
-                    h << clist.on_answer(lambda v, index=index: self.delete_checklist(index))
+                    clist().init_input()
+                    h << clist.on_answer(
+                        lambda v, index=index: self.delete_checklist(index)
+                    ).render(h.AsyncRenderer())
     return h.root
 
 
@@ -97,6 +98,12 @@ def render_Checklist(self, h, comp, model):
             h << self.new_item
     return h.root
 
+
+@presentation.render_for(Checklist, 'add_item_button')
+def render_Checklist_progress(self, h, comp, model):
+    h << h.a(h.i(class_='icon-plus'), class_='add-item',
+             title=_(u'Add item')).action(self.activate_item_input)
+    return h.root
 
 @presentation.render_for(Checklist, 'progress')
 def render_Checklist_progress(self, h, comp, model):

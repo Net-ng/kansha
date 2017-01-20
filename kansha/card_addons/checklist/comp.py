@@ -115,7 +115,15 @@ class Checklist(object):
                 placeholder=i18n._(u'Enter title')
             )
         ).on_answer(self.set_title)
+        self.new_item = None
 
+    def init_input(self):
+        if self.items:
+            self.new_item = component.Component(self, 'add_item_button')
+        else:
+            self.activate_item_input()
+
+    def activate_item_input(self):
         self.new_item = component.Component(NewChecklistItem())
         self.new_item.on_answer(self.add_item_from_str)
 

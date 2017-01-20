@@ -841,6 +841,9 @@ div.history th {
     padding-top: 10px
 }
 
+.add-item {
+    padding-left: 10px;
+}
 /* Checklists end */
 
 /* Calendar */

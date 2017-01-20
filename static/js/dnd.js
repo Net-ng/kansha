@@ -179,7 +179,7 @@
                 this.showFrame(x, y);
                 if (YAHOO.kansha.app.isDesktop()) {
                     this.clearConstraints();
-                    this.setYConstraint(0, 0);
+                    // this.setYConstraint(0, 0);
                 } else {
                     this.clearConstraints();
                     this.setXConstraint(0, 0);

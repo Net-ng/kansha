@@ -141,7 +141,9 @@ class Checklist(object):
     def add_item(self, item):
         item = component.Component(item)
         self.items.append(item)
-        self.new_item().focus = True
+        # UI specific
+        if self.new_item:
+            self.new_item().focus = True
 
     def remove_item(self, item):
         self.items.pop(item.index)

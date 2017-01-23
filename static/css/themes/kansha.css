@@ -534,6 +534,12 @@ i.icon {
     }
 }
 
+@media (max-width: 640px) {
+    .nav-menu .actions li {
+        margin: 0;
+    }
+}
+
 /* Modal window */
 .modal {
     position: fixed;

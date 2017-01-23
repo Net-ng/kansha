@@ -543,6 +543,7 @@ i.icon {
     bottom: 0;
     left: 0;
     text-align: center;
+    overflow: auto;
 }
 
 .modal > div {

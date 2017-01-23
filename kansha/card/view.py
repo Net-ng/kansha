@@ -91,13 +91,14 @@ def render_card_edit(self, h, comp, *args):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) else 'readonly')
                 h << h.span('(%s)' % parent_title, class_='reminder')
-        with h.div(class_='grid-2'):
-            with h.div(class_='card-edition'):
-                for name, extension in self.extensions:
-                    h << h.div(extension.render(h.AsyncRenderer()), class_=name)
+        with h.div:
             with h.div(class_='card-actions'):
                 h << comp.render(h, 'delete-action')
                 h << [extension.render(h.AsyncRenderer(), 'action') for __, extension in self.extensions]
+            with h.div(class_='card-edition'):
+                for name, extension in self.extensions:
+                    h << h.div(extension.render(h.AsyncRenderer()), class_=name)
+        h << h.div(class_='clear')
     return h.root
 
 

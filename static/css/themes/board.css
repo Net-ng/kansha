@@ -351,11 +351,13 @@ textarea.expanded {
 }
 
 .card-actions {
-    width: 155px;
+    float: right;
+    margin-left: 10px;
+    width: 165px;
 }
 
 .card-edition {
-    width: calc(100% - 185px);
+    overflow: hidden;
 }
 
 .card-actions button i[class^="icon-"],
@@ -1126,6 +1128,18 @@ div.history th {
     .board .board-title .title-form input {
         width: calc(100% - 150px);
     }
+
+    .card-actions {
+        float: none;
+        width: 100%;
+    }
+
+    .yui-skin-sam .yui-panel {
+        margin: 20px auto 10px auto;
+        max-width: 640px;
+        padding: 5px 20px 15px 10px;
+    }
+
 }
 
 /* Full calendar fixes */

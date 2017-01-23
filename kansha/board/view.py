@@ -565,9 +565,6 @@ def render_BoardProfile(self, h, comp, *args):
             h << h.p(_(u'View archive column'))
             with h.form:
                 with h.div(class_='btn-group'):
-                    if self._changed():
-                        h << h.script('reload_columns();')
-                        self._changed(False)
 
                     active = 'active btn-primary' if self.board.show_archive else ''
                     h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))

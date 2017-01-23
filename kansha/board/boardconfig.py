@@ -82,7 +82,6 @@ class BoardWeights(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
-        self._changed = var.Var(False)
         self._weights_editor = component.Component(WeightsSequenceEditor(self))
 
     @property
@@ -95,11 +94,9 @@ class BoardWeights(object):
 
     def activate_weighting(self, weighting_type):
         self.board.activate_weighting(weighting_type)
-        self._changed(True)
 
     def deactivate_weighting(self):
         self.board.deactivate_weighting()
-        self._changed(True)
 
 
 class WeightsSequenceEditor(editor.Editor):
@@ -148,7 +145,6 @@ class BoardProfile(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
-        self._changed = var.Var(False)
 
     def allow_comments(self, v):
         """Changes comments permissions
@@ -180,7 +176,6 @@ class BoardProfile(object):
     def set_archive(self, value):
         self.board.show_archive = value
         self.board.set_reload_search()
-        self._changed(True)
 
 
 class BoardBackground(object):
@@ -196,27 +191,21 @@ class BoardBackground(object):
         """
         self.board = board
         self.background_position = var.Var(self.board.background_image_position)
-        self._changed = var.Var(False)
 
     def get_available_background_positions(self):
         return [(value, value.capitalize()) for value in ('fill', 'fit', 'stretch', 'tile', 'center')]
 
     def set_background_position(self):
         self.board.set_background_position(self.background_position())
-        self._changed(True)
 
     def set_background(self, img):
         self.board.set_background_image(img)
-        self._changed(True)
 
     def reset_background(self):
         self.board.set_background_image(None)
-        self._changed(True)
 
     def set_color(self, color):
         self.board.set_title_color(color)
-        self._changed(True)
 
     def reset_color(self):
         self.board.set_title_color('')
-        self._changed(True)

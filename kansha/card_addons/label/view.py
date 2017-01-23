@@ -44,9 +44,6 @@ def render_Label_inactive(self, h, comp, *args):
 def render_Label_edit_color(self, h, comp, *args):
     """Edit the label color"""
     # If label changed reload columns
-    if self._changed():
-        h << h.script('reload_columns()')
-        self._changed(False)
     h << component.Component(overlay.Overlay(lambda r: comp.render(r, model='color'),
                                              lambda r: comp.render(r,
                                                                    model='edit-color-overlay'),

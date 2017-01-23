@@ -34,7 +34,6 @@ class Label(object):
           - ``data`` -- the label's database object
         """
         self.id = data.id
-        self._changed = var.Var(False)
         self._data = data
 
     @property
@@ -66,7 +65,6 @@ class Label(object):
           - ``v`` -- the color of the label as hex string (ex. '#CECECE')
         """
         self.data.color = v
-        self._changed(True)
 
     def get_title(self):
         return self.data.title

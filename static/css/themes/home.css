@@ -56,7 +56,7 @@
 }
 
 .home .new-board {
-    padding-bottom: 14px;
+    padding: 14px 10px;
     border-bottom: 1px solid #c0c0c0;
 }
 
@@ -76,7 +76,7 @@
 .boards input[type=file],
 .boards select,
 .boards textarea {
-    width: 40%;
+    width: 80%;
 }
 
 /* Board labels */
@@ -115,6 +115,14 @@
     }
 
     .home .menu, .home .boards { width: 100%; }
+
+    form {
+        width: 100%;
+    }
+
+    .boards input[type=text], .boards input[type=password], .boards input[type=file], .boards select, .boards textarea {
+        width: 90%;
+    }
 }
 
 /* Responsive small size */

@@ -16,12 +16,13 @@
     position: relative
 }
 
+.header {
+    float: left;
+    width: 173px;
+}
+
 .header h1 {
-    position: absolute;
-    margin: 0;
     text-align: center;
-    top: 300px;
-    width: 273px;
 }
 
 .title {
@@ -41,6 +42,8 @@
 
 .container {
     display: table;
+    /*float: left;*/
+    overflow: hidden;
     margin: auto;
     margin-top: 20px;
     padding: 10px;
@@ -88,10 +91,9 @@ input[type="password"] {
 }
 
 .oauthLogin {
-    position: relative;
-    display: table-cell;
-    vertical-align: middle;
     padding: 30px;
+    position: relative;
+    vertical-align: middle;
 }
 
 .oauthLogin a {
@@ -158,9 +160,10 @@ input[type="password"] {
 }
 
 .message {
-    text-align: center;
-    padding: 10px;
+    clear: both;
     margin-bottom: 50px;
+    padding: 10px;
+    text-align: center;
 }
 
 .field label,
@@ -201,6 +204,20 @@ input[type="password"] {
     #captchaImage {
         float: none;
         margin-bottom: 15px;
+    }
+
+    .container {
+        display: block;
+        margin: 5px auto;
+        width: 330px;
+    }
+
+    .login {
+        display: block;
+    }
+
+    .regForm {
+        padding: 0;
     }
 
 }

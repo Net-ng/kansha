@@ -72,7 +72,7 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
-    with h.div(class_='row'):
+    with h.div:
         with h.form:
             with h.ul:
                 with h.li:
@@ -267,7 +267,7 @@ def render(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
-    with h.div(class_='row'):
+    with h.div:
         with h.form:
             with h.ul:
                 with h.li:

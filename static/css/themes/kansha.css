@@ -534,6 +534,12 @@ i.icon {
     }
 }
 
+@media (max-width: 640px) {
+    .nav-menu .actions li {
+        margin: 0;
+    }
+}
+
 /* Modal window */
 .modal {
     position: fixed;
@@ -543,6 +549,7 @@ i.icon {
     bottom: 0;
     left: 0;
     text-align: center;
+    overflow: auto;
 }
 
 .modal > div {

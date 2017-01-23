@@ -59,29 +59,6 @@
             }
         },
 
-        /**
-         * List initialization :
-         *  - set max-height
-         *  - show/hide of menu icon
-         */
-        initList: function (col) {
-            col = Dom.get(col);
-            var showHide = function (root, show) {
-                var node = ECN('list-actions', 'div', root).pop();
-                NS.app.show(node, show);
-            };
-
-            Event.on(ECN('list-header', 'div', col), 'mouseover', function (ev) {
-                Event.stopEvent(ev);
-                var show = this.getElementsByTagName('form').length === 0;
-                showHide(this, show);
-            });
-
-            Event.on(ECN('list-header', 'div', col), 'mouseout', function (ev) {
-                Event.stopEvent(ev);
-                showHide(this, false);
-            });
-        },
 
         /**
          * Basic show/hide function

@@ -217,10 +217,15 @@ textarea.expanded {
     padding-top: 2px;
 }
 
-.list-header .list-actions {
+.list-actions {
     position: absolute;
     top: 9px;
     right: 9px;
+    visibility: hidden;
+}
+
+.list-header:hover .list-actions {
+    visibility: visible;
 }
 
 .list-header .list-counter {

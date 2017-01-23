@@ -49,6 +49,10 @@ def render(self, h, comp, *args):
 def render(self, h, comp, model):
     """Render the popin and opens it"""
     business_obj = self.comp()
+    while isinstance(business_obj, Popin):
+        # nested popins can happen when the user clicks too fast
+        self.comp = business_obj.comp
+        business_obj = self.comp()
     emit_event = getattr(business_obj, 'emit_event', self.emit_event)
     action = h.a.action(emit_event, comp, PopinClosed, comp).get('onclick')
     close_func = 'function (){%s;}' % (action)

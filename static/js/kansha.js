@@ -59,29 +59,6 @@
             }
         },
 
-        /**
-         * List initialization :
-         *  - set max-height
-         *  - show/hide of menu icon
-         */
-        initList: function (col) {
-            col = Dom.get(col);
-            var showHide = function (root, show) {
-                var node = ECN('list-actions', 'div', root).pop();
-                NS.app.show(node, show);
-            };
-
-            Event.on(ECN('list-header', 'div', col), 'mouseover', function (ev) {
-                Event.stopEvent(ev);
-                var show = this.getElementsByTagName('form').length === 0;
-                showHide(this, show);
-            });
-
-            Event.on(ECN('list-header', 'div', col), 'mouseout', function (ev) {
-                Event.stopEvent(ev);
-                showHide(this, false);
-            });
-        },
 
         /**
          * Basic show/hide function
@@ -357,26 +334,6 @@
             });
         },
 
-        /**
-         * Autoheight
-         */
-        autoHeight: function (textarea) {
-            var zone = Dom.get(textarea);
-            var height = zone.scrollHeight;
-            Dom.setStyle(zone, 'height', height + 'px');
-
-            textarea.interval = setInterval(function () {
-                zone = Dom.get(textarea);
-                if (zone === null) {
-                    clearInterval(textarea.interval);
-                    return;
-                }
-                if (zone.clientHeight !== zone.scrollHeight) {
-                    height = zone.scrollHeight;
-                    Dom.setStyle(zone, 'height', height + 'px');
-                }
-            }, 100);
-        },
 
         /**
          * Color picker
@@ -401,26 +358,6 @@
             });
         },
 
-        /**
-         * UTC to local time conversion
-         */
-        utcToLocal: function (id, utcSeconds, atTranslation, onTranslation) {
-            var parent = YAHOO.util.Dom.get(id);
-            if (!parent) {
-                return;
-            }
-            var d = new Date(utcSeconds * 1000);
-            var dToTest = new Date(utcSeconds * 1000);
-            dToTest.setHours(0, 0, 0, 0);
-            var dNow = new Date();
-            dNow.setHours(0, 0, 0, 0);
-
-            var toDisplay = onTranslation + ' ' + d.toLocaleDateString() + ' ' + atTranslation + ' ' + d.toLocaleTimeString();
-            if (dToTest.getTime() === dNow.getTime()) {
-                toDisplay = atTranslation + ' ' + d.toLocaleTimeString();
-            }
-            parent.innerHTML = toDisplay;
-        },
 
         /**
          * Image cropper

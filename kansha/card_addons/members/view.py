@@ -21,6 +21,8 @@ def render_card_members(self, h, comp, *args):
     Then icon "more user" if necessary
     And at the end icon "add user"
     """
+    if not security.has_permissions('edit', self.card):
+        return h.root
     with h.div(class_='members'):
         h << h.script('''YAHOO.kansha.app.hideOverlay();''')
         for m in self.members[:self.MAX_SHOWN_MEMBERS]:

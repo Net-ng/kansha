@@ -410,10 +410,6 @@ def render_boardweights_edit(self, h, comp, *args):
         h << h.p(_(u'Activate cards weights'))
         with h.form:
             with h.div(class_='btn-group'):
-                if self._changed():
-                    h << h.script('reload_columns()')
-                    self._changed(False)
-
                 h << h.a(
                     _('Disabled'),
                     class_='btn %s' % (
@@ -565,9 +561,6 @@ def render_BoardProfile(self, h, comp, *args):
             h << h.p(_(u'View archive column'))
             with h.form:
                 with h.div(class_='btn-group'):
-                    if self._changed():
-                        h << h.script('reload_columns();')
-                        self._changed(False)
 
                     active = 'active btn-primary' if self.board.show_archive else ''
                     h << h.button(_('Show'), class_='btn %s' % active).action(lambda: self.set_archive(1))
@@ -621,17 +614,6 @@ def render_board_background_menu(self, h, comp, *args):
 @presentation.render_for(BoardBackground, model='edit')
 def render_board_background_edit(self, h, comp, *args):
     """Render the background configuration panel"""
-    if self._changed():
-        h.head.javascript(
-            h.generate_id(),
-            "YAHOO.kansha.app.setBoardBackgroundImage(%s, %s);"
-            "YAHOO.kansha.app.setTitleColor(%s)" % (
-                ajax.py2js(self.board.background_image_url or '', h),
-                ajax.py2js(self.board.background_image_position, h),
-                ajax.py2js(self.board.title_color or u'', h)
-            )
-        )
-        self._changed(False)
 
     with h.div(class_='panel-section background'):
         h << h.div(_(u'Background image'), class_='panel-section-title')

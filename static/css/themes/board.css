@@ -217,10 +217,15 @@ textarea.expanded {
     padding-top: 2px;
 }
 
-.list-header .list-actions {
+.list-actions {
     position: absolute;
     top: 9px;
     right: 9px;
+    visibility: hidden;
+}
+
+.list-header:hover .list-actions {
+    visibility: visible;
 }
 
 .list-header .list-counter {
@@ -465,6 +470,7 @@ textarea.expanded {
 
 .card-edit-form .description p {
     margin: 0;
+    overflow-wrap: break-word;
 }
 
 .card-edit-form textarea {
@@ -840,6 +846,9 @@ div.history th {
     padding-top: 10px
 }
 
+.add-item {
+    padding-left: 10px;
+}
 /* Checklists end */
 
 /* Calendar */

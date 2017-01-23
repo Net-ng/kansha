@@ -487,7 +487,9 @@ i.icon {
 }
 
 .unselectable {
-    cursor: default
+    cursor: default;
+    margin-left: 3px;
+    overflow: hidden;
 }
 
 .last-manager {

@@ -26,12 +26,7 @@ def render(self, h, comp, *args):
     if self.is_archive:
         column_class += ' archive'
     with h.div(class_=column_class, id=self.id, ):
-        with h.div(class_='list-header', id=self.id + '_header'):
-            with h.div(class_='list-title', id=self.id + '_title'):
-                h << comp.render(h.AsyncRenderer(), 'header')
-            with h.div(class_='list-actions hidden'):
-                if security.has_permissions('edit', self):
-                    h << self.actions_overlay
+        h << comp.render(h.AsyncRenderer(), 'header')
         h << comp.render(h.AsyncRenderer(), 'body')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
@@ -62,15 +57,15 @@ def render_column_overlay(self, h, comp, *args):
                 onclick = (
                     u"if (confirm(%(message)s)){"
                     u" YAHOO.kansha.app.hideOverlay();"
-                    u" %(callback)s"
+                    u" window.location='%(callback)s';"
                     u"}" %
                     {
                         'message': ajax.py2js(
                             _(u'The list will be deleted. Are you sure?')
                         ).decode('UTF-8'),
-                        'callback': h.a.action(
+                        'callback': h.SyncRenderer().a.action(
                             comp.answer, 'delete'
-                        ).get('onclick')
+                        ).get('href')
                     }
                 )
                 h << h.a(_(u'Delete this list'), onclick=onclick)
@@ -82,13 +77,13 @@ def render_column_overlay(self, h, comp, *args):
             )
         else:
             with h.li:
-                onclick = "if (confirm(%(message)s)){%(purge_func)s;}" % {
+                onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
                     'message': ajax.py2js(
                         _(u'All cards will be deleted. Are you sure?')
                     ).decode('UTF-8'),
-                    'purge_func': h.a.action(
+                    'purge_func': h.SyncRenderer().a.action(
                         comp.answer, 'purge'
-                    ).get('onclick')
+                    ).get('href')
                 }
                 h << h.a(_('Purge the cards'), onclick=onclick)
 
@@ -97,9 +92,14 @@ def render_column_overlay(self, h, comp, *args):
 
 @presentation.render_for(Column, model='header')
 def render_column_header(self, h, comp, *args):
-    with h.div(class_='title'):
-        h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
-    h << self.card_counter
+    with h.div(class_='list-header', id=self.id + '_header'):
+        with h.div(class_='list-title', id=self.id + '_title'):
+            with h.div(class_='title'):
+                h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
+            h << self.card_counter
+        with h.div(class_='list-actions'):
+            if security.has_permissions('edit', self):
+                h << self.actions_overlay
     return h.root
 
 
@@ -116,7 +116,6 @@ def render_column_dnd(self, h, comp, *args):
     h << comp.render(h, None)
     h << h.script(
         "YAHOO.util.Event.onDOMReady(function() {"
-        "  YAHOO.kansha.app.initList(%(list_id)s);"
         "  YAHOO.kansha.dnd.initList(%(list_id)s);"
         "  YAHOO.kansha.app.hideOverlay();"
         "})" % {'list_id': ajax.py2js(self.id)}

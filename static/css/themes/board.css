@@ -46,7 +46,7 @@ textarea.expanded {
 
 .bbody {
     position: absolute;
-    top: 65px;
+    top: 115px;
     bottom: 0;
     width: 100%;
 }
@@ -128,13 +128,12 @@ textarea.expanded {
 .board .header {
     position: fixed;
     width: 100%;
+    text-align: right;
 }
 
 .board .board-title {
     padding: 10px 10px;
     height: 50px;
-    float: right;
-    margin-right: 5%;
 }
 
 .board .board-title a,
@@ -694,8 +693,7 @@ textarea.expanded {
 /* Board view switch zone (calendar / columns / search) */
 #switch_zone {
     vertical-align: text-bottom;
-    margin: 15px 50px 0 240px;
-    float: right;
+    margin: 15px 6px 0 5px;
 }
 
 #switch_zone .btn {
@@ -1016,10 +1014,9 @@ div.history th {
 
 @media all and (max-width: 1200px) {
 
-    .board .board-title {
+    .header {
         margin-right: 5px;
     }
-
 }
 
 @media (max-width: 813px) {
@@ -1113,20 +1110,14 @@ div.history th {
 }
 
 @media all and (max-width: 780px) {
-    .bbody {
-        top: 115px;
-    }
-
-    #switch_zone {
-        margin-right: 5px;
-        margin-left: 0px;
-        clear: right;
+    #show_results {
+        min-width: 110px;
     }
 }
 
 @media all and (max-width: 640px) {
 
-    .board .board-title {
+    .board .header {
         margin-top: 30px;
     }
 

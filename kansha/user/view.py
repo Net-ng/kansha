@@ -24,7 +24,7 @@ def render_User(self, h, comp, *args):
     h << comp.render(h, "avatar")
     with h.div(class_="name"):
         h << comp.render(h, model="fullname")
-        h << h.span(self.data.email, class_="email")
+        h << h.span(self.data.email or self.data.email_to_confirm, class_="email")
     return h.root
 
 

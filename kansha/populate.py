@@ -9,7 +9,6 @@
 #--
 
 from .board.models import create_template_empty, create_template_todo
-from .user import usermanager
 
 
 def populate():
@@ -17,4 +16,3 @@ def populate():
     """
     create_template_empty()
     create_template_todo()
-    usermanager.UserManager().populate()

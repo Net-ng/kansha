@@ -13,9 +13,9 @@ from datetime import datetime, timedelta
 from nagare.namespaces import xhtml
 from nagare import component, i18n
 
-from kansha.toolbox import autocomplete
-from .models import DataUser
 from .comp import User
+from .models import DataUser
+from kansha.toolbox import autocomplete
 
 
 class UserManager(object):
@@ -92,11 +92,6 @@ class UserManager(object):
             token_gen.reset_token(token.token)
         return user
 
-    def populate(self):
-        # Create users
-        for i in xrange(1, 4):
-            user = self.create_user(u'user%d' % i, u'password', u'user %d' % i, u'user%d@net-ng.com' % i)
-            user.confirm_email()
 
 ###### TODO: Move the defintions below somewhere else ##########
 
@@ -127,8 +122,9 @@ class NewMember(object):
         Return:
          - list of tuple (email, HTML string)
         """
+        # FIXME: dont access data attributes!
         h = xhtml.Renderer(static_url=static_url)
-        return [(u.email, component.Component(UserManager.get_app_user(u.username, data=u)).render(h, "search").write_htmlstring())
+        return [(u.email or u.email_to_confirm, component.Component(UserManager.get_app_user(data=u)).render(h, "search").write_htmlstring())
                 for u in self.autocomplete_method(value)]
 
 

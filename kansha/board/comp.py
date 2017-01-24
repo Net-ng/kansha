@@ -741,9 +741,6 @@ class Board(events.EventHandlerMixIn):
         """
         return set(dbm.user.id for dbm in self.data.board_members)
 
-    def get_pending_user_ids(self):
-        return set(user.id for user in self.data.get_pending_users())
-
     def set_background_image(self, new_file):
         """Set the board's background image
         In:

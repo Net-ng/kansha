@@ -38,13 +38,11 @@ Then configure Kansha (:ref:`configuration_guide`).
 
 In any case, you always need to::
 
-    $ <VENV_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin create-db </path/to/your/kansha.cfg>
     $ <VENV_DIR>/bin/kansha-admin alembic-stamp head </path/to/your/kansha.cfg>
     $ <VENV_DIR>/bin/kansha-admin create-index </path/to/your/kansha.cfg>
 
 When you **first** deploy.
-
-The ``--no-populate`` option ensures that the default users (*user1*, *user2* and *user3*) are not created.
 
 Deployment behind a web server
 ------------------------------

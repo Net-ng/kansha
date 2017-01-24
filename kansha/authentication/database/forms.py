@@ -72,15 +72,17 @@ class Login(Authentication):
     CONFIG_SPEC = {
         'activated': 'boolean(default=True)',
         'moderator': 'string(default="")',
+        'identicons': 'boolean(default=False)',
         'default_username': 'string(default="")',
         'default_password': 'string(default="")'
     }
 
-    def __init__(self, app_title, app_banner, theme, services_service):
+    def __init__(self, app_title, app_banner, theme, assets_manager_service, services_service):
+        self.assets_manager = assets_manager_service
         self._error_message = ''
         self.registration_task = services_service(RegistrationTask, app_title, app_banner,
-                                                  theme,
-                                                  moderator=self.config['moderator'])
+                                                  theme, moderator=self.config['moderator'],
+                                                  identicons=self.config['identicons'])
         self.default_username = self.config['default_username']
         self.default_password = self.config['default_password']
         self.pwd_reset = services_service(PasswordResetTask, app_title, app_banner, theme)
@@ -875,7 +877,8 @@ class RegistrationTask(component.Task):
 
     """A task that handles the user registration process"""
 
-    def __init__(self, app_title, app_banner, theme, mail_sender_service, moderator='', username=''):
+    def __init__(self, app_title, app_banner, theme, mail_sender_service, assets_manager_service,
+                 moderator='', identicons=False, username=''):
         '''
         Register a new user (`username` not provided)
         or register email for an existing unconfirmed user (`username` provided).
@@ -885,7 +888,9 @@ class RegistrationTask(component.Task):
         self.app_banner = app_banner
         self.theme = theme
         self.mail_sender = mail_sender_service
+        self.assets_manager = assets_manager_service
         self.moderator = moderator
+        self.identicons = identicons
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.username = username
@@ -911,8 +916,12 @@ class RegistrationTask(component.Task):
                     )
                 )
             else:
-                username, application_url = comp.call(RegistrationForm(self.app_title, self.app_banner, self.theme))
+                username, application_url = comp.call(RegistrationForm(
+                    self.app_title, self.app_banner, self.theme))
             if username:
+                if self.identicons:
+                    appuser = self.user_manager.get_app_user(username)
+                    appuser.reset_avatar(self.assets_manager)
                 confirmation = self._create_email_confirmation(username, application_url)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation)

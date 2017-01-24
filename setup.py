@@ -40,6 +40,7 @@ setup(
         'Babel',
         'dateutils',
         'docutils',
+        'identicon',
         'nagare[database,i18n]==0.4.1.post473',
         'nagare-services',
         'oauth2==1.5.211',
@@ -71,6 +72,7 @@ setup(
       alembic-upgrade = kansha.alembic.admin:AlembicUpgradeCommand
       create-index = kansha.batch.create_index:ReIndex
       save-config = kansha.batch.save_config:SaveConfig
+      create-demo = kansha.batch.create_demo:CreateDemo
 
       [kansha.services]
       authentication = kansha.services.authentication_repository:AuthenticationsRepository

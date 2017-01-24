@@ -60,7 +60,7 @@ class DataUser(Entity):
         primary_key=True, nullable=False)
     source = Field(Unicode(255), nullable=False, primary_key=True)
     fullname = Field(Unicode(255), nullable=False)
-    email = Field(Unicode(255), nullable=True)
+    email = Field(Unicode(255), nullable=True, unique=True, index=True)
     picture = Field(Unicode(255), nullable=True)
     language = Field(Unicode(255), default=u"en", nullable=True)
     email_to_confirm = Field(Unicode(255))
@@ -69,7 +69,7 @@ class DataUser(Entity):
     registration_date = Field(DateTime, nullable=False)
     last_login = Field(DateTime, nullable=True)
     last_board = OneToOne('DataBoard', inverse='last_users')
-    history = OneToMany('DataHistory')
+    # history = OneToMany('DataHistory')
 
     def __init__(self, username, password, fullname, email,
                  source=u'application', picture=None, **kw):
@@ -161,4 +161,6 @@ class DataUser(Entity):
 
     @classmethod
     def search(cls, value):
-        return cls.query.filter(cls.fullname.ilike('%' + value + '%') | cls.email.ilike('%' + value + '%'))
+        return cls.query.filter(cls.fullname.ilike('%' + value + '%') |
+                                cls.email.ilike('%' + value + '%') |
+                                cls.email_to_confirm.ilike('%' + value + '%'))

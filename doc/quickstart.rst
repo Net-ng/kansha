@@ -105,6 +105,7 @@ To get quickly up and running, let's use the built-in web server, database and s
 
     $ nagare-admin create-db kansha
     $ kansha-admin alembic-stamp head
+    $ kansha-admin create-demo  # optional, create demo users and contents
 
 2. Build the search indexes (can be safely repeated anytime)::
 

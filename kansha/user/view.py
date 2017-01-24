@@ -24,7 +24,7 @@ def render_User(self, h, comp, *args):
     h << comp.render(h, "avatar")
     with h.div(class_="name"):
         h << comp.render(h, model="fullname")
-        h << h.span(self.data.email, class_="email")
+        h << h.span(self.data.email or self.data.email_to_confirm, class_="email")
     return h.root
 
 
@@ -136,7 +136,7 @@ def render_User_detailed(self, h, comp, *args):
 @presentation.render_for(User, model="friend")
 def render_User_friend(self, h, comp, *args):
     h << h.a(comp.render(h, "avatar")).action(
-        remote.Action(lambda: comp.answer([self.data.email])))
+        remote.Action(lambda: comp.answer([self.data.email or self.data.email_to_confirm])))
     return h.root
 
 

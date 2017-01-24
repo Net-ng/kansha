@@ -69,8 +69,9 @@ class DataMembership(Entity):
 
     @classmethod
     def add_card_members_from_emails(cls, card, emails):
-        """Provisinal: will take memberships instead of emails."""
-        query = cls.query.join(DataUser).filter(DataUser.email.in_(emails),
+        """Provisional: will take memberships instead of emails."""
+        query = cls.query.join(DataUser).filter(sa.or_(DataUser.email.in_(emails),
+                                                       DataUser.email_to_confirm.in_(emails)),
                                                 DataMembership.board == card.column.board)
         memberships = query.all()
         for membership in memberships:

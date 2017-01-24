@@ -56,7 +56,7 @@ class User(security_common.User):
 
     @property
     def email(self):
-        return self.data.email
+        return self.data.email or self.data.email_to_confirm
 
     @property
     def source(self):

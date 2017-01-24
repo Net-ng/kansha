@@ -373,13 +373,6 @@ textarea.expanded {
     padding: 5px 0 5px 0;
 }
 
-.members .miniavatar {
-    display: inline-block;
-    overflow: hidden;
-    max-height: 28px;
-    max-width: 28px;
-}
-
 .card .inline-labels {
     float: right;
     margin: -14px 0 0

@@ -16,16 +16,16 @@
     margin-bottom: 10px;
 }
 
-.home .boards .add,
 .home .boards a.archive,
 .home .boards a.restore,
 .home .boards a.delete,
 .home .boards a.leave {
     display: inline-block;
-    visibility: hidden;
-    overflow: hidden;
     margin: 0;
     padding: 0;
+    position: relative;
+    top: -7px;
+    visibility: hidden;
 }
 
 .home .boards ul.board-labels li:hover .add,
@@ -86,11 +86,6 @@
     display: none;
 }
 
-.board-labels .members .miniavatar {
-    display: inline-block;
-    overflow: hidden;
-    max-height: 28px;
-}
 /* End board labels */
 
 .info-message {

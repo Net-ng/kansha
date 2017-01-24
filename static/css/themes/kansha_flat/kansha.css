@@ -144,7 +144,7 @@ button.delete[disabled]{
 /* End buttons */
 
 .ico-btn {
-    font-size: 28px;
+    font-size: 21px;
     color: inherit;
 }
 
@@ -313,16 +313,13 @@ a:hover .ico-btn {
 }
 
 /* Members */
-.members {
-    display: inline-block;
-}
 
 .members .count {
     color: white;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: bold;
     background-color: #737373;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 2px solid white;
     padding: 0px 4px;
     display: inline-block;
@@ -330,23 +327,6 @@ a:hover .ico-btn {
 
 .members .count:hover {
     background-color: #5C5C5C;
-}
-
-.members .more,
-.members .add {
-    display: inline-block;
-    max-height: 28px;
-    margin-right: -11px;
-    position: relative;
-    top: -5px;
-}
-
-.members .add {
-    visibility: hidden;
-}
-
-.card:hover .members .add {
-    visibility: visible;
 }
 
 .pending {

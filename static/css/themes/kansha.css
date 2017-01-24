@@ -486,6 +486,38 @@ i.icon {
     bottom: 1px;
 }
 
+.members {
+    display: inline-block;
+}
+
+.members .more,
+.members .add {
+    display: inline-block;
+    /*max-height: 28px;*/
+    margin-right: -11px;
+    position: relative;
+    top: -7px;
+}
+
+.members .add {
+    visibility: hidden;
+}
+
+.members .miniavatar {
+    display: inline-block;
+    max-height: 28px;
+}
+
+.miniavatar .ico-btn {
+    position: relative;
+    top: -8px;
+}
+
+.card:hover .members .add {
+    visibility: visible;
+}
+
+
 .unselectable {
     cursor: default;
     margin-left: 3px;

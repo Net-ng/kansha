@@ -207,10 +207,6 @@ class DataBoard(Entity):
         """
         DataMembership.add_member(self, user, role == 'manager')
 
-    def get_pending_users(self):
-        emails = [token.username for token in self.pending]
-        return DataUser.query.filter(DataUser.email.in_(emails))
-
 
 # Populate
 DEFAULT_LABELS = (

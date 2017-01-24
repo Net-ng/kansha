@@ -105,13 +105,10 @@ class CardMembers(CardExtension):
         Return:
             - a set of ids
         """
-        return self.get_all_available_user_ids() | self.get_pending_user_ids() - set(user().id for user in self.members)
+        return self.get_all_available_user_ids() - set(user().id for user in self.members)
 
     def get_all_available_user_ids(self):
         return self.configurator.get_available_user_ids() if self.configurator else []
-
-    def get_pending_user_ids(self):
-        return self.configurator.get_pending_user_ids() if self.configurator else []
 
     @property
     def favorites(self):

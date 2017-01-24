@@ -335,8 +335,10 @@ a:hover .ico-btn {
 .members .more,
 .members .add {
     display: inline-block;
-    overflow: hidden;
-    height: 28px;
+    max-height: 28px;
+    margin-right: -11px;
+    position: relative;
+    top: -5px;
 }
 
 .members .add {

@@ -482,8 +482,8 @@ i.icon {
 
 .members .count {
     position: relative;
-    margin-left: -11px;
-    top: 1px;
+    left: -11px;
+    bottom: 1px;
 }
 
 .unselectable {

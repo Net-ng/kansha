@@ -369,6 +369,10 @@ textarea.expanded {
     visibility: visible;
 }
 
+.card .title {
+    padding: 5px 0 5px 0;
+}
+
 .members .miniavatar {
     display: inline-block;
     overflow: hidden;

@@ -49,9 +49,7 @@ def render_card_members_read_only(self, h, comp, *args):
     """
     with h.div(class_='members'):
         for m in self.members[:self.MAX_SHOWN_MEMBERS]:
-            member = m.render(h, 'avatar')
-            member.attrib.update({'class': 'miniavatar unselectable'})
-            h << member
+            h << h.span(m.render(h, 'avatar'), class_='miniavatar unselectable')
         if len(self.members) > self.MAX_SHOWN_MEMBERS:
             h << h.div(self.see_all_members, class_='more')
     return h.root

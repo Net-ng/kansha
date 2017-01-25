@@ -515,7 +515,6 @@ textarea.expanded {
 }
 
 .overlay.card-overlay .avatar {
-    overflow: hidden;
     white-space: nowrap
 }
 

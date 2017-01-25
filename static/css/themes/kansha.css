@@ -133,6 +133,7 @@ i.icon {
     max-width: 21px;
 }
 
+
 /*Error page*/
 #errorPage {
     height: auto;
@@ -492,7 +493,6 @@ i.icon {
 .members .more,
 .members .add {
     display: inline-block;
-    /*max-height: 28px;*/
     margin-right: -11px;
 }
 
@@ -502,7 +502,6 @@ i.icon {
 
 .members .miniavatar {
     display: inline-block;
-    max-height: 28px;
 }
 
 .card:hover .members .add {

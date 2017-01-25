@@ -247,7 +247,6 @@ i.icon {
 
 .avatar {
     display: inline-block;
-    height: 28px;
 }
 
 .avatar img {
@@ -495,8 +494,6 @@ i.icon {
     display: inline-block;
     /*max-height: 28px;*/
     margin-right: -11px;
-    position: relative;
-    top: -7px;
 }
 
 .members .add {
@@ -508,11 +505,6 @@ i.icon {
     max-height: 28px;
 }
 
-.miniavatar .ico-btn {
-    position: relative;
-    top: -8px;
-}
-
 .card:hover .members .add {
     visibility: visible;
 }
@@ -521,7 +513,6 @@ i.icon {
 .unselectable {
     cursor: default;
     margin-left: 3px;
-    overflow: hidden;
 }
 
 .last-manager {

@@ -23,8 +23,6 @@
     display: inline-block;
     margin: 0;
     padding: 0;
-    position: relative;
-    top: -7px;
     visibility: hidden;
 }
 
@@ -49,6 +47,7 @@
 
 .home .boards ul.board-labels li .boardItemLabel {
     width: calc(100% - 220px);
+    margin-bottom: 7px;
 }
 
 .home .boards ul.board-labels li .actions {

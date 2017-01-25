@@ -159,7 +159,10 @@ def render_Board_item(self, h, comp, *args):
 
     url = self.data.url
     with h.li:
-        h << h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel", title=self.data.description)
+        h << h.SyncRenderer().a(
+            h.i(' ', class_='icon-earth' if self.is_public() else 'icon-locked'),
+            self.data.title,
+            href=url, class_="boardItemLabel", title=self.data.description)
 
         with h.div(class_='actions'):
             h << self.comp_members.render(h, 'members')

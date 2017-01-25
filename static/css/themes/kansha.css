@@ -550,7 +550,7 @@ i.icon {
 }
 /* End errors */
 
-@media (max-width:1200px){
+@media (max-width:1240px){
     .nav-menu .actions li a {
         display: inline-block;
         width: 28px;
@@ -559,7 +559,7 @@ i.icon {
         padding: 0;
     }
     #kansha-nav-menu {
-        left: 0;
+        left: 5px;
     }
     #board-nav-menu {
         left: 160px;

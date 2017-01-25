@@ -77,6 +77,7 @@ class BoardsManager(object):
         self.guest_boards = []
         self.archived_boards = []
         last_modifications = []
+        self.shared_boards = []
         for board_obj in self._services(Board.get_all_boards, user, self.app_title,
                                         self.app_banner, self.theme,
                                         self.card_extensions,
@@ -95,15 +96,18 @@ class BoardsManager(object):
                     elif security.has_permissions('edit', board_obj):
                         self.guest_boards.append(board_comp)
 
+        for board_obj in self._services(Board.get_shared_boards, self.app_title,
+                                        self.app_banner, self.theme,
+                                        self.card_extensions,
+                                        load_children=False):
+            board_comp = component.Component(board_obj)
+            self.shared_boards.append(board_comp)
+            last_activity = board_obj.get_last_activity()
+            if last_activity is not None:
+                last_modifications.append((last_activity, board_comp))
+
         last_5 = sorted(last_modifications, reverse=True)[:5]
         self.last_modified_boards = [comp for _modified, comp in last_5]
-        self.shared_boards = [
-            component.Component(board_obj) for board_obj in
-            self._services(Board.get_shared_boards, self.app_title,
-                           self.app_banner, self.theme,
-                           self.card_extensions,
-                           load_children=False)
-        ]
 
         public, private = Board.get_templates_for(user)
         self.templates = {'public': [(b.id, b.template_title) for b in public],

@@ -107,7 +107,7 @@ def render_card_delete(self, h, comp, model):
     if security.has_permissions('edit', self) and not self.archived:
         with h.form:
             h << h.SyncRenderer().button(
-                h.i(class_='icon-trashcan'),
+                h.i(class_='icon-bin'),
                 _('Delete'),
                 onclick='return confirm(%s)' % ajax.py2js(
                     _(u'This card will be deleted. Are you sure?')

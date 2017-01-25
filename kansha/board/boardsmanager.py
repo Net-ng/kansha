@@ -26,10 +26,11 @@ class BoardsManager(object):
         self.search_engine = search_engine_service
         self._services = services_service
 
-        self.last_modified_boards = {}
-        self.my_boards = {}
-        self.guest_boards = {}
-        self.archived_boards = {}
+        self.last_modified_boards = []
+        self.my_boards = []
+        self.guest_boards = []
+        self.shared_boards = []
+        self.archived_boards = []
         self.templates = {}
 
     def get_by_id(self, id_):
@@ -72,35 +73,44 @@ class BoardsManager(object):
     def load_user_boards(self, user=None):
         if user is None:
             user = security.get_user()
-        self.my_boards.clear()
-        self.guest_boards.clear()
-        self.archived_boards.clear()
-        last_modifications = {}
-        for board_id, in Board.get_all_board_ids(user): # Comma is important
-            board_obj = self._services(Board, board_id, self.app_title, self.app_banner, self.theme,
-                                       self.card_extensions,
-                                       load_children=False)
-            if security.has_permissions('manage', board_obj) or security.has_permissions('edit', board_obj):
+        self.my_boards = []
+        self.guest_boards = []
+        self.archived_boards = []
+        last_modifications = []
+        for board_obj in self._services(Board.get_all_boards, user, self.app_title,
+                                        self.app_banner, self.theme,
+                                        self.card_extensions,
+                                        load_children=False):
+            if (security.has_permissions('manage', board_obj) or
+                    security.has_permissions('edit', board_obj)):
                 board_comp = component.Component(board_obj)
                 if board_obj.archived:
-                    self.archived_boards[board_id] = board_comp
+                    self.archived_boards.append(board_comp)
                 else:
                     last_activity = board_obj.get_last_activity()
                     if last_activity is not None:
-                        last_modifications[board_id] = (last_activity, board_comp)
+                        last_modifications.append((last_activity, board_comp))
                     if security.has_permissions('manage', board_obj):
-                        self.my_boards[board_id] = board_comp
+                        self.my_boards.append(board_comp)
                     elif security.has_permissions('edit', board_obj):
-                        self.guest_boards[board_id] = board_comp
+                        self.guest_boards.append(board_comp)
 
-        last_5 = sorted(last_modifications.values(), reverse=True)[:5]
-        self.last_modified_boards = OrderedDict((comp().id, comp) for _modified, comp in last_5)
+        last_5 = sorted(last_modifications, reverse=True)[:5]
+        self.last_modified_boards = [comp for _modified, comp in last_5]
+        self.shared_boards = [
+            component.Component(board_obj) for board_obj in
+            self._services(Board.get_shared_boards, self.app_title,
+                           self.app_banner, self.theme,
+                           self.card_extensions,
+                           load_children=False)
+        ]
+
         public, private = Board.get_templates_for(user)
         self.templates = {'public': [(b.id, b.template_title) for b in public],
                           'private': [(b.id, b.template_title) for b in private]}
 
     def purge_archived_boards(self):
-        for board in self.archived_boards.itervalues():
+        for board in self.archived_boards:
             board().load_children()
             board().delete()
         self.load_user_boards()

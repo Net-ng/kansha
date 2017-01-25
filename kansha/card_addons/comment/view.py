@@ -103,7 +103,7 @@ def render_comments_badge(self, h, *args):
     num_comments = self.num_comments
     if num_comments:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-comment'), ' ', num_comments, class_='label')
+            h << h.span(h.i(class_='icon-bubble2'), ' ', num_comments, class_='label')
     return h.root
 
 

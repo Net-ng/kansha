@@ -212,7 +212,7 @@ def render_PendingUser(self, h, comp, *args):
 def render_PendingUser_avatar(self, h, comp, model, *args):
     """Render a user's avatar"""
     with h.span(class_='avatar', title='%s' % (self.username)):
-        h << h.i(class_='ico-btn icon-envelope')
+        h << h.i(class_='ico-btn icon-mail2')
     return h.root
 
 

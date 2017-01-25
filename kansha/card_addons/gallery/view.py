@@ -76,7 +76,7 @@ def render_gallery_badge(self, h, *args):
     num_assets = self.num_assets
     if num_assets:
         with h.span(class_='badge'):
-            h << h.span(h.i(class_='icon-file'), ' ', num_assets, class_='label')
+            h << h.span(h.i(class_='icon-file-empty'), ' ', num_assets, class_='label')
     return h.root
 
 
@@ -85,7 +85,7 @@ def render_download(self, h, comp, *args):
     if security.has_permissions('edit', self):
         submit_id = h.generate_id("attach_submit")
         input_id = h.generate_id("attach_input")
-        h << h.label((h.i(class_='icon-file'),
+        h << h.label((h.i(class_='icon-file-empty'),
                       _("Add file")), class_='btn', for_=input_id)
         with h.form:
             h << h.script(

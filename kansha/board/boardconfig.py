@@ -35,7 +35,7 @@ class BoardConfig(object):
         self.menu = OrderedDict()
         self.menu['profile'] = MenuEntry(_(u'Profile'), 'icon-profile', BoardProfile)
         if security.has_permissions('manage', self.board):
-            self.menu['labels'] = MenuEntry(_(u'Card labels'), 'icon-tag', BoardLabels)
+            self.menu['labels'] = MenuEntry(_(u'Card labels'), 'icon-price-tag', BoardLabels)
             self.menu['weights'] = MenuEntry(_(u'Card weights'), 'icon-meter', BoardWeights)
             self.menu['background'] = MenuEntry(_(u'Background'), 'icon-paint-format', BoardBackground)
         self.selected = None

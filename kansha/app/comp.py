@@ -91,7 +91,7 @@ class Kansha(object):
         user = security.get_user()
         self.home_menu['boards'] = MenuEntry(
             _L(u'Boards'),
-            'board',
+            'table2',
             self.boards_manager
         )
         self.home_menu['profile'] = MenuEntry(

@@ -179,7 +179,7 @@ def render_async(self, h, comp, *args):
             with h.div(class_='calendar-today'):
                 h << h.a(h.i(class_='icon-calendar'), _(u"Today"), class_='today-link btn').action(self.set_today)
                 if self.allow_none:
-                    h << h.a(h.i(class_='icon-remove'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
+                    h << h.a(h.i(class_='icon-cross'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
 
             h << h.script(
                 "YAHOO.util.Event.onDOMReady(function() {"

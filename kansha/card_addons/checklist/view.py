@@ -138,5 +138,5 @@ def render_ChecklistItem(self, h, comp, model):
 def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
     h << h.span(self.title.render(h.AsyncRenderer()), class_='done' if self.done else '')
-    h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
+    h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
     return h.root

@@ -851,7 +851,7 @@ div.history th {
 .calendar {
     position: absolute;
     padding: 10px;
-    width: 240px;
+    width: 250px;
     z-index: 1;
 }
 

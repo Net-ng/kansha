@@ -144,7 +144,7 @@ def render_Asset_thumb(self, h, comp, model, *args):
         onclick = _(u'Are you sure you want to delete this file?')
         onclick = u'if (confirm("%s")) { %s }' % (onclick, action)
         with h.a(class_='delete', title=_(u'Delete'), href='#', onclick=onclick):
-            h << h.i(class_='icon-cancel')
+            h << h.i(class_='icon-cross')
         if self.is_image():
             with h.a(class_='cover', title=_(u'Configure cover')).action(lambda: comp.answer(('configure_cover', self))):
                 if self.is_cover:

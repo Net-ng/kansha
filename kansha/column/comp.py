@@ -49,7 +49,7 @@ class Column(events.EventHandlerMixIn):
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
-            lambda r: r.i(class_='icon-target2'),
+            lambda r: r.i(class_='icon-menu'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 

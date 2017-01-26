@@ -155,6 +155,10 @@ class Board(events.EventHandlerMixIn):
     def exists(cls, **kw):
         return DataBoard.exists(**kw)
 
+    def __eq__(self, other):
+        print other, self.id, other.id
+        return isinstance(other, Board) and self.id == other.id
+
     # Main menu actions
     def add_list(self):
         new_column_editor = column.NewColumnEditor(len(self.columns))

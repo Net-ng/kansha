@@ -391,6 +391,7 @@
         },
 
         syncError: function (status, details) {
+            this.showModal('oip');
             Dom.get('resync-action').click();
         },
 

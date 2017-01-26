@@ -28,6 +28,7 @@ nagare_callbacks = {
         if (o.responseText.substring(0, 1) !== "<") {
             setTimeout(o.responseText, 0);
         } else {
+            nagare_ongoing_request = true;
             YAHOO.kansha.app.syncError(500, 'Must reload all');
         }
     },
@@ -44,6 +45,7 @@ nagare_callbacks = {
             setTimeout(js, 0);
         } else {
             var data = YAHOO.lang.JSON.parse(o.responseText);
+            nagare_ongoing_request = true;
             YAHOO.kansha.app.syncError(data.status, data.details);
         }
     }

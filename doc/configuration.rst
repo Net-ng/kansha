@@ -299,6 +299,8 @@ schema
     * ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` for InetOrgPerson
     * ``kansha.authentication.ldap.ldap_auth:ADLDAPAuth`` for Active Directory
 
+**Note**: the ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` driver expects the fields  "displayName" and "mail" to be set.
+
 Module ``oauth``
 ^^^^^^^^^^^^^^^^
 

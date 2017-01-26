@@ -174,9 +174,12 @@ def render_Board_item(self, h, comp, *args):
 
             if security.has_permissions('manage', self):
                 h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive, comp)
-            else:
+            elif security.has_permissions('leave', self):
                 onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
                 h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave, comp)
+            else:
+                # place holder for alignment and for future feature 'request membership'
+                h << h.a(h.i(class_='ico-btn icon-user-check'), style='visibility:hidden')
     return h.root
 
 

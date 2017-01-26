@@ -96,6 +96,11 @@ class Rules(common.Rules):
         """Test if users is one of the board's members"""
         return board.has_member(user)
 
+    @when(common.Rules.has_permission, "user and (perm == 'leave') and isinstance(subject, Board)")
+    def _(self, user, perm, board):
+        """Test if users is one of the board's members"""
+        return board.has_member(user)
+
     @when(common.Rules.has_permission, "user and (perm == 'edit') and isinstance(subject, Column)")
     def _(self, user, perm, column):
         return security.has_permissions('edit', column.board)

@@ -152,8 +152,7 @@ class DataBoard(Entity):
 
     @classmethod
     def get_shared_boards(cls):
-        query = session.query(cls).join(DataMembership)
-        query = query.filter(cls.visibility == BOARD_SHARED)
+        query = session.query(cls).filter(cls.visibility == BOARD_SHARED)
         return query.order_by(cls.title)
 
     @classmethod

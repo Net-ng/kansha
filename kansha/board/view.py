@@ -183,7 +183,10 @@ def render_Board_item(self, h, comp, *args):
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
     with h.li:
-        h << h.a(self.data.title, href='#', class_="boardItemLabel")
+        h << h.span(
+            h.i(' ', class_=VISIBILITY_ICONS[self.data.visibility]),
+            self.data.title,
+            href='#', class_="boardItemLabel")
 
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):

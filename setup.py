@@ -40,6 +40,7 @@ setup(
         'Babel',
         'dateutils',
         'docutils',
+        'flup==1.0.2',
         'identicon',
         'nagare[database,i18n]==0.4.1.post473',
         'nagare-services',

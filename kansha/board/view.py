@@ -18,12 +18,17 @@ from kansha.board.boardconfig import WeightsSequenceEditor
 from .boardsmanager import BoardsManager
 from .comp import (Board, BoardDescription, BoardMember,
                    Icon)
-from .comp import (BOARD_PRIVATE, BOARD_PUBLIC,
+from .comp import (BOARD_PRIVATE, BOARD_PUBLIC, BOARD_SHARED,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
                    VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
                    WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
 from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile, BoardWeights
 
+VISIBILITY_ICONS = {
+    BOARD_PRIVATE: 'icon-lock',
+    BOARD_PUBLIC: 'icon-unlocked',
+    BOARD_SHARED: 'icon-earth'
+}
 
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
@@ -159,7 +164,10 @@ def render_Board_item(self, h, comp, *args):
 
     url = self.data.url
     with h.li:
-        h << h.SyncRenderer().a(self.data.title, href=url, class_="boardItemLabel", title=self.data.description)
+        h << h.SyncRenderer().a(
+            h.i(' ', class_=VISIBILITY_ICONS[self.data.visibility]),
+            self.data.title,
+            href=url, class_="boardItemLabel", title=self.data.description)
 
         with h.div(class_='actions'):
             h << self.comp_members.render(h, 'members')
@@ -175,12 +183,15 @@ def render_Board_item(self, h, comp, *args):
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
     with h.li:
-        h << h.a(self.data.title, href='#', class_="boardItemLabel")
+        h << h.span(
+            h.i(' ', class_=VISIBILITY_ICONS[self.data.visibility]),
+            self.data.title,
+            href='#', class_="boardItemLabel")
 
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-trashcan'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete_clicked, comp)
+                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-bin'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete_clicked, comp)
                 h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore, comp)
     return h.root
 
@@ -511,8 +522,8 @@ def render_BoardProfile(self, h, comp, *args):
     """Render the board profile form"""
     if security.has_permissions('manage', self.board):
         with h.div(class_='panel-section'):
-            h << h.div(_(u'Card Visibility'), class_='panel-section-title')
-            h << h.p(_(u'Choose whether the board is private or public.'))
+            h << h.div(_(u'Content Visibility'), class_='panel-section-title')
+            h << h.p(_(u'Choose whether the board is private, public (anyone with the URL can view it ) or shared (public + visible on homepages).'))
             with h.form:
                 with h.div(class_='btn-group'):
                     active = 'active btn-primary' if self.board.visibility == BOARD_PRIVATE else ''
@@ -521,6 +532,9 @@ def render_BoardProfile(self, h, comp, *args):
                     active = 'active btn-primary' if self.board.visibility == BOARD_PUBLIC else ''
                     h << h.button(_('Public'), class_='btn %s' % active).action(
                         lambda: self.board.set_visibility(BOARD_PUBLIC))
+                    active = 'active btn-primary' if self.board.visibility == BOARD_SHARED else ''
+                    h << h.button(_('Shared'), class_='btn %s' % active).action(
+                        lambda: self.board.set_visibility(BOARD_SHARED))
 
         with h.div(class_='panel-section'):
             h << h.div(_(u'Comments'), class_='panel-section-title')
@@ -533,7 +547,7 @@ def render_BoardProfile(self, h, comp, *args):
                     active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_MEMBERS else ''
                     h << h.button(_('Members'), class_='btn %s' % active).action(
                         lambda: self.allow_comments(COMMENTS_MEMBERS))
-                    kw = {} if self.board.visibility == BOARD_PUBLIC else {
+                    kw = {} if self.board.is_open else {
                         "disabled": "disabled"}
                     active = 'active btn-primary' if self.board.comments_allowed == COMMENTS_PUBLIC else ''
                     h << h.button(_('Public'), class_='btn %s' % active, **kw).action(
@@ -550,7 +564,7 @@ def render_BoardProfile(self, h, comp, *args):
                     active = 'active btn-primary' if self.board.votes_allowed == VOTES_MEMBERS else ''
                     h << h.button(_('Members'), class_='btn %s' % active).action(
                         lambda: self.allow_votes(VOTES_MEMBERS))
-                    kw = {} if self.board.visibility == BOARD_PUBLIC else {
+                    kw = {} if self.board.is_open else {
                         "disabled": "disabled"}
                     active = 'active btn-primary' if self.board.votes_allowed == VOTES_PUBLIC else ''
                     h << h.button(_('Public'), class_='btn %s' % active,
@@ -622,7 +636,7 @@ def render_board_background_edit(self, h, comp, *args):
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
-                h << h.label((h.i(class_='icon-file'),
+                h << h.label((h.i(class_='icon-file-picture'),
                               _("Choose an image")), class_='btn', for_=input_id)
                 with h.form(class_='hidden'):
                     h << h.script(
@@ -755,28 +769,31 @@ def render_userboards(self, h, comp, *args):
                 template(id_)
                 h << tpl
 
-            h << (u' ', _(u'board'))
-
     if self.last_modified_boards:
         h << h.h1(_(u'Last modified boards'))
         with h.ul(class_='board-labels'):
-            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards.itervalues()]
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards]
 
     h << h.h1(_(u'My boards'))
     with h.ul(class_='board-labels'):
-        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards.itervalues()]
+        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards]
 
     if self.guest_boards:
         h << h.h1(_(u'Guest boards'))
         with h.ul(class_='board-labels'):
-            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards.itervalues()]
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.guest_boards]
+
+    if self.shared_boards:
+        h << h.h1(_(u'Shared boards'))
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.shared_boards]
 
     if len(self.archived_boards):
         h << h.h1(_('Archived boards'))
 
         with h.ul(class_='board-labels'):
             h << [b.on_answer(self.handle_event).render(h, 'archived_item')
-                  for b in self.archived_boards.itervalues()]
+                  for b in self.archived_boards]
 
         with h.form:
             h << h.button(

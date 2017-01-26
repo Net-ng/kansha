@@ -47,7 +47,8 @@
 
 .home .boards ul.board-labels li .boardItemLabel {
     width: calc(100% - 220px);
-    margin-bottom: 7px;
+    margin-bottom: 4px;
+    margin-top: 3px;
 }
 
 .home .boards ul.board-labels li .actions {

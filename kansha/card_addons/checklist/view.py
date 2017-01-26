@@ -45,8 +45,9 @@ def render_Checklists_button(self, h, comp, model):
 def render_Checklists(self, h, comp, model):
     h.head.javascript_url('checklists/js/checklists.js')
     self.load_children()
+    can_edit = security.has_permissions('checklist', self.card)
     with h.div(id_='clist' + self.comp_id):
-        if security.has_permissions('checklist', self.card):
+        if can_edit:
 
             # On drag and drop
             action = h.a.action(ajax.Update(action=self.reorder, with_request=True)).get('onclick').replace('return', '')
@@ -62,13 +63,16 @@ def render_Checklists(self, h, comp, model):
                     %s;
                 }''' % action)
 
-            id_ = h.generate_id()
-            with h.div(class_='checklists', id=id_):
-                for index, clist in enumerate(self.checklists):
+        id_ = h.generate_id()
+        with h.div(class_='checklists', id=id_):
+            for index, clist in enumerate(self.checklists):
+                if can_edit:
                     clist().init_input()
                     h << clist.on_answer(
                         lambda v, index=index: self.delete_checklist(index)
                     ).render(h.AsyncRenderer())
+                else:
+                    h << clist.render(h, 'read-only')
     return h.root
 
 
@@ -82,20 +86,29 @@ def render_Checklists_badge(self, h, comp, model):
 
 
 @presentation.render_for(Checklist)
+@presentation.render_for(Checklist, 'read-only')
 def render_Checklist(self, h, comp, model):
     with h.div(id='checklist_%s' % self.id, class_='checklist'):
         with h.div(class_='title'):
             h << h.i(class_='icon-list')
-            h << self.title.render(h.AsyncRenderer())
-            h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
+            if model == 'read-only':
+                h << self.data.title
+            else:
+                h << self.title.render(h.AsyncRenderer())
+                h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
 
         with h.div(class_='content'):
             if self.items:
                 h << comp.render(h, 'progress')
             with h.ul:
                 for index, item in enumerate(self.items):
-                    h << h.li(item.on_answer(lambda v, index=index: self.delete_index(index)), id='checklist_item_%s' % item().id)
-            h << self.new_item
+                    if model == 'read-only':
+                        h << h.li(item.render(h, 'read-only'))
+                    else:
+                        h << h.li(item.on_answer(lambda v, index=index: self.delete_index(index)),
+                                  id='checklist_item_%s' % item().id)
+            if model != 'read-only':
+                h << self.new_item
     return h.root
 
 
@@ -111,6 +124,13 @@ def render_Checklist_progress(self, h, comp, model):
     with h.div(class_='progress progress-success'):
         h << h.div(class_='bar', style='width:%s%%' % progress)
         h << h.span(progress, u'%', class_='percent')
+    return h.root
+
+
+@presentation.render_for(ChecklistItem, model='read-only')
+def render_ChecklistItem(self, h, comp, model):
+    h << h.span(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked')))
+    h << h.span(self.data.title, class_='done' if self.done else '')
     return h.root
 
 

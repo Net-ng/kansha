@@ -32,12 +32,8 @@ from kansha import events, exceptions, validator
 from .boardconfig import BoardConfig
 from .excel_export import ExcelExport
 from .templates import SaveTemplateTask
-from .models import DataBoard
+from .models import DataBoard, BOARD_PRIVATE, BOARD_PUBLIC, BOARD_SHARED
 
-
-# Board visibility
-BOARD_PRIVATE = 0
-BOARD_PUBLIC = 1
 
 # Votes authorizations
 VOTES_OFF = 0
@@ -65,7 +61,7 @@ class Board(events.EventHandlerMixIn):
 
     def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine_service,
                  assets_manager_service, mail_sender_service, services_service,
-                 load_children=True):
+                 load_children=True, data=None):
         """Initialization
 
         In:
@@ -79,7 +75,7 @@ class Board(events.EventHandlerMixIn):
         self.theme = theme
         self.mail_sender = mail_sender_service
         self.id = id_
-        self._data = None
+        self._data = data
         self.assets_manager = assets_manager_service
         self.search_engine = search_engine_service
         self._services = services_service
@@ -135,8 +131,8 @@ class Board(events.EventHandlerMixIn):
                       'edit_desc': component.Component(Icon('icon-pencil', _('Edit board description'))),
                       'preferences': component.Component(Icon('icon-cog', _('Preferences'))),
                       'export': component.Component(Icon('icon-download3', _('Export board'))),
-                      'save_template': component.Component(Icon('icon-floppy', _('Save as template'))),
-                      'archive': component.Component(Icon('icon-trashcan', _('Archive board'))),
+                      'save_template': component.Component(Icon('icon-insert-template', _('Save as template'))),
+                      'archive': component.Component(Icon('icon-bin', _('Archive board'))),
                       'leave': component.Component(Icon('icon-exit', _('Leave this board'))),
                       'history': component.Component(Icon('icon-history', _("Action log"))),
                       }
@@ -158,6 +154,9 @@ class Board(events.EventHandlerMixIn):
     @classmethod
     def exists(cls, **kw):
         return DataBoard.exists(**kw)
+
+    def __eq__(self, other):
+        return isinstance(other, Board) and self.id == other.id
 
     # Main menu actions
     def add_list(self):
@@ -390,8 +389,9 @@ class Board(events.EventHandlerMixIn):
     def visibility(self):
         return self.data.visibility
 
-    def is_public(self):
-        return self.visibility == BOARD_PUBLIC
+    @property
+    def is_open(self):
+        return (self.visibility == BOARD_PUBLIC or self.visibility == BOARD_SHARED)
 
     def set_visibility(self, visibility):
         """Changes board visibility
@@ -793,9 +793,21 @@ class Board(events.EventHandlerMixIn):
         else:
             self.card_matches = set()
 
-    @staticmethod
-    def get_all_board_ids(user):
-        return DataBoard.get_all_board_ids(user.data)
+    @classmethod
+    def get_all_boards(cls, user, app_title, app_banner, theme, card_extensions,
+                       services_service, load_children=False):
+        """Return all boards the user is member of."""
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+                                 data=data, load_children=load_children)
+                for data in DataBoard.get_all_boards(user.data)]
+
+    @classmethod
+    def get_shared_boards(cls, app_title, app_banner, theme, card_extensions,
+                          services_service, load_children=False):
+        """Return all boards the user is member of."""
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+                                 data=data, load_children=load_children)
+                for data in DataBoard.get_shared_boards()]
 
     @staticmethod
     def get_templates_for(user):

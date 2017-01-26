@@ -24,6 +24,11 @@ from kansha.card_addons.label import DataLabel
 # provisional until we have board extensions
 from kansha.card_addons.members.models import DataMembership
 
+# Board visibility
+BOARD_PRIVATE = 0
+BOARD_PUBLIC = 1
+BOARD_SHARED = 2
+
 
 class DataBoard(Entity):
     """Board mapper
@@ -35,7 +40,8 @@ class DataBoard(Entity):
      - ``comments_allowed`` -- who can comment ? (0 nobody, 1 board members only , 2 all application users)
      - ``votes_allowed`` -- who can vote ? (0 nobody, 1 board members only , 2 all application users)
      - ``description`` -- board description
-     - ``visibility`` -- board visibility (0 Private, 1 Public)
+     - ``visibility`` -- board visibility [0 Private, 1 Public (anyone with the URL can view),
+                                           2 Shared (anyone can view it from her home page)]
      - ``uri`` -- board URI (Universally Unique IDentifier)
      - ``last_users`` -- list of last users
      - ``pending`` -- invitations pending for new members (use token)
@@ -138,9 +144,15 @@ class DataBoard(Entity):
         self.background_image = image or u''
 
     @classmethod
-    def get_all_board_ids(cls, user):
-        query = session.query(cls.id).join(DataMembership)
+    def get_all_boards(cls, user):
+        """Return all boards the user is member of."""
+        query = session.query(cls).join(DataMembership)
         query = query.filter(cls.is_template == False, DataMembership.user == user)
+        return query.order_by(cls.title)
+
+    @classmethod
+    def get_shared_boards(cls):
+        query = session.query(cls).filter(cls.visibility == BOARD_SHARED)
         return query.order_by(cls.title)
 
     @classmethod

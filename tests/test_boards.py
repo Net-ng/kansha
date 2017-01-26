@@ -260,28 +260,31 @@ class BoardTest(unittest.TestCase):
         self.assertTrue(board.has_manager(user))
         self.assertFalse(board.has_manager(user2))
 
+        def in_comp(obj, comp_list):
+            return any(obj == comp() for comp in comp_list)
+
         helpers.set_context(user)
         boards_manager.load_user_boards()
-        self.assertNotIn(board.id, boards_manager.last_modified_boards)
-        self.assertNotIn(board.id, boards_manager.guest_boards)
-        self.assertIn(board.id, boards_manager.my_boards)
-        self.assertNotIn(board.id, boards_manager.archived_boards)
+        self.assert_(not in_comp(board, boards_manager.last_modified_boards))
+        self.assert_(not in_comp(board, boards_manager.guest_boards))
+        self.assert_(in_comp(board, boards_manager.my_boards))
+        self.assert_(not in_comp(board, boards_manager.archived_boards))
 
         helpers.set_context(user2)
         boards_manager.load_user_boards()
-        self.assertNotIn(board.id, boards_manager.last_modified_boards)
-        self.assertIn(board.id, boards_manager.guest_boards)
-        self.assertNotIn(board.id, boards_manager.my_boards)
-        self.assertNotIn(board.id, boards_manager.archived_boards)
+        self.assert_(not in_comp(board, boards_manager.last_modified_boards))
+        self.assert_(in_comp(board, boards_manager.guest_boards))
+        self.assert_(not in_comp(board, boards_manager.my_boards))
+        self.assert_(not in_comp(board, boards_manager.archived_boards))
 
         column = board.create_column(1, u'test')
         column.create_card(u'test')
         boards_manager.load_user_boards()
-        self.assertIn(board.id, boards_manager.last_modified_boards)
+        self.assert_(in_comp(board, boards_manager.last_modified_boards))
 
         board.archive()
         boards_manager.load_user_boards()
-        self.assertIn(board.id, boards_manager.archived_boards)
+        self.assert_(in_comp(board, boards_manager.archived_boards))
 
     def test_get_by(self):
         '''Test get_by_uri and get_by_id methods'''

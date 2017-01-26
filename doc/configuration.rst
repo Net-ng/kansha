@@ -53,6 +53,8 @@ Kansha features can be activated and customized with a configuration file like t
     activated = <<AUTH_DB>>
     # moderator email if needed
     moderator = <<MOD_EMAIL>> # or empty
+    # automatically create an identicon for new users (on|off)
+    identicons = on
     # default values to fill in the login form (useful for a demo board)
     default_username = <<DEFAULT_USERNAME>>
     default_password = <<DEFAULT_PASSWORD>>
@@ -260,6 +262,9 @@ Configuration options:
 
 activated
     Whether to activate this module.
+
+identicons
+    Whether a unique avatar should be created for each new user instead of the default anonymous one.
 
 moderator
     If present, must be an email address. This activates moderation and all registration requests are fowarded to the moderator for approval. Otherwise, registration is free for humans. A CAPTCHA prevents robots from submitting.

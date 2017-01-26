@@ -70,9 +70,8 @@ class BoardsManager(object):
         template.set_visibility(BOARD_PRIVATE if not shared else BOARD_PUBLIC)
         return template
 
-    def load_user_boards(self, user=None):
-        if user is None:
-            user = security.get_user()
+    def load_user_boards(self):
+        user = security.get_user()
         self.my_boards = []
         self.guest_boards = []
         self.archived_boards = []

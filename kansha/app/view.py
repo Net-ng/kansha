@@ -86,10 +86,7 @@ def render_kansha_yui_deps(self, h, comp, *args):
 @presentation.render_for(Kansha, model='resync')
 def render_Kansha_resync(self, h, comp, model):
     with h.div(id="resync", style='display:none'):
-        h << h.h2(_(u'Synchronization error'), class_='title')
-        with h.div(class_='content'):
-            link = h.a(_(u'click here to resync'), id='resync-action').action(self.initialization)
-            h << h.p(_(u'Your board is out of sync, please '), link, '.')
+            h << h.a(_(u'click here to resync'), id='resync-action').action(self.initialization)
     return h.root
 
 

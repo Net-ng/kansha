@@ -7,28 +7,13 @@
 // this distribution.
 //--
 
-var requestsByAction = {};
-var requestsById = {};
+var nagare_ongoing_request = false;
 
-function hasRequest(action) {
-    return !YAHOO.lang.isUndefined(requestsByAction[action]);
-}
-
-function addRequest(id, action) {
-    requestsByAction[action] = id;
-    requestsById[id] = action;
-}
-
-function removeRequest(id) {
-    var action = requestsById[id];
-    delete requestsById[id];
-    delete requestsByAction[action];
-}
 
 // Callbacks
 nagare_callbacks = {
     failure: function (o) {
-        removeRequest(o.tId);
+        nagare_ongoing_request = false;
         var url = o.status ? o.getResponseHeader["X-Debug-URL"] : undefined;
         if (url) {
             window.location = url;
@@ -39,16 +24,17 @@ nagare_callbacks = {
     },
 
     success: function (o) {
-        removeRequest(o.tId);
+        nagare_ongoing_request = false;
         if (o.responseText.substring(0, 1) !== "<") {
             setTimeout(o.responseText, 0);
         } else {
+            nagare_ongoing_request = true;
             YAHOO.kansha.app.syncError(500, 'Must reload all');
         }
     },
 
     upload: function (o) {
-        removeRequest(o.tId);
+        nagare_ongoing_request = false;
         if (o.responseText.substring(0, 5) !== "URL: ") {
             var js = "", i;
             var js_fragments = o.responseXML.lastChild.lastChild.firstChild;
@@ -59,6 +45,7 @@ nagare_callbacks = {
             setTimeout(js, 0);
         } else {
             var data = YAHOO.lang.JSON.parse(o.responseText);
+            nagare_ongoing_request = true;
             YAHOO.kansha.app.syncError(data.status, data.details);
         }
     }
@@ -66,11 +53,10 @@ nagare_callbacks = {
 
 // Callers
 function nagare_getAndEval(href) {
-    var actionId = /_action([0-9]+)/.exec(href)[1];
     YAHOO.util.Connect.initHeader("ACCEPT", NAGARE_CONTENT_TYPE);
-    if (!hasRequest(actionId)) {
+    if (!nagare_ongoing_request) {
         var req = YAHOO.util.Connect.asyncRequest("GET", href, nagare_callbacks);
-        addRequest(req.tId, actionId);
+        nagare_ongoing_request = true;
     }
     return false;
 }
@@ -87,12 +73,11 @@ function nagare_hasUpload(f) {
 }
 
 function nagare_postAndEval(f, action) {
-    var actionId = /_action([0-9]+)/.exec(action)[1];
     YAHOO.util.Connect.initHeader("ACCEPT", NAGARE_CONTENT_TYPE);
     YAHOO.util.Connect.setForm(f, nagare_hasUpload(f));
-    if (!hasRequest(actionId)) {
+    if (!nagare_ongoing_request) {
         var req = YAHOO.util.Connect.asyncRequest("POST", "?_a&" + action, nagare_callbacks);
-        addRequest(req.tId, actionId);
+        nagare_ongoing_request = true;
     }
     return false;
 }

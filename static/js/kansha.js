@@ -391,16 +391,10 @@
         },
 
         syncError: function (status, details) {
-            var onClick = function () {
-                Dom.get('resync-action').click();
-            };
-            Dom.setStyle('mask', 'z-index', '1750');
-            Dom.setStyle('mask', 'display', 'block');
-            Dom.setStyle('resync', 'display', 'block');
-            Event.removeListener('mask', 'click');
-            Event.addListener('mask', 'click', onClick);
-            NS.app.showPopin('resync', onClick);
-            NS.app.popin.cfg.setProperty('zIndex', 2000);
+            console.log(status);
+            console.log(details);
+            this.showModal('oip');
+            Dom.get('resync-action').click();
         },
 
         checkFileSize: function (input, maxSize) {

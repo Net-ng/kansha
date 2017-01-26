@@ -595,13 +595,3 @@ i.icon {
     min-width: 200px;
 }
 /* End modal window */
-
-/* Resync content */
-#resync .content {
-    padding: 10px 0;
-}
-
-#resync h2 {
-    line-height: 1.2;
-}
-/* End resync content */

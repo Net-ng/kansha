@@ -216,8 +216,7 @@ class WSGIApp(wsgi.WSGIApp):
                         'theme': 'string(default="kansha_flat")',
                         'favicon': 'string(default="img/favicon.ico")',
                         'disclaimer': 'string(default="")',
-                        'activity_monitor': "string(default='')",
-                        'templates': "string(default='')"},
+                        'activity_monitor': "string(default='')"},
         'locale': {
             'major': 'string(default="en")',
             'minor': 'string(default="US")'
@@ -257,7 +256,6 @@ class WSGIApp(wsgi.WSGIApp):
         self.debug = conf['application']['debug']
         self.default_locale = i18n.Locale(
             conf['locale']['major'], conf['locale']['minor'])
-        tpl_cfg = conf['application']['templates']
         pub_cfg = {
             'disclaimer': conf['application']['disclaimer'].decode('utf-8'),
             'banner': conf['application']['banner'].decode('utf-8'),
@@ -265,7 +263,6 @@ class WSGIApp(wsgi.WSGIApp):
         }
         self.app_config = {
             'authentication': conf['authentication'],
-            'tpl_cfg': tpl_cfg,
             'pub_cfg': pub_cfg
         }
         self.activity_monitor = conf['application']['activity_monitor']

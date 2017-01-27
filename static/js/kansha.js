@@ -493,7 +493,8 @@
                     },
                     weekNumbers: displayWeekNumbers,
                     weekNumberCalculation: "ISO",
-                    firstDay: 1 // ISO week
+                    firstDay: 1, // ISO week
+                    eventDurationEditable: false,
                 });
         },
 

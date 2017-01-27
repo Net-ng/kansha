@@ -109,6 +109,8 @@ class Column(events.EventHandlerMixIn):
                 card_bo.add_to_index(self.search_engine, self.board.id, update=True)
                 self.search_engine.commit()
                 self.emit_event(comp, events.SearchIndexUpdated)
+        elif event.is_(events.CardArchived):
+            self.remove_card_by_id(event.last_relay.id)
 
     @property
     def data(self):
@@ -146,12 +148,16 @@ class Column(events.EventHandlerMixIn):
             self.purge_cards()
         else:
             for card in self.cards:
-                self.archive_card(card())
+                # FIXME: move to board only, use Events
+                self.board.archive_card(card(), self)
         DataColumn.delete_column(self.data)
 
     def remove_card_comp(self, card):
         self.cards.remove(card)
-        self.data.remove_card(card().data)
+        business = card()
+        if isinstance(business, popin.Popin):
+            business = business.get_business_object()
+        self.data.remove_card(business.data)
 
     def remove_card_by_id(self, card_id):
         """Remove card and return corresponding Component."""
@@ -204,18 +210,6 @@ class Column(events.EventHandlerMixIn):
     def append_card(self, card):
         self.data.append_card(card.data)
         self.cards.append(component.Component(card))
-
-    # FIXME: move to board only, use Events
-    def archive_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self._cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.get_title(), 'card': c.get_title()}
-        c.action_log.add_history(security.get_user(), u'card_archive', values)
-        self.board.archive_card(c, self)
 
     def create_card(self, text=''):
         """Create a new card

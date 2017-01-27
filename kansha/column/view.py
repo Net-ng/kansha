@@ -28,13 +28,6 @@ def render(self, h, comp, *args):
     with h.div(class_=column_class, id=self.id, ):
         h << comp.render(h.AsyncRenderer(), 'header')
         h << comp.render(h.AsyncRenderer(), 'body')
-    h << h.script(
-        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
-        {
-            'list_id': ajax.py2js(self.id),
-            'limit': ajax.py2js(self.nb_max_cards or 0)
-        }
-    )
     return h.root
 
 
@@ -69,12 +62,6 @@ def render_column_overlay(self, h, comp, *args):
                     }
                 )
                 h << h.a(_(u'Delete this list'), onclick=onclick)
-            h << h.li(
-                h.a(_('Set cards limit')).action(
-                    comp.answer, 'set_limit'
-                ),
-                id=self.id + '_counter_option'
-            )
         else:
             with h.li:
                 onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
@@ -96,7 +83,6 @@ def render_column_header(self, h, comp, *args):
         with h.div(class_='list-title', id=self.id + '_title'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
-            h << self.card_counter
         with h.div(class_='list-actions'):
             if security.has_permissions('edit', self):
                 h << self.actions_overlay
@@ -137,8 +123,6 @@ def render_column_body(self, h, comp, *args):
         with h.div(class_='list-footer', id=self.id + '_footer', **kw):
             if security.has_permissions('edit', self):
                 h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
-
-    h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
     return h.root
 
 
@@ -176,51 +160,4 @@ def render_NewColumnEditor(self, h, comp, *args):
             h << h.button(_('Add'), class_=('btn btn-primary')).action(self.commit, comp)
             h << ' '
             h << h.a(_('Cancel'), class_='btn').action(self.cancel, comp)
-    return h.root
-
-
-@presentation.render_for(CardsCounter)
-def render_CardsCounter(self, h, comp, *args):
-    with h.div(class_='list-counter'):
-        self.error = None
-        with h.div(class_='cardCounter', id=self.id):
-            h << {'style': 'cursor: default'}
-            h << h.span(self.text)
-    h << h.script(
-        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
-        "YAHOO.kansha.app.countCards(%(list_id)s);" %
-        {
-            'list_id': ajax.py2js(self.column.id),
-            'limit': ajax.py2js(self.column.nb_max_cards or 0)
-        }
-    )
-    return h.root
-
-
-@presentation.render_for(CardsCounter, model='edit')
-def render_CardsCounter_edit(self, h, comp, *args):
-    """Render the title of the associated object"""
-    text = var.Var(self.text)
-    with h.form(class_='title-form'):
-        id_ = h.generate_id()
-        h << h.input(id=id_, type='text', value=self.column.nb_max_cards or '').action(text)
-        h << h.script(
-            """YAHOO.util.Event.on(%s, 'keyup', function (e) {
-                    var result =this.value.replace(/[^0-9]/g, '')
-                    if (this.value !=result) {
-                           this.value = result;
-                        }
-             });""" % ajax.py2js(id_)
-        )
-        h << h.button(_('Save'), class_='btn btn-primary').action(
-            lambda: self.validate(text(), comp))
-        h << ' '
-        h << h.button(_('Cancel'), class_='btn').action(self.cancel, comp)
-        if self.error is not None:
-            with h.div(class_='nagare-error-message'):
-                h << self.error
-        h << h.script(
-            "YAHOO.kansha.app.selectElement(%s);"
-            "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
-        )
     return h.root

@@ -66,10 +66,6 @@ Card labels
 Card labels are kind of tags users can set on cards. They are predefined here.
 Give them a name and a color. You can't add nor remove labels from this list.
 
-Card weights
-^^^^^^^^^^^^
-
-Cards can be weighted by order of importance. If you enable that ranking, you can define a predefined sequence of weights to choose from or let your members freely weight the cards.
 
 Background
 ^^^^^^^^^^

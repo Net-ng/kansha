@@ -13,16 +13,14 @@ from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
 from kansha.toolbox import overlay, remote
-from kansha.board.boardconfig import WeightsSequenceEditor
 
 from .boardsmanager import BoardsManager
 from .comp import (Board, BoardDescription, BoardMember,
                    Icon)
 from .comp import (BOARD_PRIVATE, BOARD_PUBLIC, BOARD_SHARED,
                    COMMENTS_OFF, COMMENTS_PUBLIC, COMMENTS_MEMBERS,
-                   VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS,
-                   WEIGHTING_FREE, WEIGHTING_LIST, WEIGHTING_OFF)
-from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile, BoardWeights
+                   VOTES_OFF, VOTES_PUBLIC, VOTES_MEMBERS)
+from .boardconfig import BoardBackground, BoardConfig, BoardLabels, BoardProfile
 
 VISIBILITY_ICONS = {
     BOARD_PRIVATE: 'icon-lock',
@@ -314,7 +312,7 @@ def render_Board_columns(self, h, comp, *args):
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
             # Call columns resize
-            h << h.script("YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();$(window).trigger('reload_search');")
+            h << h.script("YAHOO.kansha.app.columnsResize();$(window).trigger('reload_search');")
     return h.root
 
 
@@ -405,118 +403,6 @@ def render_BoardLabels_edit(self, h, comp, *args):
                         h << title.render(h.AsyncRenderer())
                     with h.div(class_='label-color'):
                         h << label
-    return h.root
-
-
-@presentation.render_for(BoardWeights, model='menu')
-def render_boardweights_menu(self, h, comp, *args):
-    """Render the link leading to the weights configuration"""
-    h << h.a(_('Weights')).action(comp.answer)
-    return h.root
-
-
-@presentation.render_for(BoardWeights)
-@presentation.render_for(BoardWeights, model='edit')
-def render_boardweights_edit(self, h, comp, *args):
-    """Render the weights configuration panel"""
-    with h.div(class_='panel-section'):
-        h << h.div(_(u'Weighting cards'), class_='panel-section-title')
-        h << h.p(_(u'Activate cards weights'))
-        with h.form:
-            with h.div(class_='btn-group'):
-                h << h.a(
-                    _('Disabled'),
-                    class_='btn %s' % (
-                        'active btn-primary'
-                        if self.board.weighting_cards == WEIGHTING_OFF
-                        else ''
-                    ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                self.deactivate_weighting
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    )
-                )
-
-                h << h.button(
-                    _('Free integer'),
-                    class_='btn %s' % (
-                        'active btn-primary'
-                        if self.board.weighting_cards == WEIGHTING_FREE
-                        else ''
-                    ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                lambda: self.activate_weighting(WEIGHTING_FREE)
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    ),
-                    title=_('Card weights can be any integer')
-                )
-
-                h << h.button(
-                    _('Integer sequence'),
-                    class_='btn %s' % (
-                        'active btn-primary'
-                        if self.board.weighting_cards == WEIGHTING_LIST
-                        else ''
-                    ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                lambda: self.activate_weighting(WEIGHTING_LIST)
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    ),
-                    title=_('Choosen within a sequence of integers')
-                )
-
-        if self.board.weighting_cards == WEIGHTING_LIST:
-            h << h.p(_('Enter a sequence of integers'))
-            h << self._weights_editor
-
-    return h.root
-
-
-@presentation.render_for(WeightsSequenceEditor)
-def render_weightssequenceeditor(self, h, comp, model):
-    with h.form(class_='weights-form'):
-        kw = {'disabled': 'disabled'}
-        if not self.weights():
-            kw["placeholder"] = "10,20,30"
-        h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Edit'), class_='btn btn-primary').action(lambda: comp.call(self, 'edit'))
-    return h.root
-
-
-@presentation.render_for(WeightsSequenceEditor, 'edit')
-def render_weightssequenceeditor_edit(self, h, comp, model):
-
-    def answer():
-        if self.commit():
-            comp.call(self, None)
-
-    with h.form(class_='weights-form'):
-        kw = {}
-        if not self.weights():
-            kw["placeholder"] = "10,20,30"
-        h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Save'), class_='btn btn-primary').action(answer)
     return h.root
 
 

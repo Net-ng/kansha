@@ -36,7 +36,6 @@ class BoardConfig(object):
         self.menu['profile'] = MenuEntry(_(u'Profile'), 'icon-profile', BoardProfile)
         if security.has_permissions('manage', self.board):
             self.menu['labels'] = MenuEntry(_(u'Card labels'), 'icon-price-tag', BoardLabels)
-            self.menu['weights'] = MenuEntry(_(u'Card weights'), 'icon-meter', BoardWeights)
             self.menu['background'] = MenuEntry(_(u'Background'), 'icon-paint-format', BoardBackground)
         self.selected = None
         self.content = component.Component(None)
@@ -69,69 +68,6 @@ class BoardLabels(object):
             t.on_answer(label.set_title)
             l = component.Component(label, model='edit-color')
             self.labels.append((t, l))
-
-
-class BoardWeights(object):
-
-    """Board configuration component for card weights"""
-
-    def __init__(self, board):
-        """Initialization
-
-        In:
-            - ``board`` -- the board object we are working on
-        """
-        self.board = board
-        self._weights_editor = component.Component(WeightsSequenceEditor(self))
-
-    @property
-    def weights(self):
-        return self.board.weights
-
-    @weights.setter
-    def weights(self, value):
-        self.board.weights = value
-
-    def activate_weighting(self, weighting_type):
-        self.board.activate_weighting(weighting_type)
-
-    def deactivate_weighting(self):
-        self.board.deactivate_weighting()
-
-
-class WeightsSequenceEditor(editor.Editor):
-
-    """Weights Sequence form"""
-    fields = {'weights'}
-
-    def __init__(self, target, *args):
-        """Initialization
-
-        In:
-            - ``board`` -- the board object we are working on
-        """
-        super(WeightsSequenceEditor, self).__init__(target, self.fields)
-        self.weights.validate(self.validate_sequence)
-
-    def validate_sequence(self, value):
-        try:
-            res = validator.StringValidator(value, strip=True).not_empty(msg=i18n._("Required field")).to_string()
-        except:
-            raise
-        if res:
-            try:
-                weights = res.split(',')
-                for weight in weights:
-                    res = validator.IntValidator(weight).to_int()
-            except:
-                raise ValueError(i18n._('Must be composed of integers'))
-        return value
-
-    def commit(self):
-        if self.is_validated(self.fields):
-            super(WeightsSequenceEditor, self).commit(self.fields)
-            return True
-        return False
 
 
 class BoardProfile(object):

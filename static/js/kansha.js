@@ -410,60 +410,6 @@
             return true;
         },
 
-        countCards: function (column) {
-            column = Dom.get(column);
-            var counter = Dom.get(column.id + '_counter');
-            if (counter) {
-                var limit = parseInt(localStorage[column.id]);
-                var header = Dom.get(column.id + '_header');
-                var footer = Dom.get(column.id + '_footer');
-                var cards = ECN('card', null, column);
-                var numCards = cards.length;
-                var textCount = limit > 0 ? numCards + '/' + limit : numCards;
-                var counter = Dom.get(column.id + '_counter');
-                var content = counter.childNodes[0];
-                content.innerHTML = textCount;
-                if (limit > 0 && numCards >= limit) {
-                    Dom.addClass(counter, 'limitReached');
-                    Dom.addClass(footer, 'hidden');
-                    Dom.removeClass(counter, 'hidden');
-                } else if (limit === 0) {
-                    Dom.addClass(counter, 'hidden');
-                } else {
-                    Dom.removeClass(counter, 'limitReached');
-                    Dom.removeClass(footer, 'hidden');
-                }
-            }
-        },
-
-        refreshCardsCounters: function () {
-            Dom.batch(Selector.query('#lists .list'), this.countCards);
-        },
-
-        saveLimit: function (column, limit) {
-            localStorage[Dom.get(column).id] = limit;
-        },
-
-        hideCardsLimitEdit: function (column) {
-            column = Dom.get(column);
-            var counter = Dom.get(column.id + '_counter');
-            var option = Dom.get(column.id + '_counter_option');
-            if (counter) {
-                Dom.addClass(counter, 'hidden');
-            }
-        },
-
-        showCardsLimitEdit: function (column) {
-            column = Dom.get(column);
-            var counter = Dom.get(column.id + '_counter');
-            var option = Dom.get(column.id + '_counter_option');
-            var limit = parseInt(localStorage[column.id], 10);
-            if (counter && limit > 0) {
-                Dom.removeClass(counter, 'hidden');
-            }
-            NS.app.showTitleForm(column.id);
-        },
-
         setTitleColor: function (color) {
             Dom.setStyle(Selector.query('.board-title a'), 'color', color || '');
         },

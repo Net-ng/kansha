@@ -46,12 +46,6 @@ COMMENTS_MEMBERS = 1
 COMMENTS_PUBLIC = 2
 
 
-# WEIGHTING CARDS
-WEIGHTING_OFF = 0
-WEIGHTING_FREE = 1
-WEIGHTING_LIST = 2
-
-
 class Board(events.EventHandlerMixIn):
 
     """Board component"""
@@ -82,7 +76,6 @@ class Board(events.EventHandlerMixIn):
         # Board extensions are not extracted yet, so
         # board itself implement their API.
         self.board_extensions = {
-            'weight': self,
             'labels': self,
             'members': self,
             'comments': self,
@@ -438,36 +431,6 @@ class Board(events.EventHandlerMixIn):
         card.add_to_index(self.search_engine, self.id, update=True)
         self.search_engine.commit()
         self.increase_version()
-
-    @property
-    def weighting_cards(self):
-        return self.data.weighting_cards
-
-    def activate_weighting(self, weighting_type):
-        if weighting_type == WEIGHTING_FREE:
-            self.data.weighting_cards = 1
-        elif weighting_type == WEIGHTING_LIST:
-            self.data.weighting_cards = 2
-
-        # reinitialize cards weights
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                card.weight = ''
-        for card in self.archive_column.cards:
-            card.weight = ''
-
-    @property
-    def weights(self):
-        return self.data.weights
-
-    @weights.setter
-    def weights(self, weights):
-        self.data.weights = weights
-
-    def deactivate_weighting(self):
-        self.data.weighting_cards = 0
-        self.data.weights = ''
 
     def delete_clicked(self, comp):
         return self.emit_event(comp, events.BoardDeleted)

@@ -42,7 +42,6 @@ class Column(events.EventHandlerMixIn):
         self.body = component.Component(self, 'body')
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-        self.card_counter = component.Component(CardsCounter(self))
         self._cards = None
         self.new_card = component.Component(
             comp.NewCard(self))
@@ -83,8 +82,6 @@ class Column(events.EventHandlerMixIn):
     def actions(self, action, comp):
         if action == 'delete':
             self.emit_event(comp, events.ColumnDeleted, comp)
-        elif action == 'set_limit':
-            self.card_counter.call(model='edit')
         elif action == 'purge':
             self.purge_cards()
         self.emit_event(comp, events.SearchIndexUpdated)
@@ -313,7 +310,6 @@ class CardsCounter(object):
 
     def __init__(self, column):
         self.column = column
-        self.id = self.column.id + '_counter'
         self.text = self.get_label()
         self.error = None
 

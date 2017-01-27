@@ -31,7 +31,7 @@ NOTIFY_ALL = 2
 # Groups
 GROUP_EVENTS = (
     ('affected', ('card_add_member', 'card_remove_member')),
-    ('modified', ('card_move', 'card_title', 'card_add_file', 'card_add_comment', 'card_weight',
+    ('modified', ('card_move', 'card_title', 'card_add_file', 'card_add_comment',
                   'card_add_list', 'card_delete_list', 'card_listitem_done', 'card_listitem_undone')),
     ('add_remove', ('card_create', 'card_delete', 'card_archive'))
 )

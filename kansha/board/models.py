@@ -72,9 +72,6 @@ class DataBoard(Entity):
     show_archive = Field(Integer, default=0)
     archived = Field(Boolean, default=False)
 
-    weighting_cards = Field(Integer, default=0)
-    weights = Field(Unicode(255), default=u'')
-
     @property
     def template_title(self):
         manager = self.get_first_manager()
@@ -94,9 +91,7 @@ class DataBoard(Entity):
                              background_position=self.background_position,
                              title_color=self.title_color,
                              comments_allowed=self.comments_allowed,
-                             votes_allowed=self.votes_allowed,
-                             weighting_cards=self.weighting_cards,
-                             weights=self.weights)
+                             votes_allowed=self.votes_allowed)
         session.flush()
         # TODO: move to board extension
         for label in self.labels:

@@ -336,8 +336,6 @@
                     var data = {dest: Dom.getAttribute(dest, 'id'),
                                 orig: Dom.getAttribute(self.origin, 'id'),
                                 card: cardId, index: index};
-                    YAHOO.kansha.app.countCards(dest);
-                    YAHOO.kansha.app.countCards(self.origin);
                     _send_card_position(data);
                 });
 

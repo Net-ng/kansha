@@ -908,24 +908,7 @@ div.history th {
 
 /* End calendar */
 
-/* Weights */
-.weights-form {
-    margin-top: 10px;
-}
-
-.weights-form input {
-    width: 50%;
-    margin-bottom: 0;
-}
-
-.actionWeight select {
-    overflow: hidden;
-    margin: 0;
-    height: auto;
-}
-/* End weights */
-
-/* Weights */
+/* Labels */
 .inline-labels .card-label {
     width: 14px;
     height: 14px;
@@ -942,7 +925,7 @@ div.history th {
 .label-color-picker .yui-picker-controls .bd input {
     padding: 0;
 }
-/* End weights */
+/* End labels */
 
 /* Popin */
 

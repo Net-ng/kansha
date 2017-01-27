@@ -96,7 +96,6 @@ On a card you can:
 * add and check check-lists;
 * add files;
 * vote (if activated by the board owner, see :ref:`board_configuration`);
-* give it some weight (if activated by the board owner, see :ref:`board_configuration`);
 * set a due date;
 * assign members to it.
 

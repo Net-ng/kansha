@@ -515,15 +515,7 @@ div.history th {
 }
 /* End calendar */
 
-/* Weights */
-.actionWeight select {
-    border: none;
-    outline: none;
-    background-color: transparent;
-}
-/* End weights */
-
-/* Weights */
+/* Labels */
 .inline-labels .card-label {
     border-radius: 14px;
     border: 2px solid white;
@@ -533,7 +525,7 @@ div.history th {
 .label-color-picker .yui-picker-controls .bd {
     background-color: inherit;
 }
-/* End weights */
+/* End labels */
 
 /* Popin */
 .yui-skin-sam .mask {

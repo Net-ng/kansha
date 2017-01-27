@@ -755,6 +755,11 @@ def render_userboards(self, h, comp, *args):
     h.head.css_url('css/themes/home.css')
     h.head.css_url('css/themes/%s/home.css' % self.theme)
 
+    default_template_i18n = {
+        'Empty board': _(u'Empty board'),
+        'Basic Kanban': _(u'Basic Kanban')
+    }
+
     with h.div(class_='new-board'):
         with h.form:
             h << h.SyncRenderer().button(_(u'Create'), type='submit', class_='btn btn-primary').action(lambda: self.create_board(template(), comp))
@@ -763,10 +768,12 @@ def render_userboards(self, h, comp, *args):
             if len(self.templates) > 1:
                 with h.select.action(template):
                     with h.optgroup(label=_(u'Shared templates')):
-                        h << [h.option(tpl, value=id_) for id_, tpl in self.templates['public']]
+                        h << [h.option(default_template_i18n.get(tpl, tpl), value=id_) for
+                              id_, tpl in self.templates['public']]
                     if self.templates['private']:
                         with h.optgroup(label=_(u'My templates')):
-                            h << [h.option(tpl, value=id_) for id_, tpl in self.templates['private']]
+                            h << [h.option(_(tpl), value=id_) for
+                                  id_, tpl in self.templates['private']]
             else:
                 id_, tpl = self.templates.items()[0]
                 template(id_)

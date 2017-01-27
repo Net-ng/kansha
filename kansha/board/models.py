@@ -240,7 +240,7 @@ def create_template_empty():
 
 
 def create_template_todo():
-    board = DataBoard(title=u'Todo', is_template=True, visibility=1)
+    board = DataBoard(title=u'Basic Kanban', is_template=True, visibility=1)
     for index, title in enumerate((u'To Do', u'Doing', u'Done')):
         board.create_column(index, title)
     for title, color in DEFAULT_LABELS:

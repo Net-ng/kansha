@@ -15,7 +15,8 @@
         Selector = Y.Selector,
         ECN = Dom.getElementsByClassName,
         ACN = Dom.getAncestorByClassName,
-        NS = YAHOO.namespace('kansha');
+        NS = YAHOO.namespace('kansha'),
+        eventCache = {};
     // methods to refresh cards
     NS.reload_cards = {};
 
@@ -500,7 +501,11 @@
             var myEvent = event;
             myEvent.clicked_cb = clicked_cb;
             myEvent.dropped_cb = dropped_cb;
+            if (event._id in eventCache) {
+                calendar.fullCalendar('removeEvents', event._id);
+            }
             calendar.fullCalendar('renderEvent', myEvent, true);
+            eventCache[event._id] = true;
         },
 
         init_ckeditor: function(id, language) {

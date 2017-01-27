@@ -123,8 +123,9 @@ def render_in_calendar(self, h, comp, *args):
     if due_date:
         due_date = ajax.py2js(due_date, h)
         parent_title = self.emit_event(comp, events.ParentTitleNeeded) or ''
-        card = u'{title:%s, editable:true, allDay: true, start: %s}' % (
-            ajax.py2js(u'{} ({})'.format(self.data.title, parent_title), h).decode('utf-8'), due_date)
+        card = u'{title:%s, editable:true, allDay: true, start: %s, _id: %s}' % (
+            ajax.py2js(u'{} ({})'.format(self.data.title, parent_title), h).decode('utf-8'),
+            due_date, ajax.py2js(self.id, h))
         clicked_cb = h.a.action(
             lambda: self.emit_event(comp, events.CardClicked, comp)
         ).get('onclick')

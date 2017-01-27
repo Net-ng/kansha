@@ -40,7 +40,7 @@ def render(self, h, comp, *args):
 
 @presentation.render_for(Column, 'calendar')
 def render(self, h, comp, *args):
-    return [card.render(h, 'calendar') for card in self.cards]
+    return [card.render(h.AsyncRenderer(), 'calendar') for card in self.cards]
 
 
 @presentation.render_for(Column, 'new')

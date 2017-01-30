@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2012-2014 Net-ng.
+# Copyright (c) 2012-2017 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -7,6 +7,11 @@
 # this distribution.
 #--
 
-from .services_repository import ServicesRepository
-from .components_repository import CardExtensions, ColumnExtensions
-from .actionlog import ActionLog
+from nagare import presentation
+
+from .comp import ColumnExtension
+
+
+@presentation.render_for(ColumnExtension, 'header')
+def render(*args):
+    return ''

@@ -47,7 +47,7 @@ class Kansha(object):
     """The Kansha root component"""
 
     def __init__(self, app_title, app_banner, favicon, theme,
-                 card_extensions, services_service):
+                 card_extensions, column_extensions, services_service):
         """Initialization
         """
         self.app_title = app_title
@@ -55,6 +55,7 @@ class Kansha(object):
         self.favicon = favicon
         self.theme = theme
         self.card_extensions = card_extensions
+        self.column_extensions = column_extensions
         self._services = services_service
 
         self.title = component.Component(self, 'tab')
@@ -63,7 +64,7 @@ class Kansha(object):
         self.user_manager = UserManager()
         self.boards_manager = self._services(
             BoardsManager, self.app_title, self.app_banner, self.theme,
-            card_extensions)
+            card_extensions, column_extensions)
 
         self.home_menu = OrderedDict()
         self.selected = 'board'
@@ -166,7 +167,7 @@ class Kansha(object):
 
 
 class MainTask(component.Task):
-    def __init__(self, app_title, theme, config, card_extensions, services_service):
+    def __init__(self, app_title, theme, config, card_extensions, column_extensions, services_service):
         self.app_title = app_title
         self.theme = theme
         self._services = services_service
@@ -179,6 +180,7 @@ class MainTask(component.Task):
             self.favicon,
             self.theme,
             card_extensions,
+            column_extensions
         )
         self.config = config
 
@@ -237,6 +239,9 @@ class WSGIApp(wsgi.WSGIApp):
         self.card_extensions = services.CardExtensions(
             config_filename, error, conf
         )
+        self.column_extensions = services.ColumnExtensions(
+            config_filename, error, conf
+        )
 
         self.as_root = conf['application']['as_root']
         self.app_title = unicode(conf['application']['title'], 'utf-8')
@@ -281,6 +286,7 @@ class WSGIApp(wsgi.WSGIApp):
             self.theme,
             self.app_config,
             self.card_extensions,
+            self.column_extensions,
             self._services
         )
 

@@ -34,3 +34,28 @@ class CardExtensions(plugins.Plugins):
             (name, services_service(klass, card, action_log, self.CONFIGURATORS.get(name)))
             for name, klass in self.items()
         ]
+
+
+class ColumnExtensions(plugins.Plugins):
+    ENTRY_POINTS = 'kansha.column.extensions'
+    CONFIG_SECTION = 'column_extensions'
+    CONFIGURATORS = {}
+
+    def set_configurators(self, configurators):
+        """
+        Return a copy of self with
+        CONFIGURATORS set.
+        """
+
+        repository = self.copy()
+        repository.CONFIGURATORS = configurators
+        return repository
+
+    def instantiate_items(self, column, action_log, services_service):
+        """
+        Return items as CardExtension instances for given card.
+        """
+        return [
+            (name, services_service(klass, column, action_log, self.CONFIGURATORS.get(name)))
+            for name, klass in self.items()
+        ]

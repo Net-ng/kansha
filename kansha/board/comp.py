@@ -53,7 +53,7 @@ class Board(events.EventHandlerMixIn):
     MAX_SHOWN_MEMBERS = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine_service,
+    def __init__(self, id_, app_title, app_banner, theme, card_extensions, column_extensions, search_engine_service,
                  assets_manager_service, mail_sender_service, services_service,
                  load_children=True, data=None):
         """Initialization
@@ -82,6 +82,7 @@ class Board(events.EventHandlerMixIn):
             'votes': self
         }
         self.card_extensions = card_extensions.set_configurators(self.board_extensions)
+        self.column_extensions = column_extensions.set_configurators(self.board_extensions)
 
         self.action_log = ActionLog(self)
 
@@ -190,7 +191,8 @@ class Board(events.EventHandlerMixIn):
         new_data = self.data.copy()
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, load_children=False)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme,
+                                   self.card_extensions, self.column_extensions, load_children=False)
         new_board.add_member(owner, 'manager')
 
         assert(self.columns or self.data.is_template)
@@ -757,18 +759,18 @@ class Board(events.EventHandlerMixIn):
             self.card_matches = set()
 
     @classmethod
-    def get_all_boards(cls, user, app_title, app_banner, theme, card_extensions,
+    def get_all_boards(cls, user, app_title, app_banner, theme, card_extensions, column_extensions,
                        services_service, load_children=False):
         """Return all boards the user is member of."""
-        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions, column_extensions,
                                  data=data, load_children=load_children)
                 for data in DataBoard.get_all_boards(user.data)]
 
     @classmethod
-    def get_shared_boards(cls, app_title, app_banner, theme, card_extensions,
+    def get_shared_boards(cls, app_title, app_banner, theme, card_extensions, column_extensions,
                           services_service, load_children=False):
         """Return all boards the user is member of."""
-        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions, column_extensions,
                                  data=data, load_children=load_children)
                 for data in DataBoard.get_shared_boards()]
 

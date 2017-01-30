@@ -18,11 +18,12 @@ from .comp import Board, BOARD_PRIVATE, BOARD_PUBLIC
 
 
 class BoardsManager(object):
-    def __init__(self, app_title, app_banner, theme, card_extensions, search_engine_service, services_service):
+    def __init__(self, app_title, app_banner, theme, card_extensions, column_extensions, search_engine_service, services_service):
         self.app_title = app_title
         self.app_banner = app_banner
         self.theme = theme
         self.card_extensions = card_extensions
+        self.column_extensions = column_extensions
         self.search_engine = search_engine_service
         self._services = services_service
 
@@ -37,7 +38,7 @@ class BoardsManager(object):
         board = None
         if Board.exists(id=id_):
             return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
-                                  self.card_extensions)
+                                  self.card_extensions, self.column_extensions)
         return board
 
     def get_by_uri(self, uri):
@@ -45,7 +46,7 @@ class BoardsManager(object):
         if Board.exists(uri=uri):
             id_ = Board.get_id_by_uri(uri)
             return self._services(Board, id_, self.app_title, self.app_banner, self.theme,
-                                  self.card_extensions)
+                                  self.card_extensions, self.column_extensions)
         return board
 
     def create_board_from_template(self, template_id, user=None):
@@ -53,7 +54,7 @@ class BoardsManager(object):
             user = security.get_user()
         template = self._services(
             Board, template_id, self.app_title, self.app_banner, self.theme,
-            self.card_extensions)
+            self.card_extensions, self.column_extensions)
         new_board = template.copy(user)
         new_board.archive_column = new_board.create_column(index=-1, title=i18n._(u'Archive'))
         new_board.archive_column.is_archive = True
@@ -79,7 +80,7 @@ class BoardsManager(object):
         self.shared_boards = []
         for board_obj in self._services(Board.get_all_boards, user, self.app_title,
                                         self.app_banner, self.theme,
-                                        self.card_extensions,
+                                        self.card_extensions, self.column_extensions,
                                         load_children=False):
             if (security.has_permissions('manage', board_obj) or
                     security.has_permissions('edit', board_obj)):
@@ -97,7 +98,7 @@ class BoardsManager(object):
 
         for board_obj in self._services(Board.get_shared_boards, self.app_title,
                                         self.app_banner, self.theme,
-                                        self.card_extensions,
+                                        self.card_extensions, self.column_extensions,
                                         load_children=False):
             board_comp = component.Component(board_obj)
             self.shared_boards.append(board_comp)

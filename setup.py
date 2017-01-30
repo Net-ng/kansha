@@ -95,6 +95,9 @@ setup(
       votes = kansha.card_addons.vote.comp:Votes
       members = kansha.card_addons.members:CardMembers
 
+      [kansha.column.extensions]
+      weight = kansha.column_addons.weight.comp:Weight
+
       [nagare.applications]
       kansha = kansha.app:app
 

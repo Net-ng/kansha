@@ -129,11 +129,11 @@
 
 @font-face {
 	font-family: 'icomoon';
-	src:url('../../fonts/icomoon.eot?iu7uxe');
-	src:url('../../fonts/icomoon.eot?iu7uxe#iefix') format('embedded-opentype'),
-		url('../../fonts/icomoon.ttf?iu7uxe') format('truetype'),
-		url('../../fonts/icomoon.woff?iu7uxe') format('woff'),
-		url('../../fonts/icomoon.svg?iu7uxe#icomoon') format('svg');
+	src:url('../../fonts/icomoon.eot?iu8uxe');
+	src:url('../../fonts/icomoon.eot?iu8uxe#iefix') format('embedded-opentype'),
+		url('../../fonts/icomoon.ttf?iu8uxe') format('truetype'),
+		url('../../fonts/icomoon.woff?iu8uxe') format('woff'),
+		url('../../fonts/icomoon.svg?iu8uxe#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

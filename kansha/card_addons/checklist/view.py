@@ -19,7 +19,9 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
     text = var.Var(u'')
     with h.form(class_='new-item-form'):
         id_ = h.generate_id()
-        h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
+        h << h.div(
+            h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
+        )
         h << h.button(_(u'Add'),
                       class_='btn btn-primary').action(lambda: comp.answer(text()))
 
@@ -33,7 +35,7 @@ def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
 def render_Checklists_button(self, h, comp, model):
     if security.has_permissions('checklist', self.card):
         action = ajax.Update(render=lambda r: comp.render(r, model=None),
-                             component_to_update='clist' + self.comp_id,
+                             component_to_update='clists',
                              action=self.add_checklist)
         with h.a(class_='btn').action(action):
             h << h.i(class_='icon-list')
@@ -46,7 +48,7 @@ def render_Checklists(self, h, comp, model):
     h.head.javascript_url('checklists/js/checklists.js')
     self.load_children()
     can_edit = security.has_permissions('checklist', self.card)
-    with h.div(id_='clist' + self.comp_id):
+    with h.div(id_='clists'):
         if can_edit:
 
             # On drag and drop
@@ -95,7 +97,9 @@ def render_Checklist(self, h, comp, model):
                 h << self.data.title
             else:
                 h << self.title.render(h.AsyncRenderer())
-                h << h.a(h.i(class_='icon-cancel'), class_='delete').action(comp.answer, 'delete')
+                h << h.a(h.i(class_='icon-cross'), class_='delete').action(
+                    ajax.Update(render='deleted', action=comp.answer)
+                )
 
         with h.div(class_='content'):
             if self.items:
@@ -118,12 +122,19 @@ def render_Checklist_progress(self, h, comp, model):
              title=_(u'Add item')).action(self.activate_item_input)
     return h.root
 
+
 @presentation.render_for(Checklist, 'progress')
 def render_Checklist_progress(self, h, comp, model):
     progress = self.progress
     with h.div(class_='progress progress-success'):
         h << h.div(class_='bar', style='width:%s%%' % progress)
         h << h.span(progress, u'%', class_='percent')
+    return h.root
+
+
+@presentation.render_for(Checklist, 'deleted')
+def render_Checklist_progress(self, h, comp, model):
+    h << h.div()
     return h.root
 
 

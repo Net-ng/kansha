@@ -211,7 +211,6 @@ class Checklists(CardExtension):
 
     def __init__(self, card, action_log, configurator):
         super(Checklists, self).__init__(card, action_log, configurator)
-        self.comp_id = str(random.randint(10000, 100000))
         self.ck_cache = {}
         self.checklists = []
 

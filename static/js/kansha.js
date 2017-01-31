@@ -122,20 +122,11 @@
          * Handle window resize
          */
         columnsResize: function () {
-            // In desktop mode calculate size in percent for the columns
-            var newList = Selector.query('#lists .new', null, true);
-            var list;
-            if (newList) {
-                list = newList.firstChild;
-                Dom.get('lists').replaceChild(list, newList);
-            }
-            var lists = ECN('list', 'div', 'lists');
-            Dom.setStyle(lists, 'width', Math.round(92 / lists.length) + '%');
-            if (newList) {
-                lists = Dom.get('lists');
-                lists.scrollLeft = list.offsetLeft - lists.offsetLeft;
-                list.scrollIntoView();
-            }
+            var $lists = $('#lists .list'),
+                availableWidth = $('#lists').width(),
+                listOffset = $lists.offset(),
+                offset = (listOffset.left || 0) + (listOffset.right || 0) + ($lists.outerWidth() - $lists.innerWidth() + 1) * 2;
+            $lists.width(availableWidth / $lists.length - offset);
         },
 
         /**

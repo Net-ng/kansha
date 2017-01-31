@@ -273,7 +273,6 @@ textarea.expanded {
     bottom: 0;
     width: 100%;
     text-align: center;
-    padding: 8px 0;
 }
 
 .list .list-footer-disabled {
@@ -286,6 +285,7 @@ textarea.expanded {
 
 .list .list-footer .link-small {
     display: block;
+    padding: 8px 0;
 }
 
 .list .list-footer .link-small strong {

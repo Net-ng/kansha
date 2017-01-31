@@ -281,7 +281,7 @@ class NewColumnEditor(object):
         self.columns_count = columns_count
         self.index = editor.Property(u'').validate(nagare_validator.to_int)
         self.title = editor.Property(u'')
-        self.title.validate(lambda v: nagare_validator.to_string(v).not_empty(_(u'''Can't be empty''')))
+        self.title.validate(lambda v: nagare_validator.to_string(v.strip()).not_empty(_(u'''Can't be empty''')))
         self.nb_cards = editor.Property(u'').validate(self.validate_nb_cards)
 
     def is_validated(self):

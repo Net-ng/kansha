@@ -27,3 +27,4 @@ doc/_build
 .idea/workspace.xml
 data/assets/*
 data/templates/*
+build

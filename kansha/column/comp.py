@@ -91,8 +91,9 @@ class Column(events.EventHandlerMixIn):
 
     def ui_create_card(self, comp, title):
         card = self.create_card(title)
-        self.index_cards([card])
-        self.emit_event(comp, events.SearchIndexUpdated)
+        if card:
+            self.index_cards([card])
+            self.emit_event(comp, events.SearchIndexUpdated)
 
     def on_event(self, comp, event):
         if event.is_(events.CardClicked):

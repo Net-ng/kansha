@@ -19,6 +19,7 @@
 .home .boards a.archive,
 .home .boards a.restore,
 .home .boards a.delete,
+.home .boards a.add,
 .home .boards a.leave {
     display: inline-block;
     margin: 0;
@@ -26,10 +27,15 @@
     visibility: hidden;
 }
 
+.home .boards div.add {
+    visibility: hidden;
+}
+
 .home .boards ul.board-labels li:hover .add,
 .home .boards ul.board-labels li:hover a.archive,
 .home .boards ul.board-labels li:hover a.restore,
 .home .boards ul.board-labels li:hover a.delete,
+.home .boards ul.board-labels li:hover a.add,
 .home .boards ul.board-labels li:hover a.leave {
     visibility: visible;
 }

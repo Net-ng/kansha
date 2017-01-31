@@ -496,18 +496,9 @@ i.icon {
     margin-right: -11px;
 }
 
-.members .add {
-    visibility: hidden;
-}
-
 .members .miniavatar {
     display: inline-block;
 }
-
-.card:hover .members .add {
-    visibility: visible;
-}
-
 
 .unselectable {
     cursor: default;

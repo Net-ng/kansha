@@ -178,7 +178,7 @@ def toggle_answer(card_editor, comp, text):
     card_editor.toggle_refresh()
     comp.becomes(model=None)
     if text:
-        comp.answer(text())
+        comp.answer(text().strip())
 
 
 @presentation.render_for(NewCard, 'add')

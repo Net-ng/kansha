@@ -192,9 +192,6 @@
                 var src = this.getEl(),
                     dragEl = this.getDragEl(),
                     region = Dom.getRegion(src);
-                Dom.batch(Selector.query('.list-header .list-actions', src), function (elem) {
-                    YAHOO.kansha.app.show(elem, false);
-                });
                 if (YAHOO.kansha.app.isDesktop()) {
                     Dom.setAttribute(dragEl, 'class', 'list list-proxy');
                     Dom.setStyle(dragEl, 'height', dragEl.clientHeight - 4 + 'px');
@@ -253,7 +250,6 @@
                     }
                 }
                 _send_column_position({'list': list_id, 'index': index});
-                // Reset drag frame position
             };
         },
         initTargetCard: function (targetId) {

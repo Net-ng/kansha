@@ -525,6 +525,7 @@
             editor.on('instanceReady', function() {
                 editor.container.addClass('kansha-cke');
                 editor.focus();
+                $(element).closest('.description-form').show();
             });
         }
 

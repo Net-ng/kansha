@@ -44,7 +44,7 @@ def render_edit(self, h, comp, *args):
     """Render description component in edit mode"""
     text = var.Var(self.text)
     with h.div(class_="description"):
-        with h.form(class_='description-form'):
+        with h.form(class_='description-form', style='display: none'):
             txt_id = h.generate_id()
             h << h.textarea(text(), id_=txt_id).action(text)
 

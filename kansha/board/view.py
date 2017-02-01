@@ -66,7 +66,7 @@ def render_Board_menu(self, h, comp, *args):
                 ).action(self.leave, comp))
 
         h << h.span(_(u'Board'), class_="menu-title", id='board-nav-menu')
-        h << self.modal
+    h << self.modal
     return h.root
 
 

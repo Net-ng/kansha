@@ -348,10 +348,6 @@ a:hover .ico-btn {
 /* End errors */
 
 /* Modal window */
-.modal {
-    background: rgba(0, 0, 0, 0.4);
-}
-
 .modal > div {
     border-radius: 5px;
     background: white;

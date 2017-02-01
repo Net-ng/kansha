@@ -381,7 +381,6 @@ def render_BoardConfig_edit(self, h, comp, *args):
             h << self.content
 
     h << h.script('YAHOO.kansha.app.hideOverlay();')
-    h << h.script("YAHOO.util.Event.onDOMReady(function() {YAHOO.util.Dom.setStyle('mask', 'display', 'block')})")
     return h.root
 
 

@@ -15,7 +15,7 @@ from .comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 @presentation.render_for(NewChecklistItem, 'button')
 def render_NewChecklistItem_button(self, h, comp, model):
-    return h.a(h.i(class_='icon-plus'), class_='add-item', title=_(u'Add item')).action(comp.answer)
+    return h.a(h.i(class_='icon-plus'), u' ', _(u'Add item'), class_='add-item', title=_(u'Add item')).action(comp.answer)
 
 
 @presentation.render_for(NewChecklistItem, 'edit')

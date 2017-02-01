@@ -1,10 +1,12 @@
 $(function () {
-    $('.checklists').sortable({
+    var $checklists = $('.checklists'),
+        nbChecklists = $checklists.find('.checklist').length;
+    $checklists.sortable({
         placeholder: "ui-state-highlight",
         axis: "y",
         handle: ".icon-list",
         cursor: "move",
-        start: function(e, ui){
+        start: function (e, ui) {
             ui.placeholder.height(ui.item.height());
         },
         stop: function (event, ui) {
@@ -13,13 +15,22 @@ $(function () {
             }).get());
         }
     });
-    $(".checklists .checklist .content ul").sortable({
+
+    // Disable sortable if only contains 1 item
+    if (nbChecklists == 1) {
+        $checklists.sortable('disable');
+    } else if (nbChecklists > 1) {
+        $checklists.sortable('enable');
+    }
+
+    var $checklistItems = $(".checklists .checklist .content ul");
+    $checklistItems.sortable({
         placeholder: "ui-state-highlight",
         cursor: "move",
         connectWith: ".checklists .checklist .content ul",
         dropOnEmpty: true,
         handle: "i",
-        start: function(e, ui){
+        start: function (e, ui) {
             ui.placeholder.height(ui.item.height());
         },
         update: function (event, ui) {
@@ -31,4 +42,15 @@ $(function () {
             reorder_checklists_items(data);
         }
     }).disableSelection();
+
+    // Disable sortable if only contains 1 item
+    $checklistItems.each(function(index, elem) {
+        var $elem = $(elem),
+            nbChecklistItems = $elem.find('>li').length;
+        if (nbChecklistItems == 1) {
+            $elem.sortable('disable');
+        } else if (nbChecklistItems > 1) {
+            $elem.sortable('enable');
+        }
+    });
 });

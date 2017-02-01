@@ -474,10 +474,6 @@ div.history th {
 .checklists .checklist i[class^="icon-checkbox-"] {
     font-size: 16px;
 }
-
-.checklists .checklist .title {
-    font-weight: bold
-}
 /* Checklists end */
 
 /* Calendar */

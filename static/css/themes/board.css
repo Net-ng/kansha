@@ -865,6 +865,10 @@ div.history th {
     text-align: center;
 }
 
+.calendar .calendar-content table tr td a {
+    display: block;
+}
+
 .calendar .calendar-content table tr th.week_number,
 .calendar .calendar-content table tr td.week_number {
     text-align: center;

@@ -13,8 +13,13 @@ from nagare import presentation, security, var, ajax
 from .comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 
-@presentation.render_for(NewChecklistItem)
-def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
+@presentation.render_for(NewChecklistItem, 'button')
+def render_NewChecklistItem_button(self, h, comp, model):
+    return h.a(h.i(class_='icon-plus'), class_='add-item', title=_(u'Add item')).action(comp.answer)
+
+
+@presentation.render_for(NewChecklistItem, 'edit')
+def render_NewChecklistItem_edit(self, h, comp, model):
     """Render the title of the associated object"""
     text = var.Var(u'')
     with h.form(class_='new-item-form'):
@@ -69,10 +74,9 @@ def render_Checklists(self, h, comp, model):
         with h.div(class_='checklists', id=id_):
             for index, clist in enumerate(self.checklists):
                 if can_edit:
-                    clist().init_input()
                     h << clist.on_answer(
                         lambda v, index=index: self.delete_checklist(index)
-                    ).render(h.AsyncRenderer())
+                    )
                 else:
                     h << clist.render(h, 'read-only')
     return h.root
@@ -113,13 +117,6 @@ def render_Checklist(self, h, comp, model):
                                   id='checklist_item_%s' % item().id)
             if model != 'read-only':
                 h << self.new_item
-    return h.root
-
-
-@presentation.render_for(Checklist, 'add_item_button')
-def render_Checklist_progress(self, h, comp, model):
-    h << h.a(h.i(class_='icon-plus'), class_='add-item',
-             title=_(u'Add item')).action(self.activate_item_input)
     return h.root
 
 

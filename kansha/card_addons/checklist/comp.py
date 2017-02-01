@@ -101,8 +101,16 @@ class ChecklistItem(object):
             data)
 
 
-class Checklist(object):
+class ChecklistItemTask(component.Task):
+    def __init__(self):
+        self.comp = NewChecklistItem()
 
+    def go(self, comp):
+        comp.call(self.comp, 'button')
+        comp.answer(comp.call(self.comp, 'edit'))
+
+
+class Checklist(object):
     def __init__(self, id_, action_log, data=None):
         self.id = id_
         self.action_log = action_log
@@ -115,17 +123,7 @@ class Checklist(object):
                 placeholder=i18n._(u'Enter title')
             )
         ).on_answer(self.set_title)
-        self.new_item = None
-
-    def init_input(self):
-        if self.items:
-            self.new_item = component.Component(self, 'add_item_button')
-        else:
-            self.activate_item_input()
-
-    def activate_item_input(self):
-        self.new_item = component.Component(NewChecklistItem())
-        self.new_item.on_answer(self.add_item_from_str)
+        self.new_item = component.Component(ChecklistItemTask()).on_answer(self.add_item_from_str)
 
     def update(self, other):
         self.data.update(other.data)

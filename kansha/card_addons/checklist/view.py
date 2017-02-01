@@ -102,7 +102,7 @@ def render_Checklist(self, h, comp, model):
             else:
                 h << self.title.render(h.AsyncRenderer())
                 h << h.a(h.i(class_='icon-cross'), class_='delete').action(
-                    ajax.Update(render='deleted', action=comp.answer)
+                    ajax.Update(render='', action=comp.answer)
                 )
 
         with h.div(class_='content'):

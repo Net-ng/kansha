@@ -121,6 +121,11 @@
     opacity: 0.3;
     box-shadow: inset #b5b5b5 2px 1px 1px;
 }
+
+.nav-list li a:hover {
+    color: #333;
+}
+
 /* End lists */
 
 /* Cards */

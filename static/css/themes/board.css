@@ -229,6 +229,7 @@ textarea.expanded {
 .list-header .list-counter {
     text-align: right;
     position: relative;
+    width: 50px;
 }
 
 .list-header .list-counter .nagare-error-message {

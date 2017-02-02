@@ -228,6 +228,33 @@ textarea.expanded {
 
 .list-header .list-counter {
     text-align: right;
+    position: relative;
+}
+
+.list-header .list-counter .nagare-error-message {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    display: block;
+    width: 200px;
+    padding: 0 10px;
+    z-index: 50;
+}
+
+.list-header .list-counter .nagare-error-message:before {
+    content: "";
+    display: inline-block;
+    right: 9px;
+    position: absolute;
+    top: -7px;
+}
+
+.list-header .list-counter .nagare-error-message:after {
+    content: "";
+    display: inline-block;
+    right: 10px;
+    position: absolute;
+    top: -6px;
 }
 
 .list-header .list-title {

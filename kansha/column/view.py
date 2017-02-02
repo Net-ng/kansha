@@ -220,11 +220,11 @@ def render_CardsCounter_edit(self, h, comp, *args):
                             }
                      });""" % ajax.py2js(id_)
                 )
-                if self.error is not None:
-                    with h.div(class_='nagare-error-message'):
-                        h << self.error
                 h << h.script(
                     "YAHOO.kansha.app.selectElement(%s);"
                     "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
                 )
+        if self.error is not None:
+            with h.div(class_='nagare-error-message'):
+                h << self.error
     return h.root

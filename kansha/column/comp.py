@@ -342,8 +342,8 @@ class CardsCounter(object):
         self.reset_error()
         nb = int(text) if text else 0
         count = self.column.count_cards
-        self.change_nb_cards(nb)
         if not nb or nb >= count:
+            self.change_nb_cards(nb)
             comp.answer('set_limit_done')
         else:
             self.error = _('Must be bigger than %s') % count

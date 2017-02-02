@@ -203,17 +203,21 @@ def render_CardsCounter_edit(self, h, comp, *args):
     text = var.Var(self.text)
     with h.div(class_='list-counter'):
         with h.div(class_='cardCounter'):
-            with h.form:
+            with h.form(onsubmit='return false;'):
                 action = h.input(type='submit').action(lambda: self.validate(text(), comp)).get('onclick')
                 id_ = h.generate_id()
                 h << h.span(str(self.column.count_cards) + '/')
                 h << h.input(id=id_, type='text', value=self.column.nb_max_cards or '', onblur=action).action(text)
                 h << h.script(
                     """YAHOO.util.Event.on(%s, 'keyup', function (e) {
-                            var result =this.value.replace(/[^0-9]/g, '')
+                            if (e.keyCode == 13) {
+                                e.preventDefault();
+                                this.blur();
+                            }
+                            var result = this.value.replace(/[^0-9]/g, '')
                             if (this.value !=result) {
-                                   this.value = result;
-                                }
+                               this.value = result;
+                            }
                      });""" % ajax.py2js(id_)
                 )
                 if self.error is not None:

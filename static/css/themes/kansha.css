@@ -278,10 +278,9 @@ i.icon {
 /* End footer */
 
 /* Overlays */
-.overlay_arrow:before {
+.overlay_arrow {
     content: "";
     display: inline-block;
-    left: 9px;
     position: absolute;
     top: -8px;
 }
@@ -289,9 +288,9 @@ i.icon {
 .overlay_arrow:after {
     content: "";
     display: inline-block;
-    left: 10px;
+    left: -6px;
     position: absolute;
-    top: -6px;
+    top: 2px;
 }
 
 .overlay,

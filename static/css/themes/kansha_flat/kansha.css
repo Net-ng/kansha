@@ -240,7 +240,7 @@ a:hover .ico-btn {
     border: 1px solid #c0c0c0;
 }
 
-.overlay_arrow:before {
+.overlay_arrow {
     border-bottom: 7px solid #c0c0c0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
@@ -254,7 +254,6 @@ a:hover .ico-btn {
 
 .overlay,
 .yui-overlay {
-    border-radius: 5px;
     background: white;
 }
 

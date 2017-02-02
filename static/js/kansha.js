@@ -188,10 +188,10 @@
             var ev = Event.getEvent();
             Event.stopEvent(ev);
             NS.app.hideOverlay();
-            var link = Dom.get(link_id);
-            var child = Dom.getFirstChild(link);
-            var anchor = child ? child : link;
-            var x = -10,
+            var link = Dom.get(link_id),
+                child = Dom.getFirstChild(link),
+                anchor = child ? child : link;
+                x = -10,
                 y = 5;
             x += parseInt(Dom.getStyle(anchor, 'paddingLeft'), 10);
             NS.app.overlay = new YAHOO.widget.Overlay(overlay_id,
@@ -203,6 +203,16 @@
             if (centered){
             	NS.app.overlay.center();
             }
+            if (Dom.hasClass(child, 'toggleVisibility')) {
+                Dom.setStyle(child, 'visibility', 'visible');
+                NS.app.overlay.beforeHideEvent.subscribe(function(e) { Dom.setStyle(child, 'visibility', 'hidden'); });
+            }
+            var arrow = Selector.query('.overlay_arrow', overlay_id, true)
+            if (arrow) {
+                var region = Dom.getRegion(link);
+                Dom.setX(arrow, region.left);
+            }
+            //NS.app.overlay.close
             NS.app.overlay.show();
         },
 

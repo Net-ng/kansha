@@ -612,16 +612,18 @@ textarea.expanded {
     min-width: 20px;
     text-align: center;
     position: relative;
-    top: -4px;
+    vertical-align: baseline;
 }
 
-.cardCounter input {
+.cardCounter input,
+.cardCounter a {
+    display: inline;
+    text-align: center;
     background: transparent;
     color: white;
-    width: 20px;
     border: none;
-    vertical-align: baseline;
     padding: 0;
+    margin: 0;
 }
 /* End card counter */
 

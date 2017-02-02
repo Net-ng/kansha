@@ -241,7 +241,7 @@ a:hover .ico-btn {
 }
 
 .overlay_arrow:before {
-    border-bottom: 7px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 7px solid #c0c0c0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
 }

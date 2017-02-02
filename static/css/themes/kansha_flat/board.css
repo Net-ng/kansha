@@ -263,6 +263,10 @@ a.card-label:hover {
     border-radius: 5px;
 }
 
+.cardCounter a {
+    color: #eaeaea;
+}
+
 .cardCounter.limitReached {
     background: #c22e2e;
 }

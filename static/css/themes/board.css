@@ -201,8 +201,13 @@ textarea.expanded {
 }
 
 .list-header {
-    position: relative;
-    cursor: pointer;
+    display: table;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.list-header > *[class^="list-"] {
+    display: table-cell;
 }
 
 .list-header .grip {
@@ -211,16 +216,10 @@ textarea.expanded {
     top: 5px
 }
 
-.list-header .list-title {
-    margin: 0 13px 4px 13px;
-    padding-top: 2px;
-}
-
 .list-actions {
-    position: absolute;
-    top: 9px;
-    right: 9px;
     visibility: hidden;
+    text-align: right;
+    width: 20px;
 }
 
 .list-header:hover .list-actions {
@@ -228,9 +227,11 @@ textarea.expanded {
 }
 
 .list-header .list-counter {
-    position: absolute;
-    right: 25px;
-    top: 9px;
+    text-align: right;
+}
+
+.list-header .list-title {
+    padding-right: 10px;
 }
 
 .list-header .list-counter .title-form {
@@ -243,15 +244,11 @@ textarea.expanded {
 }
 
 .list-header .list-counter .title-form input {
-    width: 52%;
-    margin-right: 10px;
-    margin-bottom: 0;
+    width: 100%;
 }
 
 .list-header input {
-    width: 52%;
-    margin-right: 10px;
-    margin-bottom: 0;
+    width: 100%;
 }
 
 .list-header .title {
@@ -587,6 +584,15 @@ textarea.expanded {
     text-align: center;
     position: relative;
     top: -4px;
+}
+
+.cardCounter input {
+    background: transparent;
+    color: white;
+    width: 20px;
+    border: none;
+    vertical-align: baseline;
+    padding: 0;
 }
 /* End card counter */
 

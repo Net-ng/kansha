@@ -96,7 +96,7 @@ def render_column_header(self, h, comp, *args):
         with h.div(class_='list-title', id=self.id + '_title'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
-            h << self.card_counter
+        h << self.card_counter.on_answer(lambda action: self.actions(action, comp))
         with h.div(class_='list-actions'):
             if security.has_permissions('edit', self):
                 h << self.actions_overlay
@@ -185,7 +185,7 @@ def render_CardsCounter(self, h, comp, *args):
         self.error = None
         with h.div(class_='cardCounter', id=self.id):
             h << {'style': 'cursor: default'}
-            h << h.span(self.text)
+            h << h.a(self.text).action(comp.answer, 'set_limit')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
         "YAHOO.kansha.app.countCards(%(list_id)s);" %
@@ -201,26 +201,26 @@ def render_CardsCounter(self, h, comp, *args):
 def render_CardsCounter_edit(self, h, comp, *args):
     """Render the title of the associated object"""
     text = var.Var(self.text)
-    with h.form(class_='title-form'):
-        id_ = h.generate_id()
-        h << h.input(id=id_, type='text', value=self.column.nb_max_cards or '').action(text)
-        h << h.script(
-            """YAHOO.util.Event.on(%s, 'keyup', function (e) {
-                    var result =this.value.replace(/[^0-9]/g, '')
-                    if (this.value !=result) {
-                           this.value = result;
-                        }
-             });""" % ajax.py2js(id_)
-        )
-        h << h.button(_('Save'), class_='btn btn-primary').action(
-            lambda: self.validate(text(), comp))
-        h << ' '
-        h << h.button(_('Cancel'), class_='btn').action(self.cancel, comp)
-        if self.error is not None:
-            with h.div(class_='nagare-error-message'):
-                h << self.error
-        h << h.script(
-            "YAHOO.kansha.app.selectElement(%s);"
-            "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
-        )
+    with h.div(class_='list-counter'):
+        with h.div(class_='cardCounter'):
+            with h.form:
+                action = h.input(type='submit').action(lambda: self.validate(text(), comp)).get('onclick')
+                id_ = h.generate_id()
+                h << h.span(str(self.column.count_cards) + '/')
+                h << h.input(id=id_, type='text', value=self.column.nb_max_cards or '', onblur=action).action(text)
+                h << h.script(
+                    """YAHOO.util.Event.on(%s, 'keyup', function (e) {
+                            var result =this.value.replace(/[^0-9]/g, '')
+                            if (this.value !=result) {
+                                   this.value = result;
+                                }
+                     });""" % ajax.py2js(id_)
+                )
+                if self.error is not None:
+                    with h.div(class_='nagare-error-message'):
+                        h << self.error
+                h << h.script(
+                    "YAHOO.kansha.app.selectElement(%s);"
+                    "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
+                )
     return h.root

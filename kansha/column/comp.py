@@ -85,6 +85,8 @@ class Column(events.EventHandlerMixIn):
             self.emit_event(comp, events.ColumnDeleted, comp)
         elif action == 'set_limit':
             self.card_counter.call(model='edit')
+        elif action == 'set_limit_done':
+            self.card_counter.call(model=0)
         elif action == 'purge':
             self.purge_cards()
         self.emit_event(comp, events.SearchIndexUpdated)
@@ -336,17 +338,12 @@ class CardsCounter(object):
     def reset_error(self):
         self.error = None
 
-    def cancel(self, comp):
-        self.reset_error()
-        comp.answer()
-
     def validate(self, text, comp):
         self.reset_error()
         nb = int(text) if text else 0
         count = self.column.count_cards
-        if not nb:
-            comp.answer(self.change_nb_cards(nb))
-        elif nb >= count:
-            comp.answer(self.change_nb_cards(nb))
+        self.change_nb_cards(nb)
+        if not nb or nb >= count:
+            comp.answer('set_limit_done')
         else:
             self.error = _('Must be bigger than %s') % count

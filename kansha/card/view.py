@@ -61,7 +61,7 @@ def render(self, h, comp, *args):
         )
     )
     if self.emit_event(comp, events.CardDisplayed) == 'reload_search':
-        h << h.script('''$(window).trigger('reload_search');''')
+        h << h.script('''$('#search').trigger('reload_search');''')
 
     return h.root
 

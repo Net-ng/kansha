@@ -129,12 +129,6 @@ def render_Checklist_progress(self, h, comp, model):
     return h.root
 
 
-@presentation.render_for(Checklist, 'deleted')
-def render_Checklist_progress(self, h, comp, model):
-    h << h.div()
-    return h.root
-
-
 @presentation.render_for(ChecklistItem, model='read-only')
 def render_ChecklistItem(self, h, comp, model):
     h << h.span(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked')))

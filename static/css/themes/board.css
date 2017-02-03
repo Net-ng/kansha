@@ -703,10 +703,22 @@ textarea.expanded {
 }
 
 #search {
-    width: 10em;
+    display: inline-block;
+    position: relative;
 }
 
-#search:focus, #search.highlight {
+#search input {
+    padding-right: 30px;
+    height: 32px;
+}
+
+#search .icon {
+    position: absolute;
+    right: 14px;
+    top: 7px;
+}
+
+#search input:focus, #search input.highlight {
     border-color: rgba(230, 163, 35, 0.8);
     outline: 0;
     outline: thin dotted \9;

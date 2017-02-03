@@ -77,10 +77,8 @@ def render_Board(self, h, comp, *args):
     h.head.css_url('css/themes/board.css')
     h.head.css_url('css/themes/%s/board.css' % self.theme)
 
-    h.head.javascript_url('js/jquery-searchinput/jquery.searchinput.js')
     h.head.javascript_url('js/debounce.js')
-    h.head.css_url('js/jquery-searchinput/styles/jquery.searchinput.min.css')
-    h.head.javascript('searchinput', '''jQuery(document).ready(function ($) { $('#search').searchInput(); });''')
+    h.head.javascript_url('js/search.js')
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
     if security.has_permissions('edit', self):
@@ -124,7 +122,7 @@ def render_Board_num_matches(self, h, comp, *args):
 def render_Board_item(self, h, comp, *args):
     reload_search = ajax.Update(component_to_update='show_results',
                                 render=lambda renderer: comp.render(renderer, 'search_results'))
-    h << h.script(u'''$(window).on('reload_search', function() { %s; })''' % reload_search.generate_action(41, h))
+    h << h.script(u'''$('#search').on('reload_search', function() { %s; })''' % reload_search.generate_action(41, h))
 
     with h.div(id='switch_zone'):
         if self.model == 'columns':
@@ -143,11 +141,13 @@ def render_Board_item(self, h, comp, *args):
                     klass = 'highlight'
             else:
                 klass = ''
-            h << h.input(type='text', id_='search', placeholder=_(u'search'),
-                         value=self.last_search,
-                         oninput=oninput,
-                         class_=klass)
-            #h << h.a(h.i(class_='icon-search', title=_('search')), class_='btn unselected')
+            with h.div(id='search', class_=klass):
+                h << h.input(type='text', placeholder=_(u'search'),
+                             value=self.last_search,
+                             oninput=oninput)
+                with h.span(class_='icon'):
+                    h << h.i(class_='icon-search search_icon')
+                    h << h.a(h.i(class_='icon-cancel-circle'), href='#', style='display: none', class_='search_close')
             h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn unselected').action(self.switch_view)
             h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn disabled')
         else:

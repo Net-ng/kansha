@@ -408,7 +408,7 @@ a.card-label:hover {
     outline: thin dotted \9;
 }
 
-#search.nomatches {
+#search.nomatches input {
     border-color: red;
 }
 

@@ -112,6 +112,7 @@ class Column(events.EventHandlerMixIn):
                 card_bo.add_to_index(self.search_engine, self.board.id, update=True)
                 self.search_engine.commit()
                 self.emit_event(comp, events.SearchIndexUpdated)
+            card_bo.refresh()
         elif event.is_(events.CardArchived):
             self.remove_card_by_id(event.last_relay.id)
 

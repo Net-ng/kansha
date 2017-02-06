@@ -13,9 +13,14 @@ from nagare import presentation, security, var, ajax
 from .comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 
+@presentation.render_for(NewChecklistItem)
+def render_NewCheclistItem(self, h, comp, model):
+    return comp.render(h, 'button' if self.show_button else 'edit')
+
+
 @presentation.render_for(NewChecklistItem, 'button')
 def render_NewChecklistItem_button(self, h, comp, model):
-    return h.a(h.i(class_='icon-plus'), u' ', _(u'Add item'), class_='add-item', title=_(u'Add item')).action(comp.answer)
+    return h.a(h.i(class_='icon-plus'), u' ', _(u'Add item'), class_='add-item', title=_(u'Add item')).action(self.set_show_button, False)
 
 
 @presentation.render_for(NewChecklistItem, 'edit')
@@ -24,9 +29,7 @@ def render_NewChecklistItem_edit(self, h, comp, model):
     text = var.Var(u'')
     with h.form(class_='new-item-form'):
         id_ = h.generate_id()
-        h << h.div(
-            h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
-        )
+        h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
         h << h.button(_(u'Add'),
                       class_='btn btn-primary').action(lambda: comp.answer(text()))
 

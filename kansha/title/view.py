@@ -38,8 +38,8 @@ def render(self, h, comp, *args):
         h << input(id=id_, placeholder=self.placeholder).action(title)
 
         h << h.button(_('Save'), class_='btn btn-primary').action(self.set_title, comp, title)
-        h << ' '
-        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
+        #h << ' '
+        #h << h.button(_('Cancel'), class_='btn').action(comp.answer)
 
         h << h.script('YAHOO.kansha.app.selectElement(%s);' % id_)
 

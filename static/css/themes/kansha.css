@@ -278,20 +278,19 @@ i.icon {
 /* End footer */
 
 /* Overlays */
-.overlay_arrow:before {
+.overlay_arrow {
     content: "";
     display: inline-block;
-    left: 9px;
     position: absolute;
-    top: -7px;
+    top: -8px;
 }
 
 .overlay_arrow:after {
     content: "";
     display: inline-block;
-    left: 10px;
+    left: -6px;
     position: absolute;
-    top: -6px;
+    top: 2px;
 }
 
 .overlay,
@@ -455,7 +454,7 @@ i.icon {
     height: 100%;
     position: fixed;
     width: 100%;
-    z-index: 25;
+    z-index: 5;
     display: none;
 }
 
@@ -483,7 +482,7 @@ i.icon {
 .members .count {
     position: relative;
     left: -11px;
-    bottom: 1px;
+    bottom: -3px;
 }
 
 .members {
@@ -496,18 +495,9 @@ i.icon {
     margin-right: -11px;
 }
 
-.members .add {
-    visibility: hidden;
-}
-
 .members .miniavatar {
     display: inline-block;
 }
-
-.card:hover .members .add {
-    visibility: visible;
-}
-
 
 .unselectable {
     cursor: default;

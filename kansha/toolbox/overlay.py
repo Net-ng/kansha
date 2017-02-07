@@ -83,11 +83,11 @@ def render(self, h, comp, *args):
     )
 
     cls = [u'overlay']
-    if not self.centered:
-        cls.append(u'overlay_arrow')
     if self.cls:
         cls.append(self.cls)
     with h.div(class_=u' '.join(cls), id=overlay_id, onclick="YAHOO.kansha.app.stopEvent()"):
+        if not self.centered:
+            h << h.span(class_='overlay_arrow')
         with h.div(class_='overlay-header'):
             with h.div(class_='overlay-title'):
                 h << h.div(self.title or self.text(h))

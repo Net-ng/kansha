@@ -49,7 +49,7 @@ class Column(events.EventHandlerMixIn):
 
         self.actions_comp = component.Component(self, 'overlay')
         self.actions_overlay = component.Component(overlay.Overlay(
-            lambda r: r.i(class_='icon-menu'),
+            lambda r: r.i(class_='toggleVisibility icon-menu'),
             self.actions_comp.render,
             title=_('List actions'), dynamic=False))
 
@@ -85,6 +85,8 @@ class Column(events.EventHandlerMixIn):
             self.emit_event(comp, events.ColumnDeleted, comp)
         elif action == 'set_limit':
             self.card_counter.call(model='edit')
+        elif action == 'set_limit_done':
+            self.card_counter.call(model=0)
         elif action == 'purge':
             self.purge_cards()
         self.emit_event(comp, events.SearchIndexUpdated)
@@ -110,6 +112,7 @@ class Column(events.EventHandlerMixIn):
                 card_bo.add_to_index(self.search_engine, self.board.id, update=True)
                 self.search_engine.commit()
                 self.emit_event(comp, events.SearchIndexUpdated)
+            card_bo.refresh()
         elif event.is_(events.CardArchived):
             self.remove_card_by_id(event.last_relay.id)
 
@@ -336,17 +339,12 @@ class CardsCounter(object):
     def reset_error(self):
         self.error = None
 
-    def cancel(self, comp):
-        self.reset_error()
-        comp.answer()
-
     def validate(self, text, comp):
         self.reset_error()
         nb = int(text) if text else 0
         count = self.column.count_cards
-        if not nb:
-            comp.answer(self.change_nb_cards(nb))
-        elif nb >= count:
-            comp.answer(self.change_nb_cards(nb))
+        if not nb or nb >= count:
+            self.change_nb_cards(nb)
+            comp.answer('set_limit_done')
         else:
             self.error = _('Must be bigger than %s') % count

@@ -66,7 +66,7 @@ def render_Board_menu(self, h, comp, *args):
                 ).action(self.leave, comp))
 
         h << h.span(_(u'Board'), class_="menu-title", id='board-nav-menu')
-        h << self.modal
+    h << self.modal
     return h.root
 
 
@@ -381,7 +381,6 @@ def render_BoardConfig_edit(self, h, comp, *args):
             h << self.content
 
     h << h.script('YAHOO.kansha.app.hideOverlay();')
-    h << h.script("YAHOO.util.Event.onDOMReady(function() {YAHOO.util.Dom.setStyle('mask', 'display', 'block')})")
     return h.root
 
 

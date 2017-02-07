@@ -14,14 +14,22 @@ from .comp import Checklist, ChecklistItem, Checklists, NewChecklistItem
 
 
 @presentation.render_for(NewChecklistItem)
-def render_ChecklistTitle_edit(next_method, self, h, comp, *args):
+def render_NewCheclistItem(self, h, comp, model):
+    return comp.render(h, 'button' if self.show_button else 'edit')
+
+
+@presentation.render_for(NewChecklistItem, 'button')
+def render_NewChecklistItem_button(self, h, comp, model):
+    return h.a(h.i(class_='icon-plus'), u' ', _(u'Add item'), class_='add-item', title=_(u'Add item')).action(self.set_show_button, False)
+
+
+@presentation.render_for(NewChecklistItem, 'edit')
+def render_NewChecklistItem_edit(self, h, comp, model):
     """Render the title of the associated object"""
     text = var.Var(u'')
     with h.form(class_='new-item-form'):
         id_ = h.generate_id()
-        h << h.div(
-            h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
-        )
+        h << h.input(type='text', value=text, id_=id_, placeholder=_(u'Add item')).action(text)
         h << h.button(_(u'Add'),
                       class_='btn btn-primary').action(lambda: comp.answer(text()))
 
@@ -69,10 +77,9 @@ def render_Checklists(self, h, comp, model):
         with h.div(class_='checklists', id=id_):
             for index, clist in enumerate(self.checklists):
                 if can_edit:
-                    clist().init_input()
                     h << clist.on_answer(
                         lambda v, index=index: self.delete_checklist(index)
-                    ).render(h.AsyncRenderer())
+                    )
                 else:
                     h << clist.render(h, 'read-only')
     return h.root
@@ -98,7 +105,7 @@ def render_Checklist(self, h, comp, model):
             else:
                 h << self.title.render(h.AsyncRenderer())
                 h << h.a(h.i(class_='icon-cross'), class_='delete').action(
-                    ajax.Update(render='deleted', action=comp.answer)
+                    ajax.Update(render='', action=comp.answer)
                 )
 
         with h.div(class_='content'):
@@ -116,25 +123,12 @@ def render_Checklist(self, h, comp, model):
     return h.root
 
 
-@presentation.render_for(Checklist, 'add_item_button')
-def render_Checklist_progress(self, h, comp, model):
-    h << h.a(h.i(class_='icon-plus'), class_='add-item',
-             title=_(u'Add item')).action(self.activate_item_input)
-    return h.root
-
-
 @presentation.render_for(Checklist, 'progress')
 def render_Checklist_progress(self, h, comp, model):
     progress = self.progress
     with h.div(class_='progress progress-success'):
         h << h.div(class_='bar', style='width:%s%%' % progress)
         h << h.span(progress, u'%', class_='percent')
-    return h.root
-
-
-@presentation.render_for(Checklist, 'deleted')
-def render_Checklist_progress(self, h, comp, model):
-    h << h.div()
     return h.root
 
 

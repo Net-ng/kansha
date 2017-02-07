@@ -134,6 +134,7 @@ textarea.expanded {
 .board .board-title {
     padding: 10px 10px;
     height: 50px;
+    display: inline-block;
 }
 
 .board .board-title a,
@@ -201,8 +202,13 @@ textarea.expanded {
 }
 
 .list-header {
-    position: relative;
-    cursor: pointer;
+    display: table;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.list-header > *[class^="list-"] {
+    display: table-cell;
 }
 
 .list-header .grip {
@@ -211,16 +217,10 @@ textarea.expanded {
     top: 5px
 }
 
-.list-header .list-title {
-    margin: 0 13px 4px 13px;
-    padding-top: 2px;
-}
-
 .list-actions {
-    position: absolute;
-    top: 9px;
-    right: 9px;
     visibility: hidden;
+    text-align: right;
+    width: 20px;
 }
 
 .list-header:hover .list-actions {
@@ -228,9 +228,39 @@ textarea.expanded {
 }
 
 .list-header .list-counter {
+    text-align: right;
+    position: relative;
+    width: 50px;
+}
+
+.list-header .list-counter .nagare-error-message {
     position: absolute;
-    right: 25px;
-    top: 9px;
+    top: 40px;
+    right: 0;
+    display: block;
+    width: 200px;
+    padding: 0 10px;
+    z-index: 50;
+}
+
+.list-header .list-counter .nagare-error-message:before {
+    content: "";
+    display: inline-block;
+    right: 9px;
+    position: absolute;
+    top: -7px;
+}
+
+.list-header .list-counter .nagare-error-message:after {
+    content: "";
+    display: inline-block;
+    right: 10px;
+    position: absolute;
+    top: -6px;
+}
+
+.list-header .list-title {
+    padding-right: 10px;
 }
 
 .list-header .list-counter .title-form {
@@ -243,15 +273,11 @@ textarea.expanded {
 }
 
 .list-header .list-counter .title-form input {
-    width: 52%;
-    margin-right: 10px;
-    margin-bottom: 0;
+    width: 100%;
 }
 
 .list-header input {
-    width: 52%;
-    margin-right: 10px;
-    margin-bottom: 0;
+    width: 100%;
 }
 
 .list-header .title {
@@ -586,7 +612,18 @@ textarea.expanded {
     min-width: 20px;
     text-align: center;
     position: relative;
-    top: -4px;
+    vertical-align: baseline;
+}
+
+.cardCounter input,
+.cardCounter a {
+    display: inline;
+    text-align: center;
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 /* End card counter */
 
@@ -875,6 +912,10 @@ div.history th {
 .calendar .calendar-content table th {
     padding: 0;
     text-align: center;
+}
+
+.calendar .calendar-content table tr td a {
+    display: block;
 }
 
 .calendar .calendar-content table tr th.week_number,

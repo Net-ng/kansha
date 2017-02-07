@@ -51,9 +51,14 @@ def render_event(action, data):
 
 
 class NewChecklistItem(object):
-
-    def __init__(self):
+    def __init__(self, show_button):
+        self.show_button = show_button
         self.focus = False
+
+    def set_show_button(self, show_button):
+        self.show_button = show_button
+        if not show_button:
+            self.focus = True
 
 
 class ChecklistItem(object):
@@ -102,7 +107,6 @@ class ChecklistItem(object):
 
 
 class Checklist(object):
-
     def __init__(self, id_, action_log, data=None):
         self.id = id_
         self.action_log = action_log
@@ -115,17 +119,7 @@ class Checklist(object):
                 placeholder=i18n._(u'Enter title')
             )
         ).on_answer(self.set_title)
-        self.new_item = None
-
-    def init_input(self):
-        if self.items:
-            self.new_item = component.Component(self, 'add_item_button')
-        else:
-            self.activate_item_input()
-
-    def activate_item_input(self):
-        self.new_item = component.Component(NewChecklistItem())
-        self.new_item.on_answer(self.add_item_from_str)
+        self.new_item = component.Component(NewChecklistItem(len(self.items))).on_answer(self.add_item_from_str)
 
     def update(self, other):
         self.data.update(other.data)

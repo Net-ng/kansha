@@ -370,15 +370,13 @@
                 this.scrollTo(scrollTop);
             };
             drag.onDragEnter = function (e, id) {
-                var destEl = Dom.get(id);
-                var srcEl = this.getEl();
-                var list = Dom.getAncestorByClassName(id, 'list');
-                var limit = parseInt(localStorage[list.id],10);
-                var cards = ECN('card', null, list);
+                var destEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list'),
+                    limit = parseInt(localStorage[list.id], 10),
+                    cards = ECN('card', null, list);
                 if (destEl.className == 'list-body') {
                     // insert cardMarker at the end
                     if (cards.length < limit || limit === 0) {
-                        destEl.appendChild(NS.dnd.cardMarker);
                         DDM.refreshCache();
                         this.container = Dom.get(id);
                     }
@@ -388,7 +386,6 @@
             };
             drag.onDragOver = function (e, id) {
                 var destEl = Dom.get(id);
-                var srcEl = this.getEl();
                 if (destEl.className != 'list-body') {
                     var list = Dom.getAncestorByClassName(id, 'list');
                     var limit = parseInt(localStorage[list.id],10);

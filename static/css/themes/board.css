@@ -387,7 +387,9 @@ textarea.expanded {
 
 .card-actions button i[class^="icon-"],
 .card-actions .btn i[class^="icon-"] {
-    margin-right: 3px;
+    margin-right: 5px;
+    position: relative;
+    top: 1px;
 }
 
 .card:hover .members .add,
@@ -841,6 +843,8 @@ div.history th {
 .checklists .checklist .title i.icon-list {
     margin-right: 10px;
     cursor: move;
+    position: relative;
+    top: 1px;
 }
 
 .checklists .checklist .btn {

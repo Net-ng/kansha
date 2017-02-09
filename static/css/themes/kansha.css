@@ -103,6 +103,10 @@ button:disabled { cursor: inherit }
 }
 /* End buttons */
 
+[class^="icon-"], [class*=" icon-"] {
+    font-size: 16px;
+}
+
 [data-icon]:before {
     font-family: icons;
     content: attr(data-icon);

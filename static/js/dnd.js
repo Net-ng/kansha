@@ -374,8 +374,7 @@
                     list = Dom.getAncestorByClassName(id, 'list'),
                     limit = parseInt(localStorage[list.id], 10),
                     cards = ECN('card', null, list);
-                if (destEl.className == 'list-body') {
-                    // insert cardMarker at the end
+                if (Dom.hasClass(destEl, 'list-body')) {
                     if (cards.length < limit || limit === 0) {
                         DDM.refreshCache();
                         this.container = Dom.get(id);
@@ -385,19 +384,25 @@
                 }
             };
             drag.onDragOver = function (e, id) {
-                var destEl = Dom.get(id);
-                if (destEl.className != 'list-body') {
-                    var list = Dom.getAncestorByClassName(id, 'list');
-                    var limit = parseInt(localStorage[list.id],10);
-                    var cards = ECN('card', null, list);
-
-                    if (cards.length < limit || limit === 0) {
+                var destEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list'),
+                    limit = parseInt(localStorage[list.id], 10),
+                    cards = ECN('card', null, list),
+                    canAdd = (cards.length < limit || limit == 0);
+                if (canAdd) {
+                    if (Dom.hasClass(destEl, 'card-dnd-wrapper')) {  // We are hovering a card, add marker depending on move direction
                         if (this.goingDown) {
-                            Dom.insertAfter(NS.dnd.cardMarker, id);
                             // insert above
+                            Dom.insertAfter(NS.dnd.cardMarker, id);
                         } else {
-                            Dom.insertBefore(NS.dnd.cardMarker, id);
                             // insert below
+                            Dom.insertBefore(NS.dnd.cardMarker, id);
+                        }
+                    } else if (Dom.hasClass(destEl, 'list-body')) { // Hovering a list, add marker in it if not already present
+                        var findCardMarker = function(elem) { return Dom.hasClass(elem, 'card-marker'); },
+                            isAlreadyPlaced = Dom.getChildrenBy(destEl, findCardMarker).length != 0;
+                        if (!isAlreadyPlaced) {
+                            destEl.appendChild(NS.dnd.cardMarker);
                         }
                     }
                     DDM.refreshCache();

@@ -154,7 +154,7 @@ def render_card_dnd(self, h, comp, *args):
     """DnD wrapping of the card"""
     if self.data is not None:
         id_ = h.generate_id('dnd')
-        with h.div(id=id_):
+        with h.div(id=id_, class_='card-dnd-wrapper'):
             h << comp.render(h.AsyncRenderer())
             h << h.script('YAHOO.kansha.dnd.initCard(%s)' % ajax.py2js(id_))
     return h.root

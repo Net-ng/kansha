@@ -65,18 +65,19 @@ input[type="text"] {
     padding: 10px;
     margin-bottom: 15px;
     display: block;
-    max-width: 240px
+    width: 240px;
 }
 
 input[type="password"] {
     padding: 10px;
     display: block;
-    max-width: 240px
+    width: 240px;
 }
 
 .btn {
     display: inline-block;
     padding: 10px 30px;
+    width: 240px;
     margin: 18px 0 0 0;
 }
 

@@ -189,7 +189,7 @@ a:hover .ico-btn {
 }
 
 .menu li a {
-    font: 15px OpenSansLight;
+    font-size: 15px;
 }
 
 .menu a.active {
@@ -208,7 +208,6 @@ a:hover .ico-btn {
 /* Navigation menu */
 .nav-menu .actions {
     background: white;
-    font-family:  OpenSansLight;
     font-size: 15px;
     border-radius: 0 0 10px 0;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
@@ -259,7 +258,7 @@ a:hover .ico-btn {
 
 .overlay .favorites h3 {
     color: inherit;
-    font: normal 15px OpenSansLight
+    font-size: 15px;
 }
 
 .overlay .members.search .yui-ac-bd li.yui-ac-highlight {

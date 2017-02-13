@@ -11,7 +11,7 @@
 
 .home .boards {
     color: inherit;
-    font: 15px OpenSansLight;
+    font-size: 15px;
 }
 
 .home .boards ul.board-labels {

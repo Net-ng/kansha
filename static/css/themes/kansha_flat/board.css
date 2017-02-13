@@ -101,7 +101,7 @@
 
 .list .list-footer .link-small {
     color: inherit;
-    font: 15px OpenSansLight;
+    font-size: 15px;
 }
 
 .list .list-footer .link-small:hover {
@@ -602,7 +602,7 @@ div.history th {
     .nav-menu #mainActions {
         background: white;
         color: #434343;
-        font: normal 14px OpenSansLight;
+        font-size: 14px;
         border-radius: 0 0 10px 0;
     }
 

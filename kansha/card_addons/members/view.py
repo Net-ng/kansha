@@ -14,7 +14,8 @@ from .comp import CardMembers
 
 
 @presentation.render_for(CardMembers, 'action')
-def render_card_members(self, h, comp, *args):
+@presentation.render_for(CardMembers, 'action-badge')
+def render_card_members(self, h, comp, model):
     """Member section view for card
 
     First members icons,
@@ -29,13 +30,13 @@ def render_card_members(self, h, comp, *args):
             h << m.on_answer(self.remove_member).render(h, model="overlay-remove")
         if len(self.members) > self.MAX_SHOWN_MEMBERS:
             h << h.div(self.see_all_members, class_='more')
-        h << h.div(self.overlay_add_members, class_='add')
+        h << h.div(self.overlay_add_members, class_='add ' + model)
     return h.root
 
 
 @presentation.render_for(CardMembers, 'badge')
 def render_members_badge(self, h, comp, model):
-    model = 'action' if security.has_permissions('edit', self.card) else 'members_read_only'
+    model = 'action-badge' if security.has_permissions('edit', self.card) else 'members_read_only'
     return comp.render(h, model)
 
 

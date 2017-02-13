@@ -392,8 +392,11 @@ textarea.expanded {
     top: 1px;
 }
 
-.card:hover .members .add,
-.card-actions:hover .members .add {
+.action-badge {
+    visibility: hidden;
+}
+
+.card:hover .action-badge {
     visibility: visible;
 }
 

@@ -104,9 +104,6 @@ class CardLabels(CardExtension):
         """
         super(CardLabels, self).__init__(card, action_log, configurator)
         self.comp_id = str(random.randint(10000, 100000))
-        self._comp = component.Component(self)
-        self.overlay = component.Component(overlay.Overlay(lambda r: self._comp.render(r, model="list"),
-                                                           lambda r: self._comp.render(r, model='overlay'), dynamic=False, cls='card-edit-form-overlay'))
         self.labels = [Label(label) for label in self.data]
 
     @staticmethod

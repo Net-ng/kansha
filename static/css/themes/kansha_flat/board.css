@@ -164,17 +164,6 @@
     box-shadow: inset #b5b5b5 2px 1px 1px;
 }
 
-.card-label {
-    border-radius: 3px 3px 3px 3px;
-}
-
-.card-label > span {
-    color: white;
-}
-
-a.card-label:hover {
-    text-decoration: none;
-}
 /* End card drag n drop */
 
 /* Editor */
@@ -323,6 +312,36 @@ a.card-label:hover {
 }
 
 /* End comments */
+
+/* Labels */
+
+.card-label {
+    border-radius: 3px 3px 3px 3px;
+}
+
+.card-label > span {
+    color: white;
+}
+
+a.card-label:hover {
+    text-decoration: none;
+}
+
+.inline-labels .card-label {
+    border-radius: 14px;
+    border: 2px solid white;
+    box-shadow: 3px 1px 1px #D6D6D6;
+}
+
+.inline-labels .inactive {
+    box-shadow: none;
+}
+
+.label-color-picker .yui-picker-controls .bd {
+    background-color: inherit;
+}
+
+/* End label */
 
 /* Due dates */
 .due-date span {
@@ -534,18 +553,6 @@ div.history th {
     border: none;
     outline: none;
     background-color: transparent;
-}
-/* End weights */
-
-/* Weights */
-.inline-labels .card-label {
-    border-radius: 14px;
-    border: 2px solid white;
-    box-shadow: 3px 1px 1px #D6D6D6;
-}
-
-.label-color-picker .yui-picker-controls .bd {
-    background-color: inherit;
 }
 /* End weights */
 

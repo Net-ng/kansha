@@ -29,15 +29,10 @@ def render_Label(self, h, comp, *args):
 
 
 @presentation.render_for(Label, model='color')
-def render_Label_color(self, h, comp, *args):
-    """Render the label as a simple colored block"""
-    return h.span(class_='card-label', style=color_style(self), title=self.get_title())
-
-
 @presentation.render_for(Label, model='inactive')
-def render_Label_inactive(self, h, comp, *args):
+def render_Label_color(self, h, comp, model):
     """Render the label as a simple colored block"""
-    return h.span(class_='card-label', style='background-color: grey', title=self.get_title())
+    return h.span(class_='card-label ' + model, style=color_style(self), title=self.get_title())
 
 
 @presentation.render_for(Label, model='edit-color')
@@ -80,13 +75,16 @@ def render_CardLabels_header(self, h, comp, *args):
 
 
 @presentation.render_for(CardLabels, model='list')
-def render_CardLabels_list(self, h, comp, *args):
-    """Show labels inline with grey label (for card edit view)"""
-    h << h.script('YAHOO.kansha.app.hideOverlay();')
+@presentation.render_for(CardLabels, model='list-edit')
+def render_CardLabels_list(self, h, comp, model):
+    """Show labels inline for card edit view"""
     with h.span(class_='inline-labels'):
         for label in self.get_available_labels():
-            model = 'color' if label in self.labels else 'inactive'
-            h << component.Component(label, model)
+            label_model = 'color' if label in self.labels else 'inactive'
+            if model == 'list-edit':
+                h << h.a(component.Component(label, label_model)).action(self.activate, label)
+            else:
+                h << component.Component(label, label_model)
     return h.root
 
 
@@ -94,29 +92,7 @@ def render_CardLabels_list(self, h, comp, *args):
 def render_CardLabels(self, h, comp, *args):
     """Add or remove labels to card"""
     if security.has_permissions('edit', self.card):
-        h << self.overlay
+        h << comp.render(h.AsyncRenderer(), model="list-edit")
     else:
         h << comp.render(h, model="list")
-    return h.root
-
-
-@presentation.render_for(CardLabels, model='overlay')
-def render_CardLabels_overlay(self, h, comp, *args):
-    """Label chooser contained in the overlay's body"""
-    with h.ul(class_='unstyled inline-labels'):
-        for _i, label in enumerate(self.get_available_labels(), 1):
-            with h.li:
-                cls = ['card-label-choose']
-                if label in self.labels:
-                    cls.append('active')
-                # Update the list of labels
-                action1 = ajax.Update(
-                    action=lambda label=label: self.activate(label))
-                # Refresh the list
-                action2 = ajax.Update(render=lambda r: comp.render(r, model='list'),
-                                      component_to_update='list' + self.comp_id)
-                with h.a(title=label.get_color(), class_=' '.join(cls),).action(ajax.Updates(action1, action2)):
-                    h << h.span(class_="card-label",
-                                style='background-color: %s' % label.get_color())
-                    h << h.span(label.get_title())
     return h.root

@@ -300,13 +300,6 @@ a:hover .ico-btn {
     color: inherit;
 }
 
-.overlay.card-edit-form-overlay .card-label-choose.active .card-label {
-    opacity: 1;
-}
-
-.overlay.card-edit-form-overlay .card-label-choose .card-label {
-    opacity: 0.3;
-}
 /* End overlays */
 
 #mask {

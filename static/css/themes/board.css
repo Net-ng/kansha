@@ -422,6 +422,10 @@ textarea.expanded {
     width: 150px;
 }
 
+.inactive {
+    opacity: 0.3
+}
+
 .card-label > span {
     text-overflow: ellipsis;
 }
@@ -429,10 +433,6 @@ textarea.expanded {
 .card-label i {
     float: right;
     margin: 7px 2px 0 0;
-}
-
-.card-label-choose {
-    cursor: pointer
 }
 
 /* End card drag n drop */

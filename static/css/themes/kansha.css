@@ -474,15 +474,6 @@ i.icon {
     vertical-align: middle
 }
 
-.overlay.card-edit-form-overlay .card-label-choose {
-    display: block;
-    padding-left: 10px;
-    padding-bottom: 1px
-}
-
-.overlay.card-edit-form-overlay .card-label-choose .card-label {
-    margin-right: 7px
-}
 /* End overlays */
 
 #mask {

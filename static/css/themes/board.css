@@ -542,7 +542,7 @@ textarea.expanded {
 }
 
 .card-overlay .members.search .yui-ac-input {
-    width: calc(100% - 12px)
+    width: 100%;
 }
 
 .overlay.card-overlay .avatar {

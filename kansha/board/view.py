@@ -8,7 +8,7 @@
 # this distribution.
 # --
 
-from nagare.i18n import _, _N
+from nagare.i18n import _, _N, _L
 from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
@@ -29,6 +29,15 @@ VISIBILITY_ICONS = {
     BOARD_PUBLIC: 'icon-unlocked',
     BOARD_SHARED: 'icon-earth'
 }
+
+BACKGROUND_POSITIONS = [
+    ('fill', _L(u"fill")),
+    ('fit', _L(u"fit")),
+    ('stretch', _L(u"stretch")),
+    ('tile', _L(u"tile")),
+    ('center', _L(u"center"))
+]
+
 
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
@@ -631,14 +640,14 @@ def render_board_background_menu(self, h, comp, *args):
 def render_board_background_edit(self, h, comp, *args):
     """Render the background configuration panel"""
 
-    with h.div(class_='panel-section background'):
+    with h.div(class_='panel-section'):
         h << h.div(_(u'Background image'), class_='panel-section-title')
         with h.div:
             with h.div:
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
-                h << h.label((h.i(class_='icon-file-picture'),
+                h << h.label((h.i(class_='icon-file-picture'), u' ',
                               _("Choose an image")), class_='btn', for_=input_id)
                 with h.form(class_='hidden'):
                     h << h.script(
@@ -666,12 +675,10 @@ def render_board_background_edit(self, h, comp, *args):
                                  multiple="multiple", maxlength="100",).action(v_file)
                     h << h.input(id=submit_id, class_='hidden', type="submit").action(
                         lambda: self.set_background(v_file()))
-            with h.div:
-                h << _('or') << ' '
+                h << ' ' << _('or') << ' '
                 h << h.a(_(u'Reset background')).action(self.reset_background)
-        with h.div:
-            with h.span(class_='text-center'):
-                h << component.Component(self.board, model='background_image')
+        with h.p(class_='text-center'):
+            h << component.Component(self.board, model='background_image')
         with h.div:
             input_id = h.generate_id()
             submit_id = h.generate_id("image_position_submit")
@@ -682,17 +689,16 @@ def render_board_background_edit(self, h, comp, *args):
             with h.form:
                 h << h.label(_(u'Image position'), for_=input_id)
                 with h.select(id_=input_id).action(self.background_position):
-                    for value, name in self.get_available_background_positions():
-                        h << h.option(name, value=value).selected(self.background_position())
+                    for value, name in BACKGROUND_POSITIONS:
+                        h << h.option(_(name), value=value).selected(self.background_position())
                 h << h.input(class_='hidden', id_=submit_id, type="submit").action(self.set_background_position)
 
-    with h.div(class_='panel-section background'):
+    with h.div(class_='panel-section'):
         h << h.div(_(u'Board title color'), class_='panel-section-title')
         with h.div:
             with h.div:
                 h << comp.render(h, model='title-color-edit')
-            with h.div:
-                h << _('or') << ' '
+                h << ' ' << _('or') << ' '
                 h << h.a(_('Reset to default color')).action(self.reset_color)
     return h.root
 

@@ -42,6 +42,7 @@
     border-radius: 3px;
     background-color: inherit;
     border: 1px solid #737373;
+    vertical-align: middle;
 }
 
 /* End board */

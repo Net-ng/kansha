@@ -192,9 +192,6 @@ class BoardBackground(object):
         self.board = board
         self.background_position = var.Var(self.board.background_image_position)
 
-    def get_available_background_positions(self):
-        return [(value, value.capitalize()) for value in ('fill', 'fit', 'stretch', 'tile', 'center')]
-
     def set_background_position(self):
         self.board.set_background_position(self.background_position())
 

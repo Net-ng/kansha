@@ -110,7 +110,7 @@ def render_card_delete(self, h, comp, model):
                 h.i(class_='icon-bin'),
                 _('Delete'),
                 onclick='return confirm(%s)' % ajax.py2js(
-                    _(u'This card will be deleted. Are you sure?')
+                    _(u'This card will be archived. Are you sure?')
                 ).decode('UTF-8'),
                 class_='btn delete').action(self.emit_event, comp, events.CardArchived)
     return h.root

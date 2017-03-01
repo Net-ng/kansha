@@ -180,25 +180,30 @@ textarea.expanded {
 }
 
 .list {
-    display: inline-block !important;
-    float: none !important;
-    white-space: normal;
-    height: 100%;
-    position: relative;
-    height: calc(100% - 21px);
+    display: inline-flex;
+    flex-direction: column;
+    float: none;
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
+    height: calc(100% - 21px);
     margin-left: 10px;
+    position: relative;
     vertical-align: top;
+    white-space: normal;
+}
+
+.list > .nagare-generated {
+    flex: 1 1 100%;
+    overflow: hidden;
+}
+
+.list > div:first-child {
+    flex: 1 0 auto;
 }
 
 .list.reduced .list-body,
 .list.reduced .list-footer {
     display: none
-}
-
-.list > div:last-child {
-    height: 100%
 }
 
 .list-header {
@@ -207,7 +212,7 @@ textarea.expanded {
     padding: 0 10px;
 }
 
-.list-header > *[class^="list-"] {
+.list-title, .list-counter, .list-actions {
     display: table-cell;
 }
 
@@ -339,10 +344,11 @@ textarea.expanded {
 }
 
 .list-body {
-    overflow: auto;
-    position: relative;
+    height: 100%;
     min-height: 50px;
-    height: calc(100% - 78px);
+    overflow: auto;
+    padding-bottom: 40px;
+    position: relative;
 }
 
 .list-body h4 {

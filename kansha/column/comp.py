@@ -25,7 +25,8 @@ class Column(events.EventHandlerMixIn):
     """Column component
     """
 
-    def __init__(self, id_, board, card_extensions, action_log, search_engine_service, services_service, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, search_engine_service,
+                 services_service, data=None):
         """Initialization
 
         In:

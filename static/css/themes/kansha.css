@@ -91,7 +91,7 @@ button, .btn {
     width: auto;
     cursor: pointer;
     display: inline-block;
-    margin: 0;
+    margin: 3px;
     padding: 3px 9px;
 }
 

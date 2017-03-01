@@ -51,7 +51,6 @@
         init: function () {
             Event.addListener(window, "click", NS.app.onClick);
             Event.addListener(window, "dblClick", NS.app.onDblClick);
-            Event.addListener(ECN("toggle-dropdown"), "click", NS.app.toggleMenu);
             var link = document.URL.split('#');
             if (link.length > 1) {
                 link = Dom.get(link[1].substring(3));
@@ -152,10 +151,9 @@
             YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
         },
 
-        toggleMenu: function (ev) {
-            Event.stopEvent(ev);
-            var link = Event.getTarget(ev),
-                menu = ACN(link, 'with-dropdown'),
+        toggleMenu: function (source) {
+            NS.app.stopEvent();
+            var menu = ACN(source, 'with-dropdown'),
                 dropdown = ECN('dropdown', 'div', menu),
                 state = YAHOO.util.Dom.getStyle(dropdown, 'display');
             YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');

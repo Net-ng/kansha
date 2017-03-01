@@ -83,6 +83,8 @@ def render_column_dropdown(self, h, comp, *args):
                         }
                     )
                     h << h.a(_(u'Empty this list'), onclick=onclick)
+                with h.li:
+                    h << h.a(_(u'Set card limit')).action(self.actions, 'set_limit', comp)
             else:
                 with h.li:
                     onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
@@ -107,7 +109,9 @@ def render_column_header(self, h, comp, *args):
         h << self.card_counter.on_answer(lambda action: self.actions(action, comp))
         with h.div(class_='list-actions with-dropdown'):
             if security.has_permissions('edit', self):
-                h << h.a(h.i(class_='icon-dot-menu'), href='#', class_="toggle-dropdown") << ' '
+                h << h.a(h.i(class_='icon-dot-menu'),
+                         href='#', class_="toggle-dropdown",
+                         onclick="YAHOO.kansha.app.toggleMenu(this)") << ' '
                 h << comp.render(h, 'dropdown')
     return h.root
 
@@ -192,7 +196,6 @@ def render_CardsCounter(self, h, comp, *args):
     with h.div(class_='list-counter'):
         self.error = None
         with h.div(class_='cardCounter', id=self.id):
-            h << {'style': 'cursor: default'}
             h << h.a(self.text).action(comp.answer, 'set_limit')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"

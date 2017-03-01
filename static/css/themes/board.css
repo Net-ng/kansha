@@ -226,7 +226,7 @@ textarea.expanded {
 .list-header .list-counter {
     text-align: right;
     position: relative;
-    vertical-align: middle;
+    vertical-align: top;
     width: 50px;
 }
 
@@ -612,11 +612,13 @@ textarea.expanded {
 
 /* Card counter */
 .cardCounter {
+    cursor: pointer;
     display: inline-block;
-    padding: 2px 3px;
+    margin-top: 7px;
     min-width: 20px;
-    text-align: center;
+    padding: 2px 3px;
     position: relative;
+    text-align: center;
     vertical-align: baseline;
 }
 

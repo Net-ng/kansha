@@ -218,18 +218,15 @@ textarea.expanded {
 }
 
 .list-actions {
-    visibility: hidden;
+    position: relative;
+    width: 30px;
     text-align: right;
-    width: 20px;
-}
-
-.list-header:hover .list-actions {
-    visibility: visible;
 }
 
 .list-header .list-counter {
     text-align: right;
     position: relative;
+    vertical-align: middle;
     width: 50px;
 }
 
@@ -383,6 +380,9 @@ textarea.expanded {
 
 .card-edition {
     overflow: hidden;
+    /* dirty fix to restore avatars on the left of comments */
+    margin-left: -45px;
+    padding-left: 45px;
 }
 
 .card-actions button i[class^="icon-"],

@@ -51,6 +51,7 @@
         init: function () {
             Event.addListener(window, "click", NS.app.onClick);
             Event.addListener(window, "dblClick", NS.app.onDblClick);
+            Event.addListener(ECN("toggle-dropdown"), "click", NS.app.toggleMenu);
             var link = document.URL.split('#');
             if (link.length > 1) {
                 link = Dom.get(link[1].substring(3));
@@ -147,6 +148,20 @@
             if (NS.app.popin && !inPanel && !inOverlay && !InCkeditor) {
                 NS.app.closePopin();
             }
+            // close all menus
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+        },
+
+        toggleMenu: function (ev) {
+            Event.stopEvent(ev);
+            var link = Event.getTarget(ev),
+                menu = ACN(link, 'with-dropdown'),
+                dropdown = ECN('dropdown', 'div', menu),
+                state = YAHOO.util.Dom.getStyle(dropdown, 'display');
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+            if (state[0] && state[0] == 'none') {
+                YAHOO.util.Dom.setStyle(dropdown, 'display', 'block');
+            }
         },
 
         /**
@@ -195,7 +210,7 @@
                 y = 5;
             x += parseInt(Dom.getStyle(anchor, 'paddingLeft'), 10);
             NS.app.overlay = new YAHOO.widget.Overlay(overlay_id,
-                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize"], [x, y]],
+                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize", "windowScroll"], [x, y]],
                     zIndex: 1500,
                     visible: true,
                     constraintoviewport: true});
@@ -203,11 +218,7 @@
             if (centered){
             	NS.app.overlay.center();
             }
-            if (Dom.hasClass(child, 'toggleVisibility')) {
-                Dom.setStyle(child, 'visibility', 'visible');
-                NS.app.overlay.beforeHideEvent.subscribe(function(e) { Dom.setStyle(child, 'visibility', 'hidden'); });
-            }
-            var arrow = Selector.query('.overlay_arrow', overlay_id, true)
+            var arrow = Selector.query('.overlay_arrow', overlay_id, true);
             if (arrow) {
                 var region = Dom.getRegion(link);
                 Dom.setX(arrow, region.left);

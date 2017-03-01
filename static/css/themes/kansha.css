@@ -161,23 +161,52 @@ i.icon {
 /* End error page */
 
 /* Menu */
+
+.toggle-dropdown {
+    border: solid 1px transparent;
+    border-radius: 3px;
+    font-size: 20px;
+    padding: 1px 3px 1px 3px;
+}
+
+.with-dropdown:hover .toggle-dropdown {
+    border: solid 1px #c0c0c0;
+}
+
 .menu {
+    padding-top: 0;
+    text-align: left;
     width: 190px;
-    height: 100%;
+}
+
+.dropdown { /* add this class to .menu for dropdown menu version */
+    background-color: white;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    display: None;
+    left: -160px;
+    position: absolute;
+    top: 25px;
+    z-index: 100;
+}
+
+.dropdown li {
+    padding: 0;
 }
 
 .menu li a {
-    padding: 8px 8px 8px 50px;
-    margin-bottom: 3px;
+    cursor: pointer;
     display: block;
+    padding: 8px 8px 8px 50px;
+    /*margin-bottom: 3px;*/
+}
+
+.dropdown li a {
+    padding-left: 8px;
 }
 
 .menu li span {
     line-height: 20px;
-}
-
-.menu {
-    padding-top: 0
 }
 
 .menu .icon {

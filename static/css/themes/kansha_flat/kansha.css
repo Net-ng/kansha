@@ -188,6 +188,10 @@ a:hover .ico-btn {
     border-right: 1px dotted #737373
 }
 
+.dropdown {
+    border: 1px solid #d8d8d8;
+}
+
 .menu li a {
     font-size: 15px;
 }

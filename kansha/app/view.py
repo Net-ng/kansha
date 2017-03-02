@@ -140,7 +140,9 @@ def render_kansha(self, h, comp, *args):
     h.head.javascript_url('js/kansha.js')
     h.head.javascript_url('js/autocomplete.js')
 
-    h.head.javascript_url('js/ckeditor-4.5.3/ckeditor.js')
+    h.head.javascript_url('js/wysihtml/dist/minified/wysihtml.min.js')
+    h.head.javascript_url('js/wysihtml/dist/minified/wysihtml.toolbar.min.js')
+    h.head.javascript_url('js/wysihtml/parser_rules/advanced.js')
 
     if self.selected == 'board':
         with h.body(class_='yui-skin-sam'):

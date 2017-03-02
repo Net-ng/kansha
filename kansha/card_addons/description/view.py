@@ -31,6 +31,7 @@ def render(self, h, comp, *args):
             h << h.textarea(placeholder=_("Add description."))
 
     h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
+    h << h.script('if (typeof editor != "undefined") { editor.destroy(); editor = undefined; }')
     return h.root
 
 
@@ -43,21 +44,56 @@ def change_text(description, comp, text):
 def render_edit(self, h, comp, *args):
     """Render description component in edit mode"""
     text = var.Var(self.text)
-    with h.div(class_="description"):
-        with h.form(class_='description-form', style='display: none'):
+    with h.div(id_="description", style='visibility: hidden'):
+        with h.form(class_='description-form'):
             txt_id = h.generate_id()
-            h << h.textarea(text(), id_=txt_id).action(text)
+            with h.div(id_=txt_id + '-toolbar'):
+                h << h.a('bold', data_wysihtml_command='bold')
+                h << h.a('italic', data_wysihtml_command='italic')
+                h << h.a('underline', data_wysihtml_command='underline')
+                h << h.a('ol', data_wysihtml_command='insertOrderedList')
+                h << h.a('ul', data_wysihtml_command='insertUnorderedList')
+                h << h.a('anchor', data_wysihtml_command='createLink')
+                with h.div(data_wysihtml_dialog='createLink', style='display: none'):
+                    with h.label:
+                        h << h.input(data_wysihtml_dialog_field='href', value='http://',
+                                     type='text', class_='text')
+                    h << h.a('ok', data_wysihtml_dialog_action='save')
+                    h << h.a('cancel', data_wysihtml_dialog_action='cancel')
+            h << h.textarea(text(), id_=txt_id, class_='description-editor').action(text)
+# <div id="wysihtml-toolbar" style="display: none;">
+#   <a data-wysihtml-command="bold">bold</a>
+#   <a data-wysihtml-command="italic">italic</a>
+
+#   <!-- Some wysihtml5 commands require extra parameters -->
+#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="red">red</a>
+#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="green">green</a>
+#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="blue">blue</a>
+
+#   <!-- Some wysihtml5 commands like 'createLink' require extra paramaters specified by the user (eg. href) -->
+#   <a data-wysihtml-command="createLink">insert link</a>
+#   <div data-wysihtml-dialog="createLink" style="display: none;">
+#     <label>
+#       Link:
+#       <input data-wysihtml-dialog-field="href" value="http://" class="text">
+#     </label>
+#     <a data-wysihtml-dialog-action="save">OK</a> <a data-wysihtml-dialog-action="cancel">Cancel</a>
+#   </div>
+# </div>
 
             with h.div(class_='buttons'):
                 h << h.button(_('Save'), class_='btn btn-primary').action(lambda: change_text(self, comp, text()))
                 h << ' '
                 h << h.button(_('Cancel'), class_='btn').action(change_text, self, comp, None)
-                h << h.script(
-                    "YAHOO.kansha.app.init_ckeditor(%s, %s)" % (
-                        ajax.py2js(txt_id),
-                        ajax.py2js(security.get_user().get_locale().language)
-                    )
-                )
+    h << h.script("""
+        var editor = new wysihtml.Editor(%s, { // id of textarea element
+          toolbar:      %s, // id of toolbar element
+          parserRules:  wysihtmlParserRules, // defined in parser rules set
+          style: true  // adopt styles of main page
+        });
+        document.getElementById("description").style.visibility = "visible";
+        """ % (ajax.py2js(txt_id), ajax.py2js(txt_id + '-toolbar'))
+    )
     return h.root
 
 

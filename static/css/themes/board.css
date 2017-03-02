@@ -510,12 +510,9 @@ textarea.expanded {
     overflow-wrap: break-word;
 }
 
-.card-edit-form textarea {
-    resize: none;
-    height: 29px;
-    min-height: 0;
+.description-editor {
+    height: 290px;
     padding: 4px 6px;
-    overflow: hidden;
 }
 
 .card-edit-form textarea.expanded {

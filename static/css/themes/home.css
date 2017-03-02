@@ -28,6 +28,8 @@
 }
 
 .home .boards div.add {
+    margin-right: 2px;
+    vertical-align: middle;
     visibility: hidden;
 }
 

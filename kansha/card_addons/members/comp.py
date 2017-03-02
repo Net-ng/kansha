@@ -82,7 +82,7 @@ class CardMembers(CardExtension):
 
         # members part of the card
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user'), r.span(_(u'+'), class_='count')),
+            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user-plus')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'), dynamic=True, cls='card-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method), model='add_members')
         self.members = [component.Component(usermanager.UserManager.get_app_user(data=membership.user))

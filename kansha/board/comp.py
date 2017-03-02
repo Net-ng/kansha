@@ -104,7 +104,7 @@ class Board(events.EventHandlerMixIn):
 
         # Member part
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user'), r.span(_(u'+'), class_='count')),
+            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user-plus')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'),
                             dynamic=True, cls='board-labels-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method))

@@ -241,6 +241,11 @@
     font-size: 11px;
     font-style: italic;
 }
+
+i.ico-btn.icon-user-plus {
+    font-size: 23px;
+}
+
 /* End card overlays */
 
 /* Card counter */

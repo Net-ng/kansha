@@ -399,6 +399,7 @@ textarea.expanded {
 }
 
 .action-badge {
+    vertical-align: middle;
     visibility: hidden;
 }
 

@@ -21,7 +21,7 @@ def render(self, h, comp, *args):
     If text is empty, display a text area otherwise it's a simple text
     """
     id_ = h.generate_id()
-    kw = {'class': 'description', 'id': id_}
+    kw = {'class': 'description-content', 'id': id_}
     if security.has_permissions('edit', self.card):
         kw['onclick'] = h.a.action(comp.becomes, model='edit').get('onclick')
     with h.div(**kw):
@@ -48,38 +48,26 @@ def render_edit(self, h, comp, *args):
         with h.form(class_='description-form'):
             txt_id = h.generate_id()
             with h.div(id_=txt_id + '-toolbar'):
-                h << h.a('bold', data_wysihtml_command='bold')
-                h << h.a('italic', data_wysihtml_command='italic')
-                h << h.a('underline', data_wysihtml_command='underline')
-                h << h.a('ol', data_wysihtml_command='insertOrderedList')
-                h << h.a('ul', data_wysihtml_command='insertUnorderedList')
-                h << h.a('anchor', data_wysihtml_command='createLink')
-                with h.div(data_wysihtml_dialog='createLink', style='display: none'):
+                h << h.a(h.i(class_='icon-bold'), data_wysihtml_command='bold',
+                         class_='btn icon-btn', title=_('bold')) << ' '
+                h << h.a(h.i(class_='icon-italic'), data_wysihtml_command='italic',
+                         class_='btn icon-btn', title=_('italic')) << ' '
+                h << h.a(h.i(class_='icon-underline'), data_wysihtml_command='underline',
+                         class_='btn icon-btn', title=_('underline')) << ' '
+                h << h.a(h.i(class_='icon-list-numbered'), data_wysihtml_command='insertOrderedList',
+                         class_='btn icon-btn', title=_('numbered list')) << ' '
+                h << h.a(h.i(class_='icon-list2'), data_wysihtml_command='insertUnorderedList',
+                         class_='btn icon-btn', title=_('bullet list')) << ' '
+                h << h.a(h.i(class_='icon-link'), data_wysihtml_command='createLink',
+                         class_='btn icon-btn', title=_('link')) << ' '
+                with h.div(data_wysihtml_dialog='createLink', class_='editor-popin',
+                           style='display:none'):
                     with h.label:
                         h << h.input(data_wysihtml_dialog_field='href', value='http://',
                                      type='text', class_='text')
-                    h << h.a('ok', data_wysihtml_dialog_action='save')
-                    h << h.a('cancel', data_wysihtml_dialog_action='cancel')
-            h << h.textarea(text(), id_=txt_id, class_='description-editor').action(text)
-# <div id="wysihtml-toolbar" style="display: none;">
-#   <a data-wysihtml-command="bold">bold</a>
-#   <a data-wysihtml-command="italic">italic</a>
-
-#   <!-- Some wysihtml5 commands require extra parameters -->
-#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="red">red</a>
-#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="green">green</a>
-#   <a data-wysihtml-command="foreColor" data-wysihtml-command-value="blue">blue</a>
-
-#   <!-- Some wysihtml5 commands like 'createLink' require extra paramaters specified by the user (eg. href) -->
-#   <a data-wysihtml-command="createLink">insert link</a>
-#   <div data-wysihtml-dialog="createLink" style="display: none;">
-#     <label>
-#       Link:
-#       <input data-wysihtml-dialog-field="href" value="http://" class="text">
-#     </label>
-#     <a data-wysihtml-dialog-action="save">OK</a> <a data-wysihtml-dialog-action="cancel">Cancel</a>
-#   </div>
-# </div>
+                    h << h.a(_('Link'), data_wysihtml_dialog_action='save', class_='btn btn-primary')
+                    h << h.a(_('Cancel'), data_wysihtml_dialog_action='cancel', class_='btn')
+            h << h.textarea(text(), id_=txt_id, class_='description-editor description-content').action(text)
 
             with h.div(class_='buttons'):
                 h << h.button(_('Save'), class_='btn btn-primary').action(lambda: change_text(self, comp, text()))
@@ -89,7 +77,8 @@ def render_edit(self, h, comp, *args):
         var editor = new wysihtml.Editor(%s, { // id of textarea element
           toolbar:      %s, // id of toolbar element
           parserRules:  wysihtmlParserRules, // defined in parser rules set
-          style: true  // adopt styles of main page
+          style: true,  // adopt styles of main page
+          stylesheets: ['/static/kansha/css/themes/board.css'] // adoption is not complete
         });
         document.getElementById("description").style.visibility = "visible";
         """ % (ajax.py2js(txt_id), ajax.py2js(txt_id + '-toolbar'))

@@ -168,7 +168,7 @@
 /* End card drag n drop */
 
 /* Editor */
-.card-edition .description a {
+.description-content a {
     color: #009fed;
     text-decoration: underline;
 }
@@ -196,6 +196,16 @@
 
 .card-edit-form .header .title a {
     color: #737373
+}
+
+.wysihtml-command-active, .wysihtml-command-dialog-opened {
+    border: 1px solid #c0c0c0;
+}
+
+
+.editor-popin {
+    background: white;
+    border-bottom: solid 1px #c0c0c0;
 }
 
 
@@ -435,15 +445,6 @@ a.card-label:hover {
 /* Board view switch zone (calendar / columns / search) */
 #switch_zone .btn {
     font-size: 16px;
-}
-
-#switch_zone .btn.unselected:hover {
-    border: 1px solid #c0c0c0;
-}
-
-#switch_zone .btn.unselected {
-    background: transparent;
-    border: 1px solid transparent;
 }
 
 #search {

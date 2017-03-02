@@ -361,9 +361,10 @@ textarea.expanded {
 
 /* Cards */
 .card {
-    position: relative;
+    /*position: relative;*/
     min-height: 64px;
     margin: 8px 4px;
+    /*overflow: hidden;*/
     padding: 8px 8px 4px 8px;
     cursor: pointer;
     word-wrap: break-word;
@@ -513,6 +514,12 @@ textarea.expanded {
 .description-editor {
     height: 290px;
     padding: 4px 6px;
+    margin-top: 3px;
+}
+
+.description-content a {
+    color: #009fed;
+    text-decoration: underline;
 }
 
 .card-edit-form textarea.expanded {
@@ -527,6 +534,18 @@ textarea.expanded {
     box-sizing: border-box;
     text-align: center;
 }
+
+.description-form {
+    position: relative;
+}
+
+.editor-popin {
+    padding: 5px;
+    position: absolute;
+    width: 100%;
+
+}
+
 /* End editor */
 
 /* Badges */
@@ -741,14 +760,29 @@ textarea.expanded {
     margin: 15px 6px 0 5px;
 }
 
-#switch_zone .btn {
-    padding: 4px 8px;
+.icon-btn {
+    padding: 7px;
     min-width: 0;
     margin: 0 5px;
+    background: transparent;
+    border: 1px solid transparent;
 }
 
-#switch_zone .btn [class^="icon-"] {
+.icon-btn [class^="icon-"] {
     left: 0;
+}
+
+.icon-btn:hover {
+    border: 1px solid #c0c0c0;
+}
+
+.selected {
+    border: 1px solid #c0c0c0;
+}
+
+#switch_zone .btn.unselected {
+    background: transparent;
+    border: 1px solid transparent;
 }
 
 #search {
@@ -1192,7 +1226,7 @@ div.history th {
         margin-top: 0;
     }
 
-    #switch_zone .btn {
+    .icon-btn {
         margin: 0;
         padding: 0 2px;
     }

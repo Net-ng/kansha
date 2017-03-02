@@ -199,6 +199,7 @@ textarea.expanded {
 
 .list > div:first-child {
     flex: 1 0 auto;
+    overflow: visible;
 }
 
 .list.reduced .list-body,

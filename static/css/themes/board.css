@@ -952,7 +952,7 @@ div.history th {
 .calendar {
     position: absolute;
     padding: 10px;
-    width: 250px;
+    width: 255px;
     z-index: 1;
 }
 

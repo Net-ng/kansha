@@ -119,10 +119,7 @@ class DataBoard(Entity):
 
     @property
     def url(self):
-        return urllib.quote_plus(
-            "%s/%s" % (self.title.encode('ascii', 'ignore'), self.uri),
-            '/'
-        )
+        return "%s/%s" % (urllib.quote_plus(self.title.encode('ascii', 'ignore').replace('/', '_')), self.uri)
 
     def __init__(self, *args, **kwargs):
         """Initialization.

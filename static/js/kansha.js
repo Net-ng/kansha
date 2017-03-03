@@ -119,17 +119,6 @@
         },
 
         /**
-         * Handle window resize
-         */
-        columnsResize: function () {
-            var $lists = $('#lists .list'),
-                availableWidth = $('#lists').width(),
-                listOffset = $lists.offset(),
-                offset = (listOffset.left || 0) + (listOffset.right || 0) + ($lists.outerWidth() - $lists.innerWidth() + 1) * 2;
-            $lists.width(availableWidth / $lists.length - offset);
-        },
-
-        /**
          * Close all open overlays and popin
          */
         onClick: function (ev) {

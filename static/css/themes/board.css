@@ -177,6 +177,7 @@ textarea.expanded {
 #lists > .span-auto {
     max-width: 440px;
     min-width: 250px;
+    width: calc(16.666% - 15px);
 }
 
 .list {
@@ -1099,8 +1100,20 @@ div.history th {
 }
 /* End nb items */
 
+
 /* Responsive */
+@media all and (max-width: 1600px) {
+    #lists > .span-auto {
+        width: calc(20% - 15px);
+    }
+
+}
+
 @media all and (max-width: 1360px) {
+    #lists > .span-auto {
+        width: calc(25% - 15px);
+    }
+
     .list-header {
         height: auto
     }
@@ -1119,6 +1132,14 @@ div.history th {
         margin-right: 5px;
     }
 }
+
+@media all and (max-width: 1060px) {
+    #lists > .span-auto {
+        width: calc(33.333% - 15px);
+    }
+
+}
+
 
 @media (max-width: 813px) {
     body {

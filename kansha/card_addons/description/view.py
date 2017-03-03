@@ -78,7 +78,8 @@ def render_edit(self, h, comp, *args):
           toolbar:      %s, // id of toolbar element
           parserRules:  wysihtmlParserRules, // defined in parser rules set
           style: true,  // adopt styles of main page
-          stylesheets: ['/static/kansha/css/themes/board.css'] // adoption is not complete
+          // FIXME: no hard coded path to theme; extensions should have a mechanism to load their styles
+          stylesheets: ['/static/kansha/css/themes/kansha_flat/board.css'] // adoption is not complete
         });
         document.getElementById("description").style.visibility = "visible";
         """ % (ajax.py2js(txt_id), ajax.py2js(txt_id + '-toolbar'))

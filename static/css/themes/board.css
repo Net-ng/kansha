@@ -517,11 +517,6 @@ textarea.expanded {
     margin-top: 3px;
 }
 
-.description-content a {
-    color: #009fed;
-    text-decoration: underline;
-}
-
 .card-edit-form textarea.expanded {
     height: 112px;
 }

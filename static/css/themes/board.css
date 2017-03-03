@@ -382,14 +382,14 @@ textarea.expanded {
 
 .card-actions {
     float: right;
-    margin-left: 10px;
-    width: 155px;
+    width: 140px;
 }
 
 .card-edition {
     overflow: hidden;
     /* dirty fix to restore avatars on the left of comments */
     margin-left: -45px;
+    min-width: 520px;
     padding-left: 45px;
 }
 
@@ -521,9 +521,9 @@ textarea.expanded {
     height: 112px;
 }
 
-.card-edit-form .card-actions .btn {
+.card-actions .btn {
     margin-bottom: 8px;
-    width: 100%;
+    width: 134px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -868,22 +868,31 @@ div.history th {
     line-height: 3em;
 }
 
-.checklists .checklist a.delete {
+.checklist .delete, .checklist .delete-item {
     display: none;
     float: right;
     margin-right: 5px;
 }
 
-.checklists .checklist .title:hover a.delete,
-.checklists .checklist li:hover a.delete {
+.checklist:hover .delete,
+.checklist li:hover .delete-item {
     display: inline-block
 }
 
 .checklists .checklist .title i.icon-list {
     margin-right: 10px;
-    cursor: move;
     position: relative;
     top: 1px;
+}
+
+.not-alone {
+    cursor: move;
+}
+
+.checklist .title > .nagare-generated {
+    display: inline-block;
+    vertical-align: middle;
+    width: 400px;
 }
 
 .checklists .checklist .btn {
@@ -1052,7 +1061,7 @@ div.history th {
 
 .yui-skin-sam .yui-panel {
     margin: 70px auto 30px auto;
-    max-width: 680px;
+    max-width: 740px;
     padding: 5px 20px 15px 50px;
 }
 
@@ -1117,6 +1126,16 @@ div.history th {
         overflow: auto;
     }
 
+    .card-actions {
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .card-actions .btn {
+        width: 100%;
+    }
+
     [class*="span"] {
         margin-left: 0;
     }
@@ -1140,11 +1159,6 @@ div.history th {
 
     .list-marker {
         margin-bottom: 5px;
-    }
-
-    .card-edit-form .card-edit-comment textarea,
-    .card-edit-form .description textarea {
-        width: 96.77419%;
     }
 
     #lists {
@@ -1177,18 +1191,6 @@ div.history th {
         margin-bottom: 0
     }
 
-    .checklists .checklist .new-item-form input {
-        width: calc(100% - 70px);
-    }
-
-    .checklists .checklist .title input {
-        width: calc(100% - 94px);
-    }
-
-    .checklists .checklist li input {
-        width: calc(100% - 70px);
-    }
-
     .checklists .checklist form {
         display: block;
         width: 100%;
@@ -1196,7 +1198,6 @@ div.history th {
 
     .checklists .checklist li form {
         display: inline-block;
-        width: calc(100% - 36px);
     }
 
 }
@@ -1224,11 +1225,6 @@ div.history th {
     .icon-btn {
         margin: 0;
         padding: 0 2px;
-    }
-
-    .card-actions {
-        float: none;
-        width: 100%;
     }
 
     .yui-skin-sam .yui-panel {

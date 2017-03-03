@@ -116,7 +116,7 @@ class Checklist(object):
         self.title = component.Component(
             title.EditableTitle(
                 self.get_title,
-                placeholder=i18n._(u'Enter title')
+                placeholder=i18n._(u'Add title')
             )
         ).on_answer(self.set_title)
         self.new_item = component.Component(NewChecklistItem(len(self.items))).on_answer(self.add_item_from_str)

@@ -499,13 +499,12 @@ div.history th {
 }
 
 .progress .bar {
-    background-color: #5ea9dd;
+    background-color: #c0c0c0;
 }
 /* End progress bar */
 
 /* Checklists */
 .checklists .checklist {
-    background-color: #eaeaea;
     border-radius: 5px;
     border: 1px solid #c0c0c0
 }

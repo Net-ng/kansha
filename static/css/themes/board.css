@@ -174,7 +174,7 @@ textarea.expanded {
     vertical-align: top;
 }
 
-#lists > .span-auto {
+.span-auto {
     max-width: 440px;
     width: calc(16.666% - 15px);
 }
@@ -1094,14 +1094,14 @@ div.history th {
 /* Responsive */
 
 @media all and (max-width: 1600px) {
-    #lists > .span-auto {
+    .span-auto {
         width: calc(20% - 15px);
     }
 
 }
 
 @media all and (max-width: 1360px) {
-    #lists > .span-auto {
+    .span-auto {
         width: calc(25% - 15px);
     }
 
@@ -1125,7 +1125,7 @@ div.history th {
 }
 
 @media all and (max-width: 1060px) {
-    #lists > .span-auto {
+    .span-auto {
         width: calc(33.333% - 15px);
     }
 
@@ -1178,7 +1178,7 @@ div.history th {
         z-index: 1;
     }
 
-    #lists > .span-auto {
+    .span-auto {
         width: 99%;
         max-width: 99%;
     }

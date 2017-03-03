@@ -270,11 +270,6 @@ a:hover .ico-btn {
     color: inherit;
 }
 
-.overlay .members.search .yui-ac-bd li:hover {
-    background: #EAEAEA;
-    color: inherit;
-}
-
 .overlay.board-labels-overlay {
     color: inherit;
 }
@@ -311,8 +306,7 @@ a:hover .ico-btn {
 
 .members .count {
     color: white;
-    font-size: 10px;
-    font-family: OpenSansbold;
+    font-size: 11px;
     font-weight: bold;
     text-align: center;
     background-color: #737373;

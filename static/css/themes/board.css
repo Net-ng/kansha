@@ -176,7 +176,7 @@ textarea.expanded {
 
 #lists > .span-auto {
     max-width: 440px;
-    width: calc(14.3% - 15px);
+    width: calc(16.666% - 15px);
 }
 
 .list {
@@ -1092,12 +1092,6 @@ div.history th {
 
 
 /* Responsive */
-@media all and (max-width: 1850px) {
-    #lists > .span-auto {
-        width: calc(16.666% - 15px);
-    }
-
-}
 
 @media all and (max-width: 1600px) {
     #lists > .span-auto {
@@ -1185,7 +1179,7 @@ div.history th {
     }
 
     #lists > .span-auto {
-        width: 100%;
+        width: 99%;
         max-width: 99%;
     }
 

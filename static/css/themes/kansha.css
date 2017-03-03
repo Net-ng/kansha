@@ -57,6 +57,8 @@ label {
     top: 0 !important;
     left: 0 !important;
     position: relative;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .yui-skin-sam .yui-ac-content {

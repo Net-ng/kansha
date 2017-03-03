@@ -14,7 +14,6 @@ from .comp import CardMembers
 
 
 @presentation.render_for(CardMembers, 'action')
-@presentation.render_for(CardMembers, 'action-badge')
 def render_card_members(self, h, comp, model):
     """Member section view for card
 
@@ -30,18 +29,13 @@ def render_card_members(self, h, comp, model):
             h << m.on_answer(self.remove_member).render(h, model="overlay-remove")
         if len(self.members) > self.MAX_SHOWN_MEMBERS:
             h << h.div(self.see_all_members, class_='more')
-        h << h.div(self.overlay_add_members, class_='add ' + model)
+        h << h.div(self.overlay_add_members, class_='add')
     return h.root
 
 
 @presentation.render_for(CardMembers, 'badge')
-def render_members_badge(self, h, comp, model):
-    model = 'action-badge' if security.has_permissions('edit', self.card) else 'members_read_only'
-    return comp.render(h, model)
-
-
 @presentation.render_for(CardMembers, model='members_read_only')
-def render_card_members_read_only(self, h, comp, *args):
+def render_card_members_read_only(self, h, comp, model):
     """Member section view for card
 
     First members icons,
@@ -52,7 +46,10 @@ def render_card_members_read_only(self, h, comp, *args):
         for m in self.members[:self.MAX_SHOWN_MEMBERS]:
             h << h.span(m.render(h, 'avatar'), class_='miniavatar unselectable')
         if len(self.members) > self.MAX_SHOWN_MEMBERS:
-            h << h.div(self.see_all_members, class_='more')
+            if model == 'badge':
+                h << comp.render(h, 'more_users')
+            else:
+                h << h.div(self.see_all_members, class_='more')
     return h.root
 
 

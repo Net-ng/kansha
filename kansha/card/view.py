@@ -38,7 +38,7 @@ def render_card_new(self, h, comp, *args):
 def render(self, h, comp, *args):
     """Render the card"""
 
-    extensions = [extension.on_answer(self.handle_event, comp) for name, extension in self.extensions]
+    extensions = self.extensions
 
     card_id = h.generate_id()
 
@@ -46,13 +46,13 @@ def render(self, h, comp, *args):
     with h.div(id=self.id, class_='card'):
         with h.div(id=card_id, onclick=onclick):
             with h.div(class_='headers'):
-                h << [extension.render(h, 'header') for extension in extensions]
+                h << [extension.render(h, 'header') for _name, extension in extensions]
             with h.div(class_='covers'):
                 with h.div(class_='title'):
                     h << self.title.render(h, 'readonly')
-                h << [extension.render(h, 'cover') for extension in extensions]
+                h << [extension.render(h, 'cover') for _name, extension in extensions]
             with h.div(class_='badges'):
-                h << [extension.render(h, 'badge') for extension in extensions]
+                h << [extension.render(h, 'badge') for _name, extension in extensions]
 
     h << h.script(
         "YAHOO.kansha.reload_cards[%s]=function() {%s}""" % (

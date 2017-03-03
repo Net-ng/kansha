@@ -522,6 +522,7 @@ i.icon {
 .members .add {
     display: inline-block;
     margin-right: -11px;
+    vertical-align: top;
 }
 
 .members .miniavatar {

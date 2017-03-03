@@ -314,7 +314,14 @@ def render_Board_columns(self, h, comp, *args):
             h.head.javascript(h.generate_id(), """function increase_version() {%s}""" % increase_version.get('onclick'))
 
             # Render columns
+            visible_cols = len(self.columns) - int(not self.show_archive)
+            layout = ''
+            if 2 < visible_cols < 6:
+                layout = 'list-span-{}'.format(visible_cols)
+
             with h.div(id='lists'):
+                if layout:
+                    h << {'class': layout}
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
                     if column().is_archive and not self.show_archive:

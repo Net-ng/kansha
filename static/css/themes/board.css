@@ -179,6 +179,19 @@ textarea.expanded {
     width: calc(16.666% - 15px);
 }
 
+.list-span-5 .span-auto {
+    width: calc(20% - 15px);
+}
+
+.list-span-4 .span-auto {
+    width: calc(25% - 15px);
+}
+
+.list-span-3 .span-auto {
+    width: calc(33.333% - 15px);
+}
+
+
 .list {
     display: inline-flex;
     flex-direction: column;
@@ -1103,6 +1116,7 @@ div.history th {
 @media all and (max-width: 1360px) {
     .span-auto {
         width: calc(25% - 15px);
+        min-width: calc(25% - 15px);
     }
 
     .list-header {
@@ -1127,6 +1141,7 @@ div.history th {
 @media all and (max-width: 1060px) {
     .span-auto {
         width: calc(33.333% - 15px);
+        min-width: calc(33.333% - 15px);
     }
 
 }

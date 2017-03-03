@@ -160,7 +160,7 @@ class Board(events.EventHandlerMixIn):
 
     # Main menu actions
     def add_list(self):
-        new_column_editor = column.NewColumnEditor(len(self.columns))
+        new_column_editor = column.NewColumnEditor(len(self.columns) - 1)
         answer = self.modal.call(popin.Modal(new_column_editor, force_refresh=True))
         if answer:
             index, title, nb_cards = answer

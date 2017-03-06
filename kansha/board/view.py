@@ -318,6 +318,8 @@ def render_Board_columns(self, h, comp, *args):
             layout = ''
             if 2 < visible_cols < 6:
                 layout = 'list-span-{}'.format(visible_cols)
+            elif visible_cols < 3:
+                layout = 'list-span-3'
 
             with h.div(id='lists'):
                 if layout:

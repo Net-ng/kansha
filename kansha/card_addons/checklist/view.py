@@ -75,11 +75,12 @@ def render_Checklists(self, h, comp, model):
 
         id_ = h.generate_id()
         with h.div(class_='checklists', id=id_):
+            not_alone = len(self.checklists) > 1
             for index, clist in enumerate(self.checklists):
                 if can_edit:
                     h << clist.on_answer(
                         lambda v, index=index: self.delete_checklist(index)
-                    )
+                    ).render(h, 'not-alone' if not_alone else None)
                 else:
                     h << clist.render(h, 'read-only')
     return h.root
@@ -95,18 +96,28 @@ def render_Checklists_badge(self, h, comp, model):
 
 
 @presentation.render_for(Checklist)
+@presentation.render_for(Checklist, 'not-alone')
 @presentation.render_for(Checklist, 'read-only')
 def render_Checklist(self, h, comp, model):
     with h.div(id='checklist_%s' % self.id, class_='checklist'):
         with h.div(class_='title'):
-            h << h.i(class_='icon-list')
+            h << h.i(class_='icon-list ' + (model or ''))
             if model == 'read-only':
                 h << self.data.title
             else:
                 h << self.title.render(h.AsyncRenderer())
-                h << h.a(h.i(class_='icon-cross'), class_='delete').action(
-                    ajax.Update(render='', action=comp.answer)
+                onclick = (
+                    u"if (confirm(%(message)s)){%(action)s;}return false" %
+                    {
+                        'action': h.a.action(
+                            ajax.Update(render='', action=comp.answer)
+                        ).get('onclick'),
+                        'message': ajax.py2js(
+                            _(u'The checklist will be deleted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
                 )
+                h << h.a(h.i(class_='icon-cross'), class_='delete', onclick=onclick)
 
         with h.div(class_='content'):
             if self.items:
@@ -142,6 +153,6 @@ def render_ChecklistItem(self, h, comp, model):
 @presentation.render_for(ChecklistItem)
 def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
-    h << h.span(self.title.render(h.AsyncRenderer()), class_='done' if self.done else '')
-    h << h.a(h.i(class_='icon-cross'), class_='delete').action(comp.answer, 'delete')
+    h << h.span(self.title.render(h.AsyncRenderer()), class_='title ' + ('done' if self.done else ''))
+    h << h.a(h.i(class_='icon-cross'), class_='delete-item').action(comp.answer, 'delete')
     return h.root

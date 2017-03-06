@@ -25,7 +25,8 @@ class Column(events.EventHandlerMixIn):
     """Column component
     """
 
-    def __init__(self, id_, board, card_extensions, action_log, search_engine_service, services_service, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, search_engine_service,
+                 services_service, data=None):
         """Initialization
 
         In:
@@ -46,12 +47,6 @@ class Column(events.EventHandlerMixIn):
         self._cards = None
         self.new_card = component.Component(
             comp.NewCard(self))
-
-        self.actions_comp = component.Component(self, 'overlay')
-        self.actions_overlay = component.Component(overlay.Overlay(
-            lambda r: r.i(class_='toggleVisibility icon-menu'),
-            self.actions_comp.render,
-            title=_('List actions'), dynamic=False))
 
     @property
     def cards(self):
@@ -81,7 +76,9 @@ class Column(events.EventHandlerMixIn):
         self.search_engine.commit()
 
     def actions(self, action, comp):
-        if action == 'delete':
+        if action == 'empty':
+            self.empty()
+        elif action == 'delete':
             self.emit_event(comp, events.ColumnDeleted, comp)
         elif action == 'set_limit':
             self.card_counter.call(model='edit')
@@ -151,10 +148,14 @@ class Column(events.EventHandlerMixIn):
         if purge:
             self.purge_cards()
         else:
-            for card in self.cards:
-                # FIXME: move to board only, use Events
-                self.board.archive_card(card(), self)
+            self.empty()
         DataColumn.delete_column(self.data)
+
+    def empty(self):
+        for card in self.cards:
+            # FIXME: move this function to board only, use Events
+            self.board.archive_card(card(), self)
+        self._cards = None
 
     def remove_card_comp(self, card):
         self.cards.remove(card)

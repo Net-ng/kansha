@@ -57,6 +57,8 @@ label {
     top: 0 !important;
     left: 0 !important;
     position: relative;
+    max-height: 300px;
+    overflow: auto;
 }
 
 .yui-skin-sam .yui-ac-content {
@@ -91,7 +93,7 @@ button, .btn {
     width: auto;
     cursor: pointer;
     display: inline-block;
-    margin: 0;
+    margin: 3px;
     padding: 3px 9px;
 }
 
@@ -161,23 +163,52 @@ i.icon {
 /* End error page */
 
 /* Menu */
+
+.toggle-dropdown {
+    border: solid 1px transparent;
+    border-radius: 3px;
+    font-size: 20px;
+    padding: 1px 3px 1px 3px;
+}
+
+.with-dropdown:hover .toggle-dropdown {
+    border: solid 1px #c0c0c0;
+}
+
 .menu {
+    padding-top: 0;
+    text-align: left;
     width: 190px;
-    height: 100%;
+}
+
+.dropdown { /* add this class to .menu for dropdown menu version */
+    background-color: white;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    display: None;
+    left: -160px;
+    position: absolute;
+    top: 25px;
+    z-index: 100;
+}
+
+.dropdown li {
+    padding: 0;
 }
 
 .menu li a {
-    padding: 8px 8px 8px 50px;
-    margin-bottom: 3px;
+    cursor: pointer;
     display: block;
+    padding: 8px 8px 8px 50px;
+    /*margin-bottom: 3px;*/
+}
+
+.dropdown li a {
+    padding-left: 8px;
 }
 
 .menu li span {
     line-height: 20px;
-}
-
-.menu {
-    padding-top: 0
 }
 
 .menu .icon {
@@ -258,7 +289,7 @@ i.icon {
 
 .avatar img {
     /*max-width: 30px;*/
-    height: 28px;
+    height: 30px;
     display: block
 }
 /* End avatars */
@@ -366,10 +397,12 @@ i.icon {
 
 .overlay .members.search .yui-ac-bd li {
     clear: both;
-    overflow: hidden;
     cursor: pointer;
+    line-height: normal;
+    margin: 2px 5px;
+    overflow: hidden;
+    padding: 0;
     width: 100%;
-    line-height: normal
 }
 
 .overlay .members.search .yui-ac-bd li .avatar {
@@ -377,7 +410,8 @@ i.icon {
 }
 
 .overlay .members.search .yui-ac-bd li .name {
-    float: left
+    float: left;
+    margin-left: 6px;
 }
 
 .overlay.board-labels-overlay .search {
@@ -445,15 +479,6 @@ i.icon {
     vertical-align: middle
 }
 
-.overlay.card-edit-form-overlay .card-label-choose {
-    display: block;
-    padding-left: 10px;
-    padding-bottom: 1px
-}
-
-.overlay.card-edit-form-overlay .card-label-choose .card-label {
-    margin-right: 7px
-}
 /* End overlays */
 
 #mask {
@@ -499,6 +524,7 @@ i.icon {
 .members .add {
     display: inline-block;
     margin-right: -11px;
+    vertical-align: top;
 }
 
 .members .miniavatar {

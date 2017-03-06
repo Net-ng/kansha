@@ -42,6 +42,7 @@
     border-radius: 3px;
     background-color: inherit;
     border: 1px solid #737373;
+    vertical-align: middle;
 }
 
 /* End board */
@@ -164,21 +165,10 @@
     box-shadow: inset #b5b5b5 2px 1px 1px;
 }
 
-.card-label {
-    border-radius: 3px 3px 3px 3px;
-}
-
-.card-label > span {
-    color: white;
-}
-
-a.card-label:hover {
-    text-decoration: none;
-}
 /* End card drag n drop */
 
 /* Editor */
-.card-edition .description a {
+.description-content a {
     color: #009fed;
     text-decoration: underline;
 }
@@ -206,6 +196,16 @@ a.card-label:hover {
 
 .card-edit-form .header .title a {
     color: #737373
+}
+
+.wysihtml-command-active, .wysihtml-command-dialog-opened {
+    border: 1px solid #c0c0c0;
+}
+
+
+.editor-popin {
+    background: white;
+    border-bottom: solid 1px #c0c0c0;
 }
 
 
@@ -243,7 +243,7 @@ a.card-label:hover {
 }
 
 .overlay.card-overlay .name {
-    font-size: 15px;
+    font-size: 14px;
     color: inherit;
 }
 
@@ -251,11 +251,16 @@ a.card-label:hover {
     font-size: 11px;
     font-style: italic;
 }
+
+i.ico-btn.icon-user-plus {
+    font-size: 23px;
+}
+
 /* End card overlays */
 
 /* Card counter */
 .cardCounter {
-    font-size: 14px;
+    font-size: 12px;
     background: #737373;
     color: #eaeaea;
     border-radius: 5px;
@@ -323,6 +328,36 @@ a.card-label:hover {
 }
 
 /* End comments */
+
+/* Labels */
+
+.card-label {
+    border-radius: 3px 3px 3px 3px;
+}
+
+.card-label > span {
+    color: white;
+}
+
+a.card-label:hover {
+    text-decoration: none;
+}
+
+.inline-labels .card-label {
+    border-radius: 14px;
+    border: 2px solid white;
+    box-shadow: 3px 1px 1px #D6D6D6;
+}
+
+.inline-labels .inactive:before {
+    border-radius: 14px;
+}
+
+.label-color-picker .yui-picker-controls .bd {
+    background-color: inherit;
+}
+
+/* End label */
 
 /* Due dates */
 .due-date span {
@@ -412,15 +447,6 @@ a.card-label:hover {
     font-size: 16px;
 }
 
-#switch_zone .btn.unselected:hover {
-    border: 1px solid #c0c0c0;
-}
-
-#switch_zone .btn.unselected {
-    background: transparent;
-    border: 1px solid transparent;
-}
-
 #search {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -473,13 +499,12 @@ div.history th {
 }
 
 .progress .bar {
-    background-color: #5ea9dd;
+    background-color: #c0c0c0;
 }
 /* End progress bar */
 
 /* Checklists */
 .checklists .checklist {
-    background-color: #eaeaea;
     border-radius: 5px;
     border: 1px solid #c0c0c0
 }
@@ -534,18 +559,6 @@ div.history th {
     border: none;
     outline: none;
     background-color: transparent;
-}
-/* End weights */
-
-/* Weights */
-.inline-labels .card-label {
-    border-radius: 14px;
-    border: 2px solid white;
-    box-shadow: 3px 1px 1px #D6D6D6;
-}
-
-.label-color-picker .yui-picker-controls .bd {
-    background-color: inherit;
 }
 /* End weights */
 
@@ -614,51 +627,3 @@ div.history th {
         font-size: 16px;
     }
 }
-
-/* CKEditor overrides */
-.kansha-cke.cke {
-    background: transparent;
-    border-radius: 3px;
-    border: 1px solid #c0c0c0;
-    padding: 0px 3px 3px 3px;
-}
-
-.kansha-cke .cke_top {
-    background: transparent;
-}
-
-.kansha-cke a.cke_button {
-    border: 1px solid #B3B3B3;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
-    color: #5c5c5c;
-    background-color: #F3F3F3;
-    border-radius: 3px;
-}
-
-.kansha-cke a.cke_button:hover {
-    background-color: #E6E6E6;
-}
-
-.kansha-cke .cke_toolgroup a.cke_button {
-    border-right-width: 0;
-    border-radius: 0;
-}
-
-.kansha-cke .cke_toolgroup a.cke_button:first-child {
-    border-radius: 3px 0 0 3px;
-}
-
-.kansha-cke .cke_toolgroup a.cke_button:last-child {
-    border-right-width: 1px;
-    border-radius: 0 3px 3px 0;
-}
-
-.kansha-cke .cke_contents {
-    border: 0;
-}
-
-.kansha-cke .cke_toolgroup {
-    padding: 0;
-    border: 0;
-}
-/* End CKEditor */

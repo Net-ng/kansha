@@ -21,7 +21,6 @@ def render(self, h, comp, *args):
     """Render the column"""
     # Add answer on delete overlay component
 
-    self.actions_comp.on_answer(lambda data, comp=comp: self.actions(data, comp))
     column_class = 'span-auto list'
     if self.is_archive:
         column_class += ' archive'
@@ -39,7 +38,7 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(Column, 'calendar')
-def render(self, h, comp, *args):
+def render_column_calendar(self, h, comp, *args):
     return [card.render(h.AsyncRenderer(), 'calendar') for card in self.cards]
 
 
@@ -48,44 +47,55 @@ def render_column_new(self, h, comp, *args):
     return h.div(comp.becomes(self, 'dnd'), class_='new')
 
 
-@presentation.render_for(Column, model='overlay')
-def render_column_overlay(self, h, comp, *args):
+@presentation.render_for(Column, model='dropdown')
+def render_column_dropdown(self, h, comp, *args):
     """Render the column menu"""
-    with h.ul(class_='nav nav-list'):
-        if not self.is_archive:
-            with h.li:
-                onclick = (
-                    u"if (confirm(%(message)s)){"
-                    u" YAHOO.kansha.app.hideOverlay();"
-                    u" window.location='%(callback)s';"
-                    u"}" %
-                    {
+    with h.div(class_="dropdown menu"):
+        with h.ul:
+            if not self.is_archive:
+                with h.li:
+                    onclick = (
+                        u"if (confirm(%(message)s)){"
+                        u" window.location='%(callback)s';"
+                        u"}" %
+                        {
+                            'message': ajax.py2js(
+                                _(u'The list will be deleted. Are you sure?')
+                            ).decode('UTF-8'),
+                            'callback': h.SyncRenderer().a.action(
+                                self.actions, 'delete', comp
+                            ).get('href')
+                        }
+                    )
+                    h << h.a(_(u'Delete this list'), onclick=onclick)
+                with h.li:
+                    onclick = (
+                        u"if (confirm(%(message)s)){"
+                        u" window.location='%(callback)s';"
+                        u"}" %
+                        {
+                            'message': ajax.py2js(
+                                _(u'All the cards will be archived. Are you sure?')
+                            ).decode('UTF-8'),
+                            'callback': h.SyncRenderer().a.action(
+                                self.actions, 'empty', comp
+                            ).get('href')
+                        }
+                    )
+                    h << h.a(_(u'Empty this list'), onclick=onclick)
+                with h.li:
+                    h << h.a(_(u'Set card limit')).action(self.actions, 'set_limit', comp)
+            else:
+                with h.li:
+                    onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
                         'message': ajax.py2js(
-                            _(u'The list will be deleted. Are you sure?')
+                            _(u'All cards will be deleted. Are you sure?')
                         ).decode('UTF-8'),
-                        'callback': h.SyncRenderer().a.action(
-                            comp.answer, 'delete'
+                        'purge_func': h.SyncRenderer().a.action(
+                            self.actions, 'purge', comp
                         ).get('href')
                     }
-                )
-                h << h.a(_(u'Delete this list'), onclick=onclick)
-            h << h.li(
-                h.a(_('Set cards limit')).action(
-                    comp.answer, 'set_limit'
-                ),
-                id=self.id + '_counter_option'
-            )
-        else:
-            with h.li:
-                onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
-                    'message': ajax.py2js(
-                        _(u'All cards will be deleted. Are you sure?')
-                    ).decode('UTF-8'),
-                    'purge_func': h.SyncRenderer().a.action(
-                        comp.answer, 'purge'
-                    ).get('href')
-                }
-                h << h.a(_('Purge the cards'), onclick=onclick)
+                    h << h.a(_('Purge the cards'), onclick=onclick)
 
     return h.root
 
@@ -97,9 +107,12 @@ def render_column_header(self, h, comp, *args):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
         h << self.card_counter.on_answer(lambda action: self.actions(action, comp))
-        with h.div(class_='list-actions'):
+        with h.div(class_='list-actions with-dropdown'):
             if security.has_permissions('edit', self):
-                h << self.actions_overlay
+                h << h.a(h.i(class_='icon-dot-menu'),
+                         href='#', class_="toggle-dropdown",
+                         onclick="YAHOO.kansha.app.toggleMenu(this)") << ' '
+                h << comp.render(h, 'dropdown')
     return h.root
 
 
@@ -117,7 +130,6 @@ def render_column_dnd(self, h, comp, *args):
     h << h.script(
         "YAHOO.util.Event.onDOMReady(function() {"
         "  YAHOO.kansha.dnd.initList(%(list_id)s);"
-        "  YAHOO.kansha.app.hideOverlay();"
         "})" % {'list_id': ajax.py2js(self.id)}
     )
     return h.root
@@ -184,7 +196,6 @@ def render_CardsCounter(self, h, comp, *args):
     with h.div(class_='list-counter'):
         self.error = None
         with h.div(class_='cardCounter', id=self.id):
-            h << {'style': 'cursor: default'}
             h << h.a(self.text).action(comp.answer, 'set_limit')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
@@ -220,8 +231,7 @@ def render_CardsCounter_edit(self, h, comp, *args):
                      });""" % ajax.py2js(id_)
                 )
                 h << h.script(
-                    "YAHOO.kansha.app.selectElement(%s);"
-                    "YAHOO.kansha.app.hideOverlay()" % ajax.py2js(id_)
+                    "YAHOO.kansha.app.selectElement(%s);" % ajax.py2js(id_)
                 )
         if self.error is not None:
             with h.div(class_='nagare-error-message'):

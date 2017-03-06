@@ -347,8 +347,8 @@
             drag.onDrag = function (e) {
                 // copy onDrag basic instruction, is it possible to call the super method ?
                 var c = Event.getXY(e);
-                this.goingRight = (c[0] >= this.lastX);
-                this.goingDown = (c[1] >= this.lastY);
+                this.goingRight = (c[0] > this.lastX);
+                this.goingDown = (c[1] > this.lastY + 3) || (c[1] >= this.lastY - 3) && this.goingDown;
                 this.lastX = c[0];
                 this.lastY = c[1];
 

@@ -23,8 +23,7 @@ class Title(object):
         text = title() and title().strip()
         if text:
             text = validator.clean_text(text)
-
-        comp.answer(text)
+            comp.answer(text)
 
 
 class EditableTitle(component.Task):

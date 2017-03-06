@@ -119,24 +119,12 @@
         },
 
         /**
-         * Handle window resize
-         */
-        columnsResize: function () {
-            var $lists = $('#lists .list'),
-                availableWidth = $('#lists').width(),
-                listOffset = $lists.offset(),
-                offset = (listOffset.left || 0) + (listOffset.right || 0) + ($lists.outerWidth() - $lists.innerWidth() + 1) * 2;
-            $lists.width(availableWidth / $lists.length - offset);
-        },
-
-        /**
          * Close all open overlays and popin
          */
         onClick: function (ev) {
             var target = Event.getTarget(ev),
                 inOverlay = ACN(target, 'overlay') || Dom.hasClass(target, 'overlay'),
-                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel'),
-                InCkeditor = ACN(target, 'cke') || ACN(target, 'cke_dialog') || Dom.hasClass(target, 'cke') || Dom.hasClass(target, 'cke_dialog');
+                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel');
             /* do nothing if modal active */
             if (NS.app.modal) {
                 return;
@@ -144,8 +132,21 @@
             if (NS.app.overlay && !inOverlay) {
                 NS.app.hideOverlay();
             }
-            if (NS.app.popin && !inPanel && !inOverlay && !InCkeditor) {
+            if (NS.app.popin && !inPanel && !inOverlay) {
                 NS.app.closePopin();
+            }
+            // close all menus
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+        },
+
+        toggleMenu: function (source) {
+            NS.app.stopEvent();
+            var menu = ACN(source, 'with-dropdown'),
+                dropdown = ECN('dropdown', 'div', menu),
+                state = YAHOO.util.Dom.getStyle(dropdown, 'display');
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+            if (state[0] && state[0] == 'none') {
+                YAHOO.util.Dom.setStyle(dropdown, 'display', 'block');
             }
         },
 
@@ -195,7 +196,7 @@
                 y = 5;
             x += parseInt(Dom.getStyle(anchor, 'paddingLeft'), 10);
             NS.app.overlay = new YAHOO.widget.Overlay(overlay_id,
-                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize"], [x, y]],
+                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize", "windowScroll"], [x, y]],
                     zIndex: 1500,
                     visible: true,
                     constraintoviewport: true});
@@ -203,11 +204,7 @@
             if (centered){
             	NS.app.overlay.center();
             }
-            if (Dom.hasClass(child, 'toggleVisibility')) {
-                Dom.setStyle(child, 'visibility', 'visible');
-                NS.app.overlay.beforeHideEvent.subscribe(function(e) { Dom.setStyle(child, 'visibility', 'hidden'); });
-            }
-            var arrow = Selector.query('.overlay_arrow', overlay_id, true)
+            var arrow = Selector.query('.overlay_arrow', overlay_id, true);
             if (arrow) {
                 var region = Dom.getRegion(link);
                 Dom.setX(arrow, region.left);
@@ -509,35 +506,6 @@
             calendar.fullCalendar('renderEvent', myEvent, true);
             eventCache[event._id] = true;
         },
-
-        init_ckeditor: function(id, language) {
-            var editor,
-                element = Dom.get(id);
-            editor = CKEDITOR.replace(id, {
-                title: '',
-                contentsCss: ['/static/kansha/css/themes/fonts.css',
-                              '/static/kansha/css/ckeditor.css'],
-                language: language,
-                skin: 'bootstrapck',
-                enterMode: CKEDITOR.ENTER_BR,
-                shiftEnterMode: CKEDITOR.ENTER_BR,
-                resize_enabled: false,
-                forcePasteAsPlainText: true,
-                removePlugins: 'stylescombo,magicline,elementspath,',
-                toolbarGroups: [{"name": "basicstyles", "groups": ["basicstyles"]},
-                    {"name": "links", "groups": ["links"]},
-                    {"name": "paragraph", "groups": ["list"]}],
-                removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
-            });
-            editor.on('change', function(ev){
-                 element.innerHTML = editor.getData();
-            });
-            editor.on('instanceReady', function() {
-                editor.container.addClass('kansha-cke');
-                editor.focus();
-                $(element).closest('.description-form').show();
-            });
-        }
 
     };
 }());

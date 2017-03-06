@@ -8,7 +8,7 @@
 # this distribution.
 # --
 
-from nagare.i18n import _, _N
+from nagare.i18n import _, _N, _L
 from nagare import ajax, component, presentation, security, var
 
 from kansha import notifications
@@ -29,6 +29,15 @@ VISIBILITY_ICONS = {
     BOARD_PUBLIC: 'icon-unlocked',
     BOARD_SHARED: 'icon-earth'
 }
+
+BACKGROUND_POSITIONS = [
+    ('fill', _L(u"fill")),
+    ('fit', _L(u"fit")),
+    ('stretch', _L(u"stretch")),
+    ('tile', _L(u"tile")),
+    ('center', _L(u"center"))
+]
+
 
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
@@ -74,8 +83,8 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
-    h.head.css_url('css/themes/board.css')
-    h.head.css_url('css/themes/%s/board.css' % self.theme)
+    h.head.css_url('css/themes/board.css?v=2')
+    h.head.css_url('css/themes/%s/board.css?v=2' % self.theme)
 
     h.head.javascript_url('js/debounce.js')
     h.head.javascript_url('js/search.js')
@@ -148,11 +157,11 @@ def render_Board_item(self, h, comp, *args):
                 with h.span(class_='icon'):
                     h << h.i(class_='icon-search search_icon')
                     h << h.a(h.i(class_='icon-cancel-circle'), href='#', style='display: none', class_='search_close')
-            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn unselected').action(self.switch_view)
-            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn disabled')
+            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn icon-btn ').action(self.switch_view)
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn icon-btn disabled selected')
         else:
-            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn disabled')
-            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn unselected').action(self.switch_view)
+            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn icon-btn disabled selected')
+            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn icon-btn').action(self.switch_view)
 
     return h.root
 
@@ -305,7 +314,16 @@ def render_Board_columns(self, h, comp, *args):
             h.head.javascript(h.generate_id(), """function increase_version() {%s}""" % increase_version.get('onclick'))
 
             # Render columns
+            visible_cols = len(self.columns) - int(not self.show_archive)
+            layout = ''
+            if 2 < visible_cols < 6:
+                layout = 'list-span-{}'.format(visible_cols)
+            elif visible_cols < 3:
+                layout = 'list-span-3'
+
             with h.div(id='lists'):
+                if layout:
+                    h << {'class': layout}
                 h << h.div(' ', id='dnd-frame')
                 for column in self.columns:
                     if column().is_archive and not self.show_archive:
@@ -314,7 +332,7 @@ def render_Board_columns(self, h, comp, *args):
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
             # Call columns resize
-            h << h.script("YAHOO.kansha.app.columnsResize();YAHOO.kansha.app.refreshCardsCounters();$('#search').trigger('reload_search');")
+            h << h.script("YAHOO.kansha.app.refreshCardsCounters();$('#search').trigger('reload_search');")
     return h.root
 
 
@@ -631,14 +649,14 @@ def render_board_background_menu(self, h, comp, *args):
 def render_board_background_edit(self, h, comp, *args):
     """Render the background configuration panel"""
 
-    with h.div(class_='panel-section background'):
+    with h.div(class_='panel-section'):
         h << h.div(_(u'Background image'), class_='panel-section-title')
         with h.div:
             with h.div:
                 v_file = var.Var()
                 submit_id = h.generate_id("attach_submit")
                 input_id = h.generate_id("attach_input")
-                h << h.label((h.i(class_='icon-file-picture'),
+                h << h.label((h.i(class_='icon-file-picture'), u' ',
                               _("Choose an image")), class_='btn', for_=input_id)
                 with h.form(class_='hidden'):
                     h << h.script(
@@ -666,12 +684,10 @@ def render_board_background_edit(self, h, comp, *args):
                                  multiple="multiple", maxlength="100",).action(v_file)
                     h << h.input(id=submit_id, class_='hidden', type="submit").action(
                         lambda: self.set_background(v_file()))
-            with h.div:
-                h << _('or') << ' '
+                h << ' ' << _('or') << ' '
                 h << h.a(_(u'Reset background')).action(self.reset_background)
-        with h.div:
-            with h.span(class_='text-center'):
-                h << component.Component(self.board, model='background_image')
+        with h.p(class_='text-center'):
+            h << component.Component(self.board, model='background_image')
         with h.div:
             input_id = h.generate_id()
             submit_id = h.generate_id("image_position_submit")
@@ -682,17 +698,16 @@ def render_board_background_edit(self, h, comp, *args):
             with h.form:
                 h << h.label(_(u'Image position'), for_=input_id)
                 with h.select(id_=input_id).action(self.background_position):
-                    for value, name in self.get_available_background_positions():
-                        h << h.option(name, value=value).selected(self.background_position())
+                    for value, name in BACKGROUND_POSITIONS:
+                        h << h.option(_(name), value=value).selected(self.background_position())
                 h << h.input(class_='hidden', id_=submit_id, type="submit").action(self.set_background_position)
 
-    with h.div(class_='panel-section background'):
+    with h.div(class_='panel-section'):
         h << h.div(_(u'Board title color'), class_='panel-section-title')
         with h.div:
             with h.div:
                 h << comp.render(h, model='title-color-edit')
-            with h.div:
-                h << _('or') << ' '
+                h << ' ' << _('or') << ' '
                 h << h.a(_('Reset to default color')).action(self.reset_color)
     return h.root
 

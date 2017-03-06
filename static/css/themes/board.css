@@ -174,31 +174,52 @@ textarea.expanded {
     vertical-align: top;
 }
 
-#lists > .span-auto {
+.span-auto {
     max-width: 440px;
-    min-width: 250px;
+    width: calc(16.666% - 15px);
 }
 
+.list-span-5 .span-auto {
+    width: calc(20% - 15px);
+}
+
+.list-span-4 .span-auto {
+    width: calc(25% - 15px);
+}
+
+.list-span-3 .span-auto {
+    width: calc(33.333% - 15px);
+}
+
+
 .list {
-    display: inline-block !important;
-    float: none !important;
-    white-space: normal;
-    height: 100%;
-    position: relative;
-    height: calc(100% - 21px);
+    display: inline-flex;
+    flex-direction: column;
+    float: none;
     height: -moz-calc(100% - 21px);
     height: -webkit-calc(100% - 21px);
+    height: calc(100% - 21px);
     margin-left: 10px;
+    position: relative;
     vertical-align: top;
+    white-space: normal;
+}
+
+.list > .nagare-generated {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    overflow: hidden;
+}
+
+.list > div:first-child {
+    flex: 1 0 auto;
+    overflow: visible;
 }
 
 .list.reduced .list-body,
 .list.reduced .list-footer {
     display: none
-}
-
-.list > div:last-child {
-    height: 100%
 }
 
 .list-header {
@@ -207,7 +228,7 @@ textarea.expanded {
     padding: 0 10px;
 }
 
-.list-header > *[class^="list-"] {
+.list-title, .list-counter, .list-actions {
     display: table-cell;
 }
 
@@ -218,18 +239,15 @@ textarea.expanded {
 }
 
 .list-actions {
-    visibility: hidden;
+    position: relative;
+    width: 30px;
     text-align: right;
-    width: 20px;
-}
-
-.list-header:hover .list-actions {
-    visibility: visible;
 }
 
 .list-header .list-counter {
     text-align: right;
     position: relative;
+    vertical-align: top;
     width: 50px;
 }
 
@@ -295,15 +313,12 @@ textarea.expanded {
 }
 
 .list .list-footer {
-    position: absolute;
-    bottom: 0;
+    flex: 0 0 auto;
     width: 100%;
     text-align: center;
 }
 
 .list .list-footer-disabled {
-    position: absolute;
-    bottom: 0;
     width: 100%;
     text-align: center;
     padding: 8px 0;
@@ -342,10 +357,9 @@ textarea.expanded {
 }
 
 .list-body {
+    flex: 1 1 100%;
+    height: 100%;
     overflow: auto;
-    position: relative;
-    min-height: 50px;
-    height: calc(100% - 78px);
 }
 
 .list-body h4 {
@@ -357,7 +371,6 @@ textarea.expanded {
 
 /* Cards */
 .card {
-    position: relative;
     min-height: 64px;
     margin: 8px 4px;
     padding: 8px 8px 4px 8px;
@@ -377,12 +390,15 @@ textarea.expanded {
 
 .card-actions {
     float: right;
-    margin-left: 10px;
-    width: 155px;
+    width: 140px;
 }
 
 .card-edition {
+    /* dirty fix to restore avatars on the left of comments */
+    margin-left: -45px;
     overflow: hidden;
+    padding-left: 45px;
+    width: 520px;
 }
 
 .card-actions button i[class^="icon-"],
@@ -390,14 +406,6 @@ textarea.expanded {
     margin-right: 5px;
     position: relative;
     top: 1px;
-}
-
-.action-badge {
-    visibility: hidden;
-}
-
-.card:hover .action-badge {
-    visibility: visible;
 }
 
 .card .title {
@@ -422,6 +430,25 @@ textarea.expanded {
     width: 150px;
 }
 
+.inactive {
+    position: relative;
+}
+
+.inactive:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #636363;
+    opacity: 1;
+}
+
+.inactive:hover:before{
+    opacity: 0.4;
+}
+
 .card-label > span {
     text-overflow: ellipsis;
 }
@@ -429,10 +456,6 @@ textarea.expanded {
 .card-label i {
     float: right;
     margin: 7px 2px 0 0;
-}
-
-.card-label-choose {
-    cursor: pointer
 }
 
 /* End card drag n drop */
@@ -502,26 +525,36 @@ textarea.expanded {
     overflow-wrap: break-word;
 }
 
-.card-edit-form textarea {
-    resize: none;
-    height: 29px;
-    min-height: 0;
+.description-editor {
+    height: 290px;
     padding: 4px 6px;
-    overflow: hidden;
+    margin-top: 3px;
 }
 
 .card-edit-form textarea.expanded {
     height: 112px;
 }
 
-.card-edit-form .card-actions .btn {
+.card-actions .btn {
     margin-bottom: 8px;
-    width: 100%;
+    width: 134px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     text-align: center;
 }
+
+.description-form {
+    position: relative;
+}
+
+.editor-popin {
+    padding: 5px;
+    position: absolute;
+    width: 100%;
+
+}
+
 /* End editor */
 
 /* Badges */
@@ -542,7 +575,7 @@ textarea.expanded {
 }
 
 .card-overlay .members.search .yui-ac-input {
-    width: calc(100% - 12px)
+    width: 100%;
 }
 
 .overlay.card-overlay .avatar {
@@ -612,11 +645,13 @@ textarea.expanded {
 
 /* Card counter */
 .cardCounter {
+    cursor: pointer;
     display: inline-block;
-    padding: 2px 3px;
+    margin-top: 7px;
     min-width: 20px;
-    text-align: center;
+    padding: 2px 3px;
     position: relative;
+    text-align: center;
     vertical-align: baseline;
 }
 
@@ -734,14 +769,29 @@ textarea.expanded {
     margin: 15px 6px 0 5px;
 }
 
-#switch_zone .btn {
-    padding: 4px 8px;
+.icon-btn {
+    padding: 7px;
     min-width: 0;
     margin: 0 5px;
+    background: transparent;
+    border: 1px solid transparent;
 }
 
-#switch_zone .btn [class^="icon-"] {
+.icon-btn [class^="icon-"] {
     left: 0;
+}
+
+.icon-btn:hover {
+    border: 1px solid #c0c0c0;
+}
+
+.selected {
+    border: 1px solid #c0c0c0;
+}
+
+#switch_zone .btn.unselected {
+    background: transparent;
+    border: 1px solid transparent;
 }
 
 #search {
@@ -832,22 +882,31 @@ div.history th {
     line-height: 3em;
 }
 
-.checklists .checklist a.delete {
+.checklist .delete, .checklist .delete-item {
     display: none;
     float: right;
     margin-right: 5px;
 }
 
-.checklists .checklist .title:hover a.delete,
-.checklists .checklist li:hover a.delete {
+.checklist:hover .delete,
+.checklist li:hover .delete-item {
     display: inline-block
 }
 
 .checklists .checklist .title i.icon-list {
     margin-right: 10px;
-    cursor: move;
     position: relative;
     top: 1px;
+}
+
+.not-alone {
+    cursor: move;
+}
+
+.checklist .title > .nagare-generated {
+    display: inline-block;
+    vertical-align: middle;
+    width: 400px;
 }
 
 .checklists .checklist .btn {
@@ -907,7 +966,7 @@ div.history th {
 .calendar {
     position: absolute;
     padding: 10px;
-    width: 250px;
+    width: 255px;
     z-index: 1;
 }
 
@@ -1016,7 +1075,7 @@ div.history th {
 
 .yui-skin-sam .yui-panel {
     margin: 70px auto 30px auto;
-    max-width: 680px;
+    max-width: 740px;
     padding: 5px 20px 15px 50px;
 }
 
@@ -1054,8 +1113,22 @@ div.history th {
 }
 /* End nb items */
 
+
 /* Responsive */
+
+@media all and (max-width: 1600px) {
+    .span-auto {
+        width: calc(20% - 15px);
+    }
+
+}
+
 @media all and (max-width: 1360px) {
+    .span-auto {
+        width: calc(25% - 15px);
+        min-width: calc(25% - 15px);
+    }
+
     .list-header {
         height: auto
     }
@@ -1075,10 +1148,29 @@ div.history th {
     }
 }
 
+@media all and (max-width: 1060px) {
+    .span-auto {
+        width: calc(33.333% - 15px);
+        min-width: calc(33.333% - 15px);
+    }
+
+}
+
+
 @media (max-width: 813px) {
     body {
         padding: 0;
         overflow: auto;
+    }
+
+    .card-actions {
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .card-actions .btn {
+        width: 100%;
     }
 
     [class*="span"] {
@@ -1106,18 +1198,13 @@ div.history th {
         margin-bottom: 5px;
     }
 
-    .card-edit-form .card-edit-comment textarea,
-    .card-edit-form .description textarea {
-        width: 96.77419%;
-    }
-
     #lists {
         margin-left: 0;
         z-index: 1;
     }
 
-    #lists > .span-auto {
-        width: 100%;
+    .span-auto {
+        width: 99%;
         max-width: 99%;
     }
 
@@ -1141,18 +1228,6 @@ div.history th {
         margin-bottom: 0
     }
 
-    .checklists .checklist .new-item-form input {
-        width: calc(100% - 70px);
-    }
-
-    .checklists .checklist .title input {
-        width: calc(100% - 94px);
-    }
-
-    .checklists .checklist li input {
-        width: calc(100% - 70px);
-    }
-
     .checklists .checklist form {
         display: block;
         width: 100%;
@@ -1160,7 +1235,6 @@ div.history th {
 
     .checklists .checklist li form {
         display: inline-block;
-        width: calc(100% - 36px);
     }
 
 }
@@ -1185,14 +1259,9 @@ div.history th {
         margin-top: 0;
     }
 
-    #switch_zone .btn {
+    .icon-btn {
         margin: 0;
         padding: 0 2px;
-    }
-
-    .card-actions {
-        float: none;
-        width: 100%;
     }
 
     .yui-skin-sam .yui-panel {

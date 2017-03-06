@@ -349,8 +349,8 @@ a.card-label:hover {
     box-shadow: 3px 1px 1px #D6D6D6;
 }
 
-.inline-labels .inactive {
-    box-shadow: none;
+.inline-labels .inactive:before {
+    border-radius: 14px;
 }
 
 .label-color-picker .yui-picker-controls .bd {

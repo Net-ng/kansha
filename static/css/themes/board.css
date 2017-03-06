@@ -399,11 +399,11 @@ textarea.expanded {
 }
 
 .card-edition {
-    overflow: hidden;
     /* dirty fix to restore avatars on the left of comments */
     margin-left: -45px;
-    min-width: 520px;
+    overflow: hidden;
     padding-left: 45px;
+    width: 520px;
 }
 
 .card-actions button i[class^="icon-"],

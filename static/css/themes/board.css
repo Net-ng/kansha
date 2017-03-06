@@ -570,8 +570,10 @@ textarea.expanded {
 
 /* Card overlays */
 .overlay.card-overlay {
-    padding: 0 12px 4px 12px;
+    max-height: 320px;
     min-width: 280px;
+    overflow: auto;
+    padding: 0 12px 4px 12px;
 }
 
 .card-overlay .members.search .yui-ac-input {

@@ -54,11 +54,11 @@ label {
 
 /* YUI autocompletes */
 .yui-skin-sam .yui-ac-container {
-    top: 0 !important;
     left: 0 !important;
-    position: relative;
-    max-height: 300px;
+    max-height: 250px;
     overflow: auto;
+    position: relative;
+    top: 0 !important;
 }
 
 .yui-skin-sam .yui-ac-content {
@@ -439,10 +439,11 @@ i.icon {
 }
 
 .overlay.board-labels-overlay .members {
-    display: table;
-    width: 100%;
+    max-height: 300px;
     margin-top: 8px;
     position: static;
+    width: 100%;
+    overflow: auto;
 }
 
 .overlay.board-labels-overlay .members .member {

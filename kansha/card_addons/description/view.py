@@ -82,6 +82,7 @@ def render_edit(self, h, comp, *args):
           stylesheets: ['/static/kansha/css/themes/kansha_flat/board.css'] // adoption is not complete
         });
         document.getElementById("description").style.visibility = "visible";
+        editor.focus();
         """ % (ajax.py2js(txt_id), ajax.py2js(txt_id + '-toolbar'))
     )
     return h.root

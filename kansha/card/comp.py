@@ -147,6 +147,7 @@ class Card(events.EventHandlerMixIn):
         """Prepare for deletion"""
         for __, extension in self.extensions:
             extension().delete()
+        self.action_log.delete_card()
 
     def card_dropped(self, request, response):
         """

@@ -93,3 +93,9 @@ class DataHistory(Entity):
         q = q.order_by(cls.when.desc())
         q = q.limit(1)
         return q.scalar()
+
+    @classmethod
+    def purge(cls, card):
+        q = database.session.query(cls).filter(cls.card == card)
+        for log in q:
+            log.delete()

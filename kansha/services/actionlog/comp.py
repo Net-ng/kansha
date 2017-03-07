@@ -44,6 +44,11 @@ class ActionLog(object):
             user.data, action, data
         )
 
+    def delete_card(self):
+        if not self._card:
+            return
+        DataHistory.purge(self._card.data)
+
     def get_events(self, hours=None):
         return DataHistory.get_events(self.board and self.board.data, hours)
 

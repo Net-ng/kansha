@@ -83,8 +83,8 @@ def render_CardLabels_list(self, h, comp, model):
             label_model = 'color' if label in self.labels else 'inactive'
             if model == 'list-edit':
                 h << h.a(component.Component(label, label_model)).action(self.activate, label)
-            else:
-                h << component.Component(label, label_model)
+            elif label_model == 'color':
+                h << component.Component(label, 'color')
     return h.root
 
 

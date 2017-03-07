@@ -254,6 +254,7 @@ class Checklists(CardExtension):
                                       data)
 
     def delete(self):
+        self.load_children()
         for checklist in self.ck_cache.values():
             checklist.delete()
 

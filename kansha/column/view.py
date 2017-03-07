@@ -162,7 +162,7 @@ def render_NewColumnEditor(self, h, comp, *args):
         with h.div:
             id_ = h.generate_id()
             h << h.label(_('Name'), for_=id)
-            h << h.input(id=id_, type='text', placeholder=_('List title')).error(self.title.error).action(self.title)
+            h << h.input(id=id_, type='text', value=self.title(), placeholder=_('List title')).error(self.title.error).action(self.title)
 
         with h.div:
             id_ = h.generate_id()
@@ -174,7 +174,7 @@ def render_NewColumnEditor(self, h, comp, *args):
         with h.div:
             id_ = h.generate_id()
             h << h.label(_('Number max of cards'), id_=id_)
-            h << h.input(id=id_, type='text').error(self.nb_cards.error).action(self.nb_cards)
+            h << h.input(id=id_, type='text', value=self.nb_cards()).error(self.nb_cards.error).action(self.nb_cards)
             h << h.script(
                 """YAHOO.util.Event.on(%s, 'keyup', function (e) {
                         var result =this.value.replace(/[^0-9]/g, '')

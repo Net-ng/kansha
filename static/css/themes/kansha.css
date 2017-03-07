@@ -55,7 +55,7 @@ label {
 /* YUI autocompletes */
 .yui-skin-sam .yui-ac-container {
     left: 0 !important;
-    max-height: 250px;
+    max-height: 200px;
     overflow: auto;
     position: relative;
     top: 0 !important;
@@ -371,6 +371,7 @@ i.icon {
 
 .overlay .favorites h3 {
     float: left;
+    margin-right: 6px;
 }
 
 .overlay .favorites h3:after {

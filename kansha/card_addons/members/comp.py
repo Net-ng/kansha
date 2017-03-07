@@ -159,3 +159,6 @@ class CardMembers(CardExtension):
         if perm == 'edit':
             granted = user and (user.id in self.get_all_available_user_ids())
         return granted
+
+    def delete(self):
+        DataMembership.purge(self.card.data)

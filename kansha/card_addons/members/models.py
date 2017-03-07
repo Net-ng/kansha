@@ -119,3 +119,8 @@ class DataMembership(Entity):
         if ms:
             ms.manager = manager
             database.session.flush()
+
+    @classmethod
+    def purge(cls, card):
+        for member in cls.get_for_card(card):
+            member.delete()

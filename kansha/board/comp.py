@@ -482,6 +482,8 @@ class Board(events.EventHandlerMixIn):
             column().delete(purge=True)
         self.data.delete_history()
         self.data.delete_members()
+        if self.data.background_image:
+            self.assets_manager.delete(self.data.background_image)
         session.refresh(self.data)
         self.data.delete()
 

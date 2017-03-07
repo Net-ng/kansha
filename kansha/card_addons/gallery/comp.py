@@ -78,6 +78,7 @@ class Gallery(CardExtension):
         self.assets_manager.delete(asset.filename)
 
     def delete(self):
+        self.load_assets()
         for asset in self.assets:
             self.assets_manager.delete(asset().filename)
         DataAsset.remove_all(self.card.data)

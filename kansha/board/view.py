@@ -83,8 +83,8 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
-    h.head.css_url('css/themes/board.css?v=2')
-    h.head.css_url('css/themes/%s/board.css?v=2' % self.theme)
+    h.head.css_url('css/themes/board.css?v=2a')
+    h.head.css_url('css/themes/%s/board.css?v=2a' % self.theme)
 
     h.head.javascript_url('js/debounce.js')
     h.head.javascript_url('js/search.js')

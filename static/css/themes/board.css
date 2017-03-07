@@ -165,13 +165,14 @@ textarea.expanded {
 }
 
 #lists {
+    height: 100%;
+    margin-left: 0;
+    margin-right: 10px;
     overflow-x: auto;
     overflow-y: hidden;
+    vertical-align: top;
     white-space: nowrap;
     z-index: 1;
-    margin-left: 0;
-    height: 100%;
-    vertical-align: top;
 }
 
 .span-auto {
@@ -302,14 +303,14 @@ textarea.expanded {
     padding-top: 3px
 }
 
-.list-header .title a,
-.list .header .title a:hover,
-.list .header .title a:visited {
+a.title,
+a.title:hover,
+a.title:visited {
     display: block;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     overflow: hidden;
-    padding-bottom: 5px
+    padding-bottom: 4px
 }
 
 .list .list-footer {
@@ -768,7 +769,7 @@ textarea.expanded {
 /* Board view switch zone (calendar / columns / search) */
 #switch_zone {
     vertical-align: text-bottom;
-    margin: 15px 6px 0 5px;
+    margin: 0 6px 0 5px;
 }
 
 .icon-btn {

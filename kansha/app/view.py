@@ -127,9 +127,9 @@ def render_kansha(self, h, comp, *args):
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/themes/fonts.css?v=2')
-    h.head.css_url('css/themes/kansha.css')
-    h.head.css_url('css/themes/%s/kansha.css?v=2' % self.theme)
+    h.head.css_url('css/themes/fonts.css?v=2a')
+    h.head.css_url('css/themes/kansha.css?v=2a')
+    h.head.css_url('css/themes/%s/kansha.css?v=2a' % self.theme)
 
     h.head.javascript_url('js/jquery-2.1.3.min.js')
     h.head.javascript_url('js/jquery-ui-1.11.2.custom/jquery-ui.js')

@@ -157,11 +157,27 @@ def render_Board_item(self, h, comp, *args):
                 with h.span(class_='icon'):
                     h << h.i(class_='icon-search search_icon')
                     h << h.a(h.i(class_='icon-cancel-circle'), href='#', style='display: none', class_='search_close')
-            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn icon-btn ').action(self.switch_view)
-            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn icon-btn disabled selected')
+            h << h.SyncRenderer().a(
+                h.i(class_='icon-calendar'),
+                title=_('Calendar mode'),
+                class_='btn icon-btn ',
+                style='color: %s' % self.title_color).action(self.switch_view)
+            h << h.SyncRenderer().a(
+                h.i(class_='icon-list'),
+                title=_('Board mode'),
+                class_='btn icon-btn disabled selected',
+                style='color: %s' % self.title_color)
         else:
-            h << h.SyncRenderer().a(h.i(class_='icon-calendar'), title=_('Calendar mode'), class_='btn icon-btn disabled selected')
-            h << h.SyncRenderer().a(h.i(class_='icon-list'), title=_('Board mode'), class_='btn icon-btn').action(self.switch_view)
+            h << h.SyncRenderer().a(
+                h.i(class_='icon-calendar'),
+                title=_('Calendar mode'),
+                class_='btn icon-btn disabled selected',
+                style='color: %s' % self.title_color)
+            h << h.SyncRenderer().a(
+                h.i(class_='icon-list'),
+                title=_('Board mode'),
+                class_='btn icon-btn',
+                style='color: %s' % self.title_color).action(self.switch_view)
 
     return h.root
 

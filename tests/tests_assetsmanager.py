@@ -8,8 +8,9 @@
 # this distribution.
 #--
 
-import pkg_resources
 import unittest
+import os, shutil
+import pkg_resources
 
 from kansha.services.dummyassetsmanager import dummyassetsmanager
 from kansha.services.simpleassetsmanager import simpleassetsmanager
@@ -47,8 +48,12 @@ class DummyAssetsManagerTest(unittest.TestCase):
 class SimpleAssetsManagerTest(unittest.TestCase):
 
     def setUp(self):
+        os.mkdir('/tmp/amtests')
         self.dam = simpleassetsmanager.SimpleAssetsManager(
-            '', None, basedir='/tmp', baseurl='kansha', max_size=2048)
+            '', None, basedir='/tmp/amtests', baseurl='kansha', max_size=2048)
+
+    def tearDown(self):
+        shutil.rmtree('/tmp/amtests')
 
     def test_save_and_load(self):
         """SimpleAssetsManagerTest - Test save and load #1, save and load an image with metadata"""
@@ -91,4 +96,16 @@ class SimpleAssetsManagerTest(unittest.TestCase):
         file_id = self.dam.save(data, file_id="test.jpg")
         self.assertEqual(file_id, "test.jpg")
         res_data, _ = self.dam.load("test.jpg")
+        self.assertEqual(res_data, data)
+
+    def test_save_and_copy(self):
+        package = pkg_resources.Requirement.parse('kansha')
+        test_file = pkg_resources.resource_filename(
+            package, 'kansha/services/dummyassetsmanager/tie.jpg')
+        with open(test_file, 'r') as f:
+            data = f.read()
+
+        file_id = self.dam.save(data, file_id="test.jpg")
+        new_id = self.dam.copy(file_id)
+        res_data, _ = self.dam.load(new_id)
         self.assertEqual(res_data, data)

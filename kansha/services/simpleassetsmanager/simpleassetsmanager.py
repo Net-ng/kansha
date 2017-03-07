@@ -37,6 +37,10 @@ class SimpleAssetsManager(AssetsManager):
             # Cover not existing
             pass
 
+    def copy(self, file_id):
+        data, metadata = self.load(file_id)
+        return self.save(data, metadata=metadata)
+
     def _get_filename(self, file_id, size=None):
         filename = os.path.join(self.basedir, file_id)
         if size and size != 'large':

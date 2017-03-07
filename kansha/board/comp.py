@@ -197,7 +197,8 @@ class Board(events.EventHandlerMixIn):
         new_data = self.data.copy()
         if self.data.background_image:
             new_data.background_image = self.assets_manager.copy(self.data.background_image)
-        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme, self.card_extensions, load_children=False)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme,
+            self.card_extensions, load_children=False, data=new_data)
         new_board.add_member(owner, 'manager')
 
         assert(self.columns or self.data.is_template)

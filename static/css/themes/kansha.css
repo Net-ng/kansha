@@ -256,17 +256,24 @@ i.icon {
 
 .nav-menu .actions li {
     display: inline-block;
-    border-top: 2px solid white;
-    border-bottom: 2px solid white;
-    margin: 0 6px;
-    padding: 5px 0 5px 5px;
-    cursor: pointer;
+    margin: 0;
+    padding: 0;
     white-space: nowrap;
 }
 
-.nav-menu .actions li:hover {
-    border-top-color: #d8d8d8;
+
+.actions li a {
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 6px;
+    padding: 5px 0 5px 5px;
+}
+
+.actions li a:hover {
     border-bottom-color: #d8d8d8;
+    border-top-color: #d8d8d8;
 }
 
 .nav-menu .actions li a i {

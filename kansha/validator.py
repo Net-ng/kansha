@@ -24,6 +24,10 @@ MAIL_RE = r"(?i)^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*
 
 
 def clean_text(text):
+    text = text.replace(u'<br>', u'<br>\n')
+    text = text.replace(u'</p>', u'</p>\n')
+    text = text.replace(u'</li>', u'</li>\n')
+
     return unicode(html.fromstring(text).text_content())
 
 

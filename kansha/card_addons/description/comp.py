@@ -91,4 +91,5 @@ def get_extension_title_CardDescription(card_extension):
 
 @excel_export.write_extension_data_for(CardDescription)
 def write_extension_data_CardDescription(self, sheet, row, col, style):
-    sheet.write(row, col, self.text, style)
+    text = validator.clean_text(self.text) if self.text else ''
+    sheet.write(row, col, text, style)

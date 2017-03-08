@@ -18,9 +18,6 @@ def render_image(self, h, comp, size, randomize=False, **kw):
     src = self.assets_manager.get_image_url(self.filename, size)
     if randomize:
         src += '?r=' + h.generate_id()
-    dim = self.assets_manager.get_size(size)
-    if dim:
-        kw['style'] = 'width: {}; height: {}'.format(*dim)
     return h.img(title=metadata['filename'], alt=metadata['filename'],
                  src=src, **kw)
 

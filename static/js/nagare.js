@@ -25,6 +25,7 @@ nagare_callbacks = {
 
     success: function (o) {
         nagare_ongoing_request = false;
+        YAHOO.kansha.app.hideWaiter();
         if (o.responseText.substring(0, 1) !== "<") {
             setTimeout(o.responseText, 0);
         } else {
@@ -57,6 +58,8 @@ function nagare_getAndEval(href) {
     if (!nagare_ongoing_request) {
         var req = YAHOO.util.Connect.asyncRequest("GET", href, nagare_callbacks);
         nagare_ongoing_request = true;
+    } else {
+        YAHOO.kansha.app.showWaiter();
     }
     return false;
 }
@@ -78,6 +81,8 @@ function nagare_postAndEval(f, action) {
     if (!nagare_ongoing_request) {
         var req = YAHOO.util.Connect.asyncRequest("POST", "?_a&" + action, nagare_callbacks);
         nagare_ongoing_request = true;
+    } else {
+        YAHOO.kansha.app.showWaiter();
     }
     return false;
 }

@@ -195,7 +195,7 @@ def render_NewColumnEditor(self, h, comp, *args):
 def render_CardsCounter(self, h, comp, *args):
     with h.div(class_='list-counter'):
         self.error = None
-        with h.div(class_='cardCounter', id=self.id):
+        with h.div(class_='cardCounter hidden', id=self.id):
             h << h.a(self.text).action(comp.answer, 'set_limit')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"

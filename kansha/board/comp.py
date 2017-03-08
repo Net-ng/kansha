@@ -253,8 +253,8 @@ class Board(events.EventHandlerMixIn):
         return refresh
 
     def refresh(self):
-        print "refresh!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        print "if you see this message, please contact RTE."
+        print 'sync'
+        log.info('sync')
         self.load_children()
 
     @property

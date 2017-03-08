@@ -348,7 +348,15 @@ def render_Board_columns(self, h, comp, *args):
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
             # update states
-            h << h.script("YAHOO.kansha.app.refreshCardsCounters();$('#search').trigger('reload_search');")
+            h << h.script("""
+                YAHOO.kansha.app.refreshCardsCounters();
+                (function() {
+                    var search_input =  $('#search>input');
+                    if (search_input.val()) {
+                        search_input.trigger('input');
+                    }
+                })();
+            """)
     return h.root
 
 

@@ -347,8 +347,16 @@ def render_Board_columns(self, h, comp, *args):
                     model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
                     h << column.on_answer(self.handle_event, comp).render(h, model)
 
-            # Call columns resize
-            h << h.script("YAHOO.kansha.app.refreshCardsCounters();$('#search').trigger('reload_search');")
+            # update states
+            h << h.script("""
+                YAHOO.kansha.app.refreshCardsCounters();
+                (function() {
+                    var search_input =  $('#search>input');
+                    if (search_input.val()) {
+                        search_input.trigger('input');
+                    }
+                })();
+            """)
     return h.root
 
 

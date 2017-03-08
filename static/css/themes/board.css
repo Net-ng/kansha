@@ -142,6 +142,7 @@ textarea.expanded {
     white-space: nowrap;
     display: block;
     overflow: hidden;
+    max-width: calc(100vw - 350px);
 }
 
 .board .board-title .title-form input {
@@ -359,7 +360,8 @@ a.title:visited {
 .list-body {
     flex: 1 1 100%;
     height: 100%;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .list-body h4 {
@@ -1148,6 +1150,10 @@ div.history th {
     .header {
         margin-right: 5px;
     }
+
+    .board .board-title a {
+        max-width: calc(100vw - 300px);
+    }
 }
 
 @media all and (max-width: 1060px) {
@@ -1272,6 +1278,9 @@ div.history th {
         padding: 5px 20px 15px 10px;
     }
 
+    .board .board-title a {
+        max-width: 100vw;
+    }
 }
 
 /* Full calendar fixes */

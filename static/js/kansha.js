@@ -392,8 +392,16 @@
         syncError: function (status, details) {
             console.log(status);
             console.log(details);
-            this.showModal('oip');
+            this.showWaiter();
             Dom.get('resync-action').click();
+        },
+
+        showWaiter: function() {
+            this.showModal('oip');
+        },
+
+        hideWaiter: function() {
+            this.closeModal();
         },
 
         checkFileSize: function (input, maxSize) {
@@ -431,6 +439,7 @@
                 } else {
                     Dom.removeClass(counter, 'limitReached');
                     Dom.removeClass(footer, 'hidden');
+                    Dom.removeClass(counter, 'hidden');
                 }
             }
         },

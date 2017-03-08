@@ -31,7 +31,6 @@
 .board .board-title a {
     color: inherit;
     text-decoration: none;
-    max-width: calc(100vw - 300px);
 }
 
 .board .board-title a:hover {
@@ -615,6 +614,7 @@ div.history th {
     .board .board-title {
         font-size: 25px
     }
+
 }
 
 @media all and (max-width: 640px) {
@@ -627,10 +627,6 @@ div.history th {
 
     .board .board-title {
         font-size: 18px;
-    }
-
-    .board .board-title a {
-        max-width: 100vw;
     }
 
     .board .board-title .title-form {

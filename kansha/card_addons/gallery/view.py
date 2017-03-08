@@ -18,6 +18,9 @@ def render_image(self, h, comp, size, randomize=False, **kw):
     src = self.assets_manager.get_image_url(self.filename, size)
     if randomize:
         src += '?r=' + h.generate_id()
+    dim = self.assets_manager.get_size(size)
+    if dim:
+        kw['style'] = 'width: {}; height: {}'.format(*dim)
     return h.img(title=metadata['filename'], alt=metadata['filename'],
                  src=src, **kw)
 
@@ -93,7 +96,7 @@ def render_download(self, h, comp, *args):
     function valueChanged(e) {
         if (YAHOO.kansha.app.checkFileSize(this, %(max_size)s)) {
             YAHOO.util.Dom.get(%(submit_id)s).click();
-            YAHOO.kansha.app.showModal('oip');
+            YAHOO.kansha.app.showWaiter();
         } else {
             alert(%(error)s);
         }
@@ -112,7 +115,7 @@ def render_download(self, h, comp, *args):
                 }
             )
             submit_action = ajax.Update(
-                render=lambda r: r.div(comp.render(r, model=None), r.script('YAHOO.kansha.app.closeModal()')),
+                render=lambda r: r.div(comp.render(r, model=None), r.script('YAHOO.kansha.app.hideWaiter()')),
                 component_to_update='gal' + self.comp_id,
             )
 

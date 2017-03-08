@@ -22,11 +22,16 @@ class AssetsManager(Service):
             'basedir': 'string',
             'max_size': 'integer(default=2048)',   # Max file size in kilobytes
             'baseurl': 'string'
-        }
+    }
 
     THUMB_SIZE = (68, 68)
     MEDIUM_WIDTH = 425
     COVER_SIZE = (MEDIUM_WIDTH, 250)
+
+    SIZE_TABLE = {
+        'thumb': THUMB_SIZE,
+        'cover': COVER_SIZE
+    }
 
     def copy(self, file_id):
         '''Copy a file from its file_id
@@ -89,6 +94,10 @@ class AssetsManager(Service):
         """
         data, metadata = self.load(file_id, True)
         return "data:image/gif;base64,%s" % data.encode('base64')
+
+    def get_size(self, size):
+        return self.SIZE_TABLE.get(size)
+
 
 
 @presentation.init_for(AssetsManager, "len(url) >= 2")

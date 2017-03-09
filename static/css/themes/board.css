@@ -1172,6 +1172,11 @@ div.history th {
         overflow: auto;
     }
 
+    .span-auto {
+        width: calc(50% - 15px);
+        min-width: calc(50% - 15px);
+    }
+
     .card-actions {
         float: none;
         width: 100%;
@@ -1184,11 +1189,6 @@ div.history th {
 
     [class*="span"] {
         margin-left: 0;
-    }
-
-    #lists {
-        overflow-x: hidden;
-        overflow-y: auto;
     }
 
     #viewport-wrapper {
@@ -1210,21 +1210,6 @@ div.history th {
     #lists {
         margin-left: 0;
         z-index: 1;
-    }
-
-    .span-auto {
-        width: 99%;
-        max-width: 99%;
-    }
-
-    #lists {
-        white-space: normal;
-        width: 100% !important;
-    }
-
-    .list {
-        width: 100% !important;
-        margin-bottom: 10px;
     }
 
     .list-body {
@@ -1255,6 +1240,23 @@ div.history th {
 }
 
 @media all and (max-width: 640px) {
+
+    .span-auto {
+        width: 99%;
+        min-width: 99%;
+    }
+
+    #lists {
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: normal;
+        width: 100% !important;
+    }
+
+    .list {
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
 
     .board .header {
         margin-top: 30px;

@@ -1070,11 +1070,12 @@ div.history th {
 /* Popin */
 
 .yui-skin-sam .yui-panel-container {
-    width: 100%;
+    cursor: pointer;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0;
+    width: 100%;
 }
 
 .yui-skin-sam .yui-panel {

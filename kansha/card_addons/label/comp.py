@@ -10,9 +10,10 @@
 
 import random
 
-from nagare import component, var
+from nagare import component, var, i18n
 
 from kansha.toolbox import overlay
+from kansha.board import excel_export
 from kansha.services.search import schema
 from kansha.cardextension import CardExtension
 
@@ -154,3 +155,14 @@ class CardLabels(CardExtension):
         for label in self.labels:
             label.remove(self.card)
         self.labels = []
+
+
+@excel_export.get_extension_title_for(CardLabels)
+def get_extension_title_CardDescription(card_extension):
+    return i18n._(u'Labels')
+
+
+@excel_export.write_extension_data_for(CardLabels)
+def write_extension_data_CardDescription(self, sheet, row, col, style):
+    text = u', '.join(label.get_title() for label in self.labels)
+    sheet.write(row, col, text, style)

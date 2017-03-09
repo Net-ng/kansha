@@ -142,7 +142,7 @@ def render_kansha(self, h, comp, *args):
 
     h.head.javascript_url('js/wysihtml/dist/minified/wysihtml.min.js')
     h.head.javascript_url('js/wysihtml/dist/minified/wysihtml.toolbar.min.js')
-    h.head.javascript_url('js/wysihtml/parser_rules/advanced.js')
+    h.head.javascript_url('js/wysihtml/parser_rules/simple.js')
 
     if self.selected == 'board':
         with h.body(class_='yui-skin-sam'):

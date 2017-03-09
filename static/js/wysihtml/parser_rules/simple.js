@@ -12,6 +12,7 @@ var wysihtmlParserRules = {
     b:      {},
     i:      {},
     em:     {},
+    u:      {},
     br:     {},
     p:      {},
     div:    {},
@@ -25,7 +26,17 @@ var wysihtmlParserRules = {
         rel:    "nofollow"
       },
       check_attributes: {
-        href:   "url" // important to avoid XSS
+        href:   (function() {
+          var REG_EXP = /^(#|\/|https?:\/\/|mailto:|tel:|file:\/\/)/i;
+          return function(attributeValue) {
+            if (!attributeValue || !attributeValue.match(REG_EXP)) {
+              return null;
+            }
+            return attributeValue.replace(REG_EXP, function(match) {
+              return match.toLowerCase();
+            });
+          };
+        })()
       }
     }
   }

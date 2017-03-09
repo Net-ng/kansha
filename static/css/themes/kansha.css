@@ -227,7 +227,7 @@ i.icon {
     transition: top 0.3s;
 }
 
-.nav-menu:hover {
+.menu-down {
     z-index: 30;
     top: 0;
 }
@@ -239,10 +239,8 @@ i.icon {
     height: 69px;
 }
 
-.nav-menu:hover .actions {
-}
-
 .menu-title {
+    cursor: pointer;
     position: absolute;
     padding: 0 10px 5px 10px;
     white-space: nowrap;
@@ -494,11 +492,11 @@ i.icon {
 /* End overlays */
 
 #mask {
+    display: none;
     height: 100%;
     position: fixed;
     width: 100%;
     z-index: 5;
-    display: none;
 }
 
 /* Members */

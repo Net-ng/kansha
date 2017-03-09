@@ -137,6 +137,7 @@
             }
             // close all menus
             YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+            YAHOO.util.Dom.removeClass(ECN('nav-menu'), 'menu-down');
         },
 
         toggleMenu: function (source) {
@@ -147,6 +148,16 @@
             YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
             if (state[0] && state[0] == 'none') {
                 YAHOO.util.Dom.setStyle(dropdown, 'display', 'block');
+            }
+        },
+
+        toggleMainMenu: function(source) {
+            var target = source;
+            if (Dom.hasClass(target, 'menu-down')) {
+                Dom.removeClass(target, 'menu-down');
+            } else {
+                Dom.addClass(target, 'menu-down');
+                NS.app.stopEvent();
             }
         },
 

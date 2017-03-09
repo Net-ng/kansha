@@ -37,7 +37,7 @@ def answer_on_menu(self, comp, user, v):
 @presentation.render_for(Kansha, model='menu')
 def render_kansha_menu(self, h, comp, *args):
     """Main menu part"""
-    with h.div(class_='nav-menu'):
+    with h.div(class_='nav-menu', onclick='YAHOO.kansha.app.toggleMainMenu(this)'):
         with h.ul(class_='actions'):
             # If login, display logout button
             user = security.get_user()

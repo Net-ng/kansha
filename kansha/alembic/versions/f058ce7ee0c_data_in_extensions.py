@@ -9,7 +9,6 @@ Create Date: 2016-01-07 13:41:19.534150
 import time
 from datetime import date
 
-import elixir
 from alembic import op
 import sqlalchemy as sa
 
@@ -21,7 +20,6 @@ down_revision = '361f9cbae3fc'
 
 def upgrade():
     bind = op.get_bind()
-    elixir.metadata.bind = bind
     is_sqlite = bind.engine.name == 'sqlite'
 
     op.create_table('card_description',
@@ -39,9 +37,27 @@ def upgrade():
     descriptions = []
     due_dates = []
     weights = []
-    descriptions_table = sa.Table('card_description', elixir.metadata, autoload=True)
-    due_dates_table = sa.Table('card_due_date', elixir.metadata, autoload=True)
-    weights_table = sa.Table('card_weight', elixir.metadata, autoload=True)
+    descriptions_table = sa.Table(
+        'card_description',
+        sa.MetaData(),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('description', sa.UnicodeText, default=lambda: u''),
+        sa.Column('card_id', sa.Integer, sa.ForeignKey('card.id', ondelete='CASCADE'))
+    )
+    due_dates_table = sa.Table(
+        'card_due_date',
+        sa.MetaData(),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('due_date', sa.Date),
+        sa.Column('card_id', sa.Integer, sa.ForeignKey('card.id', ondelete='CASCADE'))
+    )
+    weights_table = sa.Table(
+        'card_weight',
+        sa.MetaData(),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('weight', sa.Unicode(255), default=lambda: u''),
+        sa.Column('card_id', sa.Integer, sa.ForeignKey('card.id', ondelete='CASCADE'))
+    )
 
     select = sa.text('SELECT id, description, due_date, weight FROM card')
     for card_id, description, due_date, weight in bind.execute(select):

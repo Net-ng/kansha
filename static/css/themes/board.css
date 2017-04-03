@@ -167,9 +167,9 @@ textarea.expanded {
 #lists {
     height: 100%;
     margin-left: 0;
-    margin-right: 10px;
     overflow-x: auto;
     overflow-y: hidden;
+    padding-right: 10px;
     vertical-align: top;
     white-space: nowrap;
     z-index: 1;
@@ -177,19 +177,19 @@ textarea.expanded {
 
 .span-auto {
     max-width: 440px;
-    width: calc(16.666% - 15px);
+    width: calc(16.666% - 13px);
 }
 
 .list-span-5 .span-auto {
-    width: calc(20% - 15px);
+    width: calc(20% - 13px);
 }
 
 .list-span-4 .span-auto {
-    width: calc(25% - 15px);
+    width: calc(25% - 13px);
 }
 
 .list-span-3 .span-auto {
-    width: calc(33.333% - 15px);
+    width: calc(33.333% - 13px);
 }
 
 
@@ -1123,15 +1123,15 @@ div.history th {
 
 @media all and (max-width: 1600px) {
     .span-auto {
-        width: calc(20% - 15px);
+        width: calc(20% - 13px);
     }
 
 }
 
 @media all and (max-width: 1360px) {
     .span-auto {
-        width: calc(25% - 15px);
-        min-width: calc(25% - 15px);
+        width: calc(25% - 13px);
+        min-width: calc(25% - 13px);
     }
 
     .list-header {
@@ -1159,8 +1159,8 @@ div.history th {
 
 @media all and (max-width: 1060px) {
     .span-auto {
-        width: calc(33.333% - 15px);
-        min-width: calc(33.333% - 15px);
+        width: calc(33.333% - 13px);
+        min-width: calc(33.333% - 13px);
     }
 
 }
@@ -1173,8 +1173,8 @@ div.history th {
     }
 
     .span-auto {
-        width: calc(50% - 15px);
-        min-width: calc(50% - 15px);
+        width: 50%;
+        min-width: 50%;
     }
 
     .card-actions {
@@ -1249,6 +1249,7 @@ div.history th {
     #lists {
         overflow-x: hidden;
         overflow-y: auto;
+        padding-right: 0;
         white-space: normal;
         width: 100% !important;
     }

@@ -551,10 +551,14 @@ a.title:visited {
 }
 
 .editor-popin {
-    padding: 5px;
     position: absolute;
     width: 100%;
+    top: -10px;
+}
 
+.editor-popin label {
+    display: inline-block;
+    width: 300px;
 }
 
 /* End editor */

@@ -162,7 +162,9 @@ def render_NewColumnEditor(self, h, comp, *args):
         with h.div:
             id_ = h.generate_id()
             h << h.label(_('Name'), for_=id)
-            h << h.input(id=id_, type='text', value=self.title(), placeholder=_('List title')).error(self.title.error).action(self.title)
+            h << h.input(id=id_, type='text', value=self.title(),
+                         placeholder=_('List title'),
+                         autofocus=True).error(self.title.error).action(self.title)
 
         with h.div:
             id_ = h.generate_id()

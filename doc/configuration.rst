@@ -28,7 +28,6 @@ Kansha features can be activated and customized with a configuration file like t
     banner = <<LONG_TITLE>> # or motto/slogan or empty
     theme = <<CUSTOM_THEME_NAME>>
     favicon = # path (optional)
-    templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
     activity_monitor = <<MONITOR_EMAIL>> # optional
     crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
     disclaimer = # message to display on login screens, below the forms (optional)
@@ -154,9 +153,6 @@ theme
 favicon
     Path to a favicon file that will be applied to your site.
 
-templates
-    Path to a folder containing boards in JSON format. Each new user created on your site will have private boards loaded from those templates. Leave empty if you don't use that.
-
 activity_monitor
     Email address or nothing. If an email address is provided, activity reports will be sent to it regularly. See :ref:`periodic_tasks`.
 
@@ -264,7 +260,7 @@ activated
     Whether to activate this module.
 
 identicons
-    Whether a unique avatar should be created for each new user instead of the default anonymous one.
+    Whether a unique avatar should be created for each new user instead of the default anonymous one (``on`` / ``off``). Default is ``on``.
 
 moderator
     If present, must be an email address. This activates moderation and all registration requests are fowarded to the moderator for approval. Otherwise, registration is free for humans. A CAPTCHA prevents robots from submitting.

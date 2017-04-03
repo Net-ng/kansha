@@ -48,7 +48,9 @@ Profile
 ^^^^^^^
 
 Visibility
-    Private boards are only for invited members. Public boards are open to everybody who can log in Kansha.
+    Private boards are only for invited members. Public boards are open to everybody who can log in Kansha, but a needs to know
+    the exact URL (or a link) to the public board to access it. Shared boards are public boards that are visible on the home page of
+    every user.
 Comments
     You choose who can post comments on cards.
 Votes

@@ -113,7 +113,7 @@ Now, look at the switches in the upper right corner of the screen. By default, *
 
 Last, consider the main tabs. The **Kansha** one gives you access to your *home* (next section). The **Board** one contains everything you need to manage the current board.
 
-Board operations available in the **Board** tab:
+Board operations available in the **Board** tab (for members only):
 
 Preferences
     This menu allows you to configure the board and to subscribe to notifications. Board configuration is covered in :ref:`board_configuration`. Notifications will be sent to you by email.
@@ -123,6 +123,8 @@ Edit board description
     Describe here what the board is for.
 Export board
     Export all cards as lines in an XLS file.
+Save as template (requires management role)
+    Save the current board as a template.
 Action Log
     The *Action log* displays the history of the actions that happened on the current board. Open it and see what you have done in this board so far.
 Delete board / Leave this board
@@ -134,8 +136,14 @@ Home
 On the home screen you have access to:
 
 * the list of the boards you can participate in (see :ref:`board_access`);
-* the list of all the cards you are assigned to (*My cards*);
 * your profile, which you can edit.
+
+On the board tab, the boards you have access to are organized as follows:
+
+ - The 5 last modified boards, for direct access to hot boards;
+ - your boards, i.e. the boards you are manager of;
+ - guest boards, i.e. the boards you are just member of;
+ - shared boards, i.e. all the boards that are public and shared on this Kansha instance.
 
 On your profile, you can change the language of the interface. If your favorite language is missing, consider :ref:`contributing <contribute_trans>`.
 

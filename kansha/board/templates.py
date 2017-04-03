@@ -97,5 +97,4 @@ class SaveTemplateTask(component.Task):
             comp.call(template_editor, 'loading')
             template_editor.save()
             comp.call(template_editor, 'saved')
-        print 'done'
         comp.answer()

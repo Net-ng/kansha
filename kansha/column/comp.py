@@ -145,6 +145,8 @@ class Column(events.EventHandlerMixIn):
 
     def delete(self, purge=False):
         """Delete itself"""
+        if not self.data:
+            return
         if purge:
             self.purge_cards()
         else:
@@ -152,9 +154,8 @@ class Column(events.EventHandlerMixIn):
         DataColumn.delete_column(self.data)
 
     def empty(self):
-        for card in self.cards:
-            # FIXME: move this function to board only, use Events
-            self.board.archive_card(card(), self)
+        # FIXME: move this function to board only, use Events
+        self.board.archive_cards([card() for card in self.cards], self)
         self._cards = None
 
     def remove_card_comp(self, card):
@@ -175,13 +176,13 @@ class Column(events.EventHandlerMixIn):
         return card_comp
 
     def insert_card(self, index, card):
-        self.data.insert_card(index, card.data)
-        self.cards.insert(index, component.Component(card))
+        if self.data.insert_card(index, card.data):
+            self.cards.insert(index, component.Component(card))
 
     def insert_card_comp(self, comp, index, card_comp):
-        self.data.insert_card(index, card_comp().data)
-        self.cards.insert(index, card_comp)
-        card_comp.on_answer(self.handle_event, comp)
+        if self.data.insert_card(index, card_comp().data):
+            self.cards.insert(index, card_comp)
+            card_comp.on_answer(self.handle_event, comp)
 
     def delete_card(self, card):
         """Delete card
@@ -213,8 +214,8 @@ class Column(events.EventHandlerMixIn):
         self.data.purge_cards()
 
     def append_card(self, card):
-        self.data.append_card(card.data)
-        self.cards.append(component.Component(card))
+        if self.data.append_card(card.data):
+            self.cards.append(component.Component(card))
 
     def create_card(self, text=''):
         """Create a new card

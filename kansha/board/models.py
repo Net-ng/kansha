@@ -171,6 +171,10 @@ class DataBoard(Entity):
     def create_column(self, index, title, nb_cards=None, archive=False):
         return DataColumn.create_column(self, index, title, nb_cards, archive)
 
+    def delete_column(self, column):
+        if column in self.columns:
+            self.columns.remove(column)
+
     def create_label(self, title, color):
         label = DataLabel(title=title, color=color)
         self.labels.append(label)

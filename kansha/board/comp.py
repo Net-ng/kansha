@@ -215,7 +215,7 @@ class Board(events.EventHandlerMixIn):
             # actually delete the column
             result = self.delete_column(event.data)
         elif event.is_(events.CardArchived):
-            result = self.archive_card(event.emitter, event.last_relay)
+            result = self.archive_cards([event.emitter], event.last_relay)
         elif event.is_(events.SearchIndexUpdated):
             result = self.set_reload_search()
         elif event.is_(events.CardDisplayed):
@@ -253,8 +253,8 @@ class Board(events.EventHandlerMixIn):
         return refresh
 
     def refresh(self):
-        print 'sync'
         log.info('sync')
+        self._data = None
         self.load_children()
 
     @property
@@ -341,6 +341,7 @@ class Board(events.EventHandlerMixIn):
             - ``id_`` -- the id of the column to delete
         """
         self.columns.remove(col_comp)
+        self.data.delete_column(col_comp().data)
         col_comp().delete()
         self.increase_version()
         return popin.Empty()
@@ -356,8 +357,17 @@ class Board(events.EventHandlerMixIn):
         orig, __ = cols[data['orig']]
 
         dest, dest_comp = cols[data['dest']]
-        card_comp = orig.remove_card_by_id(data['card'])
-        dest.insert_card_comp(dest_comp, data['index'], card_comp)
+        card_comp = None
+        try:
+            card_comp = orig.remove_card_by_id(data['card'])
+            dest.insert_card_comp(dest_comp, data['index'], card_comp)
+        except AttributeError:
+            # one of the columns does not exist anymore
+            # stop processing, let the refresh do the rest
+            log.warning('attempt to move card between at least one missing column')
+            if card_comp:
+                orig.append_card(card_comp())
+            return
         card = card_comp()
         values = {'from': orig.get_title(),
                   'to': dest.get_title(),
@@ -425,18 +435,19 @@ class Board(events.EventHandlerMixIn):
         self.data.show_archive = value
         self.set_reload_search()
 
-    def archive_card(self, card, from_column):
+    def archive_cards(self, cards, from_column):
         """Archive card
 
         In:
-            - ``card`` -- card to archive
+            - ``cards`` -- cards to archive, from the same column
         """
-        self.archive_column.append_card(card)
-        values = {'column_id': from_column.id, 'column': from_column.get_title(),
-                  'card': card.get_title()}
-        card.action_log.add_history(security.get_user(), u'card_archive', values)
-        # reindex it
-        card.add_to_index(self.search_engine, self.id, update=True)
+        for card in cards:
+            self.archive_column.append_card(card)
+            values = {'column_id': from_column.id, 'column': from_column.get_title(),
+                      'card': card.get_title()}
+            card.action_log.add_history(security.get_user(), u'card_archive', values)
+            # reindex it
+            card.add_to_index(self.search_engine, self.id, update=True)
         self.search_engine.commit()
         self.increase_version()
 

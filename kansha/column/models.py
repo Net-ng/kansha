@@ -71,7 +71,12 @@ class DataColumn(Entity):
             self.cards.remove(card)
 
     def insert_card(self, index, card):
-        self.cards.insert(index, card)
+        done = False
+        if card not in self.cards:
+            self.cards.insert(index, card)
+            session.flush()
+            done = True
+        return done
 
     def delete_card(self, card):
         self.remove_card(card)
@@ -82,8 +87,13 @@ class DataColumn(Entity):
             card.delete()
 
     def append_card(self, card):
-        card.index = None
-        self.cards.append(card)
+        done = False
+        if card not in self.cards:
+            card.index = None
+            self.cards.append(card)
+            session.flush()
+            done = True
+        return done
 
     @classmethod
     def delete_column(cls, column):

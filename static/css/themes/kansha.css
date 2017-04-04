@@ -496,7 +496,7 @@ i.icon {
     height: 100%;
     position: fixed;
     width: 100%;
-    z-index: 5;
+    z-index: 500;
 }
 
 /* Members */

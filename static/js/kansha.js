@@ -225,9 +225,6 @@
         },
 
         showPopin: function (id, closeFunction) {
-            if (NS.app.isMobile()) {
-                NS.app.show('application', false);
-            }
             // Only one popin at a time
             // If we replace, don't fire previous closePopinFunction
             // (the callback must be lost anyway)
@@ -267,9 +264,6 @@
                 NS.app.popin = null;
                 // Remove the mask
                 YAHOO.util.Dom.setStyle('mask', 'display', 'none');
-            }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
             }
         },
 

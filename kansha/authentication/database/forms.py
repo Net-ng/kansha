@@ -46,7 +46,7 @@ def render_Header(self, h, comp, *args):
     h.head.css_url('css/knacss.css')
     h.head.css_url('css/themes/fonts.css')
     h.head.css_url('css/themes/kansha.css')
-    h.head.css_url('css/themes/login.css')
+    h.head.css_url('css/themes/login.css?v=2')
     h.head.css_url('css/themes/%s/kansha.css' % self.theme)
     h.head.css_url('css/themes/%s/login.css' % self.theme)
 

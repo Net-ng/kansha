@@ -203,6 +203,18 @@ input[type="password"] {
     }
 }
 
+@media (max-width:1024px) {
+
+    .header {
+        position: static;
+        width: 100%
+    }
+
+    .header .logo {
+        display: none;
+    }
+}
+
 @media (max-width:700px) {
     #captchaImage {
         float: none;

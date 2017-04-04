@@ -112,24 +112,27 @@ class WeightsSequenceEditor(editor.Editor):
         """
         super(WeightsSequenceEditor, self).__init__(target, self.fields)
         self.weights.validate(self.validate_sequence)
+        self.feedback = ''
 
     def validate_sequence(self, value):
         try:
             res = validator.StringValidator(value, strip=True).not_empty(msg=i18n._("Required field")).to_string()
-        except:
+        except ValueError:
             raise
         if res:
             try:
                 weights = res.split(',')
                 for weight in weights:
-                    res = validator.IntValidator(weight).to_int()
-            except:
-                raise ValueError(i18n._('Must be composed of integers'))
+                    res = validator.IntValidator(weight).greater_or_equal_than(0).to_int()
+            except ValueError:
+                raise ValueError(i18n._('Must be positive integers'))
         return value
 
     def commit(self):
+        self.feedback = ''
         if self.is_validated(self.fields):
             super(WeightsSequenceEditor, self).commit(self.fields)
+            self.feedback = i18n._('Sequence saved')
             return True
         return False
 

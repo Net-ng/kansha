@@ -460,17 +460,12 @@ class Board(events.EventHandlerMixIn):
             self.data.weighting_cards = 1
         elif weighting_type == WEIGHTING_LIST:
             self.data.weighting_cards = 2
-
-        # reinitialize cards weights
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                card.weight = ''
-        for card in self.archive_column.cards:
-            card.weight = ''
+        # reinitialize card weights?
 
     @property
     def weights(self):
+        if not self.data.weights:
+            self.data.weights = '0, 1, 2, 3, 5, 8, 13'
         return self.data.weights
 
     @weights.setter

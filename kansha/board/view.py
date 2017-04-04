@@ -479,7 +479,7 @@ def render_boardweights_edit(self, h, comp, *args):
                                 self.deactivate_weighting
                             ).get('onclick'),
                             'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
+                                _(u'All affected weights will be reset. Are you sure?')
                             ).decode('UTF-8')
                         }
                     )
@@ -499,7 +499,7 @@ def render_boardweights_edit(self, h, comp, *args):
                                 lambda: self.activate_weighting(WEIGHTING_FREE)
                             ).get('onclick'),
                             'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
+                                _(u'All affected weights will be reset. Are you sure?')
                             ).decode('UTF-8')
                         }
                     ),
@@ -520,7 +520,7 @@ def render_boardweights_edit(self, h, comp, *args):
                                 lambda: self.activate_weighting(WEIGHTING_LIST)
                             ).get('onclick'),
                             'message': ajax.py2js(
-                                _(u'All affected weights will be reseted. Are you sure?')
+                                _(u'All affected weights will be reset. Are you sure?')
                             ).decode('UTF-8')
                         }
                     ),
@@ -535,29 +535,18 @@ def render_boardweights_edit(self, h, comp, *args):
 
 
 @presentation.render_for(WeightsSequenceEditor)
-def render_weightssequenceeditor(self, h, comp, model):
-    with h.form(class_='weights-form'):
-        kw = {'disabled': 'disabled'}
-        if not self.weights():
-            kw["placeholder"] = "10,20,30"
-        h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Edit'), class_='btn btn-primary').action(lambda: comp.call(self, 'edit'))
-    return h.root
-
-
-@presentation.render_for(WeightsSequenceEditor, 'edit')
 def render_weightssequenceeditor_edit(self, h, comp, model):
 
-    def answer():
-        if self.commit():
-            comp.call(self, None)
-
     with h.form(class_='weights-form'):
-        kw = {}
-        if not self.weights():
-            kw["placeholder"] = "10,20,30"
-        h << h.input(value=self.weights(), type='text', **kw).action(self.weights).error(self.weights.error)
-        h << h.button(_('Save'), class_='btn btn-primary').action(answer)
+        h << h.input(value=self.weights(), type='text').action(self.weights)
+        h << h.button(_('Save'), class_='btn btn-primary').action(self.commit)
+        if self.weights.error:
+            h << h.div(self.weights.error, class_='nagare-error-message')
+        elif self.feedback:
+            with h.div(class_='success'):
+                h << h.i(class_='icon-checkmark')
+                h << self.feedback
+
     return h.root
 
 

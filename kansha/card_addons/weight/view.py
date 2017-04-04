@@ -48,7 +48,7 @@ def render_CardWeightEditor_edit(self, h, comp, *args):
             with h.div(class_='btn select'):
                 with h.select.action(self.weight):
                     for value in self.allowed_weights.split(','):
-                        h << h.option(value, value=value).selected(self.weight)
+                        h << h.option(value, value=value.strip()).selected(self.weight())
             h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
 
     return h.root

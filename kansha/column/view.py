@@ -68,24 +68,25 @@ def render_column_dropdown(self, h, comp, *args):
                         }
                     )
                     h << h.a(_(u'Delete this list'), onclick=onclick)
-                with h.li:
-                    onclick = (
-                        u"if (confirm(%(message)s)){"
-                        u" window.location='%(callback)s';"
-                        u"}" %
-                        {
-                            'message': ajax.py2js(
-                                _(u'All the cards will be archived. Are you sure?')
-                            ).decode('UTF-8'),
-                            'callback': h.SyncRenderer().a.action(
-                                self.actions, 'empty', comp
-                            ).get('href')
-                        }
-                    )
-                    h << h.a(_(u'Empty this list'), onclick=onclick)
+                if self.cards:
+                    with h.li:
+                        onclick = (
+                            u"if (confirm(%(message)s)){"
+                            u" window.location='%(callback)s';"
+                            u"}" %
+                            {
+                                'message': ajax.py2js(
+                                    _(u'All the cards will be archived. Are you sure?')
+                                ).decode('UTF-8'),
+                                'callback': h.SyncRenderer().a.action(
+                                    self.actions, 'empty', comp
+                                ).get('href')
+                            }
+                        )
+                        h << h.a(_(u'Empty this list'), onclick=onclick)
                 with h.li:
                     h << h.a(_(u'Set card limit')).action(self.actions, 'set_limit', comp)
-            else:
+            elif self.cards:
                 with h.li:
                     onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
                         'message': ajax.py2js(

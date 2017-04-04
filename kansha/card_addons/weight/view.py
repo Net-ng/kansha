@@ -27,8 +27,9 @@ def render_cardweighteditor(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'action_button')
 def render_CardWeightEditor_action_button(self, h, comp, *args):
-    h << h.a(h.i(class_='icon-star-empty'), self.weight, class_='btn').action(
-            comp.call, self, model='edit')
+    self.weight(str(self.data.weight))
+    h << h.a(h.i(class_='icon-star-empty'), self.data.weight, class_='btn').action(
+             comp.call, self, model='edit')
     return h.root
 
 
@@ -48,7 +49,7 @@ def render_CardWeightEditor_edit(self, h, comp, *args):
             with h.div(class_='btn select'):
                 with h.select.action(self.weight):
                     for value in self.allowed_weights.split(','):
-                        h << h.option(value, value=value).selected(self.weight)
+                        h << h.option(value, value=value.strip()).selected(self.weight())
             h << h.button(_('Save'), class_='btn btn-primary').action(answer, self, comp)
 
     return h.root
@@ -56,8 +57,8 @@ def render_CardWeightEditor_edit(self, h, comp, *args):
 
 @presentation.render_for(CardWeightEditor, 'badge')
 def render_CardWeightEditor_badge(self, h, comp, *args):
-    if self.weight.value:
+    if self.data.weight:
         with h.span(class_='badge'):
             h << h.span(h.i(class_='icon-star-empty'), ' ',
-                        self.weight.value, class_='label', title=_(u'Weight'))
+                        self.data.weight, class_='label', title=_(u'Weight'))
     return h.root

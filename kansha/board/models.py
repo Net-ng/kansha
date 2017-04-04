@@ -12,7 +12,7 @@ import uuid
 import urllib
 
 from elixir import using_options
-from elixir import ManyToOne, OneToMany
+from elixir import ManyToOne, OneToMany, OneToOne
 from elixir import Field, Unicode, Integer, Boolean, UnicodeText
 
 from kansha.models import Entity
@@ -21,6 +21,8 @@ from kansha.user.models import DataUser
 from kansha.column.models import DataColumn
 # provisional until we have board extensions
 from kansha.card_addons.label import DataLabel
+# provisional until we have board extensions
+from kansha.card_addons.weight import DataBoardWeightConfig
 # provisional until we have board extensions
 from kansha.card_addons.members.models import DataMembership
 
@@ -53,6 +55,7 @@ class DataBoard(Entity):
     is_template = Field(Boolean, default=False)
     columns = OneToMany('DataColumn', order_by="index",
                         cascade='delete', lazy='subquery')
+    # provisional
     labels = OneToMany('DataLabel', order_by='index')
     comments_allowed = Field(Integer, default=1)
     votes_allowed = Field(Integer, default=1)
@@ -72,8 +75,16 @@ class DataBoard(Entity):
     show_archive = Field(Integer, default=0)
     archived = Field(Boolean, default=False)
 
-    weighting_cards = Field(Integer, default=0)
-    weights = Field(Unicode(255), default=u'')
+    # provisional
+    weight_config = OneToOne('DataBoardWeightConfig')
+
+    def __init__(self, *args, **kwargs):
+        """Initialization.
+
+        Create board and uri of the board
+        """
+        super(DataBoard, self).__init__(*args, **kwargs)
+        self.uri = unicode(uuid.uuid4())
 
     @property
     def template_title(self):
@@ -94,9 +105,11 @@ class DataBoard(Entity):
                              background_position=self.background_position,
                              title_color=self.title_color,
                              comments_allowed=self.comments_allowed,
-                             votes_allowed=self.votes_allowed,
-                             weighting_cards=self.weighting_cards,
-                             weights=self.weights)
+                             votes_allowed=self.votes_allowed)
+        # TODO: move to board extension
+        new_data.weight_config = DataBoardWeightConfig(
+            weighting_cards=self.weighting_cards,
+            weights=self.weights)
         session.add(new_data)
         session.flush()
         # TODO: move to board extension
@@ -121,14 +134,6 @@ class DataBoard(Entity):
     @property
     def url(self):
         return "%s/%s" % (urllib.quote_plus(self.title.encode('ascii', 'ignore').replace('/', '_')), self.uri)
-
-    def __init__(self, *args, **kwargs):
-        """Initialization.
-
-        Create board and uri of the board
-        """
-        super(DataBoard, self).__init__(*args, **kwargs)
-        self.uri = unicode(uuid.uuid4())
 
     @classmethod
     def get_by_id(cls, id):
@@ -181,7 +186,7 @@ class DataBoard(Entity):
         session.flush()
         return label
 
-    ############# Membership management; belong to a board extension
+    ############# Membership management; those functions belong to a board extension
 
     def delete_members(self):
         DataMembership.delete_members(self)
@@ -221,6 +226,27 @@ class DataBoard(Entity):
         """
         DataMembership.add_member(self, user, role == 'manager')
 
+    ############# Weight configuration, those functions belong to an extension
+
+    @property
+    def weights(self):
+        return self.weight_config.weights
+
+    @weights.setter
+    def weights(self, value):
+        self.weight_config.weights = value
+
+    @property
+    def weighting_cards(self):
+        return self.weight_config.weighting_cards
+
+    @weighting_cards.setter
+    def weighting_cards(self, value):
+        self.weight_config.weighting_cards = value
+
+    def reset_card_weights(self):
+        self.weight_config.reset_card_weights()
+
 
 # Populate
 DEFAULT_LABELS = (
@@ -235,6 +261,7 @@ DEFAULT_LABELS = (
 
 def create_template_empty():
     board = DataBoard(title=u'Empty board', is_template=True, visibility=1)
+    board.weight_config = DataBoardWeightConfig()
     for title, color in DEFAULT_LABELS:
         board.create_label(title=title, color=color)
     session.flush()
@@ -243,6 +270,7 @@ def create_template_empty():
 
 def create_template_todo():
     board = DataBoard(title=u'Basic Kanban', is_template=True, visibility=1)
+    board.weight_config = DataBoardWeightConfig()
     for index, title in enumerate((u'To Do', u'Doing', u'Done')):
         board.create_column(index, title)
     for title, color in DEFAULT_LABELS:

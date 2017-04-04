@@ -42,13 +42,13 @@ class CardWeightEditor(CardExtension):
         """
         CardExtension.__init__(self, card, action_log, configurator)
         self.card = card
-        self.weight = editor.Property(self.data.weight or u'')
+        self.weight = editor.Property(str(self.data.weight or u''))
         self.weight.validate(self.validate_weight)
         self.action_button = component.Component(self, 'action_button')
 
     def update(self, other):
         self.data.update(other.data)
-        self.weight(self.data.weight or u'')
+        self.weight(str(self.data.weight) or u'')
 
     @property
     def data(self):
@@ -62,7 +62,9 @@ class CardWeightEditor(CardExtension):
         Integer or empty
         """
         if value:
-            validator.IntValidator(value).to_int()
+            value = validator.IntValidator(value).greater_or_equal_than(0).to_int()
+        else:
+            value = 0
         return value
 
     @property

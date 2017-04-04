@@ -136,8 +136,7 @@ textarea.expanded {
     display: inline-block;
 }
 
-.board .board-title a,
-.board .board-title a:hover {
+.board .board-title a {
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
@@ -1176,8 +1175,8 @@ div.history th {
     }
 
     .span-auto {
-        width: 50%;
-        min-width: 50%;
+        width: calc(50% - 13px);
+        min-width: calc(50% - 13px);
     }
 
     .card-actions {
@@ -1188,10 +1187,6 @@ div.history th {
 
     .card-actions .btn {
         width: 100%;
-    }
-
-    [class*="span"] {
-        margin-left: 0;
     }
 
     #viewport-wrapper {
@@ -1211,7 +1206,6 @@ div.history th {
     }
 
     #lists {
-        margin-left: 0;
         z-index: 1;
     }
 
@@ -1252,13 +1246,10 @@ div.history th {
     #lists {
         overflow-x: hidden;
         overflow-y: auto;
-        padding-right: 0;
         white-space: normal;
-        width: 100% !important;
     }
 
     .list {
-        width: 100% !important;
         margin-bottom: 10px;
     }
 

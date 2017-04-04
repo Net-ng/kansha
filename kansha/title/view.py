@@ -15,21 +15,21 @@ from .comp import EditableTitle, Title
 
 
 @presentation.render_for(Title)
-def render(self, h, comp, model):
-    with h.a(class_=self.class_).action(comp.answer):
-        title = self.title()
+def render_title(self, h, comp, model):
+    title = self.title()
+    with h.a(class_=self.class_, title=title).action(comp.answer):
         h << (h.input(placeholder=self.placeholder) if (self.placeholder and title is None) else title)
 
     return h.root
 
 
 @presentation.render_for(Title, 'readonly')
-def render(self, h, *args):
+def render_title_ro(self, h, *args):
     return h.span(self.title() or '', class_=self.class_)
 
 
 @presentation.render_for(Title, 'edit')
-def render(self, h, comp, *args):
+def render_title_edit(self, h, comp, *args):
     title = var.Var(self.title() or '')
     id_ = h.generate_id('id')
 
@@ -47,5 +47,5 @@ def render(self, h, comp, *args):
 
 
 @presentation.render_for(EditableTitle, 'readonly')
-def render(self, h, *args):
+def render_editabletitle_ro(self, h, *args):
     return self.title.render(h, 'readonly')

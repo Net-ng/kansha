@@ -241,8 +241,11 @@ i.icon {
 
 .menu-title {
     cursor: pointer;
-    position: absolute;
+    max-width: 150px;
+    overflow: hidden;
     padding: 0 10px 5px 10px;
+    position: absolute;
+    text-overflow: ellipsis;
     white-space: nowrap;
     z-index: 30;
 }
@@ -496,7 +499,7 @@ i.icon {
     height: 100%;
     position: fixed;
     width: 100%;
-    z-index: 5;
+    z-index: 500;
 }
 
 /* Members */

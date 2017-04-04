@@ -84,8 +84,10 @@
                 Dom.replaceClass(card_ids, 'hidden', 'highlight');
                 if (card_ids[0] === null) {
                     Dom.addClass(search_input, 'nomatches');
+                    Dom.removeClass(search_input, 'highlight');
                 } else {
                     Dom.addClass(search_input, 'highlight');
+                    Dom.removeClass(search_input, 'nomatches');
                 }
             } else {
                 Dom.removeClass(cards, 'hidden');

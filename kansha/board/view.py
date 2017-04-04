@@ -476,7 +476,7 @@ def render_boardweights_edit(self, h, comp, *args):
                         "if (confirm(%(message)s)){%(action)s;}return false" %
                         {
                             'action': h.a.action(
-                                self.deactivate_weighting
+                                self.activate_weighting, WEIGHTING_OFF
                             ).get('onclick'),
                             'message': ajax.py2js(
                                 _(u'All affected weights will be reset. Are you sure?')
@@ -492,17 +492,9 @@ def render_boardweights_edit(self, h, comp, *args):
                         if self.board.weighting_cards == WEIGHTING_FREE
                         else ''
                     ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                lambda: self.activate_weighting(WEIGHTING_FREE)
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reset. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    ),
+                    onclick=h.a.action(
+                        lambda: self.activate_weighting(WEIGHTING_FREE)
+                    ).get('onclick'),
                     title=_('Card weights can be any integer')
                 )
 

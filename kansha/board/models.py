@@ -78,6 +78,14 @@ class DataBoard(Entity):
     # provisional
     weight_config = OneToOne('DataBoardWeightConfig')
 
+    def __init__(self, *args, **kwargs):
+        """Initialization.
+
+        Create board and uri of the board
+        """
+        super(DataBoard, self).__init__(*args, **kwargs)
+        self.uri = unicode(uuid.uuid4())
+
     @property
     def template_title(self):
         manager = self.get_first_manager()
@@ -126,14 +134,6 @@ class DataBoard(Entity):
     @property
     def url(self):
         return "%s/%s" % (urllib.quote_plus(self.title.encode('ascii', 'ignore').replace('/', '_')), self.uri)
-
-    def __init__(self, *args, **kwargs):
-        """Initialization.
-
-        Create board and uri of the board
-        """
-        super(DataBoard, self).__init__(*args, **kwargs)
-        self.uri = unicode(uuid.uuid4())
 
     @classmethod
     def get_by_id(cls, id):
@@ -243,6 +243,9 @@ class DataBoard(Entity):
     @weighting_cards.setter
     def weighting_cards(self, value):
         self.weight_config.weighting_cards = value
+
+    def reset_card_weights(self):
+        self.weight_config.reset_card_weights()
 
 
 # Populate

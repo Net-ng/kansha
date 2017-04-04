@@ -63,6 +63,8 @@ class CardWeightEditor(CardExtension):
         """
         if value:
             value = validator.IntValidator(value).greater_or_equal_than(0).to_int()
+        else:
+            value = 0
         return value
 
     @property

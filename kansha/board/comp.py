@@ -451,16 +451,17 @@ class Board(events.EventHandlerMixIn):
         self.search_engine.commit()
         self.increase_version()
 
+    ####### For future board extension
+
     @property
     def weighting_cards(self):
         return self.data.weighting_cards
 
     def activate_weighting(self, weighting_type):
-        if weighting_type == WEIGHTING_FREE:
-            self.data.weighting_cards = 1
-        elif weighting_type == WEIGHTING_LIST:
-            self.data.weighting_cards = 2
-        # reinitialize card weights?
+        self.data.weighting_cards = weighting_type
+        if weighting_type != WEIGHTING_FREE:
+            # reinitialize card weights?
+            self.data.reset_card_weights()
 
     @property
     def weights(self):
@@ -472,9 +473,7 @@ class Board(events.EventHandlerMixIn):
     def weights(self, weights):
         self.data.weights = weights
 
-    def deactivate_weighting(self):
-        self.data.weighting_cards = 0
-        self.data.weights = ''
+    ######################
 
     def delete_clicked(self, comp):
         return self.emit_event(comp, events.BoardDeleted)

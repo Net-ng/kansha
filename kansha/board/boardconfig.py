@@ -95,9 +95,6 @@ class BoardWeights(object):
     def activate_weighting(self, weighting_type):
         self.board.activate_weighting(weighting_type)
 
-    def deactivate_weighting(self):
-        self.board.deactivate_weighting()
-
 
 class WeightsSequenceEditor(editor.Editor):
 

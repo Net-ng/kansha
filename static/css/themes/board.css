@@ -136,8 +136,7 @@ textarea.expanded {
     display: inline-block;
 }
 
-.board .board-title a,
-.board .board-title a:hover {
+.board .board-title a {
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;

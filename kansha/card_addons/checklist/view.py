@@ -154,5 +154,16 @@ def render_ChecklistItem(self, h, comp, model):
 def render_ChecklistItem(self, h, comp, model):
     h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
     h << h.span(self.title.render(h.AsyncRenderer()), class_='title ' + ('done' if self.done else ''))
-    h << h.a(h.i(class_='icon-cross'), class_='delete-item').action(comp.answer, 'delete')
+    onclick = (
+        u"if (confirm(%(message)s)){%(action)s;}return false" %
+        {
+            'action': h.a.action(
+                ajax.Update(render='', action=lambda: comp.answer('delete'))
+            ).get('onclick'),
+            'message': ajax.py2js(
+                _(u'The checklist item will be deleted. Are you sure?')
+            ).decode('UTF-8')
+        }
+    )
+    h << h.a(h.i(class_='icon-cross'), class_='delete-item', onclick=onclick)
     return h.root

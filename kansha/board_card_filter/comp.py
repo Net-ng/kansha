@@ -29,7 +29,7 @@ class BoardCardFilter(object):
             # do not query archived cards if archive column is hidden
             if self._exclude_archived:
                 condition &= (self.card_schema.archived == False)
-            self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
+            self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition, 1000))
             # make the difference between empty search and no results
             if not self.card_matches:
                 self.card_matches.add(None)

@@ -1084,6 +1084,7 @@ div.history th {
     margin: 70px auto 30px auto;
     max-width: 740px;
     padding: 5px 20px 15px 50px;
+    cursor: initial;
 }
 
 .yui-skin-sam .yui-panel .panel-header {

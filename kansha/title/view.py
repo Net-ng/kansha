@@ -17,6 +17,8 @@ from .comp import EditableTitle, Title
 @presentation.render_for(Title)
 def render_title(self, h, comp, model):
     title = self.title()
+    if len(title) < 5:
+        title += u' ' * (5 - len(title)) # unbreakable spaces ; when display-block is NOT an option
     with h.a(class_=self.class_, title=title).action(comp.answer):
         h << (h.input(placeholder=self.placeholder) if (self.placeholder and title is None) else title)
 

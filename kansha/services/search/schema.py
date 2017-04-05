@@ -334,6 +334,12 @@ class Schema(object):
         except KeyError:
             raise AttributeError(name)
 
+    def __getstate__(self):
+        return (self.type_name, self.fields)
+
+    def __setstate__(self, data):
+        self.type_name, self.fields = data
+
     def map(self, mapper):
         mapper.define(self.type_name)
         for field in self.fields.itervalues():

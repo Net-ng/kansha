@@ -9,7 +9,7 @@
 # --
 
 from nagare.i18n import _
-from nagare import ajax, presentation, security, var
+from nagare import ajax, component, presentation, security, var
 
 from kansha import events
 
@@ -43,7 +43,7 @@ def render(self, h, comp, *args):
     card_id = h.generate_id()
 
     onclick = h.a.action(self.emit_event, comp, events.CardClicked, comp).get('onclick').replace('return', "")
-    with h.div(id=self.id, class_='card'):
+    with h.div(id=self.id, class_='card ' + self.card_filter(self)):
         with h.div(id=card_id, onclick=onclick):
             with h.div(class_='headers'):
                 h << [extension.render(h, 'header') for _name, extension in extensions]
@@ -53,6 +53,8 @@ def render(self, h, comp, *args):
                 h << [extension.render(h, 'cover') for _name, extension in extensions]
             with h.div(class_='badges'):
                 h << [extension.render(h, 'badge') for _name, extension in extensions]
+    if self.card_filter(self):
+        h << component.Component(self.card_filter)
 
     h << h.script(
         "YAHOO.kansha.reload_cards[%s]=function() {%s}""" % (
@@ -60,8 +62,6 @@ def render(self, h, comp, *args):
             h.a.action(ajax.Update()).get('onclick')
         )
     )
-    if self.emit_event(comp, events.CardDisplayed) == 'reload_search':
-        h << h.script('''$('#search').trigger('reload_search');''')
 
     return h.root
 

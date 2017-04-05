@@ -86,8 +86,6 @@ def render_Board(self, h, comp, *args):
     h.head.css_url('css/themes/board.css?v=2a')
     h.head.css_url('css/themes/%s/board.css?v=2a' % self.theme)
 
-    h.head.javascript_url('js/debounce.js')
-    h.head.javascript_url('js/search.js')
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
     if security.has_permissions('edit', self):
@@ -106,57 +104,14 @@ def render_Board(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Board, 'search_results')
-def render_Board_search_results(self, h, comp, *args):
-    h << h.script('YAHOO.kansha.app.highlight_cards(%s);' % ajax.py2js(list(self.card_matches), h))
-    h << comp.render(h, 'num_matches')
-    return h.root
-
-
-@presentation.render_for(Board, 'num_matches')
-def render_Board_num_matches(self, h, comp, *args):
-    if self.card_matches:
-
-        if None in self.card_matches:
-            h << h.span(_(u'No matches'), class_='nomatches')
-        else:
-            n = len(self.card_matches)
-            h << (_N(u'%d match', u'%d matches', n) % n)
-    else:
-        h << u' '
-    return h.root
-
-
 @presentation.render_for(Board, 'switch')
 def render_Board_item(self, h, comp, *args):
-    reload_search = ajax.Update(component_to_update='show_results',
-                                render=lambda renderer: comp.render(renderer, 'search_results'))
-    h << h.script(u'''$('#search').on('reload_search', function() { %s; })''' % reload_search.generate_action(41, h))
 
     with h.div(id='switch_zone'):
         if self.model == 'columns':
-            search_cb = ajax.Update(
-                action=self.search,
-                component_to_update='show_results',
-                render=lambda renderer: comp.render(renderer, 'search_results')
-            ).generate_action(1, h).replace('this', 'elt')
-            oninput = 'debounce(this, function(elt) { %s; }, 500)' % search_cb
-            with h.div(id_='show_results'):
-                h << comp.render(h, 'num_matches')
-            if self.card_matches:
-                if None in self.card_matches:
-                    klass = 'nomatches'
-                else:
-                    klass = 'highlight'
-            else:
-                klass = ''
-            with h.div(id='search', class_=klass):
-                h << h.input(type='text', placeholder=_(u'search'),
-                             value=self.last_search,
-                             oninput=oninput)
-                with h.span(class_='icon'):
-                    h << h.i(class_='icon-search search_icon')
-                    h << h.a(h.i(class_='icon-cancel-circle'), href='#', style='display: none', class_='search_close')
+            # card search
+            h << self.search_input
+            # Switch view
             h << h.SyncRenderer().a(
                 h.i(class_='icon-calendar'),
                 title=_('Calendar mode'),

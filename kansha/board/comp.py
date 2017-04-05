@@ -28,6 +28,7 @@ from kansha.toolbox import popin, overlay
 from kansha.card_addons.label import Label
 from kansha.authentication.database import forms
 from kansha import events, exceptions, validator
+from kansha.board_card_filter import BoardCardFilter
 
 from .boardconfig import BoardConfig
 from .excel_export import ExcelExport
@@ -94,8 +95,9 @@ class Board(events.EventHandlerMixIn):
 
         self.version = self.data.version
         self.modal = component.Component(popin.Empty())
-        self.card_matches = set()  # search results
-        self.last_search = u''
+        self.card_filter = self._services(BoardCardFilter, Card.schema, self.id,
+                                          not self.show_archive)
+        self.search_input = component.Component(self.card_filter, 'search_input')
 
         self.columns = []
         self.archive_column = None
@@ -140,8 +142,6 @@ class Board(events.EventHandlerMixIn):
         # Title component
         self.title = component.Component(
             title.EditableTitle(self.get_title)).on_answer(self.set_title)
-
-        self.must_reload_search = False
 
     @classmethod
     def get_id_by_uri(cls, uri):
@@ -217,13 +217,7 @@ class Board(events.EventHandlerMixIn):
         elif event.is_(events.CardArchived):
             result = self.archive_cards([event.emitter], event.last_relay)
         elif event.is_(events.SearchIndexUpdated):
-            result = self.set_reload_search()
-        elif event.is_(events.CardDisplayed):
-            if self.must_reload_search:
-                self.reload_search()
-                result = 'reload_search'
-            else:
-                result = 'nop'
+            result = self.card_filter.reload_search()
 
         return result
 
@@ -235,7 +229,7 @@ class Board(events.EventHandlerMixIn):
         for c in self.data.columns:
             col = self._services(
                 column.Column, c.id, self, self.card_extensions,
-                self.action_log, data=c)
+                self.action_log, self.card_filter, data=c)
             if col.is_archive:
                 self.archive_column = col
             columns.append(component.Component(col))
@@ -327,7 +321,7 @@ class Board(events.EventHandlerMixIn):
         col = self.data.create_column(index, title, nb_cards)
         col_obj = self._services(
             column.Column, col.id, self,
-            self.card_extensions, self.action_log)
+            self.card_extensions, self.action_log, self.card_filter)
         self.columns.insert(
             index, component.Component(col_obj))
         self.increase_version()
@@ -433,7 +427,7 @@ class Board(events.EventHandlerMixIn):
     @show_archive.setter
     def show_archive(self, value):
         self.data.show_archive = value
-        self.set_reload_search()
+        self.card_filter.exclude_archive(not value)
 
     def archive_cards(self, cards, from_column):
         """Archive card
@@ -448,7 +442,8 @@ class Board(events.EventHandlerMixIn):
             card.action_log.add_history(security.get_user(), u'card_archive', values)
             # reindex it
             card.add_to_index(self.search_engine, self.id, update=True)
-        self.search_engine.commit()
+        self.search_engine.commit(True)
+        self.card_filter.reload_search()
         self.increase_version()
 
     ####### For future board extension
@@ -787,20 +782,6 @@ class Board(events.EventHandlerMixIn):
     def set_title_color(self, value):
         self.data.title_color = value or u''
 
-    def search(self, query):
-        self.last_search = query
-        if query:
-            condition = Card.schema.match(query) & (Card.schema.board_id == self.id)
-            # do not query archived cards if archive column is hidden
-            if not self.show_archive:
-                condition &= (Card.schema.archived == False)
-            self.card_matches = set(doc._id for (_, doc) in self.search_engine.search(condition))
-            # make the difference between empty search and no results
-            if not self.card_matches:
-                self.card_matches.add(None)
-        else:
-            self.card_matches = set()
-
     @classmethod
     def get_all_boards(cls, user, app_title, app_banner, theme, card_extensions,
                        services_service, load_children=False):
@@ -820,13 +801,6 @@ class Board(events.EventHandlerMixIn):
     @staticmethod
     def get_templates_for(user):
         return DataBoard.get_templates_for(user.data, BOARD_PUBLIC)
-
-    def set_reload_search(self):
-        self.must_reload_search = True
-
-    def reload_search(self):
-        self.must_reload_search = False
-        return self.search(self.last_search)
 
 
 # TODO: move this to board extension

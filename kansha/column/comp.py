@@ -25,8 +25,8 @@ class Column(events.EventHandlerMixIn):
     """Column component
     """
 
-    def __init__(self, id_, board, card_extensions, action_log, search_engine_service,
-                 services_service, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, card_filter,
+                 search_engine_service, services_service, data=None):
         """Initialization
 
         In:
@@ -38,6 +38,7 @@ class Column(events.EventHandlerMixIn):
         self.board = board
         self._services = services_service
         self.action_log = action_log
+        self.card_filter = card_filter
         self.search_engine = search_engine_service
         self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
@@ -56,7 +57,9 @@ class Column(events.EventHandlerMixIn):
                     self._services(
                         comp.Card, c.id,
                         self.card_extensions,
-                        self.action_log, data=c))
+                        self.action_log,
+                        self.card_filter,
+                        data=c))
                 for c in self.data.cards]
         return self._cards
 
@@ -73,7 +76,7 @@ class Column(events.EventHandlerMixIn):
     def index_cards(self, cards, update=False):
         for card in cards:
             card.add_to_index(self.search_engine, self.board.id, update=update)
-        self.search_engine.commit()
+        self.search_engine.commit(True)
 
     def actions(self, action, comp):
         if action == 'empty':
@@ -107,7 +110,7 @@ class Column(events.EventHandlerMixIn):
             # if card has been edited, reindex
             if security.has_permissions('edit', card_bo):
                 card_bo.add_to_index(self.search_engine, self.board.id, update=True)
-                self.search_engine.commit()
+                self.search_engine.commit(True)
                 self.emit_event(comp, events.SearchIndexUpdated)
             card_bo.refresh()
         elif event.is_(events.CardArchived):
@@ -227,7 +230,8 @@ class Column(events.EventHandlerMixIn):
             if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
             new_card = self.data.create_card(text, security.get_user().data)
-            card_obj = self._services(comp.Card, new_card.id, self.card_extensions, self.action_log)
+            card_obj = self._services(comp.Card, new_card.id, self.card_extensions, self.action_log,
+                                      self.card_filter)
             self.cards.append(component.Component(card_obj, 'new'))
             values = {'column_id': self.id,
                       'column': self.get_title(),

@@ -42,7 +42,8 @@ class Card(events.EventHandlerMixIn):
                            schema.Int('board_id'),
                            schema.Boolean('archived'))
 
-    def __init__(self, id_, card_extensions, action_log, services_service, data=None):
+    def __init__(self, id_, card_extensions, action_log, card_filter,
+                 services_service, data=None):
         """Initialization
 
         In:
@@ -53,6 +54,7 @@ class Card(events.EventHandlerMixIn):
         self.id = 'card_' + str(self.db_id)
         self.card_extensions = card_extensions
         self.action_log = action_log.for_card(self)
+        self.card_filter = card_filter
         self._services = services_service
         self._data = data
         self.extensions = ()
@@ -74,6 +76,7 @@ class Card(events.EventHandlerMixIn):
 
     @classmethod
     def update_schema(cls, card_extensions):
+        print 'update schema'
         for name, extension in card_extensions.iteritems():
             field = extension.get_schema_def()
             if field is not None:

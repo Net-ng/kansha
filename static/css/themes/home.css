@@ -44,7 +44,6 @@
 
 .home .boards ul.board-labels {
     padding-left: 0;
-    padding-bottom: 14px;
     margin-bottom: 17px;
     max-width: 800px;
 }
@@ -67,7 +66,6 @@
 
 .home .new-board {
     padding: 14px 10px;
-    border-bottom: 1px solid #c0c0c0;
 }
 
 .home .new-board select {

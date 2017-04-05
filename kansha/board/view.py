@@ -153,10 +153,19 @@ def render_Board_item(self, h, comp, *args):
             h << self.comp_members.render(h, 'members')
 
             if security.has_permissions('manage', self):
-                h << h.a(h.i(class_='ico-btn icon-box-add'), class_='archive', title=_(u'Archive this board')).action(self.archive, comp)
+                h << h.a(
+                    h.i(class_='ico-btn icon-box-add'),
+                    class_='archive',
+                    title=_(u'Archive "%s"') % self.data.title
+                ).action(self.archive, comp)
             elif security.has_permissions('leave', self):
                 onclick = 'return confirm("%s")' % _("You won't be able to access this board anymore. Are you sure you want to leave it anyway?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-exit'), class_='leave', title=_(u'Leave this board'), onclick=onclick).action(self.leave, comp)
+                h << h.SyncRenderer().a(
+                    h.i(class_='ico-btn icon-exit'),
+                    class_='leave',
+                    title=_(u'Leave "%s"') % self.data.title,
+                    onclick=onclick
+                ).action(self.leave, comp)
             else:
                 # place holder for alignment and for future feature 'request membership'
                 h << h.a(h.i(class_='ico-btn icon-user-check'), style='visibility:hidden')
@@ -165,7 +174,7 @@ def render_Board_item(self, h, comp, *args):
 
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
-    with h.li:
+    with h.li(class_='archived-item'):
         h << h.span(
             h.i(' ', class_=VISIBILITY_ICONS[self.data.visibility]),
             self.data.title,
@@ -174,8 +183,17 @@ def render_Board_archived_item(self, h, comp, *args):
         if security.has_permissions('manage', self):
             with h.div(class_='actions'):
                 onclick = 'return confirm("%s")' % _("This board will be destroyed. Are you sure?")
-                h << h.SyncRenderer().a(h.i(class_='ico-btn icon-bin'), class_='delete', title=_(u'Delete this board'), onclick=onclick).action(self.delete_clicked, comp)
-                h << h.a(h.i(class_='ico-btn icon-box-remove'), class_='restore', title=_(u'Restore this board')).action(self.restore, comp)
+                h << h.SyncRenderer().a(
+                    h.i(class_='ico-btn icon-bin'),
+                    class_='delete',
+                    title=_(u'Delete "%s"') % self.data.title,
+                    onclick=onclick
+                ).action(self.delete_clicked, comp)
+                h << h.a(
+                    h.i(class_='ico-btn icon-box-remove'),
+                    class_='restore',
+                    title=_(u'Restore "%s"' % self.data.title)
+                ).action(self.restore, comp)
     return h.root
 
 
@@ -780,11 +798,11 @@ def render_userboards(self, h, comp, *args):
                   for b in self.archived_boards]
 
         with h.form:
-            h << h.button(
-                _('Delete'),
+            h << h.SyncRenderer().button(
+                _('Delete the archived board') if len(self.archived_boards) == 1 else _('Delete the archived boards'),
                 class_='delete',
                 onclick='return confirm(%s)' % ajax.py2js(
-                    _('These boards will be destroyed. Are you sure?')
+                    _('Deleted boards cannot be restored. Are you sure?')
                 ).decode('UTF-8'),
                 type='submit'
             ).action(self.purge_archived_boards)

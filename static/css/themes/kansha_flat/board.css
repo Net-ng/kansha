@@ -411,6 +411,11 @@ a.card-label:hover {
     position: absolute;
     top: -10px;
     visibility: hidden;
+    text-shadow: 1px 1px 0 white,
+                 0 1px 0 white,
+                 1px 0 0 white,
+                 1px -1px 0 white,
+                 -1px 1px 0 white;
 }
 
 #card-gallery .asset:hover .delete,

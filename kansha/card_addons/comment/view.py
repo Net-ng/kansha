@@ -27,8 +27,19 @@ def render_comment(self, h, comp, model, *args):
                 format_datetime(self.creation_date),
                 class_="date")
             if security.has_permissions('delete_comment', self):
-                h << h.a(_('Delete'),
-                         class_="comment-delete").action(lambda: comp.answer(comp))
+                onclick = (
+                    u"if (confirm(%(message)s)){%(action)s;}return false" %
+                    {
+                        'action': h.a.action(
+                            comp.answer, comp
+                        ).get('onclick'),
+                        'message': ajax.py2js(
+                            _(u'Your comment will be deleted. Are you sure?')
+                        ).decode('UTF-8')
+                    }
+                )
+                h << h.a(h.i(class_='icon-cross'), title=_('Delete'),
+                         class_="comment-delete", onclick=onclick, href='')
             h << self.comment_label.render(h.AsyncRenderer())
     return h.root
 

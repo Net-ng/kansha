@@ -200,6 +200,7 @@ textarea.expanded {
     height: -webkit-calc(100% - 21px);
     height: calc(100% - 21px);
     margin-left: 10px;
+    overflow: hidden;
     position: relative;
     vertical-align: top;
     white-space: normal;

@@ -252,6 +252,7 @@ i.icon {
 .menu-title .avatar {
     height: 30px;
     width: 30px;
+    margin-right: 5px;
     vertical-align: middle;
 }
 

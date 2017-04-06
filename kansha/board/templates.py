@@ -43,7 +43,7 @@ def render_SaveTemplateEditor(self, h, comp, *args):
         with h.div:
             id_ = h.generate_id()
             h << h.label(_(u'Title'), for_=id_)
-            h << h.input(type='text', value=self.title()).error(self.title.error).action(self.title)
+            h << h.input(type='text', value=self.title(), autofocus=True).error(self.title.error).action(self.title)
         with h.div:
             id_ = h.generate_id()
             h << h.label(_(u'Description'), for_=id_)

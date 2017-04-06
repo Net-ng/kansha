@@ -333,22 +333,6 @@ def render_Board_columns(self, h, comp, *args):
     return h.root
 
 
-@presentation.render_for(Board, 'save_template')
-def render_Board_save_template(self, h, comp, *args):
-    shared = var.Var('me')
-    with h.form(class_='description-form'):
-        h << h.label(_(u'Save this board as a template'))
-        with h.select.action(shared):
-            h << h.option(_(u'For me only'), value='me').selected(shared)
-            h << h.option(_(u'For all users'), value='shared').selected(shared)
-        with h.div(class_='buttons'):
-            action = remote.Action(lambda: self.save_as_template(shared() == 'shared'))
-            h << h.button(_(u'Save'), class_='btn btn-primary', type='submit').action(action)
-            h << ' '
-            h << h.button(_('Cancel'), class_='btn', onclick='YAHOO.kansha.app.hideOverlay();')
-    return h.root
-
-
 @presentation.render_for(BoardDescription)
 def render_BoardDescription(self, h, comp, *args):
     """Render description component in edit mode"""
@@ -356,7 +340,7 @@ def render_BoardDescription(self, h, comp, *args):
     with h.form(class_='description-form'):
         txt_id, btn_id = h.generate_id(), h.generate_id()
         h << h.label(_(u'Description'), for_=txt_id)
-        h << h.textarea(self.description(), id_=txt_id).action(self.description)
+        h << h.textarea(self.description(), id_=txt_id, autofocus=True).action(self.description)
         with h.div(class_='buttons'):
             h << h.button(_('Save'), class_='btn btn-primary', id=btn_id).action(self.commit, comp)
             h << ' '

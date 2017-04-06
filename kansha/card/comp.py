@@ -76,7 +76,6 @@ class Card(events.EventHandlerMixIn):
 
     @classmethod
     def update_schema(cls, card_extensions):
-        print 'update schema'
         for name, extension in card_extensions.iteritems():
             field = extension.get_schema_def()
             if field is not None:

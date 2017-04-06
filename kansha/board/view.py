@@ -192,7 +192,7 @@ def render_Board_archived_item(self, h, comp, *args):
                 h << h.a(
                     h.i(class_='ico-btn icon-box-remove'),
                     class_='restore',
-                    title=_(u'Restore "%s"' % self.data.title)
+                    title=_(u'Restore "%s"') % self.data.title
                 ).action(self.restore, comp)
     return h.root
 

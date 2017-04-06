@@ -160,7 +160,7 @@ def render_ChecklistItem(self, h, comp, model):
     with h.a().action(self.set_done):
         help_msg = _(u'Click to toggle')
         if model == 'not-alone':
-            help_msg = "{} {}".format(help_msg, _(u"or drag to reorder"))
+            help_msg = u"{} {}".format(help_msg, _(u"or drag to reorder"))
         h << {'title': help_msg}
         with h.i:
             check_class = 'icon-checkbox-' + ('checked' if self.done else 'unchecked')

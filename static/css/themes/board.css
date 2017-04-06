@@ -876,6 +876,7 @@ div.history th {
 
 /* Checklists */
 .checklists .checklist {
+    background: white;
     margin: 15px 0;
     padding: 10px;
 }
@@ -907,6 +908,10 @@ div.history th {
     top: 1px;
 }
 
+.checklists .ui-sortable-helper {
+    box-shadow: 0px 0px 4px #c0c0c0;
+}
+
 .not-alone {
     cursor: move;
 }
@@ -936,6 +941,7 @@ div.history th {
 }
 
 .checklists .checklist li {
+    background-color: white;
     line-height: 20px;
     margin-left: 10px;
     list-style-position: inside;

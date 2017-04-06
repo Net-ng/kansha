@@ -123,12 +123,16 @@ def render_Checklist(self, h, comp, model):
             if self.items:
                 h << comp.render(h, 'progress')
             with h.ul:
+                not_alone = len(self.items) > 1
                 for index, item in enumerate(self.items):
                     if model == 'read-only':
                         h << h.li(item.render(h, 'read-only'))
                     else:
-                        h << h.li(item.on_answer(lambda v, index=index: self.delete_index(index)),
-                                  id='checklist_item_%s' % item().id)
+                        h << h.li(
+                            item.on_answer(
+                                lambda v, index=index: self.delete_index(index)
+                            ).render(h, model='not-alone' if not_alone else None),
+                            id='checklist_item_%s' % item().id)
             if model != 'read-only':
                 h << self.new_item
     return h.root
@@ -151,8 +155,17 @@ def render_ChecklistItem(self, h, comp, model):
 
 
 @presentation.render_for(ChecklistItem)
+@presentation.render_for(ChecklistItem, 'not-alone')
 def render_ChecklistItem(self, h, comp, model):
-    h << h.a(h.i(class_='icon-checkbox-' + ('checked' if self.done else 'unchecked'))).action(self.set_done)
+    with h.a().action(self.set_done):
+        help_msg = _(u'Click to toggle')
+        if model == 'not-alone':
+            help_msg = "{} {}".format(help_msg, _(u"or drag to reorder"))
+        h << {'title': help_msg}
+        with h.i:
+            check_class = 'icon-checkbox-' + ('checked' if self.done else 'unchecked')
+            drag_class = ' not-alone' if model == 'not-alone' else ''
+            h << {'class': check_class + drag_class}
     h << h.span(self.title.render(h.AsyncRenderer()), class_='title ' + ('done' if self.done else ''))
     onclick = (
         u"if (confirm(%(message)s)){%(action)s;}return false" %

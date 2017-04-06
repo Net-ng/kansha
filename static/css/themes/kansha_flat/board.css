@@ -163,7 +163,7 @@
 /* DnD drop targets */
 .card-marker,
 .list-marker,
-.checklists .ui-state-highlight {
+.checklists .ui-state-highlight, .checklists .checklist .ui-state-highlight {
     border-radius: 3px;
     border: 1px solid #c8c8c8;
     background-color: #dfdcdc;

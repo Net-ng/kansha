@@ -28,7 +28,7 @@ def render(self, h, comp, *args):
         if self.text:
             h << h.parse_htmlstring(self.text, fragment=True)
         elif security.has_permissions('edit', self.card):
-            h << h.textarea(placeholder=_("Add description."))
+            h << h.textarea(placeholder=_("Add description. Auto-linking is supported."))
 
     h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
     h << h.script('if (typeof editor != "undefined") { editor.destroy(); editor = undefined; }')
@@ -67,7 +67,9 @@ def render_edit(self, h, comp, *args):
                                      type='text', class_='text')
                     h << h.a(_('Link'), data_wysihtml_dialog_action='save', class_='btn btn-primary')
                     h << h.a(_('Cancel'), data_wysihtml_dialog_action='cancel', class_='btn')
-            h << h.textarea(text(), id_=txt_id, class_='description-editor description-content').action(text)
+            h << h.textarea(
+                text(), id_=txt_id,
+                class_='description-editor description-content').action(text)
 
             with h.div(class_='buttons'):
                 h << h.button(_('Save'), class_='btn btn-primary').action(lambda: change_text(self, comp, text()))

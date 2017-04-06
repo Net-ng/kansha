@@ -1020,7 +1020,7 @@ wysihtml.commands.mergeTableCells = {
         }.bind(this),
         iframeInitiator = (function() {
           hideHandlers.call(this);
-          this.actions.removeListeners(this.sandbox.getIframe(), ['focus', 'mouseup', 'mouseover'], iframeInitiator);
+          actions.removeListeners(this.sandbox.getIframe(), ['focus', 'mouseup', 'mouseover'], iframeInitiator);
         }).bind(this);
 
     if (
@@ -1029,14 +1029,14 @@ wysihtml.commands.mergeTableCells = {
       wysihtml.browser.supportsCommand(this.doc, 'enableInlineTableEditing')
     ) {
       if (this.sandbox.getIframe) {
-        this.actions.addListeners(this.sandbox.getIframe(), ['focus', 'mouseup', 'mouseover'], iframeInitiator);
+        actions.addListeners(this.sandbox.getIframe(), ['focus', 'mouseup', 'mouseover'], iframeInitiator);
       } else {
         this.win.addEventListener('load', hideHandlers);
       }
     }
     this.tableSelection = wysihtml.quirks.tableCellsSelection(this.element, this.parent);
   };
-
+  
   // Cell selections handling
   var tableCellsSelection = function(editable, editor) {
 

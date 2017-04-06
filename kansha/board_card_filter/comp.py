@@ -8,6 +8,7 @@
 # this distribution.
 # --
 
+# TODO: make it a board extension
 
 class BoardCardFilter(object):
 

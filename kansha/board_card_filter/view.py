@@ -54,8 +54,7 @@ def render_num_matches(self, h, comp, *args):
         render=lambda renderer: comp.render(renderer, 'search_results')
     )).get('onchange').replace('this', 'elt')
     oninput = 'debounce(this, function(elt) { %s; }, 500)' % search_cb
-    with h.div(id_='show_results'):
-        h << comp.render(h, 'num_matches')
+    h << h.div(id_='show_results')
     if self.card_matches:
         if None in self.card_matches:
             klass = 'nomatches'
@@ -72,5 +71,6 @@ def render_num_matches(self, h, comp, *args):
                      style='display:none' if self.last_search else '')
             h << h.a(h.i(class_='icon-cancel-circle'), href='#', class_='search_close',
                      style='' if self.last_search else 'display: none')
+    h << comp.render(h, 'num_matches')
 
     return h.root

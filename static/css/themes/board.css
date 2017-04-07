@@ -206,6 +206,10 @@ textarea.expanded {
     white-space: normal;
 }
 
+.max-weight-highlight {
+    border-color: red;
+}
+
 .list > .nagare-generated {
     display: flex;
     flex-direction: column;

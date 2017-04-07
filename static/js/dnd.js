@@ -342,8 +342,9 @@
                 }
 
                 a.animate();
-
+                Dom.removeClass(Dom.getElementsByClassName('list'), 'max-weight-highlight');
             };
+
             drag.onDrag = function (e) {
                 // copy onDrag basic instruction, is it possible to call the super method ?
                 var c = Event.getXY(e);
@@ -378,11 +379,20 @@
                     if (cards.length < limit || limit === 0) {
                         DDM.refreshCache();
                         this.container = Dom.get(id);
+                    } else {
+                        Dom.addClass(list, 'max-weight-highlight');
                     }
                 } else {
                     this.container = Dom.getAncestorByClassName(id, 'list-body');
                 }
             };
+
+            drag.onDragOut = function(e, id) {
+                var destEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list');
+                Dom.removeClass(list, 'max-weight-highlight');
+            };
+
             drag.onDragOver = function (e, id) {
                 var destEl = Dom.get(id),
                     list = Dom.getAncestorByClassName(id, 'list'),

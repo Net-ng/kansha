@@ -247,6 +247,8 @@ class DataBoard(Entity):
     def reset_card_weights(self):
         self.weight_config.reset_card_weights()
 
+    def total_weight(self):
+        return self.weight_config.total_weight()
 
 # Populate
 DEFAULT_LABELS = (

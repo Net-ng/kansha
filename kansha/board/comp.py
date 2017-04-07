@@ -468,6 +468,9 @@ class Board(events.EventHandlerMixIn):
     def weights(self, weights):
         self.data.weights = weights
 
+    def total_weight(self):
+        return self.data.total_weight()
+
     ######################
 
     def delete_clicked(self, comp):

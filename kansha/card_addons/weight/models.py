@@ -8,6 +8,7 @@
 # this distribution.
 #--
 
+from sqlalchemy import func
 from elixir import ManyToOne
 from elixir import using_options
 from elixir import Field, Integer, Unicode
@@ -31,6 +32,10 @@ class DataBoardWeightConfig(Entity):
         q = session.query(DataCardWeight).join(DataCard).join(DataColumn)
         for cw in q.filter(DataColumn.board == self.board):
             cw.weight = 0
+
+    def total_weight(self):
+        q = session.query(func.sum(DataCardWeight.weight)).join(DataCard).join(DataColumn)
+        return q.filter(DataColumn.board == self.board).scalar()
 
 
 class DataCardWeight(Entity):

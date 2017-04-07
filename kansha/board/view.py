@@ -422,6 +422,17 @@ def render_boardweights_edit(self, h, comp, *args):
         h << h.p(_(u'Activate cards weights'))
         with h.form:
             with h.div(class_='btn-group'):
+                action = h.a.action(self.activate_weighting, WEIGHTING_OFF).get('onclick')
+                if self.board.total_weight() > 0:
+                    action = (
+                        "if (confirm(%(message)s)){%(action)s;}return false" %
+                        {
+                            'action': action,
+                            'message': ajax.py2js(
+                                _(u'All affected weights will be reset. Are you sure?')
+                            ).decode('UTF-8')
+                        }
+                    )
                 h << h.a(
                     _('Disabled'),
                     class_='btn %s' % (
@@ -429,17 +440,7 @@ def render_boardweights_edit(self, h, comp, *args):
                         if self.board.weighting_cards == WEIGHTING_OFF
                         else ''
                     ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                self.activate_weighting, WEIGHTING_OFF
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reset. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    )
+                    onclick=action
                 )
 
                 h << h.button(
@@ -450,11 +451,22 @@ def render_boardweights_edit(self, h, comp, *args):
                         else ''
                     ),
                     onclick=h.a.action(
-                        lambda: self.activate_weighting(WEIGHTING_FREE)
+                        self.activate_weighting, WEIGHTING_FREE
                     ).get('onclick'),
                     title=_('Card weights can be any integer')
                 )
 
+                action = h.a.action(self.activate_weighting, WEIGHTING_LIST).get('onclick')
+                if self.board.total_weight() > 0:
+                    action = (
+                        "if (confirm(%(message)s)){%(action)s;}return false" %
+                        {
+                            'action': action,
+                            'message': ajax.py2js(
+                                _(u'All affected weights will be reset. Are you sure?')
+                            ).decode('UTF-8')
+                        }
+                    )
                 h << h.button(
                     _('Integer sequence'),
                     class_='btn %s' % (
@@ -462,17 +474,7 @@ def render_boardweights_edit(self, h, comp, *args):
                         if self.board.weighting_cards == WEIGHTING_LIST
                         else ''
                     ),
-                    onclick=(
-                        "if (confirm(%(message)s)){%(action)s;}return false" %
-                        {
-                            'action': h.a.action(
-                                lambda: self.activate_weighting(WEIGHTING_LIST)
-                            ).get('onclick'),
-                            'message': ajax.py2js(
-                                _(u'All affected weights will be reset. Are you sure?')
-                            ).decode('UTF-8')
-                        }
-                    ),
+                    onclick=action,
                     title=_('Choosen within a sequence of integers')
                 )
 

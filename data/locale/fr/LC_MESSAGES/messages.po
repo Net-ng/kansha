@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kansha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-04-06 15:27+0200\n"
-"PO-Revision-Date: 2017-04-06 13:55+0000\n"
+"POT-Creation-Date: 2017-04-10 11:18+0200\n"
+"PO-Revision-Date: 2017-04-10 09:25+0000\n"
 "Last-Translator: Net-ng <jean.luc.carre@net-ng.com>\n"
 "Language-Team: French (http://www.transifex.com/net-ng/kansha/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -369,13 +369,13 @@ msgid "Old Password"
 msgstr "Ancien mot de passe"
 
 #: kansha/authentication/database/forms.py:498 kansha/board/templates.py:62
-#: kansha/board/view.py:347 kansha/board/view.py:719 kansha/card/view.py:194
+#: kansha/board/view.py:347 kansha/board/view.py:721 kansha/card/view.py:194
 #: kansha/card_addons/comment/view.py:75
 #: kansha/card_addons/comment/view.py:105
 #: kansha/card_addons/description/view.py:69
 #: kansha/card_addons/description/view.py:77
 #: kansha/card_addons/gallery/view.py:192 kansha/card_addons/label/view.py:62
-#: kansha/column/view.py:193 kansha/title/view.py:44
+#: kansha/column/view.py:187 kansha/title/view.py:44
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -622,7 +622,7 @@ msgstr "Entiers positifs uniquement"
 msgid "Sequence saved"
 msgstr "Liste enregistrée"
 
-#: kansha/board/boardsmanager.py:58 kansha/board/view.py:556
+#: kansha/board/boardsmanager.py:58 kansha/board/view.py:558
 msgid "Archive"
 msgstr "Archive"
 
@@ -631,7 +631,7 @@ msgstr "Archive"
 msgid "%s more..."
 msgstr "%s de plus"
 
-#: kansha/board/comp.py:132 kansha/column/view.py:161
+#: kansha/board/comp.py:132 kansha/column/view.py:154
 msgid "Add list"
 msgstr "Ajouter une liste"
 
@@ -663,7 +663,7 @@ msgstr "Quitter ce tableau"
 msgid "Action log"
 msgstr "Historique"
 
-#: kansha/board/comp.py:653 kansha/board/comp.py:670
+#: kansha/board/comp.py:656 kansha/board/comp.py:673
 msgid "Can't remove last manager"
 msgstr "Impossible de supprimer le dernier administrateur"
 
@@ -675,7 +675,7 @@ msgstr "Colonne"
 msgid "Title"
 msgstr "Titre"
 
-#: kansha/board/excel_export.py:79 kansha/column/comp.py:146
+#: kansha/board/excel_export.py:79 kansha/column/comp.py:142
 msgid "Archived cards"
 msgstr "Cartes archivées"
 
@@ -701,7 +701,7 @@ msgid "All users"
 msgstr "Tous les utilisateurs"
 
 #: kansha/board/templates.py:60 kansha/board/view.py:345
-#: kansha/board/view.py:491 kansha/board/view.py:716
+#: kansha/board/view.py:493 kansha/board/view.py:718
 #: kansha/card_addons/comment/view.py:72
 #: kansha/card_addons/comment/view.py:102
 #: kansha/card_addons/description/view.py:75
@@ -817,203 +817,203 @@ msgstr "Pondération des cartes"
 msgid "Activate cards weights"
 msgstr "Activer la pondération des cartes"
 
-#: kansha/board/view.py:426 kansha/board/view.py:527 kansha/board/view.py:544
-msgid "Disabled"
-msgstr "Désactivé"
-
-#: kansha/board/view.py:439 kansha/board/view.py:472
+#: kansha/board/view.py:432 kansha/board/view.py:466
 msgid "All affected weights will be reset. Are you sure?"
 msgstr "Tous les poids existant vont être perdus. Êtes-vous sûr(e) ?"
 
-#: kansha/board/view.py:446
+#: kansha/board/view.py:437 kansha/board/view.py:529 kansha/board/view.py:546
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: kansha/board/view.py:447
 msgid "Free integer"
 msgstr "Entier libre"
 
-#: kansha/board/view.py:455
+#: kansha/board/view.py:456
 msgid "Card weights can be any integer"
 msgstr "Une pondération peut être n'importe quel entier"
 
-#: kansha/board/view.py:459
+#: kansha/board/view.py:471
 msgid "Integer sequence"
 msgstr "Liste d'entiers"
 
-#: kansha/board/view.py:476
+#: kansha/board/view.py:478
 msgid "Choosen within a sequence of integers"
 msgstr "Les pondérations peuvent être choisies parmis une liste prédéfinie d'entiers"
 
-#: kansha/board/view.py:480
+#: kansha/board/view.py:482
 msgid "Enter a sequence of integers"
 msgstr "Saisissez une liste d'entiers"
 
-#: kansha/board/view.py:507
+#: kansha/board/view.py:509
 msgid "Content Visibility"
 msgstr "Visibilité du contenu"
 
-#: kansha/board/view.py:508
+#: kansha/board/view.py:510
 msgid ""
 "Choose whether the board is private, public (anyone with the URL can view it"
 " ) or shared (public + visible on homepages)."
 msgstr "Choisissez si le tableau est privé, public (quiconque connaît l'URL peut y accéder) ou partagé (public + visible sur les pages d'accueil)"
 
-#: kansha/board/view.py:512
+#: kansha/board/view.py:514
 msgid "Private"
 msgstr "Privé"
 
-#: kansha/board/view.py:515 kansha/board/view.py:535 kansha/board/view.py:552
+#: kansha/board/view.py:517 kansha/board/view.py:537 kansha/board/view.py:554
 msgid "Public"
 msgstr "Public"
 
-#: kansha/board/view.py:518
+#: kansha/board/view.py:520
 msgid "Shared"
 msgstr "Partagé"
 
-#: kansha/board/view.py:522 kansha/card_addons/comment/comp.py:206
+#: kansha/board/view.py:524 kansha/card_addons/comment/comp.py:206
 msgid "Comments"
 msgstr "Commentaires"
 
-#: kansha/board/view.py:523
+#: kansha/board/view.py:525
 msgid ""
 "Commenting allows members to make short messages on cards. You can enable or"
 " disable this feature."
 msgstr "Permet aux utilisateur de laisser des messages sur les cartes. Vous pouvez activer ou non cette fonctionnalité."
 
-#: kansha/board/view.py:530 kansha/board/view.py:547
+#: kansha/board/view.py:532 kansha/board/view.py:549
 msgid "Members"
 msgstr "Membres"
 
-#: kansha/board/view.py:539
+#: kansha/board/view.py:541
 msgid "Votes"
 msgstr "Votes"
 
-#: kansha/board/view.py:540
+#: kansha/board/view.py:542
 msgid "Allow votes"
 msgstr "Autoriser les votes"
 
-#: kansha/board/view.py:557
+#: kansha/board/view.py:559
 msgid "View archive column"
 msgstr "Afficher/Masquer la colonne de cartes archivées"
 
-#: kansha/board/view.py:562
+#: kansha/board/view.py:564
 msgid "Show"
 msgstr "Afficher"
 
-#: kansha/board/view.py:564
+#: kansha/board/view.py:566
 msgid "Hide"
 msgstr "Masquer"
 
-#: kansha/board/view.py:567
+#: kansha/board/view.py:569
 msgid "Notifications"
 msgstr "Notifications"
 
-#: kansha/board/view.py:568
+#: kansha/board/view.py:570
 msgid "You will be notified by email of changes made in this board to cards"
 msgstr "Vous serez notifié par email des changements apportés à ce tableau sur ces cartes"
 
-#: kansha/board/view.py:572 kansha/toolbox/calendar_widget.py:182
+#: kansha/board/view.py:574 kansha/toolbox/calendar_widget.py:182
 msgid "None"
 msgstr "Aucune"
 
-#: kansha/board/view.py:574
+#: kansha/board/view.py:576
 msgid "Affected to me"
 msgstr "Me sont affectées"
 
-#: kansha/board/view.py:576
+#: kansha/board/view.py:578
 msgid "All"
 msgstr "Toutes"
 
-#: kansha/board/view.py:606 kansha/board/view.py:615
+#: kansha/board/view.py:608 kansha/board/view.py:617
 msgid "Background image"
 msgstr "Image de fond"
 
-#: kansha/board/view.py:622
+#: kansha/board/view.py:624
 msgid "Choose an image"
 msgstr "Choisir une image"
 
-#: kansha/board/view.py:641 kansha/card_addons/gallery/view.py:110
+#: kansha/board/view.py:643 kansha/card_addons/gallery/view.py:110
 msgid "Max file size exceeded"
 msgstr "Taille de fichier maximale dépassée"
 
-#: kansha/board/view.py:649 kansha/board/view.py:672
+#: kansha/board/view.py:651 kansha/board/view.py:674
 msgid "or"
 msgstr "ou"
 
-#: kansha/board/view.py:650
+#: kansha/board/view.py:652
 msgid "Reset background"
 msgstr "Réinitialiser le fond"
 
-#: kansha/board/view.py:661
+#: kansha/board/view.py:663
 msgid "Image position"
 msgstr "Position de l'image"
 
-#: kansha/board/view.py:668
+#: kansha/board/view.py:670
 msgid "Board title color"
 msgstr "Couleur du titre"
 
-#: kansha/board/view.py:673
+#: kansha/board/view.py:675
 msgid "Reset to default color"
 msgstr "Réinitialiser la couleur"
 
-#: kansha/board/view.py:686
+#: kansha/board/view.py:688
 msgid "No background selected"
 msgstr "Aucune image de fond"
 
-#: kansha/board/view.py:697 kansha/card_addons/label/view.py:46
+#: kansha/board/view.py:699 kansha/card_addons/label/view.py:46
 msgid "Change color"
 msgstr "Changer la couleur"
 
-#: kansha/board/view.py:735
+#: kansha/board/view.py:737
 msgid "Empty board"
 msgstr "Tableau vide"
 
-#: kansha/board/view.py:736
+#: kansha/board/view.py:738
 msgid "Basic Kanban"
 msgstr "Kanban de base"
 
-#: kansha/board/view.py:741
+#: kansha/board/view.py:743
 msgid "Create"
 msgstr "Créer"
 
-#: kansha/board/view.py:742
+#: kansha/board/view.py:744
 msgid "a new"
 msgstr "un nouveau"
 
-#: kansha/board/view.py:746
+#: kansha/board/view.py:748
 msgid "Shared templates"
 msgstr "Modèles partagés"
 
-#: kansha/board/view.py:750
+#: kansha/board/view.py:752
 msgid "My templates"
 msgstr "Mes modèles"
 
-#: kansha/board/view.py:759
+#: kansha/board/view.py:761
 msgid "Last modified boards"
 msgstr "Tableaux récemment modifiés"
 
-#: kansha/board/view.py:763
+#: kansha/board/view.py:765
 msgid "My boards"
 msgstr "Mes tableaux"
 
-#: kansha/board/view.py:768
+#: kansha/board/view.py:770
 msgid "Guest boards"
 msgstr "Tableaux dont je suis membre"
 
-#: kansha/board/view.py:773
+#: kansha/board/view.py:775
 msgid "Shared boards"
 msgstr "Tableaux partagés"
 
-#: kansha/board/view.py:778
+#: kansha/board/view.py:780
 msgid "Archived boards"
 msgstr "Tableaux archivés"
 
-#: kansha/board/view.py:786
+#: kansha/board/view.py:788
 msgid "Delete the archived board"
 msgstr "Détruire le tableau archivé"
 
-#: kansha/board/view.py:786
+#: kansha/board/view.py:788
 msgid "Delete the archived boards"
 msgstr "Détruire les tableaux archivés"
 
-#: kansha/board/view.py:789
+#: kansha/board/view.py:791
 msgid "Deleted boards cannot be restored. Are you sure?"
 msgstr "Les tableaux détruits ne pourront pas être rétablis. Êtes-vous sûre(s) ?"
 
@@ -1046,7 +1046,7 @@ msgid "Add a card"
 msgstr "Ajouter une carte"
 
 #: kansha/card/view.py:192 kansha/card_addons/checklist/view.py:33
-#: kansha/column/view.py:191 kansha/user/view.py:189
+#: kansha/column/view.py:185 kansha/user/view.py:189
 msgid "Add"
 msgstr "Ajouter"
 
@@ -1236,62 +1236,66 @@ msgstr "L'utilisateur %(author)s a pondéré la carte \"%(card)s\" à (%(to)s) �
 msgid "Weight"
 msgstr "Pondération"
 
-#: kansha/column/comp.py:231
+#: kansha/column/comp.py:227
 msgid "Limit of cards reached fo this list"
 msgstr "Nombre limite de cartes atteint pour cette liste"
 
-#: kansha/column/comp.py:293
+#: kansha/column/comp.py:289
 msgid "Can't be empty"
 msgstr "Ne peut être vide"
 
-#: kansha/column/comp.py:356
+#: kansha/column/comp.py:353
 #, python-format
 msgid "Must be bigger than %s"
 msgstr "Doit être supérieur à %s"
 
-#: kansha/column/view.py:63
+#: kansha/column/view.py:57
 msgid "The list will be deleted. Are you sure?"
 msgstr "La liste sera détruite. Êtes-vous sûr(e) ?"
 
-#: kansha/column/view.py:70
+#: kansha/column/view.py:64
 msgid "Delete this list"
 msgstr "Effacer cette liste"
 
-#: kansha/column/view.py:79
+#: kansha/column/view.py:73
 msgid "All the cards will be archived. Are you sure?"
 msgstr "Toutes les cartes seront archivées. Êtes-vous sûr(e) ?"
 
-#: kansha/column/view.py:86
+#: kansha/column/view.py:80
 msgid "Empty this list"
 msgstr "Vider cette liste"
 
-#: kansha/column/view.py:88
-msgid "Set card limit"
-msgstr "Nombre max. de cartes"
-
-#: kansha/column/view.py:93
+#: kansha/column/view.py:86
 msgid "All cards will be deleted. Are you sure?"
 msgstr "Toutes les cartes seront détruites. Êtes-vous sûr(e) ?"
 
-#: kansha/column/view.py:99
+#: kansha/column/view.py:92
 msgid "Purge the cards"
 msgstr "Purger les cartes archivées"
 
-#: kansha/column/view.py:165
+#: kansha/column/view.py:158
 msgid "Name"
 msgstr "Nom"
 
-#: kansha/column/view.py:167
+#: kansha/column/view.py:160
 msgid "List title"
 msgstr "Titre de la liste"
 
-#: kansha/column/view.py:172
+#: kansha/column/view.py:165
 msgid "Position"
 msgstr "Position"
 
-#: kansha/column/view.py:179
+#: kansha/column/view.py:173
 msgid "Number max of cards"
 msgstr "Nombre max. de cartes"
+
+#: kansha/column/view.py:217
+msgid "Set card limit"
+msgstr "Nombre max. de cartes"
+
+#: kansha/column/view.py:225
+msgid "This list already holds its maximum amount of cards"
+msgstr "Cette liste a déjà atteint sa capacité maximale autorisée."
 
 #: kansha/services/actionlog/messages.py:28
 #, python-format

@@ -27,13 +27,7 @@ def render(self, h, comp, *args):
     with h.div(class_=column_class, id=self.id, ):
         h << comp.render(h.AsyncRenderer(), 'header')
         h << comp.render(h.AsyncRenderer(), 'body')
-    h << h.script(
-        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
-        {
-            'list_id': ajax.py2js(self.id),
-            'limit': ajax.py2js(self.nb_max_cards or 0)
-        }
-    )
+    h << self.card_counter.render(h, 'footer')
     return h.root
 
 
@@ -84,8 +78,7 @@ def render_column_dropdown(self, h, comp, *args):
                             }
                         )
                         h << h.a(_(u'Empty this list'), onclick=onclick)
-                with h.li:
-                    h << h.a(_(u'Set card limit')).action(self.actions, 'set_limit', comp)
+                h << self.card_counter.render(h, 'menu-entry')
             elif self.cards:
                 with h.li:
                     onclick = "if (confirm(%(message)s)){window.location='%(purge_func)s';}" % {
@@ -107,7 +100,7 @@ def render_column_header(self, h, comp, *args):
         with h.div(class_='list-title', id=self.id + '_title'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
-        h << self.card_counter.on_answer(lambda action: self.actions(action, comp))
+        h << self.card_counter.render(h, 'header')
         with h.div(class_='list-actions with-dropdown'):
             if security.has_permissions('edit', self):
                 h << h.a(h.i(class_='icon-dot-menu'),
@@ -143,6 +136,7 @@ def render_column_body(self, h, comp, *args):
     with h.div(class_='list-body', id=id_):
         h << [card.on_answer(self.handle_event, comp).render(h, model=model) for card in self.cards]
         h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
+        h << self.card_counter.render(h, 'body')
     kw = {}
     if not security.has_permissions('edit', self):
         kw['style'] = 'width: 0px'
@@ -151,7 +145,6 @@ def render_column_body(self, h, comp, *args):
             if security.has_permissions('edit', self):
                 h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
 
-    h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.id))
     return h.root
 
 
@@ -174,6 +167,7 @@ def render_NewColumnEditor(self, h, comp, *args):
                 for i in xrange(1, self.columns_count + 2):
                     h << h.option(i, value=i - 1).selected(i)
 
+        # FIXME
         with h.div:
             id_ = h.generate_id()
             h << h.label(_('Number max of cards'), id_=id_)
@@ -199,10 +193,44 @@ def render_CardsCounter(self, h, comp, *args):
     with h.div(class_='list-counter'):
         self.error = None
         with h.div(class_='cardCounter hidden', id=self.id):
-            h << h.a(self.text).action(comp.answer, 'set_limit')
+            h << h.a(self.text).action(comp.call, self, 'edit')
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
         "YAHOO.kansha.app.countCards(%(list_id)s);" %
+        {
+            'list_id': ajax.py2js(self.column.id),
+            'limit': ajax.py2js(self.column.nb_max_cards or 0)
+        }
+    )
+    return h.root
+
+
+@presentation.render_for(CardsCounter, 'header')
+def render_CardsCounter_header(self, h, comp, model):
+    h << self.editable_counter
+    return h.root
+
+
+@presentation.render_for(CardsCounter, 'menu-entry')
+def render_CardsCounter_menu(self, h, comp, model):
+    with h.li:
+        h << h.a(_(u'Set card limit')).action(self.editable_counter.call, self, 'edit')
+    return h.root
+
+
+@presentation.render_for(CardsCounter, 'body')
+def render_CardsCounter_body(self, h, comp, model):
+    with h.div(class_='no-drop'):
+        h << h.i(class_='icon-blocked huge') << h.br
+        h << _(u"This list already holds its maximum amount of cards")
+    h << h.script("YAHOO.kansha.app.countCards(%s)" % ajax.py2js(self.column.id))
+    return h.root
+
+
+@presentation.render_for(CardsCounter, 'footer')
+def render_CardsCounter_footer(self, h, comp, model):
+    h << h.script(
+        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
         {
             'list_id': ajax.py2js(self.column.id),
             'limit': ajax.py2js(self.column.nb_max_cards or 0)

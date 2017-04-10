@@ -83,10 +83,6 @@ class Column(events.EventHandlerMixIn):
             self.empty()
         elif action == 'delete':
             self.emit_event(comp, events.ColumnDeleted, comp)
-        elif action == 'set_limit':
-            self.card_counter.call(model='edit')
-        elif action == 'set_limit_done':
-            self.card_counter.call(model=0)
         elif action == 'purge':
             self.purge_cards()
         self.emit_event(comp, events.SearchIndexUpdated)
@@ -320,6 +316,7 @@ class CardsCounter(object):
         self.id = self.column.id + '_counter'
         self.text = self.get_label()
         self.error = None
+        self.editable_counter = component.Component(self)
 
     def get_label(self):
         if self.column.nb_max_cards:
@@ -351,6 +348,6 @@ class CardsCounter(object):
         count = self.column.count_cards
         if not nb or nb >= count:
             self.change_nb_cards(nb)
-            comp.answer('set_limit_done')
+            comp.answer()
         else:
             self.error = _('Must be bigger than %s') % count

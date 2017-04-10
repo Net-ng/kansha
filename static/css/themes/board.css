@@ -366,6 +366,7 @@ a.title:visited {
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    position: relative;
 }
 
 .list-body h4 {

@@ -18,6 +18,11 @@
     font-size: 20px;
 }
 
+.huge {
+    font-size: 100px;
+    line-height: 200px;
+}
+
 #calendar .fc-view-container {
     background: #eaeaea;
 }
@@ -58,10 +63,6 @@
     border-radius: 3px;
     border: 1px solid #d8d8d8;
     background:  rgba(229, 229, 229, 0.9);
-}
-
-.max-weight-highlight {
-    border-color: red;
 }
 
 .archive {
@@ -130,6 +131,7 @@
 .list .nav-list li a:hover {
     color: #333;
 }
+
 
 /* End lists */
 
@@ -282,8 +284,22 @@ i.ico-btn.icon-user-plus {
     background: #c22e2e;
 }
 
-.max-weight-highlight .limitReached {
-    border: solid 2px red;
+.no-drop {
+    background-color: #e8afaf;
+    border: solid 3px #c22e2e;
+    bottom: 0;
+    display: none;
+    font-size: 28px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    z-index: 50;
+}
+
+.max-weight-highlight .no-drop {
+    display: block;
 }
 
 .list-header .list-counter .nagare-error-message:before {

@@ -7,6 +7,9 @@
 // this distribution.
 //--
 
+
+// TODO: move all column counter related stuff to extension
+
 (function () {
     'use strict';
     var Y = YAHOO.util,
@@ -342,6 +345,7 @@
                 }
 
                 a.animate();
+
                 Dom.removeClass(Dom.getElementsByClassName('list'), 'max-weight-highlight');
             };
 

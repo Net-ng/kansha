@@ -46,7 +46,7 @@ def render_num_matches(self, h, comp, *args):
 @presentation.render_for(BoardCardFilter, 'search_input')
 def render_num_matches(self, h, comp, *args):
     h.head.javascript_url('js/debounce.js')
-    h.head.javascript_url('js/search.js')
+    h.head.javascript_url('js/search.js?v=2b')
 
     search_cb = h.input.action(ajax.Update(
         action=self.search,

@@ -69,8 +69,8 @@ def render(self, h, comp, *args):
 
 @presentation.render_for(BasicUserForm, model='edit')
 def render(self, h, comp, *args):
-    h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/%s/home.css' % self.theme)
+    h.head.css_url('css/themes/home.css?v=2b')
+    h.head.css_url('css/themes/%s/home.css?v=2b' % self.theme)
 
     with h.div:
         with h.form:
@@ -264,8 +264,8 @@ class UserForm(BasicUserForm):
 
 @presentation.render_for(UserForm, 'edit')
 def render(self, h, comp, *args):
-    h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/%s/home.css' % self.theme)
+    h.head.css_url('css/themes/home.css?v=2b')
+    h.head.css_url('css/themes/%s/home.css?v=2b' % self.theme)
 
     with h.div:
         with h.form:

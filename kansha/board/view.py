@@ -83,8 +83,8 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
-    h.head.css_url('css/themes/board.css?v=2a')
-    h.head.css_url('css/themes/%s/board.css?v=2a' % self.theme)
+    h.head.css_url('css/themes/board.css?v=2b')
+    h.head.css_url('css/themes/%s/board.css?v=2b' % self.theme)
 
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
@@ -730,8 +730,8 @@ def render_userboards(self, h, comp, *args):
     template = var.Var(u'')
     h.head << h.head.title(self.app_title)
 
-    h.head.css_url('css/themes/home.css')
-    h.head.css_url('css/themes/%s/home.css' % self.theme)
+    h.head.css_url('css/themes/home.css?v=2b')
+    h.head.css_url('css/themes/%s/home.css?v=2b' % self.theme)
 
     default_template_i18n = {
         'Empty board': _(u'Empty board'),

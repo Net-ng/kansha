@@ -49,6 +49,7 @@ textarea.expanded {
     top: 115px;
     bottom: 0;
     width: 100%;
+    overflow: hidden;
 }
 
 .bbody > div:first-child {
@@ -176,19 +177,19 @@ textarea.expanded {
 
 .span-auto {
     max-width: 440px;
-    width: calc(16.666% - 13px);
+    width: calc(16.666% - 14px);
 }
 
 .list-span-5 .span-auto {
-    width: calc(20% - 13px);
+    width: calc(20% - 14px);
 }
 
 .list-span-4 .span-auto {
-    width: calc(25% - 13px);
+    width: calc(25% - 14px);
 }
 
 .list-span-3 .span-auto {
-    width: calc(33.333% - 13px);
+    width: calc(33.333% - 14px);
 }
 
 
@@ -1139,15 +1140,15 @@ div.history th {
 
 @media all and (max-width: 1600px) {
     .span-auto {
-        width: calc(20% - 13px);
+        width: calc(20% - 14px);
     }
 
 }
 
 @media all and (max-width: 1360px) {
     .span-auto {
-        width: calc(25% - 13px);
-        min-width: calc(25% - 13px);
+        width: calc(25% - 14px);
+        min-width: calc(25% - 14px);
     }
 
     .list-header {
@@ -1175,8 +1176,8 @@ div.history th {
 
 @media all and (max-width: 1060px) {
     .span-auto {
-        width: calc(33.333% - 13px);
-        min-width: calc(33.333% - 13px);
+        width: calc(33.333% - 14px);
+        min-width: calc(33.333% - 14px);
     }
 
 }
@@ -1189,8 +1190,8 @@ div.history th {
     }
 
     .span-auto {
-        width: calc(50% - 13px);
-        min-width: calc(50% - 13px);
+        width: calc(50% - 14px);
+        min-width: calc(50% - 14px);
     }
 
     .card-actions {

@@ -431,10 +431,10 @@ i.icon {
     position: static
 }
 
-.overlay.board-labels-overlay {
+/*.overlay.board-labels-overlay {
     padding: 0 12px 4px 12px
 }
-
+*/
 .overlay.board-labels-overlay .avatar {
     overflow: hidden;
     white-space: nowrap;

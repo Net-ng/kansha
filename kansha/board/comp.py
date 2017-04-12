@@ -237,9 +237,12 @@ class Board(events.EventHandlerMixIn):
         self.columns = columns
 
     def increase_version(self):
-        refresh = False
         self.version += 1
         self.data.increase_version()
+        return self.refresh_on_version_mismatch()
+
+    def refresh_on_version_mismatch(self):
+        refresh = False
         if self.data.version - self.version != 0:
             self.refresh()  # when does that happen?
             self.version = self.data.version

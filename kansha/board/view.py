@@ -83,6 +83,7 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
+    self.refresh_on_version_mismatch()
     h.head.css_url('css/themes/board.css?v=2b')
     h.head.css_url('css/themes/%s/board.css?v=2b' % self.theme)
 

@@ -42,7 +42,7 @@ BACKGROUND_POSITIONS = [
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
     with h.div(class_='nav-menu', onclick='YAHOO.kansha.app.toggleMainMenu(this)'):
-        with h.ul(class_='actions'):
+        with h.ul(class_='actions large'):
             h << h.li(h.a(self.icons['preferences']).action(self.show_preferences))
             if security.has_permissions('edit', self):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))

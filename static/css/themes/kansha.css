@@ -578,11 +578,10 @@ i.icon {
 /* End errors */
 
 @media (max-width:1240px){
-    .nav-menu .actions li a {
+    .nav-menu .large li a {
         display: inline-block;
         width: 28px;
         overflow: hidden;
-        padding: 0;
     }
     #kansha-nav-menu {
         left: 5px;

@@ -1253,6 +1253,10 @@ div.history th {
 
 @media all and (max-width: 640px) {
 
+    #search {
+        width: 12em;
+    }
+
     .span-auto {
         width: 99%;
         min-width: 99%;

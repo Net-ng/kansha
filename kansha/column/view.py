@@ -27,7 +27,7 @@ def render(self, h, comp, *args):
     with h.div(class_=column_class, id=self.id, ):
         h << comp.render(h.AsyncRenderer(), 'header')
         h << comp.render(h.AsyncRenderer(), 'body')
-    h << self.card_counter.render(h, 'footer')
+        h << self.card_counter.render(h, 'footer')
     return h.root
 
 

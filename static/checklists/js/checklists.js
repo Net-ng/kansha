@@ -3,7 +3,6 @@ $(function () {
         nbChecklists = $checklists.find('.checklist').length;
     $checklists.sortable({
         placeholder: "ui-state-highlight",
-        axis: "y",
         handle: ".icon-list",
         cursor: "move",
         start: function (e, ui) {

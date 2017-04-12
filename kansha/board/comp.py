@@ -357,7 +357,7 @@ class Board(events.EventHandlerMixIn):
         card_comp = None
         try:
             card_comp = orig.remove_card_by_id(data['card'])
-            dest.insert_card_comp(dest_comp, data['index'], card_comp)
+            accepted = dest.insert_card_comp(dest_comp, data['index'], card_comp)
         except AttributeError:
             # one of the columns does not exist anymore
             # stop processing, let the refresh do the rest
@@ -365,17 +365,20 @@ class Board(events.EventHandlerMixIn):
             if card_comp:
                 orig.append_card(card_comp())
             return
-        card = card_comp()
-        values = {'from': orig.get_title(),
-                  'to': dest.get_title(),
-                  'card': card.get_title()}
-        self.action_log.for_card(card).add_history(
-            security.get_user(),
-            u'card_move', values)
-        # reindex it in case it has been moved to the archive column
-        card.add_to_index(self.search_engine, self.id, update=True)
-        self.search_engine.commit()
-        session.flush()
+        if accepted:
+            card = card_comp()
+            values = {'from': orig.get_title(),
+                      'to': dest.get_title(),
+                      'card': card.get_title()}
+            self.action_log.for_card(card).add_history(
+                security.get_user(),
+                u'card_move', values)
+            # reindex it in case it has been moved to the archive column
+            card.add_to_index(self.search_engine, self.id, update=True)
+            self.search_engine.commit()
+            session.flush()
+        else:
+            orig.append_card(card_comp())
 
     @security.permissions('edit')
     def update_column_position(self, data):

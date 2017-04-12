@@ -175,13 +175,22 @@ class Column(events.EventHandlerMixIn):
         return card_comp
 
     def insert_card(self, index, card):
-        if self.data.insert_card(index, card.data):
+        inserted = False
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card.data):
             self.cards.insert(index, component.Component(card))
+            inserted = True
+        return inserted
 
     def insert_card_comp(self, comp, index, card_comp):
-        if self.data.insert_card(index, card_comp().data):
+        inserted = False
+        card = card_comp()
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card_comp().data):
             self.cards.insert(index, card_comp)
             card_comp.on_answer(self.handle_event, comp)
+            inserted = True
+        return inserted
 
     def delete_card(self, card):
         """Delete card
@@ -213,7 +222,8 @@ class Column(events.EventHandlerMixIn):
         self.data.purge_cards()
 
     def append_card(self, card):
-        if self.data.append_card(card.data):
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.append_card(card.data):
             self.cards.append(component.Component(card))
 
     def create_card(self, text=''):
@@ -309,6 +319,7 @@ class NewColumnEditor(object):
         comp.answer(None)
 
 
+# TODO: move data from column to CardsCounter model and make it a column extension
 class CardsCounter(object):
 
     def __init__(self, column):
@@ -317,6 +328,13 @@ class CardsCounter(object):
         self.text = self.get_label()
         self.error = None
         self.editable_counter = component.Component(self)
+
+    # Public methods
+
+    def check_add(self, card):
+        return not self.column.nb_max_cards or self.column.count_cards < self.column.nb_max_cards
+
+    # Private methods
 
     def get_label(self):
         if self.column.nb_max_cards:

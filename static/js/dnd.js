@@ -392,9 +392,11 @@
             };
 
             drag.onDragOut = function(e, id) {
-                var destEl = Dom.get(id),
+                var srcEl = Dom.get(id),
                     list = Dom.getAncestorByClassName(id, 'list');
-                Dom.removeClass(list, 'max-weight-highlight');
+                if (Dom.hasClass(srcEl, 'list-body')) {
+                    Dom.removeClass(list, 'max-weight-highlight');
+                }
             };
 
             drag.onDragOver = function (e, id) {

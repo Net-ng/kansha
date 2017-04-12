@@ -136,7 +136,7 @@ def render_column_body(self, h, comp, *args):
     with h.div(class_='list-body', id=id_):
         h << [card.on_answer(self.handle_event, comp).render(h, model=model) for card in self.cards]
         h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
-        h << self.card_counter.render(h, 'body')
+        # h << self.card_counter.render(h, 'body')
     kw = {}
     if not security.has_permissions('edit', self):
         kw['style'] = 'width: 0px'

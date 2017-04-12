@@ -284,22 +284,8 @@ i.ico-btn.icon-user-plus {
     background: #c22e2e;
 }
 
-.no-drop {
-    background-color: #e8afaf;
-    border: solid 3px #c22e2e;
-    bottom: 0;
-    display: none;
-    font-size: 28px;
-    left: 0;
-    position: absolute;
-    right: 0;
-    text-align: center;
-    top: 0;
-    z-index: 50;
-}
-
-.max-weight-highlight .no-drop {
-    display: block;
+.max-weight-highlight .limitReached {
+    background-color: #e6a323;
 }
 
 .list-header .list-counter .nagare-error-message:before {

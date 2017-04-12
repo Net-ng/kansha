@@ -427,7 +427,7 @@ a.title:visited {
 
 /* Card drag n drop */
 .card-marker {
-    margin: 2px;
+    margin: 8px 4px;
 }
 
 .card-label {

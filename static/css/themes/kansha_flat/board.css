@@ -359,10 +359,6 @@ i.ico-btn.icon-user-plus {
 
 /* Labels */
 
-.card-label {
-    border-radius: 3px 3px 3px 3px;
-}
-
 .card-label > span {
     color: white;
 }
@@ -371,14 +367,18 @@ a.card-label:hover {
     text-decoration: none;
 }
 
-.inline-labels .card-label {
+.card-label {
     border-radius: 14px;
     border: 2px solid white;
     box-shadow: 3px 1px 1px #D6D6D6;
 }
 
-.inline-labels .inactive:before {
-    border-radius: 14px;
+.editable-labels .card-label {
+    border-radius: 17px;
+}
+
+.editable-labels .inactive:before {
+    border-radius: 17px;
 }
 
 .label-color-picker .yui-picker-controls .bd {

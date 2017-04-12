@@ -84,6 +84,7 @@ def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
     self.refresh_on_version_mismatch()
+    self.card_filter.reload_search()
     h.head.css_url('css/themes/board.css?v=2b')
     h.head.css_url('css/themes/%s/board.css?v=2b' % self.theme)
 

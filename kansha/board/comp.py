@@ -433,7 +433,7 @@ class Board(events.EventHandlerMixIn):
     @show_archive.setter
     def show_archive(self, value):
         self.data.show_archive = value
-        self.card_filter.exclude_archive(not value)
+        self.card_filter.exclude_archived(not value)
 
     def archive_cards(self, cards, from_column):
         """Archive card

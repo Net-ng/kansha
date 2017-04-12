@@ -78,7 +78,7 @@ def render_CardLabels_header(self, h, comp, *args):
 @presentation.render_for(CardLabels, model='list-edit')
 def render_CardLabels_list(self, h, comp, model):
     """Show labels inline for card edit view"""
-    with h.span(class_='inline-labels'):
+    with h.div(class_='editable-labels'):
         for label in self.get_available_labels():
             label_model = 'color' if label in self.labels else 'inactive'
             if model == 'list-edit':

@@ -15,7 +15,7 @@ from kansha import title
 from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
-from kansha.card import comp
+from kansha.card import Card, NewCard
 
 from .models import DataColumn
 
@@ -47,7 +47,7 @@ class Column(events.EventHandlerMixIn):
         self.card_counter = component.Component(CardsCounter(self))
         self._cards = None
         self.new_card = component.Component(
-            comp.NewCard(self))
+            NewCard(self))
 
     @property
     def cards(self):
@@ -55,7 +55,7 @@ class Column(events.EventHandlerMixIn):
             self._cards = [
                 component.Component(
                     self._services(
-                        comp.Card, c.id,
+                        Card, c.id,
                         self.card_extensions,
                         self.action_log,
                         self.card_filter,
@@ -236,7 +236,7 @@ class Column(events.EventHandlerMixIn):
             if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
             new_card = self.data.create_card(text, security.get_user().data)
-            card_obj = self._services(comp.Card, new_card.id, self.card_extensions, self.action_log,
+            card_obj = self._services(Card, new_card.id, self.card_extensions, self.action_log,
                                       self.card_filter)
             self.cards.append(component.Component(card_obj, 'new'))
             values = {'column_id': self.id,

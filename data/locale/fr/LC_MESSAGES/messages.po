@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kansha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-04-13 18:24+0200\n"
-"PO-Revision-Date: 2017-04-13 16:29+0000\n"
+"POT-Creation-Date: 2017-04-13 18:59+0200\n"
+"PO-Revision-Date: 2017-04-13 17:00+0000\n"
 "Last-Translator: Net-ng <jean.luc.carre@net-ng.com>\n"
 "Language-Team: French (http://www.transifex.com/net-ng/kansha/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -125,7 +125,7 @@ msgstr "Champ requis"
 msgid "Invalid email address"
 msgstr "Adresse email invalide"
 
-#: kansha/validator.py:150 kansha/user/user_profile.py:172
+#: kansha/validator.py:150 kansha/user/user_profile.py:173
 #, python-format
 msgid "Password too short: should have at least %d characters"
 msgstr "Le mot de passe est trop court : au moins %d caractères sont démandés"
@@ -217,7 +217,7 @@ msgstr "Pas encore de compte ? "
 msgid "Sign up"
 msgstr "S'enregistrer"
 
-#: kansha/authentication/database/forms.py:172 kansha/user/user_profile.py:156
+#: kansha/authentication/database/forms.py:172 kansha/user/user_profile.py:157
 #, python-format
 msgid "Username %s is not available. Please choose another one."
 msgstr "L'identifiant %s n'est pas disponible. Merci d'en utiliser un autre."
@@ -236,7 +236,7 @@ msgid "Entered too late"
 msgstr "Temp expiré, trop tard !"
 
 #: kansha/authentication/database/forms.py:199
-#: kansha/authentication/database/forms.py:427 kansha/user/user_profile.py:199
+#: kansha/authentication/database/forms.py:427 kansha/user/user_profile.py:200
 msgid "The two passwords don't match"
 msgstr "Les mots de passe ne sont pas identiques"
 
@@ -246,8 +246,8 @@ msgid "Unable to process. Check your input below."
 msgstr "Traitement impossible. Verifiez votre saisie ci-dessous."
 
 #: kansha/authentication/database/forms.py:231
-#: kansha/authentication/database/forms.py:563 kansha/user/user_profile.py:79
-#: kansha/user/user_profile.py:274
+#: kansha/authentication/database/forms.py:563 kansha/user/user_profile.py:80
+#: kansha/user/user_profile.py:275
 msgid "Username"
 msgstr "Identifiant"
 
@@ -267,8 +267,8 @@ msgstr "Mot de passe (Répéter)"
 msgid "Email address"
 msgstr "Adresse email"
 
-#: kansha/authentication/database/forms.py:237 kansha/user/user_profile.py:82
-#: kansha/user/user_profile.py:277
+#: kansha/authentication/database/forms.py:237 kansha/user/user_profile.py:83
+#: kansha/user/user_profile.py:278
 msgid "Fullname"
 msgstr "Nom complet"
 
@@ -364,7 +364,7 @@ msgstr "Saisie invalide !"
 msgid "Change password"
 msgstr "Changer de mot de passe"
 
-#: kansha/authentication/database/forms.py:478 kansha/user/user_profile.py:304
+#: kansha/authentication/database/forms.py:478 kansha/user/user_profile.py:305
 msgid "Old Password"
 msgstr "Ancien mot de passe"
 
@@ -707,7 +707,7 @@ msgstr "Tous les utilisateurs"
 #: kansha/card_addons/description/view.py:75
 #: kansha/card_addons/label/view.py:59 kansha/card_addons/weight/view.py:45
 #: kansha/card_addons/weight/view.py:53 kansha/title/view.py:42
-#: kansha/user/user_profile.py:102 kansha/user/user_profile.py:321
+#: kansha/user/user_profile.py:103 kansha/user/user_profile.py:322
 msgid "Save"
 msgstr "Sauver"
 
@@ -1113,8 +1113,8 @@ msgid "User %(author)s has commented card \"%(card)s\""
 msgstr "%(author)s a commenté la carte \"%(card)s\""
 
 #: kansha/card_addons/comment/view.py:24
-msgid " wrote "
-msgstr " a écrit "
+msgid "wrote"
+msgstr "a écrit"
 
 #: kansha/card_addons/comment/view.py:26
 msgid "on"
@@ -1171,7 +1171,7 @@ msgstr "Echéance"
 msgid "User %(author)s has added file \"%(file)s\" to card \"%(card)s\""
 msgstr "%(author)s a ajouté le fichier \"%(file)s\" à la carte \"%(card)s\""
 
-#: kansha/card_addons/gallery/comp.py:125 kansha/user/user_profile.py:245
+#: kansha/card_addons/gallery/comp.py:125 kansha/user/user_profile.py:246
 #, python-format
 msgid "File must be less than %d KB"
 msgstr "La taille doit être inférieure à %d Ko."
@@ -1365,39 +1365,43 @@ msgstr "anglais"
 msgid "french"
 msgstr "français"
 
-#: kansha/user/user_profile.py:85 kansha/user/user_profile.py:280
+#: kansha/user/user_profile.py:25
+msgid "turkish"
+msgstr "turc"
+
+#: kansha/user/user_profile.py:86 kansha/user/user_profile.py:281
 msgid "Email"
 msgstr "Email"
 
-#: kansha/user/user_profile.py:88 kansha/user/user_profile.py:285
+#: kansha/user/user_profile.py:89 kansha/user/user_profile.py:286
 msgid "Language"
 msgstr "Langue"
 
-#: kansha/user/user_profile.py:97 kansha/user/user_profile.py:294
+#: kansha/user/user_profile.py:98 kansha/user/user_profile.py:295
 msgid "Picture"
 msgstr "Image"
 
-#: kansha/user/user_profile.py:186
+#: kansha/user/user_profile.py:187
 msgid "This password doesn't match the old one."
 msgstr "Ce mot de passe ne correspond pas à l'ancien"
 
-#: kansha/user/user_profile.py:222
+#: kansha/user/user_profile.py:223
 msgid "A confirmation email has been sent."
 msgstr "Un email de confirmation a été envoyé"
 
-#: kansha/user/user_profile.py:231
+#: kansha/user/user_profile.py:232
 msgid "The password has been changed"
 msgstr "Le mot de passe a été changé"
 
-#: kansha/user/user_profile.py:249
+#: kansha/user/user_profile.py:250
 msgid "Invalid image file"
 msgstr "Fichier image invalide"
 
-#: kansha/user/user_profile.py:313
+#: kansha/user/user_profile.py:314
 msgid "New password"
 msgstr "Nouveau mot de passe"
 
-#: kansha/user/user_profile.py:316
+#: kansha/user/user_profile.py:317
 msgid "Repeat new password"
 msgstr "Répéter nouveau mot de passe"
 

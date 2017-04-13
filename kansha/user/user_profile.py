@@ -21,7 +21,8 @@ from .usermanager import UserManager
 
 
 LANGUAGES = {'en': _L('english'),
-             'fr': _L('french')}
+             'fr': _L('french'),
+             'tr': _L('turkish')}
 
 
 class BasicUserForm(editor.Editor):

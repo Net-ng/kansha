@@ -28,7 +28,7 @@ $(function () {
         cursor: "move",
         connectWith: ".checklists .checklist .content ul",
         dropOnEmpty: true,
-        handle: "i",
+        handle: ".not-alone",
         start: function (e, ui) {
             ui.placeholder.height(ui.item.height());
         },

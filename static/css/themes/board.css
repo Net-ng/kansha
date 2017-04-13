@@ -856,14 +856,15 @@ div.history th {
     line-height: 3em;
 }
 
-.checklist .delete, .checklist .delete-item {
+.checklist .delete, .delete-item, .checklist-item .not-alone {
     display: none;
     float: right;
     margin-right: 5px;
+    vertical-align: middle;
 }
 
 .checklist:hover .delete,
-.checklist li:hover .delete-item {
+li:hover .delete-item, li:hover .not-alone {
     display: inline-block
 }
 
@@ -884,7 +885,7 @@ div.history th {
 .checklist .title > .nagare-generated {
     display: inline-block;
     vertical-align: middle;
-    width: 400px;
+    width: 360px;
 }
 
 .checklists .checklist .btn {
@@ -921,7 +922,7 @@ div.history th {
 }
 
 .checklists .checklist .title input {
-    width: 222px
+    width: 200px
 }
 
 .checklists .checklist li input {

@@ -132,7 +132,8 @@ def render_Checklist(self, h, comp, model):
                             item.on_answer(
                                 lambda v, index=index: self.delete_index(index)
                             ).render(h, model='not-alone' if not_alone else None),
-                            id='checklist_item_%s' % item().id)
+                            id='checklist_item_%s' % item().id,
+                            class_='checklist-item')
             if model != 'read-only':
                 h << self.new_item
     return h.root
@@ -159,13 +160,10 @@ def render_ChecklistItem(self, h, comp, model):
 def render_ChecklistItem(self, h, comp, model):
     with h.a().action(self.set_done):
         help_msg = _(u'Click to toggle')
-        if model == 'not-alone':
-            help_msg = u"{} {}".format(help_msg, _(u"or drag to reorder"))
         h << {'title': help_msg}
         with h.i:
             check_class = 'icon-checkbox-' + ('checked' if self.done else 'unchecked')
-            drag_class = ' not-alone' if model == 'not-alone' else ''
-            h << {'class': check_class + drag_class}
+            h << {'class': check_class}
     h << h.span(self.title.render(h.AsyncRenderer()), class_='title ' + ('done' if self.done else ''))
     onclick = (
         u"if (confirm(%(message)s)){%(action)s;}return false" %
@@ -179,4 +177,6 @@ def render_ChecklistItem(self, h, comp, model):
         }
     )
     h << h.a(h.i(class_='icon-cross'), class_='delete-item', onclick=onclick)
+    if model == 'not-alone':
+        h << h.i(class_='icon-menu2 not-alone', title=_(u'Drag to re-order'))
     return h.root

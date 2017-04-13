@@ -175,7 +175,6 @@ class BoardProfile(object):
 
     def set_archive(self, value):
         self.board.show_archive = value
-        self.board.reload_search()
 
 
 class BoardBackground(object):

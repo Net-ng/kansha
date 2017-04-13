@@ -186,9 +186,12 @@ def render_NewMember(self, h, comp, *args):
             return emails
 
         h << h.input(type='text', id=self.text_id,).action(members_to_add)
-        h << h.input(value=_("Add"), type="submit",
-                     class_="btn btn-primary"
-                     ).action(remote.Action(lambda: comp.answer(get_emails())))
+        mail_input = h.input(value=_("Add"), type="submit",
+                             class_="btn btn-primary"
+                            ).action(remote.Action(lambda: comp.answer(get_emails())))
+        # Sending mail synchronously can take a long time
+        mail_input.set('onclick', 'YAHOO.kansha.app.showWaiter();' + mail_input.get('onclick'))
+        h << mail_input
         h << self.autocomplete
     h << h.script(
         "document.getElementById(%s).focus()" % ajax.py2js(self.text_id)

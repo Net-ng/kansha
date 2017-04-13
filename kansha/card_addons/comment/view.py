@@ -21,7 +21,7 @@ def render_comment(self, h, comp, model, *args):
             h << self.author.render(h, model='avatar')
         with h.div(class_='right'):
             h << self.author.render(h, model='fullname')
-            h << _(' wrote ')
+            h << ' ' << _('wrote') << ' '
             h << h.span(
                 _(u'on'), ' ',
                 format_datetime(self.creation_date),

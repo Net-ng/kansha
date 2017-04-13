@@ -9,7 +9,7 @@
 #--
 
 from nagare.i18n import _
-from nagare import ajax, presentation, security, var
+from nagare import ajax, component, presentation, security, var
 
 from kansha.toolbox import popin
 
@@ -19,15 +19,21 @@ from .comp import CardsCounter, Column, NewColumnEditor
 @presentation.render_for(Column)
 def render(self, h, comp, *args):
     """Render the column"""
-    # Add answer on delete overlay component
 
     column_class = 'span-auto list'
     if self.is_archive:
         column_class += ' archive'
     with h.div(class_=column_class, id=self.id, ):
-        h << comp.render(h.AsyncRenderer(), 'header')
-        h << comp.render(h.AsyncRenderer(), 'body')
+        h << comp.render(h.AsyncRenderer(), 'content')
+    return h.root
+
+
+@presentation.render_for(Column, 'content')
+def render_content(self, h, comp, model):
+    h << comp.render(h.AsyncRenderer(), 'header')
+    h << comp.render(h, 'body')
     h << self.card_counter.render(h, 'footer')
+    h << component.Component(self.card_filter, 'footer')
     return h.root
 
 
@@ -96,8 +102,9 @@ def render_column_dropdown(self, h, comp, *args):
 
 @presentation.render_for(Column, model='header')
 def render_column_header(self, h, comp, *args):
-    with h.div(class_='list-header', id=self.id + '_header'):
-        with h.div(class_='list-title', id=self.id + '_title'):
+    with h.div(class_='list-header'):
+        h << h.a(class_='hidden', id=self.id + '_header').action(ajax.Update())
+        with h.div(class_='list-title'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')
         h << self.card_counter.render(h, 'header')
@@ -136,7 +143,7 @@ def render_column_body(self, h, comp, *args):
     with h.div(class_='list-body', id=id_):
         h << [card.on_answer(self.handle_event, comp).render(h, model=model) for card in self.cards]
         h << h.script("YAHOO.kansha.dnd.initTargetCard(%s)" % ajax.py2js(id_))
-        h << self.card_counter.render(h, 'body')
+        # h << self.card_counter.render(h, 'body')
     kw = {}
     if not security.has_permissions('edit', self):
         kw['style'] = 'width: 0px'
@@ -192,8 +199,12 @@ def render_NewColumnEditor(self, h, comp, *args):
 def render_CardsCounter(self, h, comp, *args):
     with h.div(class_='list-counter'):
         self.error = None
-        with h.div(class_='cardCounter hidden', id=self.id):
-            h << h.a(self.text).action(comp.call, self, 'edit')
+        visibility = ' hidden'
+        if self.column.nb_max_cards:
+            visibility = '' if self.check_add() else ' limitReached'
+        with h.div(class_='cardCounter' + visibility, id=self.id):
+            with h.a().action(comp.call, self, 'edit'):
+                h << self.column.count_cards << '/' << (self.column.nb_max_cards or 0)
     h << h.script(
         "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);"
         "YAHOO.kansha.app.countCards(%(list_id)s);" %
@@ -230,10 +241,9 @@ def render_CardsCounter_body(self, h, comp, model):
 @presentation.render_for(CardsCounter, 'footer')
 def render_CardsCounter_footer(self, h, comp, model):
     h << h.script(
-        "YAHOO.kansha.app.saveLimit(%(list_id)s, %(limit)s);" %
+        "YAHOO.kansha.app.countCards(%(list_id)s);" %
         {
             'list_id': ajax.py2js(self.column.id),
-            'limit': ajax.py2js(self.column.nb_max_cards or 0)
         }
     )
     return h.root

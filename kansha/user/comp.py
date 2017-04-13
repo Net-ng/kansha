@@ -72,10 +72,7 @@ class User(security_common.User):
         return self.data.source == 'application'
 
     def get_locale(self):
-        if self.data.language == 'fr':
-            locale = i18n.Locale('fr', 'FR')
-        else:
-            locale = i18n.Locale('en', 'US')
+        locale = i18n.Locale(self.data.language)
 
         # At this point, the locale object only knows about builtin Nagare translation directories
         # We need to register Kansha's translation directories too (get them from the current locale)

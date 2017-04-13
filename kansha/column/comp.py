@@ -15,7 +15,7 @@ from kansha import title
 from kansha import events
 from kansha import exceptions
 from kansha.toolbox import popin, overlay
-from kansha.card import comp
+from kansha.card import Card, NewCard
 
 from .models import DataColumn
 
@@ -47,7 +47,7 @@ class Column(events.EventHandlerMixIn):
         self.card_counter = component.Component(CardsCounter(self))
         self._cards = None
         self.new_card = component.Component(
-            comp.NewCard(self))
+            NewCard(self))
 
     @property
     def cards(self):
@@ -55,7 +55,7 @@ class Column(events.EventHandlerMixIn):
             self._cards = [
                 component.Component(
                     self._services(
-                        comp.Card, c.id,
+                        Card, c.id,
                         self.card_extensions,
                         self.action_log,
                         self.card_filter,
@@ -92,6 +92,7 @@ class Column(events.EventHandlerMixIn):
         if card:
             self.index_cards([card])
             self.emit_event(comp, events.SearchIndexUpdated)
+            self.card_filter.reset()
 
     def on_event(self, comp, event):
         if event.is_(events.CardClicked):
@@ -175,13 +176,22 @@ class Column(events.EventHandlerMixIn):
         return card_comp
 
     def insert_card(self, index, card):
-        if self.data.insert_card(index, card.data):
+        inserted = False
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card.data):
             self.cards.insert(index, component.Component(card))
+            inserted = True
+        return inserted
 
     def insert_card_comp(self, comp, index, card_comp):
-        if self.data.insert_card(index, card_comp().data):
+        inserted = False
+        card = card_comp()
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card_comp().data):
             self.cards.insert(index, card_comp)
             card_comp.on_answer(self.handle_event, comp)
+            inserted = True
+        return inserted
 
     def delete_card(self, card):
         """Delete card
@@ -213,7 +223,8 @@ class Column(events.EventHandlerMixIn):
         self.data.purge_cards()
 
     def append_card(self, card):
-        if self.data.append_card(card.data):
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.append_card(card.data):
             self.cards.append(component.Component(card))
 
     def create_card(self, text=''):
@@ -226,7 +237,7 @@ class Column(events.EventHandlerMixIn):
             if not self.can_add_cards:
                 raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
             new_card = self.data.create_card(text, security.get_user().data)
-            card_obj = self._services(comp.Card, new_card.id, self.card_extensions, self.action_log,
+            card_obj = self._services(Card, new_card.id, self.card_extensions, self.action_log,
                                       self.card_filter)
             self.cards.append(component.Component(card_obj, 'new'))
             values = {'column_id': self.id,
@@ -309,21 +320,22 @@ class NewColumnEditor(object):
         comp.answer(None)
 
 
+# TODO: move data from column to CardsCounter model and make it a column extension
 class CardsCounter(object):
 
     def __init__(self, column):
         self.column = column
         self.id = self.column.id + '_counter'
-        self.text = self.get_label()
+        self.text = str(self.column.nb_max_cards or 0)
         self.error = None
         self.editable_counter = component.Component(self)
 
-    def get_label(self):
-        if self.column.nb_max_cards:
-            label = str(self.column.count_cards) + '/' + str(self.column.nb_max_cards)
-        else:
-            label = str(self.column.count_cards)
-        return label
+    # Public methods
+
+    def check_add(self, card=None):
+        return not self.column.nb_max_cards or self.column.count_cards < self.column.nb_max_cards
+
+    # Private methods
 
     def change_nb_cards(self, text):
         """Change the title of our wrapped object

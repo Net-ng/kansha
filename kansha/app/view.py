@@ -166,6 +166,7 @@ def render_kansha(self, h, comp, *args):
                         with h.div(class_='home'), h.div(class_='grid-2'):
                             h << comp.render(h, 'home_menu')
                             with h.div(class_='boards'):
+                                # answer only happens when a new board is created
                                 h << self.content.on_answer(self.select_board).render(h.AsyncRenderer())
             with h.div(class_='credits'):
                 with h.div(class_='container'):

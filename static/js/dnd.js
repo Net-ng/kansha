@@ -332,12 +332,28 @@
                         clone.parentNode.removeChild(clone);
                     }
 
-                    var data = {dest: Dom.getAttribute(dest, 'id'),
-                                orig: Dom.getAttribute(self.origin, 'id'),
+                    var dest_id = Dom.getAttribute(dest, 'id'),
+                        orig_id = Dom.getAttribute(self.origin, 'id');
+                    var data = {dest: dest_id,
+                                orig: orig_id,
                                 card: cardId, index: index};
-                    YAHOO.kansha.app.countCards(dest);
-                    YAHOO.kansha.app.countCards(self.origin);
-                    _send_card_position(data);
+
+                    if (dest === self.origin) {
+                        _send_card_position(data);
+                    } else {
+                        var send_positions = function () {
+                            _send_card_position(data);
+                        };
+                        var refresh_dest = function() {
+                            var header_refresh_dest = Dom.get(dest_id + '_header');
+                            header_refresh_dest.click();
+                        };
+                        var refresh_orig = function() {
+                            var header_refresh_orig = Dom.get(orig_id + '_header');
+                            header_refresh_orig.click();
+                        };
+                        nagare_chained_calls([send_positions, refresh_dest, refresh_orig]);
+                    }
                 });
 
                 if (this.scrollInt) {
@@ -392,9 +408,11 @@
             };
 
             drag.onDragOut = function(e, id) {
-                var destEl = Dom.get(id),
+                var srcEl = Dom.get(id),
                     list = Dom.getAncestorByClassName(id, 'list');
-                Dom.removeClass(list, 'max-weight-highlight');
+                if (Dom.hasClass(srcEl, 'list-body')) {
+                    Dom.removeClass(list, 'max-weight-highlight');
+                }
             };
 
             drag.onDragOver = function (e, id) {

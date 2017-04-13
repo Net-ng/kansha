@@ -420,50 +420,9 @@ a.title:visited {
     padding: 5px 0 5px 0;
 }
 
-.card .inline-labels {
-    float: right;
-    margin: -14px 0 0
-}
-
 /* Card drag n drop */
 .card-marker {
-    margin: 2px;
-}
-
-.card-label {
-    display: inline-block;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 5px;
-    width: 150px;
-}
-
-.inactive {
-    position: relative;
-}
-
-.inactive:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #636363;
-    opacity: 1;
-}
-
-.inactive:hover:before{
-    opacity: 0.4;
-}
-
-.card-label > span {
-    text-overflow: ellipsis;
-}
-
-.card-label i {
-    float: right;
-    margin: 7px 2px 0 0;
+    margin: 8px 4px;
 }
 
 /* End card drag n drop */
@@ -824,7 +783,7 @@ a.title:visited {
     top: 7px;
 }
 
-#search input:focus, #search input.highlight {
+#search input:focus, #search.highlight input {
     border-color: rgba(230, 163, 35, 0.8);
     outline: 0;
     outline: thin dotted \9;
@@ -897,14 +856,15 @@ div.history th {
     line-height: 3em;
 }
 
-.checklist .delete, .checklist .delete-item {
+.checklist .delete, .delete-item, .checklist-item .not-alone {
     display: none;
     float: right;
     margin-right: 5px;
+    vertical-align: middle;
 }
 
 .checklist:hover .delete,
-.checklist li:hover .delete-item {
+li:hover .delete-item, li:hover .not-alone {
     display: inline-block
 }
 
@@ -925,7 +885,7 @@ div.history th {
 .checklist .title > .nagare-generated {
     display: inline-block;
     vertical-align: middle;
-    width: 400px;
+    width: 360px;
 }
 
 .checklists .checklist .btn {
@@ -962,7 +922,7 @@ div.history th {
 }
 
 .checklists .checklist .title input {
-    width: 222px
+    width: 200px
 }
 
 .checklists .checklist li input {
@@ -1048,6 +1008,7 @@ div.history th {
 /* End calendar */
 
 /* Weights */
+
 .weights-form {
     margin-top: 10px;
 }
@@ -1064,12 +1025,53 @@ div.history th {
 }
 /* End weights */
 
-/* Weights */
-.inline-labels .card-label {
-    width: 14px;
+/* Labels */
+
+.inline-labels {
+    float: right;
+    margin: -14px 0 0
+}
+
+.card-label {
+    display: inline-block;
     height: 14px;
-    padding: 0;
+    line-height: 30px;
     margin-right: 6px;
+    padding: 0;
+    width: 14px;
+}
+
+.card-label > span {
+    text-overflow: ellipsis;
+}
+
+.card-label i {
+    float: right;
+    margin: 7px 2px 0 0;
+}
+
+.editable-labels .card-label {
+    height: 17px;
+    width: 17px;
+}
+
+.inactive {
+    position: relative;
+}
+
+.inactive:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #b3b3b3;
+    opacity: 1;
+}
+
+.inactive:hover:before{
+    opacity: 0;
 }
 
 .label-color-picker {
@@ -1081,51 +1083,8 @@ div.history th {
 .label-color-picker .yui-picker-controls .bd input {
     padding: 0;
 }
-/* End weights */
+/* End labels */
 
-/* Popin */
-
-.yui-skin-sam .yui-panel-container {
-    cursor: pointer;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 0;
-    width: 100%;
-}
-
-.yui-skin-sam .yui-panel {
-    margin: 70px auto 30px auto;
-    max-width: 740px;
-    padding: 5px 20px 15px 50px;
-    cursor: initial;
-}
-
-.yui-skin-sam .yui-panel .panel-header {
-    width: 95%
-}
-
-.yui-skin-sam .yui-panel .panel-section {
-    margin: 10px 0 5px 0;
-}
-
-.panel-section .panel-section-title {
-    margin-bottom: 5px;
-}
-
-.panel-section.background div div:first-child,
-.panel-section.background div div:nth-child(2) {
-    display: inline-block;
-}
-
-.panel-section.background img {
-    max-height: 300px;
-}
-
-.panel-section.background:first-child div:last-child {
-    margin-top: 5px;
-}
-/* End popin */
 
 /* Nb items */
 .nbItems {
@@ -1252,6 +1211,10 @@ div.history th {
 }
 
 @media all and (max-width: 640px) {
+
+    #search {
+        width: 12em;
+    }
 
     .span-auto {
         width: 99%;

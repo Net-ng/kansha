@@ -71,6 +71,37 @@ h1, h2, h3, h4, h5, h6 {
     background: #000
 }
 
+/* Popin */
+.yui-skin-sam .mask {
+    opacity: 0.4;
+}
+
+.yui-skin-sam .yui-panel-container {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.yui-skin-sam .yui-panel {
+    border-radius: 5px;
+    background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
+}
+
+.yui-skin-sam .yui-panel .panel-section:first-child {
+    border: 0;
+}
+
+.yui-skin-sam .yui-panel .panel-section {
+    border-top: 1px solid #c0c0c0;
+}
+
+.panel-section .panel-section-title {
+    font-size: 160%;
+}
+/* End popin */
+
+
 /* Buttons */
 .btn-group .btn {
     border-left-width: 0;

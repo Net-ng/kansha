@@ -237,9 +237,12 @@ class Board(events.EventHandlerMixIn):
         self.columns = columns
 
     def increase_version(self):
-        refresh = False
         self.version += 1
         self.data.increase_version()
+        return self.refresh_on_version_mismatch()
+
+    def refresh_on_version_mismatch(self):
+        refresh = False
         if self.data.version - self.version != 0:
             self.refresh()  # when does that happen?
             self.version = self.data.version
@@ -354,7 +357,7 @@ class Board(events.EventHandlerMixIn):
         card_comp = None
         try:
             card_comp = orig.remove_card_by_id(data['card'])
-            dest.insert_card_comp(dest_comp, data['index'], card_comp)
+            accepted = dest.insert_card_comp(dest_comp, data['index'], card_comp)
         except AttributeError:
             # one of the columns does not exist anymore
             # stop processing, let the refresh do the rest
@@ -362,17 +365,20 @@ class Board(events.EventHandlerMixIn):
             if card_comp:
                 orig.append_card(card_comp())
             return
-        card = card_comp()
-        values = {'from': orig.get_title(),
-                  'to': dest.get_title(),
-                  'card': card.get_title()}
-        self.action_log.for_card(card).add_history(
-            security.get_user(),
-            u'card_move', values)
-        # reindex it in case it has been moved to the archive column
-        card.add_to_index(self.search_engine, self.id, update=True)
-        self.search_engine.commit()
-        session.flush()
+        if accepted:
+            card = card_comp()
+            values = {'from': orig.get_title(),
+                      'to': dest.get_title(),
+                      'card': card.get_title()}
+            self.action_log.for_card(card).add_history(
+                security.get_user(),
+                u'card_move', values)
+            # reindex it in case it has been moved to the archive column
+            card.add_to_index(self.search_engine, self.id, update=True)
+            self.search_engine.commit()
+            session.flush()
+        else:
+            orig.append_card(card_comp())
 
     @security.permissions('edit')
     def update_column_position(self, data):
@@ -427,7 +433,7 @@ class Board(events.EventHandlerMixIn):
     @show_archive.setter
     def show_archive(self, value):
         self.data.show_archive = value
-        self.card_filter.exclude_archive(not value)
+        self.card_filter.exclude_archived(not value)
 
     def archive_cards(self, cards, from_column):
         """Archive card

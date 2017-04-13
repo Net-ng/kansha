@@ -284,22 +284,8 @@ i.ico-btn.icon-user-plus {
     background: #c22e2e;
 }
 
-.no-drop {
-    background-color: #e8afaf;
-    border: solid 3px #c22e2e;
-    bottom: 0;
-    display: none;
-    font-size: 28px;
-    left: 0;
-    position: absolute;
-    right: 0;
-    text-align: center;
-    top: 0;
-    z-index: 50;
-}
-
-.max-weight-highlight .no-drop {
-    display: block;
+.max-weight-highlight .limitReached {
+    background-color: #e6a323;
 }
 
 .list-header .list-counter .nagare-error-message:before {
@@ -359,10 +345,6 @@ i.ico-btn.icon-user-plus {
 
 /* Labels */
 
-.card-label {
-    border-radius: 3px 3px 3px 3px;
-}
-
 .card-label > span {
     color: white;
 }
@@ -371,14 +353,18 @@ a.card-label:hover {
     text-decoration: none;
 }
 
-.inline-labels .card-label {
+.card-label {
     border-radius: 14px;
     border: 2px solid white;
     box-shadow: 3px 1px 1px #D6D6D6;
 }
 
-.inline-labels .inactive:before {
-    border-radius: 14px;
+.editable-labels .card-label {
+    border-radius: 17px;
+}
+
+.editable-labels .inactive:before {
+    border-radius: 17px;
 }
 
 .label-color-picker .yui-picker-controls .bd {
@@ -486,7 +472,7 @@ a.card-label:hover {
     border-radius: 5px;
 }
 
-#search:focus, #search.highlight {
+#search:focus, #search.highlight input {
     border-color: rgba(230, 163, 35, 0.8);
     outline: 0;
     outline: thin dotted \9;
@@ -594,36 +580,6 @@ div.history th {
     background-color: transparent;
 }
 /* End weights */
-
-/* Popin */
-.yui-skin-sam .mask {
-    opacity: 0.4;
-}
-
-.yui-skin-sam .yui-panel-container {
-    background: transparent;
-    border-radius: 5px;
-}
-
-.yui-skin-sam .yui-panel {
-    border-radius: 5px;
-    background: white;
-    border: 1px solid #808080;
-    box-shadow: 0 0 5px #333;
-}
-
-.yui-skin-sam .yui-panel .panel-section:first-child {
-    border: 0;
-}
-
-.yui-skin-sam .yui-panel .panel-section {
-    border-top: 1px solid #c0c0c0;
-}
-
-.panel-section .panel-section-title {
-    font-size: 160%;
-}
-/* End popin */
 
 /* Nb items */
 .nbItems .label {

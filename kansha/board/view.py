@@ -42,7 +42,7 @@ BACKGROUND_POSITIONS = [
 @presentation.render_for(Board, model="menu")
 def render_Board_menu(self, h, comp, *args):
     with h.div(class_='nav-menu', onclick='YAHOO.kansha.app.toggleMainMenu(this)'):
-        with h.ul(class_='actions'):
+        with h.ul(class_='actions large'):
             h << h.li(h.a(self.icons['preferences']).action(self.show_preferences))
             if security.has_permissions('edit', self):
                 h << h.li(h.a(self.icons['add_list']).action(self.add_list))
@@ -83,6 +83,8 @@ def render_Board_menu(self, h, comp, *args):
 def render_Board(self, h, comp, *args):
     """Main board renderer"""
     security.check_permissions('view', self)
+    self.refresh_on_version_mismatch()
+    self.card_filter.reload_search()
     h.head.css_url('css/themes/board.css?v=2b')
     h.head.css_url('css/themes/%s/board.css?v=2b' % self.theme)
 
@@ -169,6 +171,12 @@ def render_Board_item(self, h, comp, *args):
             else:
                 # place holder for alignment and for future feature 'request membership'
                 h << h.a(h.i(class_='ico-btn icon-user-check'), style='visibility:hidden')
+    return h.root
+
+
+@presentation.render_for(Board, 'redirect')
+def render_Board_redirect(self, h, comp, model):
+    h << h.script('window.location.href="%s"' % self.data.url)
     return h.root
 
 
@@ -319,17 +327,6 @@ def render_Board_columns(self, h, comp, *args):
                         continue
                     model = 0 if not security.has_permissions('edit', self) else column.model or 'dnd'
                     h << column.on_answer(self.handle_event, comp).render(h, model)
-
-            # update states
-            h << h.script("""
-                YAHOO.kansha.app.refreshCardsCounters();
-                (function() {
-                    var search_input =  $('#search>input');
-                    if (search_input.val()) {
-                        search_input.trigger('input');
-                    }
-                })();
-            """)
     return h.root
 
 

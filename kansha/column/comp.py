@@ -325,23 +325,16 @@ class CardsCounter(object):
     def __init__(self, column):
         self.column = column
         self.id = self.column.id + '_counter'
-        self.text = self.get_label()
+        self.text = str(self.column.nb_max_cards or 0)
         self.error = None
         self.editable_counter = component.Component(self)
 
     # Public methods
 
-    def check_add(self, card):
+    def check_add(self, card=None):
         return not self.column.nb_max_cards or self.column.count_cards < self.column.nb_max_cards
 
     # Private methods
-
-    def get_label(self):
-        if self.column.nb_max_cards:
-            label = str(self.column.count_cards) + '/' + str(self.column.nb_max_cards)
-        else:
-            label = str(self.column.count_cards)
-        return label
 
     def change_nb_cards(self, text):
         """Change the title of our wrapped object

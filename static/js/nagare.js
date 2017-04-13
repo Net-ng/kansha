@@ -8,6 +8,7 @@
 //--
 
 var nagare_ongoing_request = false;
+var nagare_chain = [];
 
 
 // Callbacks
@@ -27,7 +28,8 @@ nagare_callbacks = {
         nagare_ongoing_request = false;
         YAHOO.kansha.app.hideWaiter();
         if (o.responseText.substring(0, 1) !== "<") {
-            setTimeout(o.responseText, 0);
+            eval(o.responseText);
+            nagare_call_next();
         } else {
             nagare_ongoing_request = true;
             YAHOO.kansha.app.syncError(500, 'Must reload all');
@@ -51,6 +53,18 @@ nagare_callbacks = {
         }
     }
 };
+
+function nagare_chained_calls(func_array) {
+    nagare_chain = func_array;
+    nagare_call_next();
+}
+
+function nagare_call_next() {
+    if (nagare_chain.length > 0) {
+        var next = nagare_chain.shift();
+        next();
+    }
+}
 
 // Callers
 function nagare_getAndEval(href) {

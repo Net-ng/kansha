@@ -174,6 +174,12 @@ def render_Board_item(self, h, comp, *args):
     return h.root
 
 
+@presentation.render_for(Board, 'redirect')
+def render_Board_redirect(self, h, comp, model):
+    h << h.script('window.location.href="%s"' % self.data.url)
+    return h.root
+
+
 @presentation.render_for(Board, model="archived_item")
 def render_Board_archived_item(self, h, comp, *args):
     with h.li(class_='archived-item'):

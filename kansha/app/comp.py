@@ -117,7 +117,7 @@ class Kansha(object):
             user.set_last_board(board)
 
     def select_board(self, id_):
-        """Selected a board by id
+        """Redirect to a board by id
 
         In:
           - ``id_`` -- the id of the board
@@ -126,7 +126,7 @@ class Kansha(object):
             return
         board = self.boards_manager.get_by_id(id_)
         if board is not None and not board.archived:
-            self._select_board(board)
+            self.content.becomes(board, 'redirect')
             self.selected = 'board'
         else:
             raise exceptions.BoardNotFound()

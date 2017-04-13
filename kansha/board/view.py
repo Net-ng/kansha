@@ -85,8 +85,8 @@ def render_Board(self, h, comp, *args):
     security.check_permissions('view', self)
     self.refresh_on_version_mismatch()
     self.card_filter.reload_search()
-    h.head.css_url('css/themes/board.css?v=2b')
-    h.head.css_url('css/themes/%s/board.css?v=2b' % self.theme)
+    h.head.css_url('css/themes/board.css?v=2c')
+    h.head.css_url('css/themes/%s/board.css?v=2c' % self.theme)
 
     title = '%s - %s' % (self.get_title(), self.app_title)
     h.head << h.head.title(title)
@@ -727,8 +727,8 @@ def render_userboards(self, h, comp, *args):
     template = var.Var(u'')
     h.head << h.head.title(self.app_title)
 
-    h.head.css_url('css/themes/home.css?v=2b')
-    h.head.css_url('css/themes/%s/home.css?v=2b' % self.theme)
+    h.head.css_url('css/themes/home.css?v=2c')
+    h.head.css_url('css/themes/%s/home.css?v=2c' % self.theme)
 
     default_template_i18n = {
         'Empty board': _(u'Empty board'),

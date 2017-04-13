@@ -32,11 +32,11 @@ def render_Header(self, h, comp, *args):
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/themes/fonts.css?v=2b')
-    h.head.css_url('css/themes/kansha.css?v=2b')
-    h.head.css_url('css/themes/login.css?v=2b')
-    h.head.css_url('css/themes/%s/kansha.css?v=2b' % self.theme)
-    h.head.css_url('css/themes/%s/login.css?v=2b' % self.theme)
+    h.head.css_url('css/themes/fonts.css?v=2c')
+    h.head.css_url('css/themes/kansha.css?v=2c')
+    h.head.css_url('css/themes/login.css?v=2c')
+    h.head.css_url('css/themes/%s/kansha.css?v=2c' % self.theme)
+    h.head.css_url('css/themes/%s/login.css?v=2c' % self.theme)
 
     with h.div(class_='header'):
         with h.a(href=h.request.application_url):

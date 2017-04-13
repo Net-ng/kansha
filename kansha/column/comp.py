@@ -92,6 +92,7 @@ class Column(events.EventHandlerMixIn):
         if card:
             self.index_cards([card])
             self.emit_event(comp, events.SearchIndexUpdated)
+            self.card_filter.reset()
 
     def on_event(self, comp, event):
         if event.is_(events.CardClicked):

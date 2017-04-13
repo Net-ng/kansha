@@ -10,6 +10,7 @@
 
 # TODO: make it a board extension
 
+
 class BoardCardFilter(object):
 
     def __init__(self, card_schema, board_id, exclude_archived, search_engine_service):
@@ -19,6 +20,8 @@ class BoardCardFilter(object):
         self.search_engine = search_engine_service
         self.last_search = ''
         self.card_matches = set()
+        # changed by external API call?
+        self._changed = False
 
     def exclude_archived(self, flag):
         self._exclude_archived = flag
@@ -36,6 +39,11 @@ class BoardCardFilter(object):
                 self.card_matches.add(None)
         else:
             self.card_matches = set()
+
+    def reset(self):
+        self.last_search = ''
+        self.card_matches = set()
+        self._changed = True
 
     def __call__(self, card):
         """Return "highlight" if card matches, "hidden" if it doesn't or "" if

@@ -9,7 +9,7 @@
 #--
 
 from nagare.i18n import _
-from nagare import ajax, presentation, security, var
+from nagare import ajax, component, presentation, security, var
 
 from kansha.toolbox import popin
 
@@ -33,6 +33,7 @@ def render_content(self, h, comp, model):
     h << comp.render(h.AsyncRenderer(), 'header')
     h << comp.render(h, 'body')
     h << self.card_counter.render(h, 'footer')
+    h << component.Component(self.card_filter, 'footer')
     return h.root
 
 

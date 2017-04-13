@@ -18,6 +18,15 @@ from .comp import BoardCardFilter
 def render_search_results(self, h, comp, *args):
     h << h.script('YAHOO.kansha.app.highlight_cards(%s);' % ajax.py2js(list(self.card_matches), h))
     h << comp.render(h, 'num_matches')
+    self._changed = False
+    return h.root
+
+
+@presentation.render_for(BoardCardFilter, 'footer')
+def render_search_results(self, h, comp, *args):
+    if self._changed:
+        h << comp.render(h, 'search_results')
+        h << h.script('$("#search input").val("");')
     return h.root
 
 

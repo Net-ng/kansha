@@ -783,7 +783,7 @@ a.title:visited {
     top: 7px;
 }
 
-#search input:focus, #search input.highlight {
+#search input:focus, #search.highlight input {
     border-color: rgba(230, 163, 35, 0.8);
     outline: 0;
     outline: thin dotted \9;

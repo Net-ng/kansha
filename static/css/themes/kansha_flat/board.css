@@ -472,7 +472,7 @@ a.card-label:hover {
     border-radius: 5px;
 }
 
-#search:focus, #search.highlight {
+#search:focus, #search.highlight input {
     border-color: rgba(230, 163, 35, 0.8);
     outline: 0;
     outline: thin dotted \9;

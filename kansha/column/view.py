@@ -19,15 +19,20 @@ from .comp import CardsCounter, Column, NewColumnEditor
 @presentation.render_for(Column)
 def render(self, h, comp, *args):
     """Render the column"""
-    # Add answer on delete overlay component
 
     column_class = 'span-auto list'
     if self.is_archive:
         column_class += ' archive'
     with h.div(class_=column_class, id=self.id, ):
-        h << comp.render(h.AsyncRenderer(), 'header')
-        h << comp.render(h.AsyncRenderer(), 'body')
-        h << self.card_counter.render(h, 'footer')
+        h << comp.render(h.AsyncRenderer(), 'content')
+    return h.root
+
+
+@presentation.render_for(Column, 'content')
+def render_content(self, h, comp, model):
+    h << comp.render(h.AsyncRenderer(), 'header')
+    h << comp.render(h, 'body')
+    h << self.card_counter.render(h, 'footer')
     return h.root
 
 

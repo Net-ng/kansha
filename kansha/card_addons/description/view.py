@@ -28,7 +28,7 @@ def render(self, h, comp, *args):
         if self.text:
             h << h.parse_htmlstring(self.text, fragment=True)
         elif security.has_permissions('edit', self.card):
-            h << h.textarea(placeholder=_("Add description. Auto-linking is supported."))
+            h << h.textarea(placeholder=_("Add a description. URL in the text are automatically recognized as links."))
 
     h << h.script("YAHOO.kansha.app.urlify($('#' + %s))" % ajax.py2js(id_))
     h << h.script('if (typeof editor != "undefined") { editor.destroy(); editor = undefined; }')

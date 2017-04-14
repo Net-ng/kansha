@@ -16,6 +16,8 @@ Features
  * Week view in calendar.
  * No more "Synchronization errors"; replaced by auto-refresh.
  * Performance improvements, lower latency.
+ * New wysiwig editor.
+ * Turkish language support.
  * Many, many bug fixes.
 
 Developer

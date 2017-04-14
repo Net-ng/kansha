@@ -345,11 +345,11 @@
                             _send_card_position(data);
                         };
                         var refresh_dest = function() {
-                            var header_refresh_dest = Dom.get(dest_id + '_header');
+                            var header_refresh_dest = Dom.get(dest_id + '_refresh');
                             header_refresh_dest.click();
                         };
                         var refresh_orig = function() {
-                            var header_refresh_orig = Dom.get(orig_id + '_header');
+                            var header_refresh_orig = Dom.get(orig_id + '_refresh');
                             header_refresh_orig.click();
                         };
                         nagare_chained_calls([send_positions, refresh_dest, refresh_orig]);

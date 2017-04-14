@@ -136,7 +136,7 @@ def render_kansha(self, h, comp, *args):
 
     h.head.javascript_url("js/jquery-linkify/jquery.linkify.min.js")
 
-    h.head.javascript_url('js/dnd.js?v=2c')
+    h.head.javascript_url('js/dnd.js?v=2d')
     h.head.javascript_url('js/kansha.js?v=2c')
     h.head.javascript_url('js/autocomplete.js')
 

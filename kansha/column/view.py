@@ -102,8 +102,8 @@ def render_column_dropdown(self, h, comp, *args):
 
 @presentation.render_for(Column, model='header')
 def render_column_header(self, h, comp, *args):
-    with h.div(class_='list-header'):
-        h << h.a(class_='hidden', id=self.id + '_header').action(ajax.Update())
+    with h.div(class_='list-header', id=self.id + '_header'):
+        h << h.a(class_='hidden', id=self.id + '_refresh').action(ajax.Update())
         with h.div(class_='list-title'):
             with h.div(class_='title'):
                 h << self.title.render(h.AsyncRenderer(), 0 if security.has_permissions('edit', self) and not self.is_archive else 'readonly')

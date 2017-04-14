@@ -63,7 +63,7 @@ class DataMembership(Entity):
         # In the future, cards will be linked to boards directly, so demeter won't be hurt anymore
         query = query.filter(DataMembership.board == card.column.board)
         query = query.outerjoin(DataCardMembership)
-        query = query.group_by(DataUser.username, DataUser.source)
+        query = query.group_by(DataUser)
         query = query.order_by(func.count(DataUser.username).desc())
         return query
 

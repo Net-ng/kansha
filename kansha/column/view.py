@@ -147,10 +147,12 @@ def render_column_body(self, h, comp, *args):
     kw = {}
     if not security.has_permissions('edit', self):
         kw['style'] = 'width: 0px'
-    if not self.is_archive:
-        with h.div(class_='list-footer', id=self.id + '_footer', **kw):
-            if security.has_permissions('edit', self):
-                h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
+    with h.div(class_='list-footer', id=self.id + '_footer', **kw):
+        # This HACK is to force nagare to insert its div, otherwise it breaks all the layout.
+        if self.is_archive:
+            h << {'style': 'display: none'}
+        if security.has_permissions('edit', self):
+            h << h.div(self.new_card.on_answer(self.ui_create_card, comp))
 
     return h.root
 

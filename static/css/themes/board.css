@@ -222,7 +222,6 @@ textarea.expanded {
     flex: 1 0 100%;
     display: flex;
     flex-direction: column;
-    overflow: visible;
 }
 
 .list.reduced .list-body,

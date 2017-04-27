@@ -760,8 +760,11 @@ def render_userboards(self, h, comp, *args):
             h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.last_modified_boards]
 
     h << h.h1(_(u'My boards'))
-    with h.ul(class_='board-labels'):
-        h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards]
+    if self.my_boards:
+        with h.ul(class_='board-labels'):
+            h << [b.on_answer(self.handle_event).render(h, 'item') for b in self.my_boards]
+    else:
+        h << h.p(_(u'Create a board by choosing a template in the menu above, then click on the "Create" button.'))
 
     if self.guest_boards:
         h << h.h1(_(u'Guest boards'))

@@ -22,6 +22,7 @@ from .usermanager import UserManager
 
 LANGUAGES = {'en': _L('english'),
              'fr': _L('french'),
+             'ja': _L('japanese'),
              'tr': _L('turkish')}
 
 

@@ -18,6 +18,7 @@ Features
  * Performance improvements, lower latency.
  * New wysiwig editor.
  * Turkish language support.
+ * Japanese language support.
  * Many, many bug fixes.
 
 Developer

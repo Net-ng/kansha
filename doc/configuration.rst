@@ -193,6 +193,10 @@ Note for MySQL users:
         $ <VENV_DIR>/bin/easy_install kansha[mysql]
 
 
+**Note for SQLite users**: SQLite is not recommmended for production environments as it does not support schema migrations.
+If you use SQLite, you won't be able to migrate your data when you install a new version of Kansha.
+
+
 Search
 ------
 

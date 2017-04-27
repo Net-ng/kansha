@@ -14,6 +14,9 @@ Read http://www.nagare.org/trac/wiki/NagareAdmin.
 Configuration file
 ------------------
 
+**Beware!** The configuration file format changed since Kansha 2.0.0. If you are upgrading from a 1.0.X version,
+you have to convert manually your configuration file to the new format below.
+
 Kansha features can be activated and customized with a configuration file like this:
 
 .. code-block:: INI

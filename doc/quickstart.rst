@@ -122,10 +122,12 @@ For production sites, we recommend you use an external web server, see :ref:`pro
 Upgrading
 ^^^^^^^^^
 
-Upgrading Kansha without loosing data is very easy::
+Upgrading Kansha without loosing data is very easy (using the default configuration file)::
 
     $ easy_install --upgrade kansha
     $ kansha-admin alembic-upgrade head
     $ kansha-admin create-index
 
 And then restart.
+
+If you crafted your own configuration file, see :ref:`upgrading` for more details.

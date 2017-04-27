@@ -202,8 +202,6 @@ Or, if you want a specific version instead of the latest release (replace X, Y a
 
     $ <VENV_DIR>/bin/easy_install kansha==X.Y.Z
 
-Migrate database and/or indexes (more to come).
-
 Update the rewrite rules for static resources.
 
 Now restart Kansha.

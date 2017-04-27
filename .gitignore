@@ -7,6 +7,9 @@
 *.log
 *.log.*
 *.mo
+*.bak
+*.cov
+data/coverage
 .DS_Store
 .project
 .pydevproject
@@ -27,3 +30,4 @@ doc/_build
 data/assets/*
 data/templates/*
 build
+dist/

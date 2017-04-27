@@ -83,6 +83,9 @@ class CardDescription(CardExtension):
         """
         return bool(self.text)
 
+    def delete(self):
+        self.data.delete()
+
 
 @excel_export.get_extension_title_for(CardDescription)
 def get_extension_title_CardDescription(card_extension):

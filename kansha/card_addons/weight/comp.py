@@ -84,6 +84,9 @@ class CardWeightEditor(CardExtension):
             success = True
         return success
 
+    def delete(self):
+        self.data.delete()
+
 
 @excel_export.get_extension_title_for(CardWeightEditor)
 def get_extension_title_CardWeightEditor(card_extension):

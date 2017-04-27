@@ -17,8 +17,8 @@ from kansha.models import Entity
 
 class DataVote(Entity):
     using_options(tablename='vote')
-    user = ManyToOne('DataUser')
-    card = ManyToOne('DataCard')
+    user = ManyToOne('DataUser', ondelete='CASCADE')
+    card = ManyToOne('DataCard', ondelete='CASCADE')
 
     @classmethod
     def get_vote(cls, card, user):
@@ -49,3 +49,8 @@ class DataVote(Entity):
         q = cls.query
         q = q.filter(cls.card == card)
         return q.with_entities(func.count()).scalar()
+
+    @classmethod
+    def purge(cls, card):
+        for vote in cls.query.filter_by(card=card):
+            vote.delete()

@@ -49,6 +49,9 @@ class Votes(CardExtension):
         user = security.get_user()
         return DataVote.has_voted(self.card.data, user.data)
 
+    def delete(self):
+        DataVote.purge(self.card.data)
+
 
 # FIXME: redesign security from scratch
 @when(common.Rules.has_permission, "user and perm == 'vote' and isinstance(subject, Votes)")

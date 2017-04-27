@@ -82,6 +82,9 @@ class DueDate(CardExtension):
             return 'past'
         return ''
 
+    def delete(self):
+        self.data.delete()
+
 
 @excel_export.get_extension_title_for(DueDate)
 def get_extension_title_DueDate(card_extension):

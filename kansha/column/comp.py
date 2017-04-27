@@ -216,8 +216,8 @@ class Column(events.EventHandlerMixIn):
             card.action_log.add_history(
                 security.get_user(),
                 u'card_delete', values)
-            self.search_engine.delete_document(card.schema, card.id)
             card.delete()
+            self.search_engine.delete_document(card.schema, card.id)
         del self.cards[:]
         self.search_engine.commit()
         self.data.purge_cards()

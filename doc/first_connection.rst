@@ -69,15 +69,69 @@ The administrator of Kansha may grant access to users of:
     * or Instagram.
 
 
-Welcome board
--------------
+Home
+----
 
-When you first login, you arrive straight on your *Welcome board*.
+When you first login, you arrive straight on your *Home page*.
 
+.. figure:: _static/home.png
+
+   The home page of a very active user.
+
+On the home screen you have access to:
+
+* the list of the boards you can participate in (see :ref:`board_access`);
+* your profile, which you can edit.
+
+On the board tab, the boards you have access to are organized as follows:
+
+ - The 5 last modified boards, for direct access to hot boards;
+ - your boards, i.e. the boards you are manager of;
+ - guest boards, i.e. the boards you are just member of;
+ - shared boards, i.e. all the boards that are public and shared on this Kansha instance.
+
+If you are logging on a freshly installed Kansha instance, the board list is empty.
+
+On your profile, you can change the language of the interface. If your favorite language is missing, consider :ref:`contributing <contribute_trans>`.
+
+You are encouraged to upload a picture of your face on your profile.
+
+
+Your first board
+----------------
+
+Let's create your first board!
+
+In the template drop-down menu, chose "Todo" then click on the "Create" button.
+
+.. figure:: _static/create_board.png
+
+   Create your first board.
+
+Your newly created board automatically opens.
+
+.. figure:: _static/your_first_board.png
+
+   This is how your first todo board looks like
+
+Now adds a few card by using the menus at the bottom of the lists. Columns are called lists in Kansha.
+
+Now try these:
+
+* add new lists by using the board menu;
+* change the board title by clicking on it;
+* drag some cards around;
+* open a card by clicking on it and discover its features;
+* explore the board menu;
+* make your own experiments.
+
+
+Anatomy of a board
+------------------
 
 .. figure:: _static/welcome_board.png
 
-   Your very own welcome board.
+   A board with some cards and list limits.
 
 In Kansha, a board is made of columns, also known as lists, that contain cards. You can add as many columns as you wish to a board.
 
@@ -85,7 +139,7 @@ Columns can be reordered by dragging and dropping them. Cards can be moved accro
 
 To open a card, just click on it.
 
-Take some time to play with the cards on your welcome board. Your welcome board is a sandbox where you can safely experiment without causing trouble to other users. It is loaded with cards which explain what you can do with them, in a kind of interactive tutorial.
+Take some time to play with the cards on your board. For now your board is private and you can safely experiment without causing trouble to other users.
 
 On a card you can:
 
@@ -98,10 +152,9 @@ On a card you can:
 * vote (if activated by the board owner, see :ref:`board_configuration`);
 * give it some weight (if activated by the board owner, see :ref:`board_configuration`);
 * set a due date;
-* assign members to it.
+* assign members to it (if you have invited other users to your board, see :ref:`board_access`).
 
-
-The columns may have a limit on the number of cards they accept. This limit is displayed after the slash in the column counter. To set the limit, just hover the mouse pointer on the right of the column counter: a menu activator icon will appear. Click on it to open the column's menu.
+The columns may have a limit on the number of cards they accept. This limit is displayed after the slash in the column counter. To activate the counter, click on the list menu. To set the limit, just click on the counter.
 
 To change titles just click on them. That works for:
 
@@ -130,24 +183,6 @@ Action Log
 Delete board / Leave this board
     Respectively on boards you own and boards you are simply a member of, those actions just do what you would expect.
 
-Home
-----
-
-On the home screen you have access to:
-
-* the list of the boards you can participate in (see :ref:`board_access`);
-* your profile, which you can edit.
-
-On the board tab, the boards you have access to are organized as follows:
-
- - The 5 last modified boards, for direct access to hot boards;
- - your boards, i.e. the boards you are manager of;
- - guest boards, i.e. the boards you are just member of;
- - shared boards, i.e. all the boards that are public and shared on this Kansha instance.
-
-On your profile, you can change the language of the interface. If your favorite language is missing, consider :ref:`contributing <contribute_trans>`.
-
-You are encouraged to upload a picture of your face on your profile.
 
 
 Searching

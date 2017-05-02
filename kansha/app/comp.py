@@ -162,7 +162,6 @@ class Kansha(object):
             return self._on_menu_entry('boards')
         elif event.is_(events.NewTemplateRequested):
             return self.boards_manager.create_template_from_board(event.emitter, *event.data)
-        log.info('Ignoring event %s', event)
 
 
 class MainTask(component.Task):

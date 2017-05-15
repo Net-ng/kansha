@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kansha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-04-13 18:59+0200\n"
-"PO-Revision-Date: 2017-04-15 21:10+0000\n"
-"Last-Translator: Gökhan Kalayci <gkmediagokhan@gmail.com>\n"
+"POT-Creation-Date: 2017-04-27 17:44+0200\n"
+"PO-Revision-Date: 2017-05-15 14:12+0000\n"
+"Last-Translator: Net-ng <jean.luc.carre@net-ng.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/net-ng/kansha/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -118,7 +118,7 @@ msgstr "Gerekli alan"
 msgid "Invalid email address"
 msgstr "Hatalı e-posta adresi"
 
-#: kansha/validator.py:150 kansha/user/user_profile.py:173
+#: kansha/validator.py:150 kansha/user/user_profile.py:174
 #, python-format
 msgid "Password too short: should have at least %d characters"
 msgstr "Parola çok kısa: en az %d karakter içermeli"
@@ -210,7 +210,7 @@ msgstr "Hesabınız yok mu?"
 msgid "Sign up"
 msgstr "Hesap oluştur"
 
-#: kansha/authentication/database/forms.py:172 kansha/user/user_profile.py:157
+#: kansha/authentication/database/forms.py:172 kansha/user/user_profile.py:158
 #, python-format
 msgid "Username %s is not available. Please choose another one."
 msgstr "%s kullanılamaz. Başka bir kullanıcı adı belirleyin."
@@ -229,7 +229,7 @@ msgid "Entered too late"
 msgstr "Giriş için geç kaldınız"
 
 #: kansha/authentication/database/forms.py:199
-#: kansha/authentication/database/forms.py:427 kansha/user/user_profile.py:200
+#: kansha/authentication/database/forms.py:427 kansha/user/user_profile.py:201
 msgid "The two passwords don't match"
 msgstr "Girdiğiniz iki parola uyuşmuyor"
 
@@ -239,8 +239,8 @@ msgid "Unable to process. Check your input below."
 msgstr "İşlenemiyor. Aşağıdaki giriş bilgilerinizi kontrol edin."
 
 #: kansha/authentication/database/forms.py:231
-#: kansha/authentication/database/forms.py:563 kansha/user/user_profile.py:80
-#: kansha/user/user_profile.py:275
+#: kansha/authentication/database/forms.py:563 kansha/user/user_profile.py:81
+#: kansha/user/user_profile.py:276
 msgid "Username"
 msgstr "Kullanıcı adı"
 
@@ -260,8 +260,8 @@ msgstr "Parola (tekrar)"
 msgid "Email address"
 msgstr "E-posta adresi"
 
-#: kansha/authentication/database/forms.py:237 kansha/user/user_profile.py:83
-#: kansha/user/user_profile.py:278
+#: kansha/authentication/database/forms.py:237 kansha/user/user_profile.py:84
+#: kansha/user/user_profile.py:279
 msgid "Fullname"
 msgstr "Adınız ve Soyadınız"
 
@@ -357,7 +357,7 @@ msgstr "Geçersiz giriş!"
 msgid "Change password"
 msgstr "Parolayı değiştir"
 
-#: kansha/authentication/database/forms.py:478 kansha/user/user_profile.py:305
+#: kansha/authentication/database/forms.py:478 kansha/user/user_profile.py:306
 msgid "Old Password"
 msgstr "Eski parola"
 
@@ -368,7 +368,7 @@ msgstr "Eski parola"
 #: kansha/card_addons/description/view.py:69
 #: kansha/card_addons/description/view.py:77
 #: kansha/card_addons/gallery/view.py:192 kansha/card_addons/label/view.py:62
-#: kansha/column/view.py:194 kansha/title/view.py:44
+#: kansha/column/view.py:196 kansha/title/view.py:44
 msgid "Cancel"
 msgstr "İptal"
 
@@ -624,7 +624,7 @@ msgstr "Arşiv"
 msgid "%s more..."
 msgstr "%s daha fazla..."
 
-#: kansha/board/comp.py:132 kansha/column/view.py:161
+#: kansha/board/comp.py:132 kansha/column/view.py:163
 msgid "Add list"
 msgstr "Liste ekle"
 
@@ -677,7 +677,7 @@ msgid "Save board as template"
 msgstr "Panoyu şablon olarak kaydet"
 
 #: kansha/board/templates.py:49 kansha/board/view.py:339
-#: kansha/card_addons/description/comp.py:89
+#: kansha/card_addons/description/comp.py:92
 msgid "Description"
 msgstr "Açıklama"
 
@@ -700,7 +700,7 @@ msgstr "Tüm kullanıcılar"
 #: kansha/card_addons/description/view.py:75
 #: kansha/card_addons/label/view.py:59 kansha/card_addons/weight/view.py:45
 #: kansha/card_addons/weight/view.py:53 kansha/title/view.py:42
-#: kansha/user/user_profile.py:103 kansha/user/user_profile.py:322
+#: kansha/user/user_profile.py:104 kansha/user/user_profile.py:323
 msgid "Save"
 msgstr "Kaydet"
 
@@ -987,26 +987,32 @@ msgid "My boards"
 msgstr "Panolarım"
 
 #: kansha/board/view.py:767
+msgid ""
+"Create a board by choosing a template in the menu above, then click on the "
+"\"Create\" button."
+msgstr "Yukarıdaki menüden bir şablon seçerek bir tahta oluşturun ve ardından \"Oluştur\" düğmesini tıklayın."
+
+#: kansha/board/view.py:770
 msgid "Guest boards"
 msgstr "Konuk panoları"
 
-#: kansha/board/view.py:772
+#: kansha/board/view.py:775
 msgid "Shared boards"
 msgstr "Paylaşılan panolar"
 
-#: kansha/board/view.py:777
+#: kansha/board/view.py:780
 msgid "Archived boards"
 msgstr "Arşivlenen panolar"
 
-#: kansha/board/view.py:785
+#: kansha/board/view.py:788
 msgid "Delete the archived board"
 msgstr "Arşivlenmiş panoyu sil"
 
-#: kansha/board/view.py:785
+#: kansha/board/view.py:788
 msgid "Delete the archived boards"
 msgstr "Arşivlenmiş panoları sil"
 
-#: kansha/board/view.py:788
+#: kansha/board/view.py:791
 msgid "Deleted boards cannot be restored. Are you sure?"
 msgstr "Silinen panolar geri yüklenmez. Emin misiniz?"
 
@@ -1039,7 +1045,7 @@ msgid "Add a card"
 msgstr "Bir kart ekle"
 
 #: kansha/card/view.py:192 kansha/card_addons/checklist/view.py:33
-#: kansha/column/view.py:192 kansha/user/view.py:189
+#: kansha/column/view.py:194 kansha/user/view.py:189
 msgid "Add"
 msgstr "Ekle"
 
@@ -1154,7 +1160,7 @@ msgstr "link"
 msgid "Link"
 msgstr "Link"
 
-#: kansha/card_addons/due_date/comp.py:88
+#: kansha/card_addons/due_date/comp.py:91
 #: kansha/card_addons/due_date/view.py:68
 msgid "Due date"
 msgstr "Bitiş tarihi"
@@ -1164,7 +1170,7 @@ msgstr "Bitiş tarihi"
 msgid "User %(author)s has added file \"%(file)s\" to card \"%(card)s\""
 msgstr "%(author)s kullanıcısı \"%(card)s\" kartına \"%(file)s\" dosyasını ekledi"
 
-#: kansha/card_addons/gallery/comp.py:125 kansha/user/user_profile.py:246
+#: kansha/card_addons/gallery/comp.py:125 kansha/user/user_profile.py:247
 #, python-format
 msgid "File must be less than %d KB"
 msgstr "Dosya %d KB'dan küçük olmalıdır"
@@ -1226,7 +1232,7 @@ msgstr "Oyla (%s)"
 msgid "User %(author)s has weighted card \"%(card)s\" from (%(from)s) to (%(to)s)"
 msgstr "%(author)s kullanıcısı \"%(card)s\" kartının ağırlığını (%(from)s) 'dan  (%(to)s)'a değiştirdi."
 
-#: kansha/card_addons/weight/comp.py:90 kansha/card_addons/weight/view.py:63
+#: kansha/card_addons/weight/comp.py:93 kansha/card_addons/weight/view.py:63
 msgid "Weight"
 msgstr "Ağırlık"
 
@@ -1267,27 +1273,27 @@ msgstr "Tüm kartlar silinecek. Emin misiniz?"
 msgid "Purge the cards"
 msgstr "Kartları temizle"
 
-#: kansha/column/view.py:165
+#: kansha/column/view.py:167
 msgid "Name"
 msgstr "Ad"
 
-#: kansha/column/view.py:167
+#: kansha/column/view.py:169
 msgid "List title"
 msgstr "Liste başlığı"
 
-#: kansha/column/view.py:172
+#: kansha/column/view.py:174
 msgid "Position"
 msgstr "Pozisyon"
 
-#: kansha/column/view.py:180
+#: kansha/column/view.py:182
 msgid "Number max of cards"
 msgstr "Maksimum kart sayısı"
 
-#: kansha/column/view.py:228
+#: kansha/column/view.py:230
 msgid "Set card limit"
 msgstr "Kart limitini ayarla"
 
-#: kansha/column/view.py:236
+#: kansha/column/view.py:238
 msgid "This list already holds its maximum amount of cards"
 msgstr "Bu liste zaten maksimum kart limitini barındırıyor"
 
@@ -1359,42 +1365,46 @@ msgid "french"
 msgstr "fransızca"
 
 #: kansha/user/user_profile.py:25
+msgid "japanese"
+msgstr "Japonca"
+
+#: kansha/user/user_profile.py:26
 msgid "turkish"
 msgstr "türkçe"
 
-#: kansha/user/user_profile.py:86 kansha/user/user_profile.py:281
+#: kansha/user/user_profile.py:87 kansha/user/user_profile.py:282
 msgid "Email"
 msgstr "E-posta"
 
-#: kansha/user/user_profile.py:89 kansha/user/user_profile.py:286
+#: kansha/user/user_profile.py:90 kansha/user/user_profile.py:287
 msgid "Language"
 msgstr "Dil"
 
-#: kansha/user/user_profile.py:98 kansha/user/user_profile.py:295
+#: kansha/user/user_profile.py:99 kansha/user/user_profile.py:296
 msgid "Picture"
 msgstr "Resim"
 
-#: kansha/user/user_profile.py:187
+#: kansha/user/user_profile.py:188
 msgid "This password doesn't match the old one."
 msgstr "Bu parola eski parolayla eşleşmiyor."
 
-#: kansha/user/user_profile.py:223
+#: kansha/user/user_profile.py:224
 msgid "A confirmation email has been sent."
 msgstr "Bir doğrulama e-postası gönderildi."
 
-#: kansha/user/user_profile.py:232
+#: kansha/user/user_profile.py:233
 msgid "The password has been changed"
 msgstr "Parola değişti"
 
-#: kansha/user/user_profile.py:250
+#: kansha/user/user_profile.py:251
 msgid "Invalid image file"
 msgstr "Geçersiz resim dosyası"
 
-#: kansha/user/user_profile.py:314
+#: kansha/user/user_profile.py:315
 msgid "New password"
 msgstr "Yeni parola"
 
-#: kansha/user/user_profile.py:317
+#: kansha/user/user_profile.py:318
 msgid "Repeat new password"
 msgstr "Yeni parolayı tekrar girin"
 

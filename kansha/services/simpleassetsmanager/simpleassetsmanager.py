@@ -106,9 +106,14 @@ class SimpleAssetsManager(AssetsManager):
             metadata = f.write(json.dumps(metadata))
 
     def get_metadata(self, file_id):
-        with open(self._get_metadata_filename(file_id), "r") as f:
-            metadata = f.read()
-        return json.loads(metadata)
+        try:
+            f = open(self._get_metadata_filename(file_id), "r")
+            metadata = json.loads(f.read())
+            f.close()
+        except IOError:
+            log.error('unable to load metadata for ' + self._get_metadata_filename(file_id))
+            metadata = {}
+        return metadata
 
     def get_image_size(self, fileid):
         """Return the image dimensions

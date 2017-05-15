@@ -17,7 +17,7 @@ from kansha.user import usermanager
 from kansha.cardextension import CardExtension
 from kansha.services.actionlog.messages import render_event
 
-from .models import DataMembership
+from .models import DataMembership, DataCardMembership
 
 
 @when(render_event, "action=='card_add_member'")
@@ -161,4 +161,4 @@ class CardMembers(CardExtension):
         return granted
 
     def delete(self):
-        DataMembership.purge(self.card.data)
+        DataCardMembership.purge(self.card.data)

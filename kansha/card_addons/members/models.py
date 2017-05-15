@@ -30,6 +30,11 @@ class DataCardMembership(Entity):
     card = ManyToOne('DataCard', ondelete='cascade', required=True)
     using_table_options(sa.UniqueConstraint('membership_id', 'card_id', name='card_membership_ix'))
 
+    @classmethod
+    def purge(cls, card):
+        for member in cls.query.filter_by(card=card):
+            member.delete()
+
 
 class DataMembership(Entity):
     using_options(tablename='membership')
@@ -119,8 +124,3 @@ class DataMembership(Entity):
         if ms:
             ms.manager = manager
             database.session.flush()
-
-    @classmethod
-    def purge(cls, card):
-        for member in cls.get_for_card(card):
-            member.delete()

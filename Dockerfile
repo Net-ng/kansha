@@ -9,6 +9,7 @@ RUN /opt/stackless/bin/easy_install  .
 
 RUN /opt/stackless/bin/python setup.py compile_catalog && \
     /opt/stackless/bin/nagare-admin create-db kansha && \
+    /opt/stackless/bin/kansha-admin create-demo && \
     /opt/stackless/bin/kansha-admin create-index
 
 EXPOSE 8080

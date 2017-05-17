@@ -329,6 +329,7 @@ The availble providers are:
 * Twitter,
 * Facebook,
 * Github.
+
 ..
     * Dropbox,
     * Salesforce,

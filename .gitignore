@@ -3,11 +3,13 @@
 *.orig
 *.rej
 *.egg-info
-dist
 *.db
 *.log
 *.log.*
 *.mo
+*.bak
+*.cov
+data/coverage
 .DS_Store
 .project
 .pydevproject
@@ -27,3 +29,5 @@ doc/_build
 .idea/workspace.xml
 data/assets/*
 data/templates/*
+build
+dist/

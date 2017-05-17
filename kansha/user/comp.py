@@ -1,27 +1,32 @@
 # -*- coding:utf-8 -*-
-#--
+# --
 # Copyright (c) 2012-2014 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
-#--
+# --
 
-import pkg_resources
-import peak.rules
+import hashlib
+from io import BytesIO
 from datetime import datetime
 
-from nagare import presentation, component, i18n
-from nagare.security import common as security_common
-from nagare.i18n import _
+import identicon
 
-from . import usermanager
-from ..models import DataToken
+from nagare import i18n
+from nagare.security import common as security_common
+
+from .models import DataToken, DataUser
+
+
+def int_hash(string):
+    sha = hashlib.sha256()
+    sha.update(string)
+    return int(sha.hexdigest(), 16)
 
 
 class User(security_common.User):
-
     """User component"""
 
     def __init__(self, username, *args, **kw):
@@ -39,19 +44,23 @@ class User(security_common.User):
         """Return the user object from database
         """
         if not self._data:
-            self._data = usermanager.UserManager().get_by_username(self.username)
+            self._data = DataUser.get_by_username(self.username)
         return self._data
 
     def __getstate__(self):
         self._data = None
         return self.__dict__
 
-    def get_user_data(self):
-        return self.data
+    def __eq__(self, other):
+        return self.username == other.username
 
     @property
     def email(self):
-        return self.data.email
+        return self.data.email or self.data.email_to_confirm
+
+    @property
+    def source(self):
+        return self.data.source
 
     @property
     def is_local(self):
@@ -63,10 +72,7 @@ class User(security_common.User):
         return self.data.source == 'application'
 
     def get_locale(self):
-        if self.data.language == 'fr':
-            locale = i18n.Locale('fr', 'FR')
-        else:
-            locale = i18n.Locale('en', 'US')
+        locale = i18n.Locale(self.data.language)
 
         # At this point, the locale object only knows about builtin Nagare translation directories
         # We need to register Kansha's translation directories too (get them from the current locale)
@@ -98,14 +104,6 @@ class User(security_common.User):
         """
         return self.data.last_board
 
-    def has_avatar(self):
-        """Return True if user have an avatar
-
-        Return:
-         - True if user have an avatar
-        """
-        return self.data.picture is not None
-
     def get_avatar(self):
         """Return picture
 
@@ -114,45 +112,20 @@ class User(security_common.User):
         """
         return self.data.get_picture()
 
+    def reset_avatar(self, assets_manager_service):
+        avatar = identicon.render_identicon(int_hash(self.data.email or self.data.email_to_confirm),
+                                            48)
+        icon_file = BytesIO()
+        avatar.save(icon_file, 'PNG')
+        assets_manager_service.save(
+            icon_file.getvalue(),
+            self.data.username,
+            {'filename': '%s.png' % self.data.username})
+        self.data.picture = assets_manager_service.get_image_url(self.data.username, 'thumb')
+
     @property
-    def initials(self):
-        """ Return user's intials
-
-        Return:
-         - a string with initials made with user full name
-        """
-        return ''.join([n[0].upper() for n in self.data.fullname.split()])
-
-    def best_friends(self, exclude_list=(), size=None):
-        """ Return user's friends
-
-        Return users which have most boards in common with user
-
-        In:
-         - ``size`` -- list size (None for all)
-        Return:
-         - list of Users (User Instances)
-        """
-        return self.data.best_friends(exclude_list, size)
-
-    def add_board(self, board, role="member"):
-        """Add board to user's board lists
-
-        In:
-         - ``board`` -- DataBoard instance to add
-         - ``role`` -- user is member or manager
-        """
-        self.data.add_board(board, role)
-
-    def is_manager(self, board):
-        """Return True if user is manager of the board
-
-        In:
-         - ``board`` -- DataBoard instance
-        Return:
-         - True if user is manager of the board
-        """
-        return board in self.data.managed_boards
+    def fullname(self):
+        return self.data.fullname
 
     @property
     def last_login(self):
@@ -161,23 +134,8 @@ class User(security_common.User):
     def update_last_login(self):
         self.data.last_login = datetime.utcnow()
 
-    @property
-    def display_week_numbers(self):
-        """Return user's choice to see week numbers in calendars
-
-        Return:
-         - True if user want to see week numbers in calendars
-        """
-        return self.data.display_week_numbers
-
-
-@peak.rules.when(usermanager.get_user_class, """source == 'application'""")
-def get_user_class(source):
-    return User
-
 
 class PendingUser(object):
-
     """ Class for pending user of a board
 
     Store token id, to get the invited user

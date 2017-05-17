@@ -9,32 +9,32 @@
 # --
 
 import json
-import re
-import unicodedata
-from cStringIO import StringIO
+import itertools
+from functools import partial
 
-from nagare import security, component, log
+from nagare.i18n import _
+from peak.rules import when
+from nagare.security import common
 from nagare.database import session
-from nagare.i18n import _, _L, format_date
-from webob import exc
-import xlwt
+from nagare import component, log, security, var
 
-from ..toolbox import popin, overlay
-from ..column import comp as column
-from ..description import comp as description
-from ..title import comp as title
-from .boardsmanager import BoardsManager
-from .models import DataBoard, DataBoardMember
-from ..column.models import DataColumn
-from ..user.comp import PendingUser
-from ..user import usermanager
-from ..authentication.database import forms
-from .. import exceptions, notifications
-from ..card import fts_schema
-from .. import validator
-# Board visibility
-BOARD_PRIVATE = 0
-BOARD_PUBLIC = 1
+from kansha import title
+from kansha.card import Card
+from kansha.user import usermanager
+from kansha.services import ActionLog
+from kansha.column import comp as column
+from kansha.user.comp import PendingUser
+from kansha.toolbox import popin, overlay
+from kansha.card_addons.label import Label
+from kansha.authentication.database import forms
+from kansha import events, exceptions, validator
+from kansha.board_card_filter import BoardCardFilter
+
+from .boardconfig import BoardConfig
+from .excel_export import ExcelExport
+from .templates import SaveTemplateTask
+from .models import DataBoard, BOARD_PRIVATE, BOARD_PUBLIC, BOARD_SHARED
+
 
 # Votes authorizations
 VOTES_OFF = 0
@@ -53,137 +53,206 @@ WEIGHTING_FREE = 1
 WEIGHTING_LIST = 2
 
 
-class Board(object):
+class Board(events.EventHandlerMixIn):
 
     """Board component"""
 
-    max_shown_members = 4
+    MAX_SHOWN_MEMBERS = 4
     background_max_size = 3 * 1024  # in Bytes
 
-    def __init__(self, id_, app_title, app_banner, custom_css, mail_sender, assets_manager,
-                 search_engine, on_board_delete=None, on_board_archive=None,
-                 on_board_restore=None, on_board_leave=None, load_data=True):
+    def __init__(self, id_, app_title, app_banner, theme, card_extensions, search_engine_service,
+                 assets_manager_service, mail_sender_service, services_service,
+                 load_children=True, data=None):
         """Initialization
 
         In:
           -- ``id_`` -- the id of the board in the database
-          -- ``mail_sender`` -- Mail object, use to send mail
+          -- ``mail_sender_service`` -- Mail service, used to send mail
           -- ``on_board_delete`` -- function to call when the board is deleted
         """
         self.model = 'columns'
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
-        self.mail_sender = mail_sender
+        self.theme = theme
+        self.mail_sender = mail_sender_service
         self.id = id_
-        self.on_board_delete = on_board_delete
-        self.on_board_archive = on_board_archive
-        self.on_board_restore = on_board_restore
-        self.on_board_leave = on_board_leave
-        self.assets_manager = assets_manager
-        self.search_engine = search_engine
+        self._data = data
+        self.assets_manager = assets_manager_service
+        self.search_engine = search_engine_service
+        self._services = services_service
+        # Board extensions are not extracted yet, so
+        # board itself implement their API.
+        self.board_extensions = {
+            'weight': self,
+            'labels': self,
+            'members': self,
+            'comments': self,
+            'votes': self
+        }
+        self.card_extensions = card_extensions.set_configurators(self.board_extensions)
+
+        self.action_log = ActionLog(self)
 
         self.version = self.data.version
-        self.popin = component.Component(popin.Empty())
-        self.card_matches = set()  # search results
-        self.last_search = u''
+        self.modal = component.Component(popin.Empty())
+        self.card_filter = self._services(BoardCardFilter, Card.schema, self.id,
+                                          not self.show_archive)
+        self.search_input = component.Component(self.card_filter, 'search_input')
 
         self.columns = []
         self.archive_column = None
-        if load_data:
-            self.load_data()
-
+        if load_children:
+            self.load_children()
 
         # Member part
         self.overlay_add_members = component.Component(
-            overlay.Overlay(lambda r: '+',
+            overlay.Overlay(lambda r: (r.i(class_='ico-btn icon-user-plus')),
                             lambda r: component.Component(self).render(r, model='add_member_overlay'),
                             dynamic=True, cls='board-labels-overlay'))
         self.new_member = component.Component(usermanager.NewMember(self.autocomplete_method))
 
         self.update_members()
 
-        self.see_all_members = component.Component(overlay.Overlay(lambda r: _("%s more...") % (len(self.all_members) - self.max_shown_members),
+        def many_user_render(h, number):
+            return h.span(
+                h.i(class_='ico-btn icon-user'),
+                h.span(number, class_='count'),
+                title=_("%s more...") % number)
+
+        self.see_all_members = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members) - self.MAX_SHOWN_MEMBERS),
                                                                    lambda r: component.Component(self).render(r, model='members_list_overlay'),
                                                                    dynamic=False, cls='board-labels-overlay'))
-        self.see_all_members_compact = component.Component(overlay.Overlay(lambda r: _("%s more...") % len(self.all_members),
+        self.see_all_members_compact = component.Component(overlay.Overlay(lambda r: many_user_render(r, len(self.all_members)),
                                                                            lambda r: component.Component(self).render(r, model='members_list_overlay'),
                                                                            dynamic=False, cls='board-labels-overlay'))
 
         self.comp_members = component.Component(self)
 
         # Icons for the toolbar
-        self.icons = {'add_list': component.Component(Icon("icon-list-alt", _("Add list"))),
-                      'edit_desc': component.Component(Icon("icon-pencil", _("Edit board description"))),
-                      'preferences': component.Component(Icon("icon-cog", _("Preferences"))),
-                      'export': component.Component(Icon("icon-download", _("Export board"))),
-                      'archive': component.Component(Icon("icon-trash", _("Archive board"))),
-                      'leave': component.Component(Icon("icon-leave", _("Leave this board"))),
-                      'history': component.Component(Icon("icon-history", _("Action log"))),
+        self.icons = {'add_list': component.Component(Icon('icon-plus', _('Add list'))),
+                      'edit_desc': component.Component(Icon('icon-pencil', _('Edit board description'))),
+                      'preferences': component.Component(Icon('icon-cog', _('Preferences'))),
+                      'export': component.Component(Icon('icon-download3', _('Export board'))),
+                      'save_template': component.Component(Icon('icon-insert-template', _('Save as template'))),
+                      'archive': component.Component(Icon('icon-bin', _('Archive board'))),
+                      'leave': component.Component(Icon('icon-exit', _('Leave this board'))),
+                      'history': component.Component(Icon('icon-history', _("Action log"))),
                       }
 
         # Title component
-        self.title = component.Component(BoardTitle(self))
-        self.title.on_answer(lambda v: self.title.call(model='edit'))
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
 
-        # Add new column component
-        self.new_column = component.Component(column.NewColumn(self))
-        self.add_list_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['add_list'],
-                            lambda r: self.new_column.render(r),
-                            title=_("Add list"), dynamic=True))
+    @classmethod
+    def get_id_by_uri(cls, uri):
+        board = DataBoard.get_by_uri(uri)
+        board_id = None
+        if board is not None:
+            board_id = board.id
+        return board_id
 
-        # Edit description component
-        self.description = component.Component(BoardDescription(self))
-        self.description.on_answer(self.set_description)
+    @classmethod
+    def exists(cls, **kw):
+        return DataBoard.exists(**kw)
 
-        # Wraps edit description in an overlay
-        self.edit_description_overlay = component.Component(
-            overlay.Overlay(lambda r: self.icons['edit_desc'],
-                            lambda r: self.description.render(r),
-                            title=_("Edit board description"), dynamic=True))
+    def __eq__(self, other):
+        return isinstance(other, Board) and self.id == other.id
+
+    # Main menu actions
+    def add_list(self):
+        new_column_editor = column.NewColumnEditor(len(self.columns) - 1)
+        answer = self.modal.call(popin.Modal(new_column_editor, force_refresh=True))
+        if answer:
+            index, title, nb_cards = answer
+            self.create_column(index, title, nb_cards if nb_cards else None)
+
+    def edit_description(self):
+        description_editor = BoardDescription(self.get_description())
+        answer = self.modal.call(popin.Modal(description_editor))
+        if answer is not None:
+            self.set_description(answer)
+
+    def save_template(self, comp):
+        save_template_editor = SaveTemplateTask(self.get_title(),
+                                                self.get_description(),
+                                                partial(self.save_as_template, comp))
+        self.modal.call(popin.Modal(save_template_editor))
+
+    def show_actionlog(self):
+        self.modal.call(popin.Modal(self.action_log))
+
+    def show_preferences(self):
+        preferences = BoardConfig(self)
+        self.modal.call(popin.Modal(preferences, force_refresh=True))
+
+    def save_as_template(self, comp, title, description, shared):
+        data = (title, description, shared)
+        return self.emit_event(comp, events.NewTemplateRequested, data)
+
+    def copy(self, owner):
+        """
+        Create a new board that is a copy of self, without the archive.
+        Children must be loaded.
+        """
+        new_data = self.data.copy()
+        if self.data.background_image:
+            new_data.background_image = self.assets_manager.copy(self.data.background_image)
+        new_board = self._services(Board, new_data.id, self.app_title, self.app_banner, self.theme,
+            self.card_extensions, load_children=False, data=new_data)
+        new_board.add_member(owner, 'manager')
+
+        assert(self.columns or self.data.is_template)
+        cols = [col() for col in self.columns if not col().is_archive]
+        for column in cols:
+            new_column = new_board.create_column(-1, column.get_title())
+            new_column.update(column)
+
+        return new_board
+
+    def on_event(self, comp, event):
+        result = None
+        if event.is_(events.ColumnDeleted):
+            # actually delete the column
+            result = self.delete_column(event.data)
+        elif event.is_(events.CardArchived):
+            result = self.archive_cards([event.emitter], event.last_relay)
+        elif event.is_(events.SearchIndexUpdated):
+            result = self.card_filter.reload_search()
+
+        return result
 
     def switch_view(self):
         self.model = 'calendar' if self.model == 'columns' else 'columns'
 
-    def load_data(self):
+    def load_children(self):
         columns = []
-        archive = None
         for c in self.data.columns:
-            col = column.Column(c.id, self, self.assets_manager, self.search_engine, c)
-            if c.archive:
-                archive = col
-            else:
-                columns.append(component.Component(col))
-
-        if archive is not None:
-            self.archive_column = archive
-        else:
-            # Create the unique archive column
-            last_idx = max(c.index for c in self.data.columns)
-            col_id = self.create_column(index=last_idx + 1, title=_('Archive'), archive=True)
-            self.archive_column = column.Column(col_id, self, self.assets_manager, self.search_engine)
-
-        if self.archive and security.has_permissions('manage', self):
-            columns.append(component.Component(self.archive_column))
+            col = self._services(
+                column.Column, c.id, self, self.card_extensions,
+                self.action_log, self.card_filter, data=c)
+            if col.is_archive:
+                self.archive_column = col
+            columns.append(component.Component(col))
 
         self.columns = columns
 
     def increase_version(self):
-        refresh = False
         self.version += 1
         self.data.increase_version()
+        return self.refresh_on_version_mismatch()
+
+    def refresh_on_version_mismatch(self):
+        refresh = False
         if self.data.version - self.version != 0:
-            self.refresh()
+            self.refresh()  # when does that happen?
             self.version = self.data.version
             refresh = True
         return refresh
 
     def refresh(self):
-        if self.archive:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns]
-        else:
-            self.columns = [component.Component(column.Column(c.id, self, self.assets_manager, self.search_engine)) for c in self.data.columns if not c.archive]
+        log.info('sync')
+        self._data = None
+        self.load_children()
 
     @property
     def all_members(self):
@@ -195,31 +264,24 @@ class Board(object):
         Recalculate members + managers + pending
         Recreate overlays
         """
-        members = [dbm.member for dbm in self.data.board_members]
-        members = [member for member in set(members) - set(self.data.managers)]
-        members.sort(key=lambda m: (m.fullname, m.email))
-        self.members = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'member'))
-                        for member in members]
-        self.managers = [component.Component(BoardMember(usermanager.get_app_user(member.username, data=member), self, 'manager' if len(self.data.managers) != 1 else 'last_manager'))
-                         for member in self.data.managers]
+        data = self.data
+        #FIXME: use Membership components
+        managers = []
+        simple_members = []
+        for manager, memberships in itertools.groupby(data.board_members,
+                                                      lambda item: item.manager):
+            # we use extend because the board_members are not reordered in case of change
+            if manager:
+                managers.extend([membership.user for membership in memberships])
+            else:
+                simple_members.extend([membership.user for membership in memberships])
+        simple_members.sort(key=lambda m: (m.fullname, m.email))
+        self.members = [component.Component(BoardMember(usermanager.UserManager.get_app_user(data=member), self, 'member'))
+                        for member in simple_members]
+        self.managers = [component.Component(BoardMember(usermanager.UserManager.get_app_user(data=member), self, 'manager' if len(managers) != 1 else 'last_manager'))
+                         for member in managers]
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, 'pending'))
-                        for token in self.data.pending]
-
-    def set_description(self, desc):
-        """Changes board description
-
-        In:
-         - ``desc`` -- new board description
-        """
-        if desc is not None:
-            self.data.description = desc
-            self.description = component.Component(
-                BoardDescription(self)).on_answer(self.set_description)
-        return "YAHOO.kansha.app.hideOverlay();"
-
-    def get_description(self):
-        """ """
-        return self.data.description
+                        for token in data.pending]
 
     def set_title(self, title):
         """Set title
@@ -237,12 +299,17 @@ class Board(object):
         """
         return self.data.title
 
+    def mark_as_template(self, template=True):
+        self.data.is_template = template
+
     def count_columns(self):
         """Return the number of columns
+        (used in unit tests only)
         """
         return len(self.columns)
 
-    def create_column(self, index, title, nb_cards=None, archive=False):
+    @security.permissions('edit')
+    def create_column(self, index, title, nb_cards=None):
         """Create a new column in the board
 
         In:
@@ -250,85 +317,71 @@ class Board(object):
             - ``title`` -- the title of the new column
             - ``nb_cards`` -- the number of maximun cards on the colum
         """
-        security.check_permissions('edit', self)
+        if index < 0:
+            index = index + len(self.columns) + 1
         if title == '':
             return False
-        col = DataColumn.create_column(self.data, index, title, nb_cards, archive=archive)
-        if not archive or (archive and self.archive):
-            self.columns.insert(index, component.Component(column.Column(col.id, self, self.assets_manager, self.search_engine), 'new'))
+        col = self.data.create_column(index, title, nb_cards)
+        col_obj = self._services(
+            column.Column, col.id, self,
+            self.card_extensions, self.action_log, self.card_filter)
+        self.columns.insert(
+            index, component.Component(col_obj))
         self.increase_version()
-        return col.id
+        return col_obj
 
-    def delete_column(self, id_):
+    @security.permissions('edit')
+    def delete_column(self, col_comp):
         """Delete a board's column
 
         In:
             - ``id_`` -- the id of the column to delete
         """
+        self.columns.remove(col_comp)
+        self.data.delete_column(col_comp().data)
+        col_comp().delete()
+        self.increase_version()
+        return popin.Empty()
 
-        security.check_permissions('edit', self)
-        for comp in self.columns:
-            if comp().data.id == id_:
-                self.columns.remove(comp)
-                comp().delete()
-                self.increase_version()
-                return popin.Empty()
-        raise exceptions.KanshaException('No column with id [%s] found' % id_)
-
-    def move_cards(self, v):
-        """Function called after drag and drop of a card or column
-
-        In:
-            - ``v`` -- a structure containing the lists/cards position
-                       (ex . [ ["list_1", ["card_1", "card_2"]],
-                             ["list_2", ["card_3", "card_4"]] ])
-        """
-        security.check_permissions('edit', self)
-        ids = json.loads(v)
-        cards = {}
-        cols = {}
-
-        for col in self.columns:
-            cards.update(dict([(card().id, card) for card in col().cards
-                               if not isinstance(card(), popin.Empty)]))
-            cols[col().id] = col
-
-        # move columns
-        self.columns = []
-        for (col_index, (col_id, card_ids)) in enumerate(ids):
-            comp_col = cols[col_id]
-            self.columns.append(comp_col)
-            comp_col().change_index(col_index)
-            comp_col().move_cards([cards[id_] for id_ in card_ids])
-
-        session.flush()
-
+    @security.permissions('edit')
     def update_card_position(self, data):
-        security.check_permissions('edit', self)
         data = json.loads(data)
 
         cols = {}
         for col in self.columns:
-            cols[col().id] = col()
+            cols[col().id] = (col(), col)
 
-        orig = cols[data['orig']]
+        orig, __ = cols[data['orig']]
 
-        if data['orig'] != data['dest']:  # Move from one column to another
-            dest = cols[data['dest']]
-            card = orig.remove_card(data['card'])
-            dest.insert_card(card, data['index'])
-            values = {'from': orig.title().text,
-                      'to': dest.title().text,
-                      'card': card().data.title}
-            notifications.add_history(self.data, card().data,
-                                      security.get_user().data,
-                                      u'card_move', values)
-        else:  # Reorder only
-            orig.move_card(data['card'], data['index'])
-        session.flush()
+        dest, dest_comp = cols[data['dest']]
+        card_comp = None
+        try:
+            card_comp = orig.remove_card_by_id(data['card'])
+            accepted = dest.insert_card_comp(dest_comp, data['index'], card_comp)
+        except AttributeError:
+            # one of the columns does not exist anymore
+            # stop processing, let the refresh do the rest
+            log.warning('attempt to move card between at least one missing column')
+            if card_comp:
+                orig.append_card(card_comp())
+            return
+        if accepted:
+            card = card_comp()
+            values = {'from': orig.get_title(),
+                      'to': dest.get_title(),
+                      'card': card.get_title()}
+            self.action_log.for_card(card).add_history(
+                security.get_user(),
+                u'card_move', values)
+            # reindex it in case it has been moved to the archive column
+            card.add_to_index(self.search_engine, self.id, update=True)
+            self.search_engine.commit()
+            session.flush()
+        else:
+            orig.append_card(card_comp())
 
+    @security.permissions('edit')
     def update_column_position(self, data):
-        security.check_permissions('edit', self)
         data = json.loads(data)
         cols = []
         found = None
@@ -347,8 +400,9 @@ class Board(object):
     def visibility(self):
         return self.data.visibility
 
-    def is_public(self):
-        return self.visibility == BOARD_PUBLIC
+    @property
+    def is_open(self):
+        return (self.visibility == BOARD_PUBLIC or self.visibility == BOARD_SHARED)
 
     def set_visibility(self, visibility):
         """Changes board visibility
@@ -372,168 +426,115 @@ class Board(object):
     def archived(self):
         return self.data.archived
 
-    def archive_column(self):
-        return self.columns
-
     @property
-    def archive(self):
-        return self.data.archive
+    def show_archive(self):
+        return self.data.show_archive
 
-    def set_archive(self, value):
-        self.data.archive = value
-        self.refresh()
+    @show_archive.setter
+    def show_archive(self, value):
+        self.data.show_archive = value
+        self.card_filter.exclude_archived(not value)
 
-    def archive_card(self, c):
+    def archive_cards(self, cards, from_column):
         """Archive card
 
         In:
-            - ``c`` -- card to archive
+            - ``cards`` -- cards to archive, from the same column
         """
-        c.move_card(0, self.archive_column)
-        self.archive_column.reload()
+        for card in cards:
+            self.archive_column.append_card(card)
+            values = {'column_id': from_column.id, 'column': from_column.get_title(),
+                      'card': card.get_title()}
+            card.action_log.add_history(security.get_user(), u'card_archive', values)
+            # reindex it
+            card.add_to_index(self.search_engine, self.id, update=True)
+        self.search_engine.commit(True)
+        self.card_filter.reload_search()
+        self.increase_version()
+
+    ####### For future board extension
 
     @property
     def weighting_cards(self):
         return self.data.weighting_cards
 
     def activate_weighting(self, weighting_type):
-        if weighting_type == WEIGHTING_FREE:
-            self.data.weighting_cards = 1
-        elif weighting_type == WEIGHTING_LIST:
-            self.data.weighting_cards = 2
-
-        # reinitialize cards weights
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                card.weight = ''
-        for card in self.archive_column.cards:
-            card.weight = ''
+        self.data.weighting_cards = weighting_type
+        if weighting_type != WEIGHTING_FREE:
+            # reinitialize card weights?
+            self.data.reset_card_weights()
 
     @property
     def weights(self):
+        if not self.data.weights:
+            self.data.weights = '0, 1, 2, 3, 5, 8, 13'
         return self.data.weights
 
     @weights.setter
     def weights(self, weights):
         self.data.weights = weights
 
-    def deactivate_weighting(self):
-        self.data.weighting_cards = 0
-        self.data.weights = ''
+    def total_weight(self):
+        return self.data.total_weight()
+
+    ######################
+
+    def delete_clicked(self, comp):
+        return self.emit_event(comp, events.BoardDeleted)
 
     def delete(self):
-        """Deletes the board
+        """Deletes the board.
+           Children must be loaded.
         """
+        assert(self.columns)  # at least, contains the archive
         for column in self.columns:
-            column().delete()
+            column().delete(purge=True)
         self.data.delete_history()
         self.data.delete_members()
+        if self.data.background_image:
+            self.assets_manager.delete(self.data.background_image)
         session.refresh(self.data)
         self.data.delete()
-        if self.on_board_delete is not None:
-            # if self.on_board_delete is None there is nothing
-            # to call after deletion
-            self.on_board_delete()
+
         return True
 
-    def archive_board(self):
+    def archive(self, comp=None):
         """Archive the board
         """
         self.data.archived = True
-        if self.on_board_archive is not None:
-            self.on_board_archive()
+        if comp:
+            self.emit_event(comp, events.BoardArchived)
         return True
 
-    def restore_board(self):
+    def restore(self, comp=None):
         """Unarchive the board
         """
         self.data.archived = False
-        if self.on_board_restore is not None:
-            self.on_board_restore()
-        return True
-
-    def leave(self):
-        user = security.get_user()
-        for member in self.members:
-            m_user = member().user().data
-            if (m_user.username, m_user.source) == (user.data.username, user.data.source):
-                board_member = member()
-                break
-        else:
-            board_member = None
-        self.data.remove_member(board_member)
-        if user.is_manager(self):
-            self.data.remove_manager(board_member)
-        for column in self.columns:
-            column().remove_board_member(user)
-        if self.on_board_leave is not None:
-            self.on_board_leave()
+        if comp:
+            self.emit_event(comp, events.BoardRestored)
         return True
 
     def export(self):
-        sheet_name = fname = unicodedata.normalize('NFKD', self.data.title).encode('ascii', 'ignore')
-        fname = re.sub('\W+', '_', fname.lower())
-        sheet_name = re.sub('\W+', ' ', sheet_name)
-        f = StringIO()
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet(sheet_name[:31])
-        sty = ''
-        header_sty = xlwt.easyxf(sty + 'font: bold on; align: wrap on, vert centre, horiz center;')
-        sty = xlwt.easyxf(sty)
-        titles = [_(u'Column'), _(u'Title'), _(u'Description'), _(u'Due date')]
-
-        if self.weighting_cards:
-            titles.append(_(u'Weight'))
-        titles.append(_(u'Comments'))
-
-        for col, title in enumerate(titles):
-            ws.write(0, col, title, style=header_sty)
-        row = 1
-        max_len = len(titles)
-        for col in self.columns:
-            col = col().data
-            for card in col.cards:
-                colnumber = 0
-                ws.write(row, colnumber, _('Archived cards') if col.archive else col.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.title, sty)
-                colnumber += 1
-                ws.write(row, colnumber, card.description, sty)
-                colnumber += 1
-                ws.write(row, colnumber, format_date(card.due_date) if card.due_date else u'', sty)
-                colnumber += 1
-                if self.weighting_cards:
-                    ws.write(row, colnumber, card.weight, sty)
-                    colnumber += 1
-
-                for colno, comment in enumerate(card.comments, colnumber):
-                    ws.write(row, colno, comment.comment, sty)
-                    max_len = max(max_len, 4 + colno)
-                row += 1
-        for col in xrange(len(titles)):
-            ws.col(col).width = 0x3000
-        ws.set_panes_frozen(True)
-        ws.set_horz_split_pos(1)
-        wb.save(f)
-        f.seek(0)
-        e = exc.HTTPOk()
-        e.content_type = 'application/vnd.ms-excel'
-        e.content_disposition = u'attachment;filename=%s.xls' % fname
-        e.body = f.getvalue()
-        raise e
+        return ExcelExport(self).download()
 
     @property
     def labels(self):
         """Returns the labels associated with the board
         """
-        return self.data.labels
+        return [self._services(Label, data) for data in self.data.labels]
 
     @property
     def data(self):
-        """Return the board object from database
+        """Return the board object from the database
+        PRIVATE
         """
-        return BoardsManager().get_by_id(self.id)
+        if self._data is None:
+            self._data = DataBoard.get(self.id)
+        return self._data
+
+    def __getstate__(self):
+        self._data = None
+        return self.__dict__
 
     def allow_comments(self, v):
         """Changes permission to add comments
@@ -559,9 +560,33 @@ class Board(object):
     def votes_allowed(self):
         return self.data.votes_allowed
 
+    # Callbacks for BoardDescription component
+    def get_description(self):
+        return self.data.description
+
+    def set_description(self, value):
+        self.data.description = value
+
+
     ##################
     # Member methods
     ##################
+
+    def leave(self, comp=None):
+        """Children must be loaded."""
+        # FIXME: all member management function should live in another component than Board.
+        user = security.get_user()
+        for member in self.members:
+            m_user = member().user().data
+            if (m_user.username, m_user.source) == (user.data.username, user.data.source):
+                board_member = member()
+                break
+        else:
+            board_member = None
+        self.data.remove_member(board_member.data)
+        if comp:
+            self.emit_event(comp, events.BoardLeft)
+        return True
 
     def last_manager(self, member):
         """Return True if member is the last manager of the board
@@ -571,7 +596,7 @@ class Board(object):
         Return:
          - True if member is the last manager of the board
         """
-        return self.data.last_manager(member)
+        return member.role == 'manager' and len(self.managers) == 1
 
     def has_member(self, user):
         """Return True if user is member of the board
@@ -581,7 +606,7 @@ class Board(object):
         Return:
          - True if user is member of the board
         """
-        return self.data.has_member(user)
+        return self.data.has_member(user.data)
 
     def has_manager(self, user):
         """Return True if user is manager of the board
@@ -591,26 +616,20 @@ class Board(object):
         Return:
          - True if user is manager of the board
         """
-        return self.data.has_manager(user)
+        return self.data.has_manager(user.data)
 
     def add_member(self, new_member, role='member'):
         """ Add new member to the board
 
         In:
-         - ``new_member`` -- user to add (DataUser instance)
+         - ``new_member`` -- user to add
          - ``role`` -- role's member (manager or member)
         """
-        self.data.add_member(new_member, role)
+        self.data.add_member(new_member.data, role)
 
     def remove_pending(self, member):
         # remove from pending list
         self.pending = [p for p in self.pending if p() != member]
-
-        user = usermanager.UserManager.get_by_email(member.username)
-        if user:
-            user = usermanager.get_app_user(user.username, data=user)
-            for column in self.columns:
-                column().remove_board_member(user)
 
         # remove invitation
         self.remove_invitation(member.username)
@@ -619,19 +638,21 @@ class Board(object):
         # remove from managers list
         self.managers = [p for p in self.managers if p() != manager]
         # remove manager from data part
-        self.data.remove_manager(manager)
+        self.data.remove_member(manager.data)
 
     def remove_member(self, member):
         # remove from members list
         self.members = [p for p in self.members if p() != member]
         # remove member from data part
-        self.data.remove_member(member)
+        self.data.remove_member(member.data)
 
     def remove_board_member(self, member):
         """Remove member from board
 
         Remove member from board. If member is PendingUser then remove
         invitation.
+
+        Children must be loaded for propagation to the cards.
 
         In:
             - ``member`` -- Board Member instance to remove
@@ -646,10 +667,6 @@ class Board(object):
                          'member': self.remove_member}
         remove_method[member.role](member)
 
-        # remove member from columns
-        for c in self.columns:
-            c().remove_board_member(member)
-
     def change_role(self, member, new_role):
         """Change member's role
 
@@ -661,7 +678,7 @@ class Board(object):
         if self.last_manager(member):
             raise exceptions.KanshaException(_("Can't remove last manager"))
 
-        self.data.change_role(member, new_role)
+        self.data.change_role(member.data, new_role)
         self.update_members()
 
     def remove_invitation(self, email):
@@ -676,25 +693,21 @@ class Board(object):
                 session.flush()
                 break
 
-    def invite_members(self, emails):
+    def invite_members(self, emails, application_url):
         """Invite somebody to this board,
 
         Create token used in invitation email.
         Store email in pending list.
 
-        In:
+        Params:
             - ``emails`` -- list of emails
-        Return:
-            - javascript to reload members and hide overlay
         """
         for email in set(emails):
             # If user already exists add it to the board directly or invite it otherwise
-            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+            invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
             invitation.send_email(self.mail_sender)
 
-        return "YAHOO.kansha.reload_boarditems['%s']();YAHOO.kansha.app.hideOverlay();" % self.id
-
-    def resend_invitation(self, pending_member):
+    def resend_invitation(self, pending_member, application_url):
         """Resend an invitation,
 
         Resend invitation to the pending member
@@ -703,7 +716,7 @@ class Board(object):
             - ``pending_member`` -- Send invitation to this user (PendingMember instance)
         """
         email = pending_member.username
-        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.custom_css, email, security.get_user().data, self.data, self.mail_sender.application_url)
+        invitation = forms.EmailInvitation(self.app_title, self.app_banner, self.theme, email, security.get_user().data, self.data, application_url)
         invitation.send_email(self.mail_sender)
         # re-calculate pending
         self.pending = [component.Component(BoardMember(PendingUser(token.token), self, "pending"))
@@ -729,55 +742,16 @@ class Board(object):
                 results.append(user)
         return results
 
-    def get_friends(self, user):
-        """Return user friends for the current board
+    def get_last_activity(self):
+        return self.action_log.get_last_activity()
 
-        Returned users which are not board's member and have not pending invitation
-
-        Return:
-         - list of user's friends (User instance) wrapped on component
-        """
-        already_in = set([m().email for m in self.all_members])
-        best_friends = user.best_friends(already_in, 5)
-        self._best_friends = [component.Component(usermanager.get_app_user(u.username), "friend") for u in best_friends]
-        return self._best_friends
-
-    @property
-    def favorites(self):
-        """Return favorites users of the board
-
-        Favorites users are most used users in this board
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        return self.get_most_used_users()
-
-    def get_most_used_users(self):
-        """Return the most used users in this column.
-
-        Ask most used users to columns
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        most_used_users = {}
-        for c in self.columns:
-            column_most_used_users = c().get_most_used_users()
-            for username in column_most_used_users:
-                most_used_users[username] = most_used_users.get(username, 0) + column_most_used_users[username]
-        return most_used_users
-
-    def get_authorized_users(self):
+    def get_available_user_ids(self):
         """Return list of member
 
         Return:
             - list of members
         """
-        return [dbm.member for dbm in self.data.board_members]
-
-    def get_pending_users(self):
-        return self.data.get_pending_users()
+        return set(dbm.user.id for dbm in self.data.board_members)
 
     def set_background_image(self, new_file):
         """Set the board's background image
@@ -790,17 +764,12 @@ class Board(object):
             fileid = self.assets_manager.save(new_file.file.read(),
                                               metadata={'filename': new_file.filename,
                                                         'content-type': new_file.type})
-
-            w, h = self.assets_manager.get_image_size(fileid)
-            if all((w, h, w >= 500, h >= 500)):
-                pos = 'cover'
-            else:
-                pos = 'repeat'
             self.data.background_image = fileid
-            self.data.background_position = pos
         else:
             self.data.background_image = None
-            self.data.background_position = None
+
+    def set_background_position(self, position):
+        self.data.background_position = position
 
     @property
     def background_image_url(self):
@@ -813,7 +782,7 @@ class Board(object):
 
     @property
     def background_image_position(self):
-        return self.data.background_position or 'repeat'
+        return self.data.background_position or 'center'
 
     @property
     def title_color(self):
@@ -822,19 +791,32 @@ class Board(object):
     def set_title_color(self, value):
         self.data.title_color = value or u''
 
-    def search(self, query):
-        self.last_search = query
-        if query:
-            self.card_matches = set(
-                doc._id for (_, doc) in
-                self.search_engine.search(
-                    fts_schema.Card.match(query) &
-                    (fts_schema.Card.board_id == self.id)))
-            # make the difference between empty search and no results
-            if not self.card_matches:
-                self.card_matches.add(None)
-        else:
-            self.card_matches = set()
+    @classmethod
+    def get_all_boards(cls, user, app_title, app_banner, theme, card_extensions,
+                       services_service, load_children=False):
+        """Return all boards the user is member of."""
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+                                 data=data, load_children=load_children)
+                for data in DataBoard.get_all_boards(user.data)]
+
+    @classmethod
+    def get_shared_boards(cls, app_title, app_banner, theme, card_extensions,
+                          services_service, load_children=False):
+        """Return all boards the user is member of."""
+        return [services_service(cls, data.id, app_title, app_banner, theme, card_extensions,
+                                 data=data, load_children=load_children)
+                for data in DataBoard.get_shared_boards()]
+
+    @staticmethod
+    def get_templates_for(user):
+        return DataBoard.get_templates_for(user.data, BOARD_PUBLIC)
+
+
+# TODO: move this to board extension
+@when(common.Rules.has_permission, "user and perm == 'Add Users' and isinstance(subject, Board)")
+def has_permission_Board_add_users(self, user, perm, board):
+    """Test if users is one of the board's managers, if he is he can add new user to the board"""
+    return board.has_manager(user)
 
 ################
 
@@ -845,7 +827,7 @@ class Icon(object):
         """Create icon object
 
         In:
-          - ``icon`` -- icon class name (use booststrap glyphicons)
+          - ``icon`` -- icon class name (use icomoon custom font)
           - ``title`` -- icon title (and alt)
         """
         self.icon = icon
@@ -854,58 +836,27 @@ class Icon(object):
 ################
 
 
-class NewBoard(object):
+class BoardDescription(object):
 
-    """Board creator component"""
+    """Description component
+    """
 
-    @security.permissions('create_board')
-    def create_board(self, comp, title, user):
-        """Create a new board.
+    def __init__(self, description):
+        """Initialization
 
         In:
-          - ``title`` -- the new board title
+            - ``description`` -- callable that returns the description.
         """
-        if title and title.strip():
-            b = BoardsManager().create_board(title, user)
-            comp.answer(b.id)
-        comp.answer()
+        self.description = var.Var(description)
 
-################
+    def commit(self, comp):
+        description = self.description().strip()
+        if description:
+            description = validator.clean_text(description)
+        comp.answer(description)
 
-
-class BoardTitle(title.Title):
-
-    """Board title component
-    """
-    model = DataBoard
-    field_type = 'input'
-
-
-class BoardDescription(description.Description):
-
-    """Description component for boards
-    """
-    type = _L('board')
-
-    def change_text(self, text):
-        """Changes text description.
-
-        Return JS to execute.
-        TODO reload tooltip description of the board
-
-        In:
-            - ``text`` -- the text of the description
-        Return:
-            - part of JS to execute to hide the overlay
-        """
-        if text is not None:
-            text = text.strip()
-
-            if text:
-                text = validator.clean_text(text)
-
-            self.text = self.parent.data.description = text
-        return 'YAHOO.kansha.app.hideOverlay();'
+    def cancel(self, comp):
+        comp.answer(None)
 
 
 class BoardMember(object):
@@ -916,31 +867,25 @@ class BoardMember(object):
         self.board = board
 
     @property
-    def data(self):
-        member = DataBoardMember.query
-        member = member.filter_by(board=self.board.data)
-        member = member.filter_by(member=self.get_user_data())
-        return member.first()
-
-    def delete(self):
-        session.delete(self.data)
-        session.flush()
-
-    @property
     def username(self):
         return self.user().username
+
+    @property
+    def fullname(self):
+        return self.user().fullname
 
     @property
     def email(self):
         return self.user().email
 
-    def dispatch(self, action):
+    @property
+    def data(self):
+        return self.user().data
+
+    def dispatch(self, action, application_url):
         if action == 'remove':
             self.board.remove_board_member(self)
         elif action == 'toggle_role':
             self.board.change_role(self, 'manager' if self.role == 'member' else 'member')
         elif action == 'resend':
-            self.board.resend_invitation(self)
-
-    def get_user_data(self):
-        return self.user().data
+            self.board.resend_invitation(self, application_url)

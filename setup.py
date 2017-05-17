@@ -37,19 +37,22 @@ setup(
     zip_safe=False,
     install_requires=(
         'alembic',
-        'PEAK-Rules',
-        'nagare[database,i18n]==0.4.1.post473',
+        'Babel',
+        'dateutils',
         'docutils',
+        'flup==1.0.2',
+        'identicon',
+        'nagare[database,i18n]==0.4.1.post473',
+        'nagare-services',
+        'oauth2==1.5.211',
+        'Paste',
         'Pillow',
         'pycrypto',
-        'Babel',
         'requests',
-        'oauth2==1.5.211',
         'SQLAlchemy',
-        'dateutils',
         'xlwt',
-        'Paste'
     ),
+    dependency_links=['vendors/nagare-services-1.1.1.tar.gz'],
     extras_require={'test': ('nose',),
                     'htmldocs': ('sphinx',),
                     'debug': ('WebError',),
@@ -70,9 +73,32 @@ setup(
       alembic-upgrade = kansha.alembic.admin:AlembicUpgradeCommand
       create-index = kansha.batch.create_index:ReIndex
       save-config = kansha.batch.save_config:SaveConfig
+      create-demo = kansha.batch.create_demo:CreateDemo
+
+      [kansha.services]
+      authentication = kansha.services.authentication_repository:AuthenticationsRepository
+      mail_sender = kansha.services.mail:MailSender
+      assets_manager = kansha.services.simpleassetsmanager.simpleassetsmanager:SimpleAssetsManager
+
+      [kansha.authentication]
+      dblogin = kansha.authentication.database.forms:Login
+      oauthlogin = kansha.authentication.oauth.forms:Login
+      ldaplogin = kansha.authentication.ldap.forms:Login
+
+      [kansha.card.extensions]
+      labels = kansha.card_addons.label.comp:CardLabels
+      description = kansha.card_addons.description.comp:CardDescription
+      checklists = kansha.card_addons.checklist.comp:Checklists
+      gallery = kansha.card_addons.gallery.comp:Gallery
+      comments = kansha.card_addons.comment.comp:Comments
+      due_date = kansha.card_addons.due_date.comp:DueDate
+      votes = kansha.card_addons.vote.comp:Votes
+      weight = kansha.card_addons.weight:CardWeightEditor
+      members = kansha.card_addons.members:CardMembers
 
       [nagare.applications]
       kansha = kansha.app:app
+
       [search.engines]
       dummy = kansha.services.search.dummyengine:DummySearchEngine
       sqlite = kansha.services.search.sqliteengine:SQLiteFTSEngine

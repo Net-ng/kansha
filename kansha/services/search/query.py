@@ -27,11 +27,17 @@ class Query(object):
     def __init__(self, field, value):
         self.field = field
         self.value = value
-        self.queried_doc = self.field.parent
+        self.target_schema = self.field.schema
 
     def __call__(self, mapper):
         op = getattr(mapper, self.operation)
         return op(self.field, self.value)
+
+    def search(self, index_cursor, mapper, limit):
+        mapped_query = self(mapper)
+        fields_to_load = [name for name, field in self.target_schema.iter_fields() if field.stored]
+        index_cursor.search(self.target_schema.type_name, fields_to_load, mapped_query, limit)
+        return index_cursor.get_results(self.target_schema.delta)
 
     def __and__(self, other):
         return ANDQuery(self, other)
@@ -78,7 +84,7 @@ class MATCHANYQuery(Query):
     def __init__(self, doc, value):
         self.field = doc
         self.value = value
-        self.queried_doc = doc
+        self.target_schema = doc
 
 
 class PHRASEQuery(Query):
@@ -90,15 +96,15 @@ class INQuery(Query):
     operation = 'in_'
 
 
-class ANDQuery(object):
+class ANDQuery(Query):
 
     operation = 'and_'
 
     def __init__(self, q1, q2):
-        assert(q1.queried_doc == q2.queried_doc)
+        assert(q1.target_schema == q2.target_schema)
         self.q1 = q1
         self.q2 = q2
-        self.queried_doc = q1.queried_doc
+        self.target_schema = q1.target_schema
 
     def __call__(self, mapper):
         op = getattr(mapper, self.operation)

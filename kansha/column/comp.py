@@ -8,23 +8,25 @@
 # this distribution.
 #--
 
-from nagare import component, var, security, i18n
 from nagare.i18n import _
+from nagare import component, editor, i18n, security, var, validator as nagare_validator
+
+from kansha import title
+from kansha import events
+from kansha import exceptions
+from kansha.toolbox import popin, overlay
+from kansha.card import Card, NewCard
 
 from .models import DataColumn
-from ..toolbox import popin, overlay
-from ..card import (comp as card, fts_schema)
-from ..title import comp as title
-from ..card.models import DataCard
-from .. import exceptions, notifications
 
 
-class Column(object):
+class Column(events.EventHandlerMixIn):
 
     """Column component
     """
 
-    def __init__(self, id_, board, assets_manager, search_engine, data=None):
+    def __init__(self, id_, board, card_extensions, action_log, card_filter,
+                 search_engine_service, services_service, data=None):
         """Initialization
 
         In:
@@ -32,36 +34,84 @@ class Column(object):
         """
         self.db_id = id_
         self._data = data
-        data = data if data else self.data
         self.id = 'list_' + str(self.db_id)
         self.board = board
-        self.nb_card = var.Var(data.nb_max_cards)
-        self.assets_manager = assets_manager
-        self.search_engine = search_engine
+        self._services = services_service
+        self.action_log = action_log
+        self.card_filter = card_filter
+        self.search_engine = search_engine_service
+        self.card_extensions = card_extensions
         self.body = component.Component(self, 'body')
-        self.title = component.Component(ColumnTitle(self))
-        self.title.on_answer(lambda v: self.title.call(model='edit'))
+        self.title = component.Component(
+            title.EditableTitle(self.get_title)).on_answer(self.set_title)
         self.card_counter = component.Component(CardsCounter(self))
-        self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
-                      for c in data.cards]
+        self._cards = None
         self.new_card = component.Component(
-            card.NewCard(self)).on_answer(self.create_card)
+            NewCard(self))
 
-        self.actions_comp = component.Component(self, 'overlay')
-        self.actions_overlay = component.Component(overlay.Overlay(
-            lambda r: r.i(class_='icon-white icon-edit'),
-            self.actions_comp.render,
-            title=_('List actions'), dynamic=False))
+    @property
+    def cards(self):
+        if self._cards is None:
+            self._cards = [
+                component.Component(
+                    self._services(
+                        Card, c.id,
+                        self.card_extensions,
+                        self.action_log,
+                        self.card_filter,
+                        data=c))
+                for c in self.data.cards]
+        return self._cards
 
-    def actions(self, data, comp):
-        if data[0] == 'delete':
-            comp.answer(data[1])
-        elif data[0] == 'set_limit':
-            self.card_counter.call(model='edit')
-        elif data[0] == 'purge':
-            for card in self.cards:
-                card().delete()
-            self.reload()
+    def update(self, other):
+        self.data.update(other.data)
+        cards_to_index = []
+        for card_comp in other.cards:
+            card = card_comp()
+            new_card = self.create_card(card.get_title())
+            new_card.update(card)
+            cards_to_index.append(new_card)
+        self.index_cards(cards_to_index)
+
+    def index_cards(self, cards, update=False):
+        for card in cards:
+            card.add_to_index(self.search_engine, self.board.id, update=update)
+        self.search_engine.commit(True)
+
+    def actions(self, action, comp):
+        if action == 'empty':
+            self.empty()
+        elif action == 'delete':
+            self.emit_event(comp, events.ColumnDeleted, comp)
+        elif action == 'purge':
+            self.purge_cards()
+        self.emit_event(comp, events.SearchIndexUpdated)
+
+    def ui_create_card(self, comp, title):
+        card = self.create_card(title)
+        if card:
+            self.index_cards([card])
+            self.emit_event(comp, events.SearchIndexUpdated)
+            self.card_filter.reset()
+
+    def on_event(self, comp, event):
+        if event.is_(events.CardClicked):
+            card_comp = event.data
+            card_comp.becomes(popin.Popin(card_comp, 'edit'))
+        elif event.is_(events.ParentTitleNeeded):
+            return self.get_title()
+        elif event.is_(events.CardEditorClosed):
+            card_bo = event.emitter
+            slot = event.data
+            slot.becomes(card_bo)
+            # if card has been edited, reindex
+            if security.has_permissions('edit', card_bo):
+                card_bo.add_to_index(self.search_engine, self.board.id, update=True)
+                self.search_engine.commit(True)
+                self.emit_event(comp, events.SearchIndexUpdated)
+            card_bo.refresh()
+        elif event.is_(events.CardArchived):
+            self.remove_card_by_id(event.last_relay.id)
 
     @property
     def data(self):
@@ -93,112 +143,110 @@ class Column(object):
             return i18n._(u'Archived cards')
         return self.data.title
 
-    @property
-    def favorites(self):
-        """Return favorites users for a given column
-
-        Ask favorites to board
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        return self.board.favorites
-
-    def get_most_used_users(self):
-        """Return the most used users in this column
-
-        Return:
-            - a dictionary {'username', 'nb used'}
-        """
-        most_used_users = {}
-        for c in self.cards:
-            # Test if c() is a Card instance and not Popin instance
-            if isinstance(c(), card.Card):
-                for m in c().members:
-                    username = m().username
-                    most_used_users[username] = most_used_users.get(username, 0) + 1
-        return most_used_users
-
-    def remove_board_member(self, member):
-        """Remove member from board
-
-        Remove member from board. If member is PendingUser then remove
-        invitation.
-
-        In:
-            - ``member`` -- Board Member instance to remove
-        """
-        for c in self.cards:
-            if isinstance(c(), card.Card):
-                c().remove_board_member(member)
-
-    def get_authorized_users(self):
-        """Return users authorized to be add on this column"""
-        return set(self.board.get_authorized_users())
-
-    def get_pending_users(self):
-        return set(self.board.get_pending_users())
-
-    def delete(self):
+    def delete(self, purge=False):
         """Delete itself"""
-        for card in self.cards:
-            self.archive_card(card())
+        if not self.data:
+            return
+        if purge:
+            self.purge_cards()
+        else:
+            self.empty()
         DataColumn.delete_column(self.data)
 
-    def move_cards(self, cards):
-        """Replace self.cards by cards
+    def empty(self):
+        # FIXME: move this function to board only, use Events
+        self.board.archive_cards([card() for card in self.cards], self)
+        self._cards = None
+
+    def remove_card_comp(self, card):
+        self.cards.remove(card)
+        business = card()
+        if isinstance(business, popin.Popin):
+            business = business.get_business_object()
+        self.data.remove_card(business.data)
+
+    def remove_card_by_id(self, card_id):
+        """Remove card and return corresponding Component."""
+        # find component
+        card_comp = filter(lambda x: x().id == card_id, self.cards)[0]
+        try:
+            self.remove_card_comp(card_comp)
+        except (IndexError, ValueError):
+            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
+        return card_comp
+
+    def insert_card(self, index, card):
+        inserted = False
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card.data):
+            self.cards.insert(index, component.Component(card))
+            inserted = True
+        return inserted
+
+    def insert_card_comp(self, comp, index, card_comp):
+        inserted = False
+        card = card_comp()
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.insert_card(index, card_comp().data):
+            self.cards.insert(index, card_comp)
+            card_comp.on_answer(self.handle_event, comp)
+            inserted = True
+        return inserted
+
+    def delete_card(self, card):
+        """Delete card
 
         In:
-            - ``cards`` -- list of Card instances wrapped on component
+            - ``card`` -- card to delete
         """
+        self.cards.pop(card.index)
+        values = {'column_id': self.id, 'column': self.get_title(), 'card': card.get_title()}
+        card.action_log.add_history(
+            security.get_user(),
+            u'card_delete', values)
+        self.search_engine.delete_document(card.schema, card.id)
+        self.search_engine.commit()
+        card.delete()
+        self.data.delete_card(card.data)
 
-        self.cards = cards
-        # remove cards for data part
-        self.data.cards = []
-        for card_index, card in enumerate(cards):
-            card().move_card(card_index, self)
+    def purge_cards(self):
+        for card_comp in self.cards:
+            card = card_comp()
+            values = {'column_id': self.id, 'column': self.get_title(), 'card': card.get_title()}
+            card.action_log.add_history(
+                security.get_user(),
+                u'card_delete', values)
+            card.delete()
+            self.search_engine.delete_document(card.schema, card.id)
+        del self.cards[:]
+        self.search_engine.commit()
+        self.data.purge_cards()
 
-    def move_card(self, card_id, index):
-        found = False
-        for card_index, card in enumerate(self.data.cards):
-            if 'card_%s' % card.id == card_id:
-                found = True
-                break
-        if not found:
-            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        data_column = self.data
-        card = data_column.cards.pop(card_index)
-        data_column.cards.insert(index, card)
-        self.reorder()
-        card = self.cards.pop(card_index)
-        self.cards.insert(index, card)
+    def append_card(self, card):
+        # TODO: when column extensions are introduced, generalize this
+        if self.card_counter().check_add(card) and self.data.append_card(card.data):
+            self.cards.append(component.Component(card))
 
-    def reorder(self):
-        self.data.reorder()
+    def create_card(self, text=''):
+        """Create a new card
 
-    def remove_card(self, card_id):
-        found = False
-        for card_index, card in enumerate(self.cards):
-            if card().id == card_id:
-                found = True
-                break
-        if not found:
-            raise ValueError(u'Card has been deleted or does not belong to this list anymore')
-        removed_card = self.cards.pop(card_index)
-        self.reorder()
-        return removed_card
-
-    def insert_card(self, card, index):
-        self.cards.insert(index, card)
-        card().move_card(index, self)
-        data_column = self.data
-        c = data_column.cards
-        c.remove(card().data)
-        c.insert(index, card().data)
-        self.reorder()
-
-    def get_available_labels(self):
-        return self.board.labels
+        In:
+            - ``text`` -- the title of the new card
+        """
+        if text:
+            if not self.can_add_cards:
+                raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
+            new_card = self.data.create_card(text, security.get_user().data)
+            card_obj = self._services(Card, new_card.id, self.card_extensions, self.action_log,
+                                      self.card_filter)
+            self.cards.append(component.Component(card_obj, 'new'))
+            values = {'column_id': self.id,
+                      'column': self.get_title(),
+                      'card': new_card.title}
+            card_obj.action_log.add_history(
+                security.get_user(),
+                u'card_create', values)
+            return card_obj
 
     def change_index(self, new_index):
         """Change index of the column
@@ -208,80 +256,7 @@ class Column(object):
         """
         self.data.index = new_index
 
-    def create_card(self, text=''):
-        """Create a new card
-
-        In:
-            - ``text`` -- the title of the new card
-        """
-        if text:
-            if self.can_add_cards:
-                new_card = DataCard.create_card(self.data, text, security.get_user().data)
-                self.cards.append(component.Component(card.Card(new_card.id,
-                                                                self,
-                                                                self.assets_manager),
-                                                      'new'))
-                values = {'column_id': self.id,
-                          'column': self.title().text,
-                          'card': new_card.title}
-                notifications.add_history(self.board.data, new_card,
-                                          security.get_user().data,
-                                          u'card_create', values)
-                scard = fts_schema.Card.from_model(new_card)
-                self.search_engine.add_document(scard)
-                self.search_engine.commit()
-            else:
-                raise exceptions.KanshaException(_('Limit of cards reached fo this list'))
-
-    def delete_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.title().text, 'card': c.title().text}
-        notifications.add_history(self.board.data, c.data,
-                                  security.get_user().data,
-                                  u'card_delete', values)
-        self.search_engine.delete_document(fts_schema.Card, c.db_id)
-        self.search_engine.commit()
-        c.delete()
-
-    def reload(self):
-        self.cards = [component.Component(card.Card(c.id, self, self.assets_manager, c))
-                      for c in self.data.cards]
-
-    def archive_card(self, c):
-        """Delete card
-
-        In:
-            - ``c`` -- card to delete
-        """
-        self.cards = [card for card in self.cards if c != card()]
-        values = {'column_id': self.id, 'column': self.title().text, 'card': c.title().text}
-        notifications.add_history(self.board.data, c.data, security.get_user().data, u'card_archive', values)
-        self.board.archive_card(c)
-
-    def edit_card(self, c):
-        """Wraps a card component into a popin component.
-
-        In:
-            - ``c`` -- card to edit (or delete)
-
-        """
-        if c.call(popin.Popin(c, 'edit')) == 'delete':
-            self.archive_card(c())
-        else:
-            # the card has just been edited
-            # as we don't know how, reindex everything
-            scard = fts_schema.Card.from_model(c().data)
-            self.search_engine.update_document(scard)
-            self.search_engine.commit()
-            c().reload()
-
     def set_nb_cards(self, nb_cards):
-
         self.data.nb_max_cards = int(nb_cards) if nb_cards else None
 
     @property
@@ -303,66 +278,64 @@ class Column(object):
     def is_archive(self):
         return self.data.archive
 
+    @is_archive.setter
+    def is_archive(self, value):
+        self.data.archive = value
 
-class NewColumn(object):
+
+class NewColumnEditor(object):
 
     """Column creator component
     """
 
-    def __init__(self, board):
+    def __init__(self, columns_count):
         """Initialization
 
         In:
             - ``board`` -- the board the new column will belong
         """
-        self.board = board
-        self.index = var.Var()
-        self.title = var.Var()
-        self.nb_cards = var.Var()
-        self.nb_cards_comp = component.Component(self, 'nb_cards')
+        self.columns_count = columns_count
+        self.index = editor.Property(u'').validate(nagare_validator.to_int)
+        self.title = editor.Property(u'')
+        self.title.validate(lambda v: nagare_validator.to_string(v.strip()).not_empty(_(u'''Can't be empty''')))
+        self.nb_cards = editor.Property(u'').validate(self.validate_nb_cards)
 
-    def count_board_columns(self):
-        """Return the number of columns in the board
-        """
-        return len(self.board.columns)
+    def is_validated(self):
+        return all((
+            self.index.error is None,
+            self.title.error is None,
+            self.nb_cards.error is None
+        ))
 
-    def create_column(self, comp):
-        """Create the column.
+    def validate_nb_cards(self, value):
+        if value:
+            return nagare_validator.to_int(value)
+        return value
 
-        Create new column and call the model "closed" on component
+    def commit(self, comp):
+        if self.is_validated():
+            comp.answer((self.index.value, self.title.value, self.nb_cards.value))
 
-        In:
-            - ``comp`` -- component
-        """
-        nb_cards = int(self.nb_cards()) if self.nb_cards() else ''
-        id = self.board.create_column(self.index(), self.title(), nb_cards or None)
-        col_id = 'list_' + str(id)
-
-        return "YAHOO.kansha.app.toggleMenu('boardNavbar');reload_columns();YAHOO.kansha.app.saveLimit('%s',%s)" % (col_id, nb_cards or 0)
-
-
-class ColumnTitle(title.Title):
-
-    """Column title component
-    """
-    model = DataColumn
-    field_type = 'input'
+    def cancel(self, comp):
+        comp.answer(None)
 
 
+# TODO: move data from column to CardsCounter model and make it a column extension
 class CardsCounter(object):
 
     def __init__(self, column):
         self.column = column
         self.id = self.column.id + '_counter'
-        self.text = self.get_label()
+        self.text = str(self.column.nb_max_cards or 0)
         self.error = None
+        self.editable_counter = component.Component(self)
 
-    def get_label(self):
-        if self.column.nb_max_cards:
-            label = str(self.column.count_cards) + '/' + str(self.column.nb_max_cards)
-        else:
-            label = str(self.column.count_cards)
-        return label
+    # Public methods
+
+    def check_add(self, card=None):
+        return not self.column.nb_max_cards or self.column.count_cards < self.column.nb_max_cards
+
+    # Private methods
 
     def change_nb_cards(self, text):
         """Change the title of our wrapped object
@@ -381,17 +354,12 @@ class CardsCounter(object):
     def reset_error(self):
         self.error = None
 
-    def cancel(self, comp):
-        self.reset_error()
-        comp.answer()
-
     def validate(self, text, comp):
         self.reset_error()
         nb = int(text) if text else 0
         count = self.column.count_cards
-        if not nb:
-            comp.answer(self.change_nb_cards(nb))
-        elif nb >= count:
-            comp.answer(self.change_nb_cards(nb))
+        if not nb or nb >= count:
+            self.change_nb_cards(nb)
+            comp.answer()
         else:
             self.error = _('Must be bigger than %s') % count

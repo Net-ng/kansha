@@ -10,20 +10,17 @@
 
 import datetime
 
-from nagare import presentation, component
 from nagare.i18n import _
+from nagare import presentation, component
+from nagare.namespaces.xhtml import absolute_url
 
 from kansha import VERSION
-from .database import forms as database_form
-from .oauth import forms as oauth
-from .ldap import forms as ldap
 
 
 class Header(object):
-
-    def __init__(self, banner, custom_css):
+    def __init__(self, banner, theme):
         self.banner = banner
-        self.custom_css = custom_css
+        self.theme = theme
 
 
 @presentation.render_for(Header)
@@ -35,9 +32,11 @@ def render_Header(self, h, comp, *args):
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/login.css')
-    if self.custom_css:
-        h.head.css_url(self.custom_css)
+    h.head.css_url('css/themes/fonts.css?v=2c')
+    h.head.css_url('css/themes/kansha.css?v=2c')
+    h.head.css_url('css/themes/login.css?v=2c')
+    h.head.css_url('css/themes/%s/kansha.css?v=2c' % self.theme)
+    h.head.css_url('css/themes/%s/login.css?v=2c' % self.theme)
 
     with h.div(class_='header'):
         with h.a(href=h.request.application_url):
@@ -47,26 +46,21 @@ def render_Header(self, h, comp, *args):
 
 
 class Login(object):
-
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, cfg, assets_manager):
+    def __init__(self, app_title, app_banner, favicon, theme, cfg, authentication_service, services_service):
         """Login components
 
         """
-        logins = []
-        auth_cfg = cfg['auth_cfg']
-        if auth_cfg['dbauth']['activated']:
-            logins.append(database_form.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['dbauth']))
-        if auth_cfg['oauth']['activated']:
-            logins.append(oauth.Login(app_title, app_banner, custom_css, mail_sender, auth_cfg['oauth']))
-        if auth_cfg['ldapauth']['activated']:
-            logins.append(ldap.Login(auth_cfg['ldapauth'], assets_manager))
 
         self.app_title = app_title
+        self.favicon = favicon
+        logins = []
+        for each in authentication_service:
+            logins.append(services_service(authentication_service[each], app_title, app_banner, theme))
         self.logins = [component.Component(login) for login in logins]
         self.header = component.Component(
             Header(
                 cfg['pub_cfg']['banner'],
-                custom_css
+                theme
             )
         )
         self.disclaimer = cfg['pub_cfg']['disclaimer']
@@ -74,6 +68,11 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render_Login(self, h, comp, *args):
+
+    favicon_url = absolute_url(self.favicon, h.head.static_url)
+    h.head << h.head.link(rel="icon", type="image/x-icon", href=favicon_url)
+    h.head << h.head.link(rel="shortcut icon", type="image/x-icon", href=favicon_url)
+    h.head << h.head.title(self.app_title)
     with h.body(class_='body-login slots%s' % len(self.logins)):
         h << self.header
         with h.div(class_='title'):

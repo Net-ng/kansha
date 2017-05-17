@@ -1,0 +1,57 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/*Home page*/
+
+.home .boards {
+    color: inherit;
+    font-size: 15px;
+}
+
+.home h1 {
+    border-top: 1px solid #c0c0c0;
+    padding-top: 5px;
+    margin-bottom: 5px;
+}
+
+.home .boards ul.board-labels .label-title {
+    font-size: 110%
+}
+
+.board-labels li:hover {
+    background: #EAEAEA;
+}
+
+.board-labels .archived-item:hover {
+    background: initial;
+}
+
+/* End board labels */
+
+.info-message {
+    font: normal 15px OpenSansSemibold;
+    color: #008000;
+}
+
+/* Responsive medium size */
+@media (max-width:813px) {
+    .home .menu {
+        border-right: 0;
+        border-bottom: 1px solid #c0c0c0;
+    }
+
+    .home .menu a.active {
+        border: 1px solid #c0c0c0;
+        border-bottom: 0;
+    }
+}
+
+i.ico-btn.icon-user-plus {
+    font-size: 22px;
+}

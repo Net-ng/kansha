@@ -33,8 +33,6 @@ def main():
         for user in unconfirmed_users:
             for vote in user.votes:
                 vote.delete()
-            for bm in user.board_members:
-                bm.delete()
             user.delete()
             log.info('- %s (%s) removed' % (user.fullname, user.username))
 

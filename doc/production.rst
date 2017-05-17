@@ -38,13 +38,11 @@ Then configure Kansha (:ref:`configuration_guide`).
 
 In any case, you always need to::
 
-    $ <VENV_DIR>/bin/nagare-admin create-db --no-populate </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin create-db </path/to/your/kansha.cfg>
     $ <VENV_DIR>/bin/kansha-admin alembic-stamp head </path/to/your/kansha.cfg>
     $ <VENV_DIR>/bin/kansha-admin create-index </path/to/your/kansha.cfg>
 
 When you **first** deploy.
-
-The ``--no-populate`` option ensures that the default users (*user1*, *user2* and *user3*) are not created.
 
 Deployment behind a web server
 ------------------------------
@@ -190,6 +188,10 @@ Upgrading a production site
 
 We mean *upgrading Kansha* while keeping your data.
 
+**Beware!** The configuration file format changed since Kansha 2.0.0. If you are upgrading from a 1.0.X version,
+you have to convert your configuration file to the new format first, see :ref:`configuration_guide`.
+
+
 Just type::
 
     $ <VENV_DIR>/bin/easy_install --upgrade kansha
@@ -199,8 +201,6 @@ Just type::
 Or, if you want a specific version instead of the latest release (replace X, Y and Z with the actual numbers)::
 
     $ <VENV_DIR>/bin/easy_install kansha==X.Y.Z
-
-Migrate database and/or indexes (more to come).
 
 Update the rewrite rules for static resources.
 

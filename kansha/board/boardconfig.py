@@ -7,15 +7,18 @@
 # the file LICENSE.txt, which you should have received as part of
 # this distribution.
 #--
+from collections import OrderedDict
 
-from nagare import component, security, var
+from nagare import i18n
+from nagare import editor
 from nagare.i18n import _
+from nagare import security
+from nagare import component
+from nagare import validator, var
 
 from kansha import notifications
-from ..label import comp as label
-from nagare import editor
-from nagare import validator
-from nagare import i18n
+from kansha.menu import MenuEntry
+from kansha import title
 
 
 class BoardConfig(object):
@@ -29,26 +32,24 @@ class BoardConfig(object):
             - ``board`` -- the board object will want to configure
         """
         self.board = board
-        self.menu = [(_(u'Profile'), BoardProfile)]
+        self.menu = OrderedDict()
+        self.menu['profile'] = MenuEntry(_(u'Profile'), 'icon-profile', BoardProfile)
         if security.has_permissions('manage', self.board):
-            self.menu.append((_(u'Card labels'), BoardLabels))
-            self.menu.append((_(u'Card weights'), BoardWeights))
-            self.menu.append((_(u'Background'), BoardBackground))
+            self.menu['labels'] = MenuEntry(_(u'Card labels'), 'icon-price-tag', BoardLabels)
+            self.menu['weights'] = MenuEntry(_(u'Card weights'), 'icon-meter', BoardWeights)
+            self.menu['background'] = MenuEntry(_(u'Background'), 'icon-paint-format', BoardBackground)
         self.selected = None
         self.content = component.Component(None)
-        self.select(self.menu[0][0])
+        self.select(self.menu.iterkeys().next())
 
     def select(self, v):
         """Select a configuration menu item
 
         In:
-            - ``v`` -- the label of the menu item we want to show
+            - ``v`` -- the id_ of the menu item we want to show
         """
-        for label, o in self.menu:
-            if label == v:
-                self.content.becomes(o(self.board))
-                self.selected = v
-                break
+        self.selected = v
+        self.content.becomes(self.menu[v].content(self.board))
 
 
 class BoardLabels(object):
@@ -63,10 +64,10 @@ class BoardLabels(object):
         """
         self.board = board
         self.labels = []
-        for data in board.labels:
-            new_label = label.Label(data)
-            t = component.Component(label.LabelTitle(new_label))
-            l = component.Component(new_label, model='edit-color')
+        for label in board.labels:
+            t = component.Component(title.EditableTitle(label.get_title))
+            t.on_answer(label.set_title)
+            l = component.Component(label, model='edit-color')
             self.labels.append((t, l))
 
 
@@ -81,7 +82,6 @@ class BoardWeights(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
-        self._changed = var.Var(False)
         self._weights_editor = component.Component(WeightsSequenceEditor(self))
 
     @property
@@ -94,11 +94,6 @@ class BoardWeights(object):
 
     def activate_weighting(self, weighting_type):
         self.board.activate_weighting(weighting_type)
-        self._changed(True)
-
-    def deactivate_weighting(self):
-        self.board.deactivate_weighting()
-        self._changed(True)
 
 
 class WeightsSequenceEditor(editor.Editor):
@@ -114,24 +109,27 @@ class WeightsSequenceEditor(editor.Editor):
         """
         super(WeightsSequenceEditor, self).__init__(target, self.fields)
         self.weights.validate(self.validate_sequence)
+        self.feedback = ''
 
     def validate_sequence(self, value):
         try:
             res = validator.StringValidator(value, strip=True).not_empty(msg=i18n._("Required field")).to_string()
-        except:
+        except ValueError:
             raise
         if res:
             try:
                 weights = res.split(',')
                 for weight in weights:
-                    res = validator.IntValidator(weight).to_int()
-            except:
-                raise ValueError(i18n._('Must be composed of integers'))
+                    res = validator.IntValidator(weight).greater_or_equal_than(0).to_int()
+            except ValueError:
+                raise ValueError(i18n._('Must be positive integers'))
         return value
 
     def commit(self):
+        self.feedback = ''
         if self.is_validated(self.fields):
             super(WeightsSequenceEditor, self).commit(self.fields)
+            self.feedback = i18n._('Sequence saved')
             return True
         return False
 
@@ -147,7 +145,6 @@ class BoardProfile(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
-        self._changed = var.Var(False)
 
     def allow_comments(self, v):
         """Changes comments permissions
@@ -177,8 +174,7 @@ class BoardProfile(object):
         return notifications.notifications_allowed(security.get_user(), self.board)
 
     def set_archive(self, value):
-        self.board.set_archive(value)
-        self._changed(True)
+        self.board.show_archive = value
 
 
 class BoardBackground(object):
@@ -193,4 +189,19 @@ class BoardBackground(object):
             - ``board`` -- the board object we are working on
         """
         self.board = board
-        self._changed = var.Var(False)
+        self.background_position = var.Var(self.board.background_image_position)
+
+    def set_background_position(self):
+        self.board.set_background_position(self.background_position())
+
+    def set_background(self, img):
+        self.board.set_background_image(img)
+
+    def reset_background(self):
+        self.board.set_background_image(None)
+
+    def set_color(self, color):
+        self.board.set_title_color(color)
+
+    def reset_color(self):
+        self.board.set_title_color('')

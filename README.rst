@@ -6,6 +6,7 @@ KANSHA
 |travis|
 |coverage|
 |climate|
+|gitter|
 
 ..
     |requires|
@@ -15,7 +16,7 @@ Kansha is an open source web application to manage and share collaborative scrum
 Kansha works with Firefox, Chrome, Internet Explorer 9 and above, Safari 7 and above.
 
 
-.. image:: doc/_static/satory_project.png
+.. image:: https://github.com/Net-ng/kansha/raw/master/doc/_static/satory_project.png
    :target: http://demo.kansha.org
 
 Quickstart
@@ -68,3 +69,7 @@ Join us!
 .. |pypiv| image:: https://img.shields.io/pypi/dw/kansha.svg
      :target: https://pypi.python.org/pypi/kansha/
      :alt: PyPI entry
+
+.. |gitter| image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/Net-ng/kansha
+   :target: https://gitter.im/Net-ng/kansha?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge

@@ -1,0 +1,148 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/*Home page*/
+.home {
+    padding: 100px 20px 54px 0;
+}
+
+.home input:disabled {
+    margin-bottom: 10px;
+}
+
+.home .boards a.archive,
+.home .boards a.restore,
+.home .boards a.delete,
+.home .boards a.add,
+.home .boards a.leave {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+}
+
+.home .boards div.add {
+    margin-right: 2px;
+    vertical-align: middle;
+    visibility: hidden;
+}
+
+.home .boards ul.board-labels li:hover .add,
+.home .boards ul.board-labels li:hover a.archive,
+.home .boards ul.board-labels li:hover a.restore,
+.home .boards ul.board-labels li:hover a.delete,
+.home .boards ul.board-labels li:hover a.add,
+.home .boards ul.board-labels li:hover a.leave {
+    visibility: visible;
+}
+
+.home .boards ul.board-labels {
+    padding-left: 0;
+    margin-bottom: 17px;
+    max-width: 800px;
+}
+
+.home .boards ul.board-labels li {
+    padding: 0 5px;
+}
+
+.home .boards ul.board-labels li .boardItemLabel {
+    width: calc(100% - 220px);
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.home .boards ul.board-labels li .actions {
+    display: inline-block;
+    width: 220px;
+    text-align: right;
+}
+
+.home .new-board {
+    padding: 14px 10px;
+}
+
+.home .new-board select {
+    width: auto;
+}
+
+.home .boards .list {
+    height: auto;
+}
+
+.boards { margin-bottom: 50px; }
+
+
+.boards input[type=text],
+.boards input[type=password],
+.boards input[type=file],
+.boards select,
+.boards textarea {
+    width: 80%;
+}
+
+/* Board labels */
+.boards .compact {
+    display: none;
+}
+
+/* End board labels */
+
+.info-message {
+    display: block;
+    position: relative;
+}
+
+/* Responsive medium size */
+@media (max-width:813px) {
+    .home { padding: 60px 20px 0 20px; }
+
+    .home .menu {
+        width: 100%;
+    }
+
+    .home .menu li {
+        display: inline-block;
+        padding: 0;
+    }
+
+    .home .menu a {
+        padding: 10px 20px;
+        margin: 0;
+    }
+
+    .home .menu, .home .boards { width: 100%; }
+
+    form {
+        width: 100%;
+    }
+
+    .boards input[type=text], .boards input[type=password], .boards input[type=file], .boards select, .boards textarea {
+        width: 90%;
+    }
+}
+
+/* Responsive small size */
+@media all and (max-width:640px) {
+    .home .boards .wide {
+        display: none;
+    }
+
+    .home .boards .compact {
+        display: inline-block;
+    }
+
+    .home .boards ul.board-labels li .boardItemLabel {
+        width: calc(100% - 100px);
+    }
+
+    .home .boards ul.board-labels li .actions {
+        width: 100px;
+    }
+}

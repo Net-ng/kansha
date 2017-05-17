@@ -8,13 +8,14 @@
 # this distribution.
 #--
 
-from nagare import presentation, component, ajax, var
 from nagare.i18n import _
+from nagare import presentation, component, ajax, var
 
-from ..authentication.database import validators
-from ..toolbox import overlay, remote
+from kansha import validator
+from kansha.toolbox import overlay, remote
+
+from .usermanager import NewMember
 from .comp import User, PendingUser
-from .usermanager import AddMembers, NewMember
 
 
 @presentation.render_for(User)
@@ -23,7 +24,7 @@ def render_User(self, h, comp, *args):
     h << comp.render(h, "avatar")
     with h.div(class_="name"):
         h << comp.render(h, model="fullname")
-        h << h.span(self.data.email, class_="email")
+        h << h.span(self.data.email or self.data.email_to_confirm, class_="email")
     return h.root
 
 
@@ -31,7 +32,11 @@ def render_User(self, h, comp, *args):
 def render_User_avatar(self, h, comp, model, *args):
     """Render a user's avatar"""
     with h.span(class_='avatar', title='%s' % (self.data.fullname)):
-        h << h.img(src=self.get_avatar())
+        avatar = self.get_avatar()
+        if avatar:
+            h << h.img(src=avatar)
+        else:
+            h << h.i(class_='ico-btn icon-user')
     return h.root
 
 
@@ -76,7 +81,7 @@ def render_User_remove(self, h, comp, *args):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=lambda: comp.answer(self.username)))
+                             class_="btn btn-primary delete").action(ajax.Update(action=lambda: comp.answer(self.username)))
     return h.root
 
 
@@ -89,16 +94,16 @@ def render_User_manager(self, h, comp, model):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(
-                        value=_("Manager"),
-                        type="submit",
-                        class_=("btn btn-primary btn-small toggle" if model == 'manager'
-                                else "btn btn-primary btn-small")
-                     ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
+                    value=_("Manager"),
+                    type="submit",
+                    class_=("btn btn-primary toggle" if model == 'manager'
+                            else "btn btn-primary")
+                ).action(ajax.Update(action=lambda: comp.answer('toggle_role')))
                 h << h.input(
-                        value=_("Remove"),
-                        type="submit",
-                        class_="btn btn-primary btn-small remove"
-                    ).action(ajax.Update(action=lambda: comp.answer('remove')))
+                    value=_("Remove"),
+                    type="submit",
+                    class_="btn btn-primary delete"
+                ).action(ajax.Update(action=lambda: comp.answer('remove')))
     return h.root
 
 
@@ -115,8 +120,8 @@ def render_User_last_manager(self, h, comp, *args):
 @presentation.render_for(User, model="menu")
 def render_User_menu(self, h, comp, *args):
     """Render user menu"""
-    h << h.a(_("Home"), id="linkHome").action(lambda: comp.answer(self))
-    h << h.a(_("Logout"), id="logout").action(comp.answer)
+    h << h.li(h.a(h.i(class_='icon-home'), _("Home"), class_="home").action(lambda: comp.answer(self)))
+    h << h.li(h.a(h.i(class_='icon-switch'), _("Logout"), class_="logout").action(comp.answer))
     return h.root
 
 
@@ -131,11 +136,11 @@ def render_User_detailed(self, h, comp, *args):
 @presentation.render_for(User, model="friend")
 def render_User_friend(self, h, comp, *args):
     h << h.a(comp.render(h, "avatar")).action(
-        remote.Action(lambda: comp.answer(self.data.email)))
+        remote.Action(lambda: comp.answer([self.data.email or self.data.email_to_confirm])))
     return h.root
 
 
-@presentation.render_for(AddMembers)
+@presentation.render_for(NewMember, model='add_members')
 def render_AddMembers(self, h, comp, *args):
     value = var.Var('')
     submit_id = h.generate_id('form')
@@ -145,12 +150,20 @@ def render_AddMembers(self, h, comp, *args):
         h << h.input(type='text', id=self.text_id)
         h << h.input(type='hidden', id=hidden_id).action(value)
         h << self.autocomplete
-        h << h.script(u'''%(ac_id)s.itemSelectEvent.subscribe(function(sType, aArgs) {
-    var value = aArgs[2][0];
-    YAHOO.util.Dom.setAttribute('%(hidden_id)s', 'value', value);
-    YAHOO.util.Dom.get('%(submit_id)s').click();
-});''' % {'ac_id': self.autocomplete().var, 'hidden_id': hidden_id, 'submit_id': submit_id})
-        h << h.script('''document.getElementById('%s').focus()''' % self.text_id, type='text/javascript', language='javascript')
+        h << h.script(
+            u"%(ac_id)s.itemSelectEvent.subscribe(function(sType, aArgs) {"
+            u"var value = aArgs[2][0];"
+            u"YAHOO.util.Dom.setAttribute(%(hidden_id)s, 'value', value);"
+            u"YAHOO.util.Dom.get(%(submit_id)s).click();"
+            u"});" % {
+                'ac_id': self.autocomplete().var,
+                'hidden_id': ajax.py2js(hidden_id),
+                'submit_id': ajax.py2js(submit_id)
+            }
+        )
+        h << h.script(
+            "document.getElementById(%s).focus()" % ajax.py2js(self.text_id)
+        )
         h << h.button(id=submit_id, style='display:none').action(remote.Action(lambda: comp.answer([] if not value() else [value()])))
     return h.root
 
@@ -166,19 +179,23 @@ def render_NewMember(self, h, comp, *args):
             for email in members_to_add().split(','):
                 try:
                     email = email.strip()
-                    email = validators.validate_email(email)
+                    email = validator.validate_email(email)
                     emails.append(email)
                 except ValueError:
                     continue
             return emails
 
         h << h.input(type='text', id=self.text_id,).action(members_to_add)
-        h << h.input(value=_("Add"), type="submit",
-                     class_="btn btn-primary btn-small"
-                     ).action(remote.Action(lambda: comp.answer(get_emails())))
+        mail_input = h.input(value=_("Add"), type="submit",
+                             class_="btn btn-primary"
+                            ).action(remote.Action(lambda: comp.answer(get_emails())))
+        # Sending mail synchronously can take a long time
+        mail_input.set('onclick', 'YAHOO.kansha.app.showWaiter();' + mail_input.get('onclick'))
+        h << mail_input
         h << self.autocomplete
-    h << h.script("""document.getElementById('%s').focus()""" % self.text_id,
-                  type="text/javascript", language="javascript")
+    h << h.script(
+        "document.getElementById(%s).focus()" % ajax.py2js(self.text_id)
+    )
     return h.root
 
 # Pending User
@@ -198,7 +215,7 @@ def render_PendingUser(self, h, comp, *args):
 def render_PendingUser_avatar(self, h, comp, model, *args):
     """Render a user's avatar"""
     with h.span(class_='avatar', title='%s' % (self.username)):
-        h << h.img(src='img/pendingmember.png', class_="pending")
+        h << h.i(class_='ico-btn icon-mail2')
     return h.root
 
 
@@ -210,7 +227,7 @@ def render_PendingUser_pending(self, h, comp, *args):
         with h.span(class_="actions"):
             with h.form:
                 h << h.input(value=_("Resend invitation"), type="submit",
-                             class_="btn btn-primary btn-small").action(ajax.Update(action=lambda: comp.answer('resend')))
+                             class_="btn btn-primary").action(ajax.Update(action=lambda: comp.answer('resend')))
                 h << h.input(value=_("Remove"), type="submit",
-                             class_="btn btn-primary btn-small remove").action(ajax.Update(action=(lambda: comp.answer('remove'))))
+                             class_="btn btn-primary delete").action(ajax.Update(action=(lambda: comp.answer('remove'))))
     return h.root

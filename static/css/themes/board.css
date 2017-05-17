@@ -1,0 +1,1279 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+textarea.expanded {
+    height: 112px;
+}
+
+.buttons {
+    margin: 5px 0;
+}
+
+.loading {
+    padding: 10px;
+}
+
+.loading img {
+    margin-right: 10px;
+}
+
+/* Fix incopatibility between Knacss and fullcalendar */
+#calendar .fc-day-grid {
+    flex: initial;
+    width: auto;
+}
+
+#calendar table {
+    margin-bottom: 0;
+}
+
+/* Display */
+#viewport {
+    height: 100%;
+}
+
+#viewport-wrapper {
+    z-index: 1500;
+    clear: both;
+    height: 100%;
+}
+
+.bbody {
+    position: absolute;
+    top: 115px;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.bbody > div:first-child {
+    height: 100%;
+}
+
+#dnd-frame {
+    z-index: 1000;
+    position: absolute;
+    white-space: normal;
+}
+
+#dnd-frame.list {
+    overflow: hidden
+}
+
+#application {
+    z-index: 2000;
+    height: 100%;
+}
+
+#calendar {
+    margin: 0 10px;
+}
+
+.wrap {
+    height: auto;
+    min-height: 100%;
+    margin: 0 auto -44px;
+}
+
+.container {
+    width: 100%;
+}
+
+/* End display */
+
+/* Board */
+.board-configuration .menu {
+    margin-right: 20px;
+}
+
+.board-configuration .menu li a {
+    padding-left: 5px;
+}
+
+.board-configuration > div:last-child {
+    padding-left: 10px;
+}
+
+.board {
+    height: 100%;
+    width: 100%;
+    overflow-y: hidden; /* board viewport already has one */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+
+.board.fill {
+    background-size: cover;
+}
+
+.board.fit {
+    background-size: contain;
+}
+
+.board.stretch {
+    background-size: 100% 100%;
+}
+
+.board.tile {
+    background-position: top left;
+    background-repeat: repeat;
+}
+
+.board .header {
+    position: fixed;
+    width: 100%;
+    text-align: right;
+}
+
+.board .board-title {
+    padding: 10px 10px;
+    display: inline-block;
+}
+
+.board .board-title a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
+    max-width: calc(100vw - 350px);
+}
+
+.board .board-title .title-form input {
+    margin-right: 5px;
+}
+
+.board-title-color {
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 5px;
+    width: 150px;
+}
+
+/* End board */
+
+/* Lists */
+.nav-list li {
+    padding-left: 10px;
+}
+
+#lists {
+    height: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-right: 10px;
+    vertical-align: top;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.span-auto {
+    max-width: 440px;
+    width: calc(16.666% - 14px);
+}
+
+.list-span-5 .span-auto {
+    width: calc(20% - 14px);
+}
+
+.list-span-4 .span-auto {
+    width: calc(25% - 14px);
+}
+
+.list-span-3 .span-auto {
+    width: calc(33.333% - 14px);
+}
+
+
+.list {
+    display: inline-flex;
+    flex-direction: column;
+    float: none;
+    height: -moz-calc(100% - 21px);
+    height: -webkit-calc(100% - 21px);
+    height: calc(100% - 21px);
+    margin-left: 10px;
+    overflow: hidden;
+    position: relative;
+    vertical-align: top;
+    white-space: normal;
+}
+
+.max-weight-highlight {
+    border-color: red;
+}
+
+.list > .nagare-generated {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    overflow: hidden;
+}
+
+.list > div:first-child {
+    flex: 1 0 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.list.reduced .list-body,
+.list.reduced .list-footer {
+    display: none
+}
+
+.list-header {
+    display: table;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.list-title, .list-counter, .list-actions {
+    display: table-cell;
+}
+
+.list-header .grip {
+    position: absolute;
+    left: 5px;
+    top: 5px
+}
+
+.list-actions {
+    position: relative;
+    width: 30px;
+    text-align: right;
+}
+
+.list-header .list-counter {
+    text-align: right;
+    position: relative;
+    vertical-align: top;
+    width: 50px;
+}
+
+.list-header .list-counter .nagare-error-message {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    display: block;
+    width: 200px;
+    padding: 0 10px;
+    z-index: 50;
+}
+
+.list-header .list-counter .nagare-error-message:before {
+    content: "";
+    display: inline-block;
+    right: 9px;
+    position: absolute;
+    top: -7px;
+}
+
+.list-header .list-counter .nagare-error-message:after {
+    content: "";
+    display: inline-block;
+    right: 10px;
+    position: absolute;
+    top: -6px;
+}
+
+.list-header .list-title {
+    padding-right: 10px;
+}
+
+.list-header .list-counter .title-form {
+    margin: -8px 108px 0 13px;
+    width: 100%
+}
+
+.list-header .list-counter .title-form button {
+    padding: 4px;
+}
+
+.list-header .list-counter .title-form input {
+    width: 100%;
+}
+
+.list-header input {
+    width: 100%;
+}
+
+.list-header .title {
+    padding-top: 3px
+}
+
+a.title,
+a.title:hover,
+a.title:visited {
+    display: block;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-bottom: 4px
+}
+
+.list .list-footer {
+    flex: 0 0 auto;
+    width: 100%;
+    text-align: center;
+}
+
+.list .list-footer-disabled {
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.list .list-footer .link-small {
+    display: block;
+    padding: 8px 0;
+}
+
+.list .list-footer .link-small strong {
+    line-height: 1px !important;
+    position: relative;
+    left: -4px;
+    top: 2px
+}
+
+.list .list-footer input[type="text"] {
+    width: 93%;
+    margin: 5px;
+    resize: none;
+}
+
+.list-footer .btn {
+    margin-left: 5px;
+}
+
+.list-marker {
+    display: inline-block !important;
+    float: none !important;
+    white-space: normal;
+    margin-top: 3px;
+    height: calc(100% - 21px);
+    height: -moz-calc(100% - 21px);
+    height: -webkit-calc(100% - 21px);
+}
+
+.list-body {
+    flex: 1 1 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.list-body h4 {
+    text-align: right;
+    margin: 1em;
+}
+
+/* End lists */
+
+/* Cards */
+.card {
+    min-height: 64px;
+    margin: 8px 4px;
+    padding: 8px 8px 4px 8px;
+    cursor: pointer;
+    word-wrap: break-word;
+}
+
+.card:after {
+    content: "";
+    display: block;
+    clear: both
+}
+
+.card > div > a {
+    display: block;
+}
+
+.card-actions {
+    float: right;
+    width: 140px;
+}
+
+.card-edition {
+    /* dirty fix to restore avatars on the left of comments */
+    margin-left: -45px;
+    overflow: hidden;
+    padding-left: 45px;
+    width: 520px;
+}
+
+.card-actions button i[class^="icon-"],
+.card-actions .btn i[class^="icon-"] {
+    margin-right: 5px;
+    position: relative;
+    top: 1px;
+}
+
+.card .title {
+    padding: 5px 0 5px 0;
+}
+
+/* Card drag n drop */
+.card-marker {
+    margin: 8px 4px;
+}
+
+/* End card drag n drop */
+
+/* Editor */
+.card-edit-form input[type=text],
+.card-edit-form input[type=password],
+.card-edit-form input[type=file],
+.card-edit-form select,
+.card-edit-form textarea {
+    width: 100%;
+}
+
+.card-edit-form .card-actions ul {
+    list-style-type: none;
+    margin-left: 0;
+    width: 100%
+}
+
+.card-edit-form hr {
+    clear: both;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.card-edit-form .header {
+    padding: 10px 0 2px 0;
+    margin-bottom: 10px;
+}
+
+.card-edit-form .header .in-list {
+    margin-left: 5px;
+    display: inline;
+}
+
+.card-edit-form .header .title-form input {
+    padding: 5px;
+    width: 67%;
+    margin-right: 10px
+}
+
+.card-edit-form .header .title > div {
+    display: inline;
+}
+
+.card-edit-form .header .title {
+    word-wrap: break-word;
+    display: inline;
+    line-height: 1.2;
+}
+
+.reminder {
+    font-style: italic;
+    font-size: 75%;
+}
+
+.card-edit-form .description {
+    margin: 0;
+    padding: 14px 0 0 0;
+    margin-bottom: 14px;
+    clear: both;
+    cursor: pointer;
+}
+
+.card-edit-form .description p {
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.description-editor {
+    height: 290px;
+    padding: 4px 6px;
+    margin-top: 3px;
+}
+
+.card-edit-form textarea.expanded {
+    height: 112px;
+}
+
+.card-actions .btn {
+    margin-bottom: 8px;
+    width: 134px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.description-form {
+    position: relative;
+}
+
+.editor-popin {
+    position: absolute;
+    width: 100%;
+    top: -10px;
+}
+
+.editor-popin label {
+    display: inline-block;
+    width: 300px;
+}
+
+/* End editor */
+
+/* Badges */
+.badge {
+    float: right;
+    min-height: 20px;
+    margin-top: 5px;
+    margin-right: 15px;
+    margin-left: 0;
+}
+
+/* End badges */
+
+/* Card overlays */
+.overlay.card-overlay {
+    max-height: 320px;
+    min-width: 280px;
+    overflow: auto;
+    padding: 0 12px 4px 12px;
+}
+
+.card-overlay .members.search .yui-ac-input {
+    width: 100%;
+}
+
+.overlay.card-overlay .avatar {
+    white-space: nowrap
+}
+
+.overlay.card-overlay h2 {
+    line-height: inherit;
+    margin: 0 0 5px;
+    padding-bottom: 4px
+}
+
+.overlay.card-overlay .member {
+    padding-top: 7px;
+    display: table;
+    width: 100%
+}
+
+.overlay.card-overlay .members {
+    display: table;
+    width: 100%;
+    margin-top: 8px
+}
+
+.overlay.card-overlay .members .member {
+    display: table-row;
+    width: 100%;
+    padding-top: 0;
+}
+
+.overlay.card-overlay .member span {
+    display: table-cell;
+}
+
+.overlay.card-overlay .member .avatar {
+    vertical-align: middle;
+}
+
+.overlay.card-overlay .member .name {
+    padding: 4px;
+    white-space: nowrap;
+    min-width: 92px
+}
+
+.overlay.card-overlay .member .actions {
+    text-align: right;
+    vertical-align: middle
+}
+
+.overlay.card-overlay .member .actions .btn {
+    padding: 1px 3px;
+    margin: 0 2px;
+}
+
+.overlay.card-overlay .name .email {
+    display: block;
+    position: relative;
+    top: -2px
+}
+
+.overlay-body .yui-crop {
+    width: auto !important;
+    height: auto !important;
+}
+
+/* End card overlays */
+
+/* Card counter */
+.cardCounter {
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 7px;
+    min-width: 20px;
+    padding: 2px 3px;
+    position: relative;
+    text-align: center;
+    vertical-align: baseline;
+}
+
+.cardCounter input,
+.cardCounter a {
+    display: inline;
+    text-align: center;
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+/* End card counter */
+
+/* Comments */
+
+.card-extension-comments {
+    margin-top: 1em;
+}
+
+.comment {
+    margin-bottom: 5px;
+    margin-left: -45px;
+    padding: 3px 0;
+    clear: both
+}
+
+.comment .left {
+    float: left;
+    padding: 5px 0 0 5px;
+}
+
+.comment .right {
+    margin-left: 45px;
+}
+
+.comment .contents {
+    margin-top: 5px;
+    padding: 3px;
+}
+
+.comment .contents img.medium {
+    margin-right: 5px;
+}
+
+.comment .user.fullname {
+    display: inline-block;
+}
+
+.comment .text {
+    margin: 3px 0;
+    padding: 3px;
+    word-wrap: break-word;
+}
+
+.comment .footer {
+    text-align: right;
+}
+
+.comment-delete {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+/* End comments */
+
+/* Due dates */
+.due-date span {
+    position: relative;
+    top: 3px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.due-date .duedate-icon {
+    position: relative;
+    top: 8px;
+    left: -3px
+}
+
+.due-date + div {
+    margin-left: 18px
+}
+
+/* End due dates */
+
+/* Card gallery */
+#card-gallery img.thumb {
+    height: 68px;
+    width: 68px;
+}
+
+#card-gallery .asset {
+    position: relative;
+    display: inline-block;
+    margin: 8px 8px 0 0;
+}
+
+.file_icon {
+    width: 68px;
+}
+
+.cover img {
+    width: 98%;
+    margin: 5px auto;
+}
+/* End card gallery */
+
+/* End cards */
+
+/* Board view switch zone (calendar / columns / search) */
+#switch_zone {
+    vertical-align: text-bottom;
+    margin: 0 6px 0 5px;
+}
+
+.icon-btn {
+    padding: 7px;
+    min-width: 0;
+    margin: 0 5px;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.icon-btn [class^="icon-"] {
+    left: 0;
+}
+
+.icon-btn:hover {
+    border: 1px solid #c0c0c0;
+}
+
+.selected {
+    border: 1px solid #c0c0c0;
+}
+
+#switch_zone .btn.unselected {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+#search {
+    display: inline-block;
+    position: relative;
+}
+
+#search input {
+    padding-right: 30px;
+    height: 32px;
+}
+
+#search .icon {
+    position: absolute;
+    right: 14px;
+    top: 7px;
+}
+
+#search input:focus, #search.highlight input {
+    border-color: rgba(230, 163, 35, 0.8);
+    outline: 0;
+    outline: thin dotted \9;
+}
+
+#show_results {
+    min-width: 120px;
+    display: inline-block;
+    padding: 0 5px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+/* End board view switch zone (calendar / columns / search) */
+
+/* History */
+div.history {
+    overflow: auto;
+    max-height: 600px;
+}
+
+div.history th {
+    width: 9em;
+}
+
+/* End history */
+
+/* Progress bar */
+.progress {
+    height: 24px;
+}
+
+.progress .bar {
+    height: 22px;
+}
+
+.progress span {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    text-align: center;
+    width: 100%
+}
+
+.progress .bar {
+    z-index: 1;
+    position: absolute
+}
+
+.progress {
+    position: relative
+}
+
+/* End progress bar */
+
+/* Checklists */
+.checklists .checklist {
+    background: white;
+    margin: 15px 0;
+    padding: 10px;
+}
+
+.checklists .checklist .nagare-generated,
+.checklists .checklist form {
+    display: inline-block
+}
+
+.checklists .ui-state-highlight {
+    height: 3em;
+    line-height: 3em;
+}
+
+.checklist .delete, .delete-item, .checklist-item .not-alone {
+    display: none;
+    float: right;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.checklist:hover .delete,
+li:hover .delete-item, li:hover .not-alone {
+    display: inline-block
+}
+
+.checklists .checklist .title i.icon-list {
+    margin-right: 10px;
+    position: relative;
+    top: 1px;
+}
+
+.checklists .ui-sortable-helper {
+    box-shadow: 0px 0px 4px #c0c0c0;
+}
+
+.not-alone {
+    cursor: move;
+}
+
+.checklist .title > .nagare-generated {
+    display: inline-block;
+    vertical-align: middle;
+    width: 360px;
+}
+
+.checklists .checklist .btn {
+    min-width: 0;
+}
+
+.checklists .checklist .new-item-form .btn,
+.checklists .checklist li .btn {
+    top: -5px
+}
+
+.checklists .checklist .btn [class^="icon-"] {
+    left: 0
+}
+
+.checklists .checklist input {
+    border-radius: 3px 0 0 3px;
+    margin-right: 5px;
+}
+
+.checklists .checklist li {
+    background-color: white;
+    line-height: 20px;
+    margin-left: 10px;
+    list-style-position: inside;
+}
+
+.checklists .checklist i[class^="icon-checkbox-"] {
+    margin-right: 5px
+}
+
+.checklists .checklist .done a {
+    text-decoration: line-through
+}
+
+.checklists .checklist .title input {
+    width: 200px
+}
+
+.checklists .checklist li input {
+    width: 210px
+}
+
+.checklists .checklist .new-item-form input {
+    width: 246px
+}
+
+.checklists .checklist .content {
+    padding-top: 10px
+}
+
+.add-item {
+    padding-left: 10px;
+}
+/* Checklists end */
+
+/* Calendar */
+.calendar {
+    position: absolute;
+    padding: 10px;
+    width: 255px;
+    z-index: 1;
+}
+
+.calendar .calendar-content table {
+    width: 100%;
+}
+
+.calendar .calendar-content table td,
+.calendar .calendar-content table th {
+    padding: 0;
+    text-align: center;
+}
+
+.calendar .calendar-content table tr td a {
+    display: block;
+}
+
+.calendar .calendar-content table tr th.week_number,
+.calendar .calendar-content table tr td.week_number {
+    text-align: center;
+    margin-right: 2px;
+}
+
+.calendar .calendar-header {
+    margin-bottom: 10px;
+}
+
+.calendar .calendar-header select {
+    width: 100px;
+    display: inline-block;
+}
+
+.calendar .calendar-header select:last-child {
+    width: 65px;
+}
+
+.calendar .calendar-header a {
+    width: 10%;
+}
+
+.calendar .calendar-header .current {
+    padding: 0 10px;
+    width: 88%;
+}
+
+.calendar .calendar-today a.btn {
+    width: auto;
+    margin: 0;
+}
+
+.calendar .calendar-today a.btn.today-link {
+    float: left;
+}
+
+.calendar .calendar-today a.btn.erase {
+    float: right;
+}
+
+/* End calendar */
+
+/* Weights */
+
+.weights-form {
+    margin-top: 10px;
+}
+
+.weights-form input {
+    width: 50%;
+    margin-bottom: 0;
+}
+
+.actionWeight select {
+    overflow: hidden;
+    margin: 0;
+    height: auto;
+}
+/* End weights */
+
+/* Labels */
+
+.inline-labels {
+    float: right;
+    margin: -14px 0 0
+}
+
+.card-label {
+    display: inline-block;
+    height: 14px;
+    line-height: 30px;
+    margin-right: 6px;
+    padding: 0;
+    width: 14px;
+}
+
+.card-label > span {
+    text-overflow: ellipsis;
+}
+
+.card-label i {
+    float: right;
+    margin: 7px 2px 0 0;
+}
+
+.editable-labels .card-label {
+    height: 17px;
+    width: 17px;
+}
+
+.inactive {
+    position: relative;
+}
+
+.inactive:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #b3b3b3;
+    opacity: 1;
+}
+
+.inactive:hover:before{
+    opacity: 0;
+}
+
+.label-color-picker {
+    position: relative;
+    height: 193px;
+    width: 315px;
+}
+
+.label-color-picker .yui-picker-controls .bd input {
+    padding: 0;
+}
+/* End labels */
+
+
+/* Nb items */
+.nbItems {
+    position: absolute;
+    left: 12px;
+    margin-top: 4px
+}
+/* End nb items */
+
+
+/* Responsive */
+
+@media all and (max-width: 1600px) {
+    .span-auto {
+        width: calc(20% - 14px);
+    }
+
+}
+
+@media all and (max-width: 1360px) {
+    .span-auto {
+        width: calc(25% - 14px);
+        min-width: calc(25% - 14px);
+    }
+
+    .list-header {
+        height: auto
+    }
+
+    .list-header input {
+        width: 89%;
+        display: block;
+        margin-bottom: 5px
+    }
+
+}
+
+@media all and (max-width: 1200px) {
+
+    .header {
+        margin-right: 5px;
+    }
+
+    .board .board-title a {
+        max-width: calc(100vw - 300px);
+    }
+}
+
+@media all and (max-width: 1060px) {
+    .span-auto {
+        width: calc(33.333% - 14px);
+        min-width: calc(33.333% - 14px);
+    }
+
+}
+
+
+@media (max-width: 813px) {
+    body {
+        padding: 0;
+        overflow: auto;
+    }
+
+    .span-auto {
+        width: calc(50% - 14px);
+        min-width: calc(50% - 14px);
+    }
+
+    .card-actions {
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .card-actions .btn {
+        width: 100%;
+    }
+
+    #viewport-wrapper {
+        padding: 0;
+    }
+
+    #viewport {
+        overflow: auto;
+    }
+
+    .row > .list {
+        margin-bottom: 11px;
+    }
+
+    .list-marker {
+        margin-bottom: 5px;
+    }
+
+    #lists {
+        z-index: 1;
+    }
+
+    .list-body {
+        padding-bottom: 36px
+    }
+
+    .list-header input {
+        width: 52%;
+        display: inline-block;
+        margin-bottom: 0
+    }
+
+    .checklists .checklist form {
+        display: block;
+        width: 100%;
+    }
+
+    .checklists .checklist li form {
+        display: inline-block;
+    }
+
+}
+
+@media all and (max-width: 780px) {
+    #show_results {
+        min-width: 110px;
+    }
+}
+
+@media all and (max-width: 640px) {
+
+    #search {
+        width: 12em;
+    }
+
+    .span-auto {
+        width: 99%;
+        min-width: 99%;
+    }
+
+    #lists {
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: normal;
+    }
+
+    .list {
+        margin-bottom: 10px;
+    }
+
+    .board .header {
+        margin-top: 30px;
+    }
+
+    .board .board-title .title-form input {
+        width: calc(100% - 150px);
+    }
+
+    #switch_zone {
+        margin-top: 0;
+    }
+
+    .icon-btn {
+        margin: 0;
+        padding: 0 2px;
+    }
+
+    .yui-skin-sam .yui-panel {
+        margin: 20px auto 10px auto;
+        max-width: 640px;
+        padding: 5px 20px 15px 10px;
+    }
+
+    .board .board-title a {
+        max-width: 100vw;
+    }
+}
+
+/* Full calendar fixes */
+.fc-month-view .fc-day-grid-event>.fc-content {
+    width: 95%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 2px;
+    margin: 0;
+}
+
+.fc-basicWeek-view .fc-day-grid-event>.fc-content {
+    width: 95%;
+    font-size: larger;
+    min-height: 3em;
+    padding: 0.5em;
+    white-space: normal;
+    margin: 0;
+}

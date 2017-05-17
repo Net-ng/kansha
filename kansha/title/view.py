@@ -8,51 +8,46 @@
 # this distribution.
 #--
 
-from nagare import presentation, var, security
 from nagare.i18n import _
+from nagare import presentation, var
 
-from .comp import Title
-
-
-@presentation.render_for(Title, 'tabname')
-def render(self, h, comp, *args):
-    h.head << h.head.title(self.text)
-    return h.root
+from .comp import EditableTitle, Title
 
 
 @presentation.render_for(Title)
-def render(self, h, comp, *args):
-    """Render the title of the associated object
+def render_title(self, h, comp, model):
+    title = self.title()
+    if title is not None and len(title) < 5:
+        title += u' ' * (5 - len(title)) # unbreakable spaces ; when display-block is NOT an option
+    with h.a(class_=self.class_, title=title).action(comp.answer):
+        h << (h.input(placeholder=self.placeholder) if (self.placeholder and title is None) else title)
 
-    Used by column title and card title on popin
-    """
-    with h.div(class_='title'):
-        kw = {}
-        if not security.has_permissions('edit', self):
-            kw['style'] = 'cursor: default'
-        a = h.a(self.text, **kw)
-        if security.has_permissions('edit', self):
-            a.action(comp.answer)
-        h << a
     return h.root
 
 
-@presentation.render_for(Title, model='edit')
-def render(self, h, comp, *args):
-    """Render the title of the associated object"""
-    text = var.Var(self.text)
-    with h.form(class_='title-form'):
-        id_ = h.generate_id()
-        if self.field_type == 'textarea':
-            h << h.textarea(self.text, id_=id_).action(text)
-        elif self.field_type == 'input':
-            h << h.input(type='text', value=self.text,
-                         id_=id_).action(text)
-        else:
-            raise ValueError(_('Unsupported field_type %r') % self.field_type)
-        h << h.button(_('Save'), class_='btn btn-primary btn-small').action(
-            lambda: comp.answer(self.change_text(text())))
+@presentation.render_for(Title, 'readonly')
+def render_title_ro(self, h, *args):
+    return h.span(self.title() or '', class_=self.class_)
+
+
+@presentation.render_for(Title, 'edit')
+def render_title_edit(self, h, comp, *args):
+    title = var.Var(self.title() or '')
+    id_ = h.generate_id('id')
+
+    with h.form(class_=self.class_ + '-form'):
+        input = (h.textarea(title, style='height: %dpx' % self.height) if self.height else h.input(value=title))
+        h << input(id=id_, placeholder=self.placeholder).action(title)
+
+        h << h.button(_('Save'), class_='btn btn-primary').action(self.set_title, comp, title)
         h << ' '
-        h << h.button(_('Cancel'), class_='btn btn-small').action(comp.answer)
-        h << h.script('YAHOO.kansha.app.selectElement(%r);YAHOO.kansha.app.hideCardsLimitEdit(%s)' % (id_, self.parent.id))
+        h << h.button(_('Cancel'), class_='btn').action(comp.answer)
+
+        h << h.script('YAHOO.kansha.app.selectElement(%s);' % id_)
+
     return h.root
+
+
+@presentation.render_for(EditableTitle, 'readonly')
+def render_editabletitle_ro(self, h, *args):
+    return self.title.render(h, 'readonly')

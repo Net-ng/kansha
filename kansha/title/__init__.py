@@ -7,4 +7,5 @@
 # this distribution.
 #--
 
-import view
+from .comp import EditableTitle
+from .import view

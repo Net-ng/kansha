@@ -105,6 +105,7 @@ To get quickly up and running, let's use the built-in web server, database and s
 
     $ nagare-admin create-db kansha
     $ kansha-admin alembic-stamp head
+    $ kansha-admin create-demo  # optional, create demo users and contents
 
 2. Build the search indexes (can be safely repeated anytime)::
 
@@ -121,10 +122,12 @@ For production sites, we recommend you use an external web server, see :ref:`pro
 Upgrading
 ^^^^^^^^^
 
-Upgrading Kansha without loosing data is very easy::
+Upgrading Kansha without loosing data is very easy (using the default configuration file)::
 
     $ easy_install --upgrade kansha
     $ kansha-admin alembic-upgrade head
     $ kansha-admin create-index
 
 And then restart.
+
+If you crafted your own configuration file, see :ref:`upgrading` for more details.

@@ -52,7 +52,7 @@ class CardDescription(CardExtension):
     def data(self):
         data = DataCardDescription.get_by_card(self.card.data)
         if data is None:
-            data = DataCardDescription(card=self.card.data)
+            data = DataCardDescription.new(self.card.data)
         return data
 
     @property

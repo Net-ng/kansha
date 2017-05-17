@@ -44,6 +44,14 @@ class DataCardWeight(Entity):
     weight = Field(Integer, default=0)
     card = ManyToOne('DataCard', ondelete='cascade')
 
+    @classmethod
+    def new(cls, card):
+        """Create and persist"""
+        weight = cls(card=card)
+        session.add(weight)
+        session.flush()
+        return weight
+
     def update(self, other):
         self.weight = other.weight
         session.flush()

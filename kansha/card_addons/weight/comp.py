@@ -54,7 +54,7 @@ class CardWeightEditor(CardExtension):
     def data(self):
         data = DataCardWeight.get_by_card(self.card.data)
         if data is None:
-            data = DataCardWeight(card=self.card.data)
+            data = DataCardWeight.new(card=self.card.data)
         return data
 
     def validate_weight(self, value):

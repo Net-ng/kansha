@@ -42,7 +42,7 @@ class Votes(CardExtension):
         if self.has_voted():
             DataVote.get_vote(self.card.data, user.data).delete()
         else:
-            DataVote(card=self.card.data, user=user.data)
+            DataVote.new(card=self.card.data, user=user.data)
 
     def has_voted(self):
         '''Check if the current user already vote for this card'''

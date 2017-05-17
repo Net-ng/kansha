@@ -27,6 +27,14 @@ class DataCardDescription(Entity):
         session.flush()
 
     @classmethod
+    def new(cls, card):
+        """Create and persist."""
+        desc = cls(card=card)
+        session.add(desc)
+        session.flush()
+        return desc
+
+    @classmethod
     def get_by_card(cls, card):
         q = cls.query
         q = q.filter_by(card=card)

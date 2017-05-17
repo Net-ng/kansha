@@ -27,19 +27,24 @@ nagare-admin create-index <app name | config file>
 
 import pkg_resources
 
-from nagare.admin import util, command
 from nagare import database
+from nagare.admin import util, command
 
-from kansha.card.fts_schema import Card as SCard
+from kansha.card.comp import Card
+from kansha.column.comp import Column
 from kansha.card.models import DataCard
+from kansha.services.actionlog import DummyActionLog
 
 
+# FIXME: too low level
 def rebuild_index(app):
     # init index
-    app.search_engine.create_collection([SCard])
-    for card in DataCard.get_all():
-        scard = SCard.from_model(card)
-        app.search_engine.add_document(scard)
+    action_log = DummyActionLog()
+    app.search_engine.create_collection([Card.schema])
+    for card in DataCard.query:
+        board_id = card.column.board.id
+        card = app._services(Card, card.id, app.card_extensions, action_log, lambda x: True, data=card)
+        card.add_to_index(app.search_engine, board_id)
     app.search_engine.commit()
 
 

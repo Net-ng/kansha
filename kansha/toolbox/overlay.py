@@ -17,7 +17,7 @@ class Overlay(object):
     """Overlay component
     """
 
-    def __init__(self, text_factory, content_factory, title=None, dynamic=True, cls=None):
+    def __init__(self, text_factory, content_factory, title=None, dynamic=True, cls=None, centered=False):
         """Initialization
 
         In:
@@ -32,6 +32,7 @@ class Overlay(object):
         self.title = title
         self.dynamic = dynamic
         self.cls = cls
+        self.centered = centered
 
     def render_a(self, h, link_id):
         h << h.a(self.text(h), href='#', id_=link_id, title=self.title or '')
@@ -49,30 +50,47 @@ def render(self, h, comp, *args):
     # TODO: find a cleaner solution
     if self.dynamic:
         # Load overlay body dynamically
-        a = h.a.action(ajax.Update(render=self.content, component_to_update=body_id))
-        load = '''YAHOO.util.Dom.get(%(body_id)r).innerHTML = '';
-        %(load_body)s;''' % dict(body_id=body_id, load_body=a.get('onclick').replace('return', ''))
+        load = ajax.js(
+            "YAHOO.util.Dom.get(%(body_id)s).innerHTML = '';"
+            "%(load_body)s" %
+            {
+                'body_id': ajax.py2js(body_id),
+                'load_body': h.a.action(
+                    ajax.Update(render=self.content, component_to_update=body_id)
+                ).get('onclick').replace('return', '')
+            }
+        )
     else:
         # The overlay body is already present in the DOM tree
-        load = ''
+        load = ajax.js('')
 
-    js = '''%(load)s
-            YAHOO.kansha.app.showOverlay(%(overlay_id)r, %(link_id)r)
-;        ''' % dict(load=load, link_id=link_id, overlay_id=overlay_id)
+    js = ajax.js(
+        "%(load)s;"
+        "YAHOO.kansha.app.showOverlay(%(overlay_id)s, %(link_id)s, %(centered)s)" %
+        {
+            'load': ajax.py2js(load),
+            'link_id': ajax.py2js(link_id),
+            'overlay_id': ajax.py2js(overlay_id),
+            'centered': ajax.py2js(self.centered, h)
+        }
+    )
 
-    h.head.javascript(h.generate_id(), '''
-        YAHOO.util.Event.addListener(%(link_id)r, 'click', function(){
-            %(js)s
-        });''' % dict(link_id=link_id, js=js))
+    h.head.javascript(
+        h.generate_id(),
+        "YAHOO.util.Event.addListener(%(link_id)s, 'click', "
+        "function(){%(js)s;}"
+        ")" % {'link_id': ajax.py2js(link_id), "js": ajax.py2js(js)}
+    )
 
     cls = [u'overlay']
     if self.cls:
         cls.append(self.cls)
     with h.div(class_=u' '.join(cls), id=overlay_id, onclick="YAHOO.kansha.app.stopEvent()"):
+        if not self.centered:
+            h << h.span(class_='overlay_arrow')
         with h.div(class_='overlay-header'):
             with h.div(class_='overlay-title'):
                 h << h.div(self.title or self.text(h))
-            h << h.a(title=_('Close this dialog window.'), href='#', class_='icon-remove icon-grey action-close', onclick='YAHOO.kansha.app.hideOverlay();return false')
         h << h.div(' ' if self.dynamic else self.content(h), class_='overlay-body', id=body_id)
 
     return h.root

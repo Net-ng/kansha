@@ -8,42 +8,47 @@
 # this distribution.
 #--
 
+import time
 import hashlib
 import textwrap
-import time
-import webob
 from datetime import datetime, timedelta
 
-from nagare import (presentation, editor, component, security, log, database)
+import webob
 from nagare.i18n import _
+from nagare import (presentation, editor, component, security, log, database)
 
-from . import validators, captcha
+from . import captcha
+from kansha import validator
 from kansha.user import usermanager
-from kansha.models import DataToken
+from kansha.user.models import DataToken
+from kansha.services.authentication_repository import Authentication
+
 
 UserConfirmationTimeout = timedelta(hours=12)
 
 
 class Header(object):
 
-    def __init__(self, app_title, app_banner, custom_css):
+    def __init__(self, app_title, app_banner, theme):
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
+        self.theme = theme
 
 
 @presentation.render_for(Header)
 def render_Header(self, h, comp, *args):
     """Head renderer"""
 
-    h.head << h.head.title(self.app_title)
+    h.head << h.head.title(self.app_banner)
     h.head << h.head.meta(
         name='viewport', content='width=device-width, initial-scale=1.0')
 
     h.head.css_url('css/knacss.css')
-    h.head.css_url('css/login.css')
-    if self.custom_css:
-        h.head.css_url(self.custom_css)
+    h.head.css_url('css/themes/fonts.css?v=2c')
+    h.head.css_url('css/themes/kansha.css')
+    h.head.css_url('css/themes/login.css?v=2c')
+    h.head.css_url('css/themes/%s/kansha.css?v=2c' % self.theme)
+    h.head.css_url('css/themes/%s/login.css?v=2c' % self.theme)
 
     with h.div(class_='header'):
         with h.a(href=h.request.application_url):
@@ -54,7 +59,7 @@ def render_Header(self, h, comp, *args):
 
 @presentation.render_for(Header, 'hide')
 def render_Header_hide(self, h, comp, *args):
-    h.head.css('hide_logins', u'''.body-login .oauthLogin, .body-login .LDAPLogin,  .body-login .databaseLogin {display:none;}''')
+    h.head.css('hide_logins', u'''.login {display:none;}''')
     return h.root
 
 
@@ -62,14 +67,25 @@ def redirect_to(url):
     raise webob.exc.HTTPSeeOther(location=url)
 
 
-class Login(object):
+class Login(Authentication):
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, config):
+    CONFIG_SPEC = {
+        'activated': 'boolean(default=True)',
+        'moderator': 'string(default="")',
+        'identicons': 'boolean(default=False)',
+        'default_username': 'string(default="")',
+        'default_password': 'string(default="")'
+    }
+
+    def __init__(self, app_title, app_banner, theme, assets_manager_service, services_service):
+        self.assets_manager = assets_manager_service
         self._error_message = ''
-        self.registration_task = RegistrationTask(app_title, app_banner, custom_css, mail_sender, config['moderator'])
-        self.default_username = config['default_username']
-        self.default_password = config['default_password']
-        self.pwd_reset = PasswordResetTask(app_title, app_banner, custom_css, mail_sender)
+        self.registration_task = services_service(RegistrationTask, app_title, app_banner,
+                                                  theme, moderator=self.config['moderator'],
+                                                  identicons=self.config['identicons'])
+        self.default_username = self.config['default_username']
+        self.default_password = self.config['default_password']
+        self.pwd_reset = services_service(PasswordResetTask, app_title, app_banner, theme)
         self.content = component.Component()
 
     @property
@@ -110,17 +126,17 @@ def render_Login(self, h, comp, *args):
 
 @presentation.render_for(Login, 'form')
 def render_Login_form(self, h, comp, *args):
-    with h.div(class_='databaseLogin'):
+    with h.div(class_='login databaseLogin'):
         with h.form:
             # if self.error_message:
             #     h << h.br << h.div(self.error_message, class_="error")
-            h << h.input(type='text', name='__ac_name', id="username",
-                         value=self.default_username, placeholder=_("Enter username"))
+            h << h.input(type='text', name='__ac_name', id='username',
+                         value=self.default_username, placeholder=_('Enter username'))
             h << h.input(type='password', name='__ac_password', id="password",
-                         value=self.default_password, placeholder=_("Enter password"))
+                         value=self.default_password, placeholder=_('Enter password'))
             h << h.a(_('Forgot password?')).action(self.content.call, self.pwd_reset)
             with h.div(class_='actions'):
-                h << h.input(type='submit', value=_(u'Sign in'), class_="btn btn-primary btn-small").action(self.log_in, comp)
+                h << h.input(type='submit', value=_(u'Sign in'), class_='btn btn-primary').action(self.log_in, comp)
                 with h.div:
                     h << _('No account yet? ')
                     h << h.a(_('Sign up')).action(self.content.call, self.registration_task)
@@ -131,15 +147,15 @@ class RegistrationForm(editor.Editor):
 
     """Registration form for creating a new (unconfirmed) user"""
 
-    def __init__(self, app_title, app_banner, custom_css):
+    def __init__(self, app_title, app_banner, theme):
         self.username = editor.Property('').validate(self.validate_username)
-        self.email = editor.Property('').validate(validators.validate_email)
-        self.fullname = editor.Property('').validate(validators.validate_non_empty_string)
-        self.password = editor.Property('').validate(validators.validate_password)
-        self.password_repeat = editor.Property('').validate(validators.validate_password)
+        self.email = editor.Property('').validate(self.validate_email)
+        self.fullname = editor.Property('').validate(validator.validate_non_empty_string)
+        self.password = editor.Property('').validate(validator.validate_password)
+        self.password_repeat = editor.Property('').validate(validator.validate_password)
         self.init_captcha_image()
         self.captcha_text = editor.Property('').validate(self.validate_captcha)
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.user_manager = usermanager.UserManager()
         self.error_message = u''
         self.alt_title = _(u'Sign up')
@@ -149,11 +165,19 @@ class RegistrationForm(editor.Editor):
         self.captcha_date = datetime.now()
 
     def validate_username(self, value):
-        value = validators.validate_identifier(value)
+        value = validator.validate_identifier(value)
         # check that this user name does not exist
         u = usermanager.UserManager.get_by_username(value)
         if u:
             raise ValueError(_("Username %s is not available. Please choose another one.")
+                             % value)
+        return value
+
+    def validate_email(self, value):
+        validator.validate_email(value)
+        u = usermanager.UserManager.get_by_email(value)
+        if u:
+            raise ValueError(_(u"This email address (%s) is already registered.")
                              % value)
         return value
 
@@ -190,10 +214,10 @@ class RegistrationForm(editor.Editor):
                                           email=self.email.value)
         return u
 
-    def on_ok(self, comp):
+    def on_ok(self, comp, application_url):
         u = self.commit()
         if u:
-            comp.answer(u.username)
+            comp.answer((u.username, application_url))
 
 
 @presentation.render_for(RegistrationForm)
@@ -205,12 +229,12 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='fields'):
                 fields = (
                     (_('Username'), 'username', 'text', self.username),
-                    (_('Email address'), 'email', 'text', self.email),
-                    (_('Fullname'), 'fullname', 'text', self.fullname),
                     (_('Password'),
-                        'password', 'password', self.password),
+                     'password', 'password', self.password),
                     (_('Password (repeat)'), 'password-repeat',
-                        'password', self.password_repeat)
+                     'password', self.password_repeat),
+                    (_('Email address'), 'email', 'text', self.email),
+                    (_('Fullname'), 'fullname', 'text', self.fullname)
                 )
                 for label, css_class, input_type, property in fields:
                     with h.div(class_='%s-field field' % css_class):
@@ -231,10 +255,10 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(self.on_ok, comp)
+                             class_="btn btn-primary").action(self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
-                _("Log in")).action(comp.answer)
+                _("Log in")).action(comp.answer, (None, None))
 
     return h.root
 
@@ -250,12 +274,12 @@ def render_RegistrationForm_captcha(self, h, comp, *args):
 
 class EmailRegistrationForm(editor.Editor):
 
-    """Registration form for creating a new (unconfirmed) user"""
+    """Registration form for completing the email of a new external (and unconfirmed) user"""
 
-    def __init__(self, app_title, app_banner, custom_css, username):
-        self.email = editor.Property('').validate(validators.validate_email)
-        self.email_repeat = editor.Property('').validate(validators.validate_email)
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+    def __init__(self, app_title, app_banner, theme, username):
+        self.email = editor.Property('').validate(validator.validate_email)
+        self.email_repeat = editor.Property('').validate(validator.validate_email)
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
         self.username = username
         self.app_title = app_title
@@ -279,10 +303,10 @@ class EmailRegistrationForm(editor.Editor):
         self.error_message = _(u'Something went wrong: user does not exist! Please contact the administrator of this site.')
         return None
 
-    def on_ok(self, comp):
-        email = self.commit()
-        if email:
-            comp.answer(email)
+    def on_ok(self, comp, application_url):
+        username = self.commit()
+        if username:
+            comp.answer((username, application_url))
 
 
 @presentation.render_for(EmailRegistrationForm)
@@ -309,10 +333,11 @@ def render_RegistrationForm(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Create new account"),
-                             class_="btn btn-primary btn-small").action(self.on_ok, comp)
+                             class_="btn btn-primary").action(
+                                self.on_ok, comp, h.request.application_url)
 
             h << _("Already have an account? ") << h.a(
-                _("Log in")).action(comp.answer)
+                _("Log in")).action(comp.answer, (None, None))
 
     return h.root
 
@@ -324,9 +349,9 @@ class RegistrationConfirmation(object):
     """Confirm a registration by sending a confirmation email, then acknowledge the success/failure
     of the operation"""
 
-    def __init__(self, app_title, app_banner, custom_css):
+    def __init__(self, app_title, app_banner, theme):
         self.app_title = app_title
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.header = component.Component(Header(app_title, app_banner, theme))
 
 
 @presentation.render_for(RegistrationConfirmation, model='success')
@@ -348,8 +373,8 @@ def render_registration_confirmation_success(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_="btn btn-primary btn-small",
-                                 value=_("Ok")).action(comp.answer)
+                                 class_="btn btn-primary",
+                                 value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
 
@@ -367,8 +392,8 @@ def render_registration_confirmation_failure(self, h, comp, *args):
 
             with h.form:
                 with h.div(class_='actions'):
-                    h << h.input(type='submit', class_="btn btn-primary btn-small",
-                                 value=_("Ok")).action(comp.answer)
+                    h << h.input(type='submit', class_="btn btn-primary",
+                                 value=_("Ok")).action(comp.answer, h.request.application_url)
 
     return h.root
 
@@ -379,20 +404,20 @@ class PasswordEditor(editor.Editor):
 
     """Password editor, so that users can edit their password"""
 
-    def __init__(self, app_title, app_banner, custom_css, get_user, check_old_password=True):
+    def __init__(self, app_title, app_banner, theme, get_user, check_old_password=True):
         self._get_user = get_user
         self.check_old_password = check_old_password
         self.old_password = editor.Property(
             '').validate(self.validate_old_password)
         self.password = editor.Property(
-            '').validate(validators.validate_password)
+            '').validate(validator.validate_password)
         self.password_repeat = editor.Property(
-            '').validate(validators.validate_password)
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+            '').validate(validator.validate_password)
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
 
     def validate_old_password(self, value):
-        validators.validate_non_empty_string(value)
+        validator.validate_non_empty_string(value)
         if not self.user.check_password(value):
             raise ValueError(_("Invalid password"))
         return value
@@ -467,11 +492,11 @@ def render_password_editor(self, h, comp, *args):
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
                                  value=_("Change password"),
-                                 class_='btn btn-primary btn-small').action(commit)
+                                 class_='btn btn-primary').action(commit)
                     h << u' '
                     h << h.input(type='submit',
                                  value=_("Cancel"),
-                                 class_='btn btn-small').action(comp.answer)
+                                 class_='btn').action(comp.answer)
 
         return h.root
 
@@ -482,15 +507,15 @@ class PasswordResetForm(editor.Editor):
 
     """Password reset form, ask the user email"""
 
-    def __init__(self, app_title, app_banner, custom_css, get_user_by_username):
+    def __init__(self, app_title, app_banner, theme, get_user_by_username):
         self._get_user_by_username = get_user_by_username
         self.username = editor.Property('').validate(self.validate_username)
-        self.email = editor.Property('').validate(validators.validate_email)
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.email = editor.Property('').validate(validator.validate_email)
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.error_message = u''
 
     def validate_username(self, value):
-        value = validators.validate_identifier(value)
+        value = validator.validate_identifier(value)
 
         user = self._get_user_by_username(value)
         if not user:
@@ -521,10 +546,11 @@ class PasswordResetForm(editor.Editor):
 
 @presentation.render_for(PasswordResetForm)
 def render_password_reset_form(self, h, comp, *args):
+    application_url = h.request.application_url
     def commit():
         user = self.commit()
         if user:
-            comp.answer(user.username)
+            comp.answer((user.username, application_url))
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
 
@@ -549,9 +575,9 @@ def render_password_reset_form(self, h, comp, *args):
             with h.div(class_='actions'):
                 h << h.input(type='submit',
                              value=_("Reset password"),
-                             class_='btn btn-primary btn-small').action(commit)
+                             class_='btn btn-primary').action(commit)
 
-            h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer))
+            h << (_("Remember your password?"), u' ', h.a(_("Log in")).action(comp.answer, (None, None)))
 
     return h.root
 
@@ -563,12 +589,12 @@ class PasswordResetConfirmation(object):
     """Confirm a password reset by sending a confirmation email, then acknowledge the
     success/failure of the operation"""
 
-    def __init__(self, app_title, app_banner, custom_css, get_user, confirmation_base_url):
+    def __init__(self, app_title, app_banner, theme, get_user, confirmation_base_url):
         self.app_title = app_title
         self._get_user = get_user
         self.confirmation_base_url = confirmation_base_url
         self.token_generator = TokenGenerator(self._get_user().username, u'reset_password')
-        self.header = component.Component(Header(self.app_title, app_banner, custom_css))
+        self.header = component.Component(Header(self.app_title, app_banner, theme))
         self.alt_title = _(u'Reset password')
 
     @property
@@ -624,7 +650,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(comp.answer)
     return h.root
 
@@ -643,7 +669,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
         with h.form:
             with h.div(class_='actions'):
                 h << h.input(type='submit',
-                             class_='btn btn-primary btn-small',
+                             class_='btn btn-primary',
                              value=_("Ok")).action(comp.answer)
     return h.root
 
@@ -662,7 +688,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(comp.answer)
 
     return h.root
@@ -674,13 +700,13 @@ class EmailConfirmation(object):
 
     """Confirm a user email address by sending an email to the user with a confirmation link."""
 
-    def __init__(self, app_title, app_banner, custom_css, get_user, confirmation_base_url='', moderator=''):
+    def __init__(self, app_title, app_banner, theme, get_user, confirmation_base_url='', moderator=''):
         self.app_title = app_title
         self._get_user = get_user
         self.moderator = moderator
         self.confirmation_base_url = confirmation_base_url
         self.token_generator = TokenGenerator(self._get_user().username, 'email_confirmation')
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.alt_title = _('Sign up')
 
     @property
@@ -780,7 +806,7 @@ def render_registration_confirmation(self, h, comp, *args):
         with h.form:
             with h.div(class_='actions'):
                 h << h.input(type='submit',
-                             class_='btn btn-primary btn-small',
+                             class_='btn btn-primary',
                              value=_("Ok")).action(comp.answer)
 
     return h.root
@@ -792,7 +818,7 @@ class EmailInvitation(object):
 
     """Send invitation email to the user with a confirmation link."""
 
-    def __init__(self, app_title, app_banner, custom_css, email, host, board, confirmation_base_url):
+    def __init__(self, app_title, app_banner, theme, email, host, board, confirmation_base_url):
         """ Initialization method
 
         In:
@@ -806,7 +832,7 @@ class EmailInvitation(object):
         self.confirmation_base_url = confirmation_base_url
         self.host = host
         self.board = board
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.header = component.Component(Header(app_title, app_banner, theme))
         self.token_generator = TokenGenerator(email,
                                               u'invite board %s' % board.id, expiration_delay=timedelta(days=2))
 
@@ -817,7 +843,7 @@ class EmailInvitation(object):
             token = self.token_generator.create_token()
             self.board.pending.append(token)
         else:
-            who.add_board(self.board)
+            self.board.add_member(who)
         return u'/'.join((self.confirmation_base_url, self.board.url))
 
     def send_email(self, mail_sender):
@@ -851,7 +877,8 @@ class RegistrationTask(component.Task):
 
     """A task that handles the user registration process"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender, moderator='', username=''):
+    def __init__(self, app_title, app_banner, theme, mail_sender_service, assets_manager_service,
+                 moderator='', identicons=False, username=''):
         '''
         Register a new user (`username` not provided)
         or register email for an existing unconfirmed user (`username` provided).
@@ -859,19 +886,20 @@ class RegistrationTask(component.Task):
         '''
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
-        self.mail_sender = mail_sender
+        self.theme = theme
+        self.mail_sender = mail_sender_service
+        self.assets_manager = assets_manager_service
         self.moderator = moderator
-        self.confirmation_base_url = mail_sender.application_url
+        self.identicons = identicons
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.username = username
         self.alt_title = _(u'Sign up')
 
-    def _create_email_confirmation(self, username):
-        confirmation_url = '/'.join((self.confirmation_base_url, 'register', username))
+    def _create_email_confirmation(self, username, confirmation_base_url=''):
+        confirmation_url = '/'.join((confirmation_base_url, 'register', username))
         get_user = lambda: usermanager.UserManager.get_by_username(username)
-        return EmailConfirmation(self.app_title, self.app_banner, self.custom_css, get_user, confirmation_url, self.moderator)
+        return EmailConfirmation(self.app_title, self.app_banner, self.theme, get_user, confirmation_url, self.moderator)
 
     def go(self, comp):
         if not self.state:
@@ -879,18 +907,22 @@ class RegistrationTask(component.Task):
             # - ask the user to fill a registration form
             # - send him a confirmation email
             if self.username:
-                username = comp.call(
+                username, application_url = comp.call(
                     EmailRegistrationForm(
                         self.app_title,
                         self.app_banner,
-                        self.custom_css,
+                        self.theme,
                         self.username
                     )
                 )
             else:
-                username = comp.call(RegistrationForm(self.app_title, self.app_banner, self.custom_css))
+                username, application_url = comp.call(RegistrationForm(
+                    self.app_title, self.app_banner, self.theme))
             if username:
-                confirmation = self._create_email_confirmation(username)
+                if self.identicons:
+                    appuser = self.user_manager.get_app_user(username)
+                    appuser.reset_avatar(self.assets_manager)
+                confirmation = self._create_email_confirmation(username, application_url)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation)
         else:
@@ -903,12 +935,12 @@ class RegistrationTask(component.Task):
             confirmation = self._create_email_confirmation(username)
             if confirmation.confirm_email_address(token):
                 log.debug(_("Registration successful for user %s") % username)
-                comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='success')
+                base_url = comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.theme), model='success')
             else:
                 log.debug(_("Registration failure for user %s") % username)
-                comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.custom_css), model='failure')
+                base_url = comp.call(RegistrationConfirmation(self.app_title, self.app_banner, self.theme), model='failure')
 
-            redirect_to(self.confirmation_base_url)
+            redirect_to(base_url)
 
 # ----------------------------------------------------------
 
@@ -925,15 +957,13 @@ class TokenGenerator(object):
 
     def create_token(self):
         """Create a time-stamped token"""
+
         token = unicode(
             hashlib.sha512(str(time.time()) + self.username).hexdigest())
 
-        DataToken.delete_token_by_username(self.username, self.action)
+        DataToken.delete_by_username(self.username, self.action)
         # create new one
-        token_instance = DataToken(token=token,
-                                   username=self.username,
-                                   action=self.action,
-                                   date=datetime.now() + self.expiration_delay)
+        token_instance = DataToken.new(token, self.username, self.action)
         return token_instance
 
     def get_tokens(self):
@@ -944,7 +974,7 @@ class TokenGenerator(object):
     def check_token(self, token):
         """Check that the token is valid"""
         t = DataToken.get(token)
-        return t and datetime.now() <= t.date
+        return t and datetime.now() <= (t.date + self.expiration_delay)
 
     def reset_token(self, token):
         DataToken.get(token).delete()
@@ -956,13 +986,12 @@ class PasswordResetTask(component.Task):
 
     """A task that handles the password reset process"""
 
-    def __init__(self, app_title, app_banner, custom_css, mail_sender):
+    def __init__(self, app_title, app_banner, theme, mail_sender_service):
         """Be careful! The confirmation URL *should* be rooted"""
         self.app_title = app_title
         self.app_banner = app_banner
-        self.custom_css = custom_css
-        self.mail_sender = mail_sender
-        self.confirmation_base_url = mail_sender.application_url
+        self.theme = theme
+        self.mail_sender = mail_sender_service
         self.state = None  # task state, initialized by a URL rule
         self.user_manager = usermanager.UserManager()
         self.alt_title = _(u'Reset password')
@@ -970,36 +999,36 @@ class PasswordResetTask(component.Task):
     def _get_user(self, username):
         return usermanager.UserManager.get_by_username(username)
 
-    def _create_password_reset_confirmation(self, username):
-        return PasswordResetConfirmation(self.app_title, self.app_banner, self.custom_css,
+    def _create_password_reset_confirmation(self, username, confirmation_base_url):
+        return PasswordResetConfirmation(self.app_title, self.app_banner, self.theme,
                                          lambda: self._get_user(username),
-                                         self.confirmation_base_url)
+                                         confirmation_base_url)
 
     def go(self, comp):
         if not self.state:
             # step 1:
             # - ask the user email
             # - send him a confirmation email
-            username = comp.call(PasswordResetForm(self.app_title,
+            username, application_url = comp.call(PasswordResetForm(self.app_title,
                                                    self.app_banner,
-                                                   self.custom_css,
+                                                   self.theme,
                                                    self._get_user))
             if username:
                 confirmation = self._create_password_reset_confirmation(
-                    username)
+                    username, application_url)
                 confirmation.send_email(self.mail_sender)
                 comp.call(confirmation, model='email')
-                redirect_to(self.confirmation_base_url)
+                redirect_to(application_url)
         else:
             # step 2: the user clicked on the confirmation link on his email
             # - check the token (to avoid cheating)
             # - ask for the new password
-            username, token = self.state
+            username, token, application_url = self.state
 
-            confirmation = self._create_password_reset_confirmation(username)
+            confirmation = self._create_password_reset_confirmation(username, application_url)
             if confirmation.confirm_password_reset(token):
                 log.debug(_("Resetting the password for user %s") % username)
-                ret = comp.call(PasswordEditor(self.app_title, self.app_banner, self.custom_css,
+                ret = comp.call(PasswordEditor(self.app_title, self.app_banner, self.theme,
                                          lambda username=username: self._get_user(username),
                                          check_old_password=False))
                 if ret:
@@ -1010,21 +1039,21 @@ class PasswordResetTask(component.Task):
                 log.debug(_("Password reset failure for user %s") % username)
                 comp.call(confirmation, model='failure')
 
-            redirect_to(self.confirmation_base_url)
+            redirect_to(application_url)
 
 
 @presentation.init_for(PasswordResetTask, "len(url) == 2")
 def init_password_reset_task(self, url, comp, http_method, request):
-    self.state = (url[0], url[1])
+    self.state = (url[0], url[1], request.application_url)
 
 
 # ----------------------------------------------------------
 
 class ChangeEmailConfirmation(object):
 
-    def __init__(self, app_title, app_banner, custom_css, redirect_url='/'):
+    def __init__(self, app_title, app_banner, theme, redirect_url='/'):
         self.redirect_url = redirect_url
-        self.header = component.Component(Header(app_title, app_banner, custom_css))
+        self.header = component.Component(Header(app_title, app_banner, theme))
 
 
 @presentation.render_for(ChangeEmailConfirmation, 'success')
@@ -1052,7 +1081,7 @@ def render_change_email_confirmation_success(self, h, comp, model):
             with h.form:
                 with h.div(class_='actions'):
                     h << h.input(type='submit',
-                                 class_='btn btn-primary btn-small',
+                                 class_='btn btn-primary',
                                  value=_("Ok")).action(lambda: redirect_to(self.redirect_url))
 
     return h.root

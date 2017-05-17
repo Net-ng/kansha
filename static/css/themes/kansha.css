@@ -1,0 +1,677 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/* General */
+html, body {
+    height: 100%;
+    max-height: 100%;
+}
+
+form {
+    margin: 0 0 3px 0;
+}
+
+input, select, textarea {
+    box-sizing: border-box;
+    padding: 4px 6px;
+    margin: 0;
+    margin-right: 5px;
+    resize: none;
+    border-radius: 3px;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: auto;
+}
+
+a, a:hover, a:visited, a:hover i { text-decoration: none; }
+
+ul { padding: 0; }
+li { padding: 3px 0; }
+
+
+.description ul, .description ol {
+    margin-left: 2em;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    line-height: 20px;
+}
+
+/* Knacss fix to hide script tags */
+.row > script {
+    display: none;
+}
+
+/* YUI autocompletes */
+.yui-skin-sam .yui-ac-container {
+    left: 0 !important;
+    max-height: 200px;
+    overflow: auto;
+    position: relative;
+    top: 0 !important;
+}
+
+.yui-skin-sam .yui-ac-content {
+    position: relative;
+}
+
+.yui-skin-sam .yui-ac-input {
+    position: relative;
+}
+/* End YUI autocompletes */
+
+.yui-tt {
+    border: 0 !important;
+    padding: 0;
+    min-width: 50px;
+}
+
+.yui-tt .yui-tt-shadow {
+    position: absolute;
+    top: -9px;
+    left: 5px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 8px 9px 8px;
+    border-color: transparent transparent #434343 transparent;
+    background-color: transparent;
+}
+
+/* Popin */
+
+.yui-skin-sam .yui-panel-container {
+    cursor: pointer;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+    width: 100%;
+}
+
+.yui-skin-sam .yui-panel {
+    margin: 70px auto 30px auto;
+    max-width: 740px;
+    padding: 5px 20px 15px 50px;
+    cursor: initial;
+}
+
+.yui-skin-sam .yui-panel .panel-header {
+    width: 95%
+}
+
+.yui-skin-sam .yui-panel .panel-section {
+    margin: 10px 0 5px 0;
+}
+
+.panel-section .panel-section-title {
+    margin-bottom: 5px;
+}
+
+.panel-section.background div div:first-child,
+.panel-section.background div div:nth-child(2) {
+    display: inline-block;
+}
+
+.panel-section.background img {
+    max-height: 300px;
+}
+
+.panel-section.background:first-child div:last-child {
+    margin-top: 5px;
+}
+/* End popin */
+
+
+/* Buttons */
+button, .btn {
+    width: auto;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px;
+    padding: 3px 9px;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+/* Button groups */
+.btn-group {
+    display: inline-block;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+/* End buttons */
+
+[class^="icon-"], [class*=" icon-"] {
+    font-size: 16px;
+}
+
+[data-icon]:before {
+    font-family: icons;
+    content: attr(data-icon);
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    padding-right: 5px;
+}
+
+/* Remove underline from links */
+i[class^="icon-"]:before {
+	display: inline-block;
+	text-decoration: none;
+}
+
+i.icon {
+    vertical-align: text-bottom;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.board-labels .avatar img,
+.card .avatar img,
+.card-actions .avatar img {
+    max-height: 21px;
+    max-width: 21px;
+}
+
+
+/*Error page*/
+#errorPage {
+    height: auto;
+    padding: 0;
+    margin: 0
+}
+
+#errorPage #status {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+#errorPage #message {
+    padding: 10px 10px;
+    margin-top: 70px;
+    text-align: center;
+}
+/* End error page */
+
+/* Menu */
+
+.toggle-dropdown {
+    border: solid 1px transparent;
+    border-radius: 3px;
+    font-size: 20px;
+    padding: 1px 3px 1px 3px;
+}
+
+.with-dropdown:hover .toggle-dropdown {
+    border: solid 1px #c0c0c0;
+}
+
+.menu {
+    padding-top: 0;
+    text-align: left;
+    width: 190px;
+}
+
+.dropdown { /* add this class to .menu for dropdown menu version */
+    background-color: white;
+    border: 1px solid #737373;
+    border-radius: 3px;
+    display: None;
+    left: -160px;
+    position: absolute;
+    top: 25px;
+    z-index: 100;
+}
+
+.dropdown li {
+    padding: 0;
+}
+
+.menu li a {
+    cursor: pointer;
+    display: block;
+    padding: 8px 8px 8px 50px;
+    /*margin-bottom: 3px;*/
+}
+
+.dropdown li a {
+    padding-left: 8px;
+}
+
+.menu li span {
+    line-height: 20px;
+}
+
+.menu .icon {
+    margin-right: 7px;
+}
+/* End menu */
+
+/* Navigation menu */
+.nav-menu {
+    position: absolute;
+    top: -72px;
+    z-index: 25;
+    transition: top 0.3s;
+}
+
+.menu-down {
+    z-index: 30;
+    top: 0;
+}
+
+.nav-menu .actions {
+    position: relative;
+    padding: 18px 20px 12px 20px;
+    z-index: 25;
+    height: 69px;
+}
+
+.menu-title {
+    cursor: pointer;
+    max-width: 150px;
+    overflow: hidden;
+    padding: 0 10px 5px 10px;
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 30;
+}
+.menu-title .avatar {
+    height: 30px;
+    width: 30px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#kansha-nav-menu { left: 50px }
+#board-nav-menu { left: 210px }
+
+.nav-menu .actions li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+
+.actions li a {
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 6px;
+    padding: 5px 0 5px 5px;
+}
+
+.actions li a:hover {
+    border-bottom-color: #d8d8d8;
+    border-top-color: #d8d8d8;
+}
+
+.nav-menu .actions li a i {
+    font-size: 20px;
+    padding-right: 10px;
+}
+/* End navigation menu */
+
+/* Avatars */
+.avatar.big {
+    background: none repeat scroll 0 0 transparent;
+    height: 100px;
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.avatar {
+    display: inline-block;
+}
+
+.avatar img {
+    /*max-width: 30px;*/
+    height: 30px;
+    display: block
+}
+/* End avatars */
+
+/* Boards (home + boards) */
+.boardItemLabel {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 68%;
+}
+/* End boards */
+
+/* Footer */
+.credits {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+/* End footer */
+
+/* Overlays */
+.overlay_arrow {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: -8px;
+}
+
+.overlay_arrow:after {
+    content: "";
+    display: inline-block;
+    left: -6px;
+    position: absolute;
+    top: 2px;
+}
+
+.overlay,
+.yui-overlay {
+    visibility: hidden;
+    position: absolute;
+    left: -1000px;
+    top: 0;
+    min-width: 200px;
+}
+
+.overlay-header {
+    margin-right: 16px
+}
+
+.overlay-title {
+    display: none
+}
+
+.overlay-body {
+    padding: 0 10px;
+}
+
+.overlay-body li a {
+    cursor: pointer;
+}
+
+.overlay .favorites {
+    padding-top: 5px
+}
+
+.overlay .favorites h3 {
+    float: left;
+    margin-right: 6px;
+}
+
+.overlay .favorites h3:after {
+    content: " :"
+}
+
+.overlay .favorites ul {
+    float: right;
+    margin: 0;
+    padding: 0
+}
+
+.overlay .favorites li {
+    display: inline;
+}
+
+.overlay .favorites li a:hover {
+    background: none !important;
+    padding-left: 0
+}
+
+.overlay .members.search .yui-ac-input {
+    width: calc(100% - 80px)
+}
+
+.overlay .members.search .yui-ac-content {
+    background: none;
+    width: 100% !important
+}
+
+.overlay .members.search .yui-ac-bd ul {
+    width: 100%
+}
+
+.overlay .members.search .yui-ac-bd li {
+    clear: both;
+    cursor: pointer;
+    line-height: normal;
+    margin: 2px 5px;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+}
+
+.overlay .members.search .yui-ac-bd li .avatar {
+    float: left
+}
+
+.overlay .members.search .yui-ac-bd li .name {
+    float: left;
+    margin-left: 6px;
+}
+
+.overlay.board-labels-overlay .search {
+    position: static
+}
+
+/*.overlay.board-labels-overlay {
+    padding: 0 12px 4px 12px
+}
+*/
+.overlay.board-labels-overlay .avatar {
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.overlay.board-labels-overlay h2 {
+    line-height: inherit;
+    margin: 0 0 5px;
+    padding-bottom: 4px
+}
+
+.overlay.board-labels-overlay .member {
+    padding-top: 20px
+}
+
+.overlay.board-labels-overlay .members {
+    max-height: 300px;
+    margin-top: 8px;
+    position: static;
+    width: 100%;
+    overflow: auto;
+}
+
+.overlay.board-labels-overlay .members .member {
+    display: table-row;
+    width: 100%;
+    padding-top: 0
+}
+
+.overlay.board-labels-overlay .member span {
+    display: table-cell;
+    white-space: nowrap
+}
+
+.overlay.board-labels-overlay .member .name {
+    display: table-cell;
+    padding: 4px;
+    white-space: nowrap;
+    min-width: 92px;
+}
+
+.overlay.board-labels-overlay .name .email {
+    display: block;
+    position: relative;
+    top: -2px
+}
+
+.overlay.board-labels-overlay .member .actions .btn {
+    padding: 1px 3px;
+    margin: 0 2px;
+}
+
+.overlay.board-labels-overlay .member .actions {
+    text-align: right;
+    vertical-align: middle
+}
+
+/* End overlays */
+
+#mask {
+    display: none;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    z-index: 500;
+}
+
+/* Members */
+.members.search {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 7px;
+    overflow: auto;
+    float: none
+}
+
+.members.search #new_members {
+    width: 70%;
+    float: left;
+    margin-right: 8px
+}
+
+.members.search .btn-primary {
+    float: right;
+    width: auto !important;
+    margin: 0
+}
+
+.members .count {
+    position: relative;
+    left: -11px;
+    bottom: -3px;
+}
+
+.members {
+    display: inline-block;
+}
+
+.members .more,
+.members .add {
+    display: inline-block;
+    margin-right: -11px;
+    vertical-align: top;
+}
+
+.members .miniavatar {
+    display: inline-block;
+}
+
+.unselectable {
+    cursor: default;
+    margin-left: 3px;
+}
+
+.last-manager {
+    position: relative;
+}
+
+/* End members search */
+
+/* Errors */
+.nagare-error-message {
+    padding-left: 24px;
+}
+
+.list-title .nagare-error-message {
+    top: 0
+}
+
+.weights-form .nagare-error-message {
+    display: inline-block;
+    top: 0;
+    position: static;
+    padding: 3px 3px 3px 24px
+}
+
+.weights-form .nagare-error-input {
+    display: inline
+}
+/* End errors */
+
+@media (max-width:1240px){
+    .nav-menu .large li a {
+        display: inline-block;
+        width: 28px;
+        overflow: hidden;
+    }
+    #kansha-nav-menu {
+        left: 5px;
+    }
+    #board-nav-menu {
+        left: 160px;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-menu .actions li {
+        margin: 0;
+    }
+}
+
+/* Modal window */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    overflow: auto;
+}
+
+.modal > div {
+    max-width: 680px;
+    position: relative;
+    margin: 70px auto;
+    display: inline-block;
+    text-align: left;
+}
+
+.modal > div > div {
+    display: inline-block;
+}
+
+.modal textarea {
+    min-width: 300px;
+}
+
+.modal input,
+.modal select {
+    min-width: 200px;
+}
+/* End modal window */

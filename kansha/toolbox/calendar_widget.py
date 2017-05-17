@@ -52,16 +52,6 @@ def before(d, start, strict=True):
     return d <= start
 
 
-def after(d, end, strict=True):
-    '''is ``d`` after ``end``
-    In:
-        - strict -- ``d`` must be after if True else after or equal
-    '''
-    if strict:
-        return d > end
-    return d >= end
-
-
 class Calendar(object):
 
     def __init__(self, d=None, min_date=None, allow_none=False):
@@ -96,12 +86,6 @@ class Calendar(object):
         self.date = None
         comp.answer(self.date)
 
-    @property
-    def str_date(self):
-        if self.date is None:
-            return u''
-        return i18n.format_date(self.date, 'short')
-
     def is_authorized_date(self, d):
         if self.min_date is not None and before(d, self.min_date):
             return False
@@ -124,7 +108,6 @@ class Calendar(object):
 
 @presentation.render_for(Calendar)
 def render_async(self, h, comp, *args):
-    display_week_numbers = security.get_user().display_week_numbers
     with h.div(class_='calendar-input'):
         input_id = h.generate_id('input')
         calendar_id = h.generate_id('calendar')
@@ -135,7 +118,7 @@ def render_async(self, h, comp, *args):
         with h.div(class_='calendar', id_=calendar_id, style=style):
             with h.div(class_='calendar-header'):
                 with h.a(title=_(u'Previous')).action(self.previous_month):
-                    h << h.i(class_='icon-arrow-left icon-grey', title=_(u'Previous'))
+                    h << h.i(class_='icon-arrow-left', title=_(u'Previous'))
                 with h.span(class_='current'):
                     with h.select(onchange=ajax.Update(action=self.change_month)):
                         for n, month in i18n.get_month_names().iteritems():
@@ -147,7 +130,7 @@ def render_async(self, h, comp, *args):
                             h << h.option(year, value=year).selected(self.current.year)
 
                 with h.a(title=_(u'Next')).action(self.next_month):
-                    h << h.i(class_='icon-arrow-right icon-grey', title=_(u'Next'))
+                    h << h.i(class_='icon-arrow-right', title=_(u'Next'))
 
             with h.div(class_='calendar-content'):
                 if isinstance(self.date, date):
@@ -166,17 +149,15 @@ def render_async(self, h, comp, *args):
                 with h.table:
                     with h.thead:
                         with h.tr:
-                            if display_week_numbers:
-                                h << h.th(h.span(_('Wk'), title=_('Week number')), class_='week_number')
+                            h << h.th(h.span(_('Wk'), title=_('Week number')), class_='week_number')
 
                             days = [day.capitalize() for day in i18n.get_day_names().itervalues()]
                             h << [h.th(h.span(d[:2], title=d)) for d in days]
                     with h.tbody:
                         for line in calendar.monthcalendar(self.current.year, self.current.month):
                             with h.tr:
-                                if display_week_numbers:
-                                    week_number = date(self.current.year, self.current.month, max(1, line[0])).isocalendar()[1]
-                                    h << h.td(week_number, class_='week_number')
+                                week_number = date(self.current.year, self.current.month, max(1, line[0])).isocalendar()[1]
+                                h << h.td(week_number, class_='week_number')
 
                                 for day in line:
                                     if day == 0:
@@ -196,14 +177,19 @@ def render_async(self, h, comp, *args):
                                             else:
                                                 h << h.span(day)
             with h.div(class_='calendar-today'):
-                h << h.a(h.i(class_='icon-calendar icon-grey'), _(u"Today"), class_='today-link btn').action(self.set_today)
+                h << h.a(h.i(class_='icon-calendar'), _(u"Today"), class_='today-link btn').action(self.set_today)
                 if self.allow_none:
-                    h << h.a(h.i(class_='icon-remove icon-grey'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
+                    h << h.a(h.i(class_='icon-cross'), _(u'None'), class_='erase btn').action(lambda: self.remove_date(comp))
 
-            h << h.script('''YAHOO.util.Event.onDOMReady(function() {
-    var region = YAHOO.util.Dom.getRegion('%(input_id)s');
-    YAHOO.util.Dom.setXY('%(calendar_id)s', [region.left, region.bottom + 3]);
-    });''' % dict(input_id=input_id, calendar_id=calendar_id), type='text/javascript')
+            h << h.script(
+                "YAHOO.util.Event.onDOMReady(function() {"
+                "var region = YAHOO.util.Dom.getRegion(%(input_id)s);"
+                "YAHOO.util.Dom.setXY(%(calendar_id)s, [region.left, region.bottom + 3]);"
+                "});" % {
+                    'input_id': ajax.py2js(input_id),
+                    'calendar_id': ajax.py2js(calendar_id)
+                }
+            )
 
             h << h.div(class_='clear')
     return h.root

@@ -1,0 +1,387 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+/* General */
+body {
+    background: #f5f5f5;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif,icons;
+    color: #5c5c5c;
+}
+
+a {
+    color: #636363;
+}
+
+a:hover {
+    color: #5C5C5C;
+}
+
+button, input, optgroup, select, textarea {
+    color: #5c5c5c;
+}
+
+input, select, textarea {
+    border: 1px solid #c0c0c0;
+}
+
+::-webkit-input-placeholder { color: #c0c0c0; }
+:-moz-placeholder { color: #c0c0c0; }
+::-moz-placeholder { color: #c0c0c0; }
+:-ms-input-placeholder { color: #c0c0c0; }
+
+a:focus, input:focus, textarea:focus, button:focus {
+    outline: 0 none;
+}
+
+li {
+    list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: OpenSansLight;
+}
+
+/* YUI autocompletes */
+.yui-skin-sam .yui-ac-content {
+    border: none
+}
+/* End YUI autocompletes */
+
+.yui-tt .bd {
+    background: #434343 !important;
+    border: 0 !important;
+    border-radius: 3px;
+    color: white !important;
+    font-weight: bold;
+    font-size: 11px !important;
+}
+
+.yui-tt .yui-tt-shadow {
+    opacity: 1;
+}
+
+/* YUI FIX */
+.yui-skin-sam .mask {
+    background: #000
+}
+
+/* Popin */
+.yui-skin-sam .mask {
+    opacity: 0.4;
+}
+
+.yui-skin-sam .yui-panel-container {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.yui-skin-sam .yui-panel {
+    border-radius: 5px;
+    background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
+}
+
+.yui-skin-sam .yui-panel .panel-section:first-child {
+    border: 0;
+}
+
+.yui-skin-sam .yui-panel .panel-section {
+    border-top: 1px solid #c0c0c0;
+}
+
+.panel-section .panel-section-title {
+    font-size: 160%;
+}
+/* End popin */
+
+
+/* Buttons */
+.btn-group .btn {
+    border-left-width: 0;
+    border-radius: 0;
+    margin: 0;
+}
+
+.btn-group .btn:first-child {
+    border-left-width: 1px;
+    border-radius: 3px 0 0 3px;
+}
+
+.btn-group .btn:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+button, .btn {
+    border: 1px solid #B3B3B3;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #5c5c5c;
+    background-color: #F3F3F3;
+    border-radius: 3px;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+button:hover,
+button:focus,
+button:active,
+button.active {
+    background-color: #E6E6E6;
+}
+
+button:disabled:hover { background-color: transparent; }
+
+.btn.btn-primary {
+    color: white;
+    background: #93B70A;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+.btn.btn-primary.active,
+.btn.btn-primary.disabled,
+.btn.btn-primary[disabled] {
+    background-color: #7E9C12
+}
+
+.btn.delete,
+button.delete {
+    color: white;
+    background: #c22e2e;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.btn.delete:hover,
+.btn.delete:active,
+.btn.delete.active,
+.btn.delete.disabled,
+.btn.delete[disabled],
+button.delete:hover,
+button.delete:active,
+button.delete.active,
+button.delete.disabled,
+button.delete[disabled]{
+    background-color: #A01A00
+}
+/* End buttons */
+
+.ico-btn {
+    font-size: 28px;
+    color: inherit;
+}
+
+a:hover .ico-btn {
+    color: #434343;
+}
+
+.btn.btn-primary.toggle {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5) inset;
+    outline: 0 none;
+    background-image: none;
+    background: #93B70A;
+}
+
+.board-labels i.ico-btn,
+.card i.ico-btn,
+.card-actions i.ico-btn {
+    font-size: 21px;
+}
+
+/*Error page*/
+#errorPage {
+    color: inherit;
+}
+
+#errorPage #status {
+    font: 36px OpenSansLight;
+}
+
+#errorPage #message {
+    background: white;
+}
+
+#errorPage #message p {
+    font: 48px /64px OpenSansLight;
+}
+/* End error page */
+
+/* Menu */
+.menu {
+    border-right: 1px dotted #737373
+}
+
+.dropdown {
+    border: 1px solid #d8d8d8;
+}
+
+.menu li a {
+    font-size: 15px;
+}
+
+.menu a.active {
+    background-color: #EAEAEA;
+}
+
+.menu a:hover {
+    background-color: #EAEAEA;
+}
+
+.menu .icon {
+    font-size: 20px;
+}
+/* End menu */
+
+/* Navigation menu */
+.nav-menu .actions {
+    background: white;
+    font-size: 15px;
+    border-radius: 0 0 10px 0;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
+}
+
+.menu-title {
+    background: white;
+    font: normal 25px OpenSansSemiBold;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.47);
+    border-top: none;
+}
+
+.menu-down .menu-title {
+    color: #5C5C5C;
+}
+
+/* End navigation menu */
+
+/* Footer */
+.credits {
+    background-color: #eaeaea;
+}
+/* End footer */
+
+/* Overlays */
+.overlay {
+    background: white;
+    border: 1px solid #c0c0c0;
+}
+
+.overlay_arrow {
+    border-bottom: 7px solid #c0c0c0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+}
+
+.overlay_arrow:after {
+    border-bottom: 6px solid white;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+.overlay,
+.yui-overlay {
+    background: white;
+}
+
+.overlay .favorites h3 {
+    color: inherit;
+    font-size: 15px;
+}
+
+.overlay .members.search .yui-ac-bd li.yui-ac-highlight {
+    background: #EAEAEA;
+    color: inherit;
+}
+
+.overlay.board-labels-overlay {
+    color: inherit;
+}
+
+.overlay.board-labels-overlay h2 {
+    border-bottom: 1px solid #eaeaea;
+    color: inherit;
+    font-size: 17px;
+    font-weight: normal;
+}
+
+.overlay.board-labels-overlay .name .email {
+    font-size: 11px;
+    font-style: italic;
+}
+
+.overlay.board-labels-overlay .member .actions .btn {
+    font-size: 12px;
+}
+
+.overlay.board-labels-overlay .name {
+    font-size: 15px;
+    color: inherit;
+}
+
+/* End overlays */
+
+#mask {
+    background: none repeat scroll 0 0 #000;
+    opacity: 0.4;
+}
+
+/* Members */
+
+.members .count {
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #737373;
+    border-radius: 8px;
+    border: 2px solid white;
+    display: inline;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+
+.members .count:hover {
+    background-color: #5C5C5C;
+}
+
+.pending {
+    opacity: 0.5
+}
+
+.last-manager {
+    font-size: 11px;
+    font-style: italic;
+}
+/* End members search */
+
+/* Errors */
+.nagare-error-message {
+    background: url("../../../img/warning.png") no-repeat left center;
+    font: normal 15px OpenSansSemibold;
+    color: #c22e2e;
+}
+/* End errors */
+
+/* Modal window */
+
+.modal {
+    background: rgba(0, 0, 0, 0.4);
+ }
+
+.modal > div {
+    border-radius: 5px;
+    background: white;
+    border: 1px solid #808080;
+    box-shadow: 0 0 5px #333;
+    padding: 8px 15px;
+}
+/* End modal window */

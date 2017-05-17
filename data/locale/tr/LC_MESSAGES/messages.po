@@ -1,0 +1,1433 @@
+# Translations template for kansha.
+# Copyright (C) 2017 ORGANIZATION
+# This file is distributed under the same license as the kansha project.
+# 
+# Translators:
+# Gökhan Kalayci <gkmediagokhan@gmail.com>, 2017
+# Net-ng <jean.luc.carre@net-ng.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Kansha\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-04-27 17:44+0200\n"
+"PO-Revision-Date: 2017-05-15 14:12+0000\n"
+"Last-Translator: Net-ng <jean.luc.carre@net-ng.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/net-ng/kansha/language/tr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.0\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: kansha/notifications.py:40
+msgid "Cards affectation:"
+msgstr "Kartların etkilemesi:"
+
+#: kansha/notifications.py:41
+msgid "Cards modification:"
+msgstr "Kartların modifikasyonu:"
+
+#: kansha/notifications.py:42
+msgid "Cards addition / removal:"
+msgstr "Kartların eklenmesi / çıkarılması:"
+
+#: kansha/notifications.py:78
+#, python-format
+msgid "[%(app)s] Board \"%(board)s\" - %(count)s new action(s)"
+msgstr "[%(app)s] Pano \"%(board)s\" - %(count)s yeni işlem(s)"
+
+#: kansha/notifications.py:85
+#, python-format
+msgid ""
+"The following actions have been made on the board \"%(board)s\" in the last "
+"%(hours)s hours:\n"
+msgstr "Aşağıdaki işlemler son %(hours)s saat içinde \"%(board)s\" panosunda yapıldı:\n"
+
+#: kansha/notifications.py:86
+msgid "The following actions have been made on the board "
+msgstr "Aşağıdaki işlemler panoda yapıldı"
+
+#: kansha/notifications.py:88
+#, python-format
+msgid " in the last %(hours)s hours:"
+msgstr "son %(hours)s saat içinde:"
+
+#: kansha/notifications.py:124
+#, python-format
+msgid ""
+"To unsubscribe from board \"%(board)s\" alerts, click on %(url)s and modify "
+"notifications parameters in the \"settings\" menu of the \"Board\" tab."
+msgstr "\"%(board)s\" panosunu takibi bırakmak için \"Pano \" sekmesinde ki \"ayarlar \" menüsünden %(url)s üzerine tıklayın ve bildirim parametrelerini değiştirin."
+
+#: kansha/notifications.py:125
+#, python-format
+msgid "To unsubscribe from board \"%(board)s\" alerts, "
+msgstr "\"%(board)s\"  panosu uyarılarını almamak için,"
+
+#: kansha/notifications.py:126
+msgid "click here"
+msgstr "buraya tıklayın"
+
+#: kansha/notifications.py:127
+msgid ""
+" and modify notifications parameters in the \"settings\" menu of the "
+"\"Board\" tab."
+msgstr "ve \"pano\" sekmesinin \"ayarlar\" menüsünden bildirim parametrelerini değiştirebilirsiniz."
+
+#: kansha/validator.py:64
+msgid "Must be a boolean"
+msgstr "Bir boolean değeri olmalıdır"
+
+#: kansha/validator.py:72
+msgid "Should not be empty"
+msgstr "Boş bırakılamaz"
+
+#: kansha/validator.py:77
+msgid "Should only contain ascii letters, digits or underscore characters"
+msgstr "Yalnızca ascii harfler, rakamlar veya altçizgi karakteri içermelidir"
+
+#: kansha/validator.py:81
+msgid "Should start with an uppercase ascii letter"
+msgstr "Büyük ascii harfle başlamalı"
+
+#: kansha/validator.py:84
+msgid "Should start with an ascii letter"
+msgstr "Bir ascii harfle başlamalı"
+
+#: kansha/validator.py:88
+#, python-format
+msgid "Identifier too long (max. %d characters)"
+msgstr "Tanımlayıcı çok uzun (en fazla %d karakter)"
+
+#: kansha/validator.py:93
+#, python-format
+msgid "Size must be less than %d KB"
+msgstr "Boyut %d KB'dan küçük olmalıdır"
+
+#: kansha/validator.py:100
+msgid "Transfer was interrupted"
+msgstr "Aktarma kesildi"
+
+#: kansha/validator.py:123 kansha/validator.py:129
+#: kansha/board/boardconfig.py:116
+msgid "Required field"
+msgstr "Gerekli alan"
+
+#: kansha/validator.py:129
+msgid "Invalid email address"
+msgstr "Hatalı e-posta adresi"
+
+#: kansha/validator.py:150 kansha/user/user_profile.py:174
+#, python-format
+msgid "Password too short: should have at least %d characters"
+msgstr "Parola çok kısa: en az %d karakter içermeli"
+
+#: kansha/app/comp.py:93
+msgid "Boards"
+msgstr "Panolar"
+
+#: kansha/app/comp.py:98 kansha/board/boardconfig.py:36
+msgid "Profile"
+msgstr "Profil"
+
+#: kansha/app/comp.py:326
+msgid "Go back"
+msgstr "Geri git"
+
+#: kansha/app/comp.py:332
+msgid "You are not authorized to access this board"
+msgstr "Bu panoya erişmek için yetkiniz yok"
+
+#: kansha/app/comp.py:335
+msgid "This board doesn't exists"
+msgstr "Bu pano mevcut değil"
+
+#: kansha/app/comp.py:338
+msgid "Page not found"
+msgstr "Sayfa bulunamadı"
+
+#: kansha/app/urls.py:71
+#, python-format
+msgid "Change email success for user %s"
+msgstr "%s kullanıcısı için e-posta değiştirme işlemi başarılı"
+
+#: kansha/app/urls.py:83
+#, python-format
+msgid "Change email failure for user %s"
+msgstr "%s kullanıcısı için e-posta değiştirme işlemi başarısız"
+
+#: kansha/app/view.py:49
+msgid "Login"
+msgstr "Giriş"
+
+#: kansha/app/view.py:89
+msgid "click here to resync"
+msgstr "yeniden senkronize etmek için burayı tıklayın"
+
+#: kansha/app/view.py:96
+msgid "Operation in progress"
+msgstr "İşlem yapılıyor"
+
+#: kansha/app/view.py:98
+msgid "Please wait until operation completes."
+msgstr "Lütfen işlem bitinceye kadar bekleyin."
+
+#: kansha/authentication/login.py:79
+#: kansha/authentication/database/forms.py:139
+msgid "Sign in"
+msgstr "Oturum Aç"
+
+#: kansha/authentication/database/forms.py:116
+#: kansha/authentication/ldap/forms.py:60
+msgid "Login failed"
+msgstr "Giriş başarısız"
+
+#: kansha/authentication/database/forms.py:134
+#: kansha/authentication/ldap/forms.py:71
+msgid "Enter username"
+msgstr "Kullanıcı adını girin"
+
+#: kansha/authentication/database/forms.py:136
+#: kansha/authentication/ldap/forms.py:75
+msgid "Enter password"
+msgstr "Parolanızı girin"
+
+#: kansha/authentication/database/forms.py:137
+msgid "Forgot password?"
+msgstr "Parolanızı unuttunuz mu?"
+
+#: kansha/authentication/database/forms.py:141
+msgid "No account yet? "
+msgstr "Hesabınız yok mu?"
+
+#: kansha/authentication/database/forms.py:142
+#: kansha/authentication/database/forms.py:161
+#: kansha/authentication/database/forms.py:363
+#: kansha/authentication/database/forms.py:387
+#: kansha/authentication/database/forms.py:710
+#: kansha/authentication/database/forms.py:897
+msgid "Sign up"
+msgstr "Hesap oluştur"
+
+#: kansha/authentication/database/forms.py:172 kansha/user/user_profile.py:158
+#, python-format
+msgid "Username %s is not available. Please choose another one."
+msgstr "%s kullanılamaz. Başka bir kullanıcı adı belirleyin."
+
+#: kansha/authentication/database/forms.py:180
+#, python-format
+msgid "This email address (%s) is already registered."
+msgstr "Bu e-posta adresi (%s) zaten kayıtlı."
+
+#: kansha/authentication/database/forms.py:188
+msgid "Invalid captcha"
+msgstr "Resim doğrulama hatalı"
+
+#: kansha/authentication/database/forms.py:194
+msgid "Entered too late"
+msgstr "Giriş için geç kaldınız"
+
+#: kansha/authentication/database/forms.py:199
+#: kansha/authentication/database/forms.py:427 kansha/user/user_profile.py:201
+msgid "The two passwords don't match"
+msgstr "Girdiğiniz iki parola uyuşmuyor"
+
+#: kansha/authentication/database/forms.py:207
+#: kansha/authentication/database/forms.py:295
+msgid "Unable to process. Check your input below."
+msgstr "İşlenemiyor. Aşağıdaki giriş bilgilerinizi kontrol edin."
+
+#: kansha/authentication/database/forms.py:231
+#: kansha/authentication/database/forms.py:563 kansha/user/user_profile.py:81
+#: kansha/user/user_profile.py:276
+msgid "Username"
+msgstr "Kullanıcı adı"
+
+#: kansha/authentication/database/forms.py:232
+#: kansha/authentication/database/forms.py:473
+msgid "Password"
+msgstr "Parola"
+
+#: kansha/authentication/database/forms.py:234
+#: kansha/authentication/database/forms.py:475
+msgid "Password (repeat)"
+msgstr "Parola (tekrar)"
+
+#: kansha/authentication/database/forms.py:236
+#: kansha/authentication/database/forms.py:321
+#: kansha/authentication/database/forms.py:564
+msgid "Email address"
+msgstr "E-posta adresi"
+
+#: kansha/authentication/database/forms.py:237 kansha/user/user_profile.py:84
+#: kansha/user/user_profile.py:279
+msgid "Fullname"
+msgstr "Adınız ve Soyadınız"
+
+#: kansha/authentication/database/forms.py:251
+msgid "Enter the captcha text"
+msgstr "Resimdeki karakterleri girin"
+
+#: kansha/authentication/database/forms.py:257
+#: kansha/authentication/database/forms.py:335
+msgid "Create new account"
+msgstr "Yeni hesap oluştur"
+
+#: kansha/authentication/database/forms.py:260
+#: kansha/authentication/database/forms.py:339
+msgid "Already have an account? "
+msgstr "Zaten bir hesabınız var mı?"
+
+#: kansha/authentication/database/forms.py:261
+#: kansha/authentication/database/forms.py:340
+#: kansha/authentication/database/forms.py:580
+msgid "Log in"
+msgstr "Giriş yap"
+
+#: kansha/authentication/database/forms.py:270
+msgid "refresh captcha"
+msgstr "Resmi yenile"
+
+#: kansha/authentication/database/forms.py:289
+msgid "The two emails don't match"
+msgstr "Girdiğiniz e-posta adresleri uyuşmuyor"
+
+#: kansha/authentication/database/forms.py:303
+msgid ""
+"Something went wrong: user does not exist! Please contact the administrator "
+"of this site."
+msgstr "Ters giden bir şeyler var: böyle bir kullanıcı yok! Lütfen bu sitenin yöneticisiyle iletişime geçin."
+
+#: kansha/authentication/database/forms.py:318
+#, python-format
+msgid ""
+"Your profile is missing an email address. You have to enter a valid email "
+"address to open an account on %s"
+msgstr "Profilinizin bir e-posta adresi eksik. %s üzerinde bir hesap açmak için geçerli bir e-posta adresi girmeniz gerekiyor"
+
+#: kansha/authentication/database/forms.py:322
+msgid "Email address (repeat)"
+msgstr "E-posta adresi (tekrar)"
+
+#: kansha/authentication/database/forms.py:367
+msgid "Registration successful!"
+msgstr "Hesabınız oluşturuldu!"
+
+#: kansha/authentication/database/forms.py:370
+#, python-format
+msgid ""
+"You are now a registered user of %s. You can login\n"
+"                on the home page of the application."
+msgstr "Artık %s'ın kayıtlı bir kullanıcısı oldunuz. Uygulamanın\nAna sayfasından giriş yapabilirsiniz."
+
+#: kansha/authentication/database/forms.py:377
+#: kansha/authentication/database/forms.py:396
+#: kansha/authentication/database/forms.py:654
+#: kansha/authentication/database/forms.py:673
+#: kansha/authentication/database/forms.py:692
+#: kansha/authentication/database/forms.py:810
+#: kansha/authentication/database/forms.py:1085
+msgid "Ok"
+msgstr "Tamam"
+
+#: kansha/authentication/database/forms.py:388
+msgid "Registration failure!"
+msgstr "Hesap oluştururken hata!"
+
+#: kansha/authentication/database/forms.py:391
+msgid ""
+"Registration failure! The token received is either expired or invalid. "
+"Please register again."
+msgstr "Kayıt hatası! Alınan jeton süresi doldu veya geçersiz. Lütfen tekrar kayıt olunuz."
+
+#: kansha/authentication/database/forms.py:422
+msgid "Invalid password"
+msgstr "Geçersiz parola"
+
+#: kansha/authentication/database/forms.py:439
+#: kansha/authentication/database/forms.py:541
+msgid "Invalid input!"
+msgstr "Geçersiz giriş!"
+
+#: kansha/authentication/database/forms.py:462
+#: kansha/authentication/database/forms.py:494
+#: kansha/authentication/database/forms.py:641
+#: kansha/authentication/database/forms.py:682
+msgid "Change password"
+msgstr "Parolayı değiştir"
+
+#: kansha/authentication/database/forms.py:478 kansha/user/user_profile.py:306
+msgid "Old Password"
+msgstr "Eski parola"
+
+#: kansha/authentication/database/forms.py:498 kansha/board/templates.py:62
+#: kansha/board/view.py:344 kansha/board/view.py:718 kansha/card/view.py:194
+#: kansha/card_addons/comment/view.py:75
+#: kansha/card_addons/comment/view.py:105
+#: kansha/card_addons/description/view.py:69
+#: kansha/card_addons/description/view.py:77
+#: kansha/card_addons/gallery/view.py:192 kansha/card_addons/label/view.py:62
+#: kansha/column/view.py:196 kansha/title/view.py:44
+msgid "Cancel"
+msgstr "İptal"
+
+#: kansha/authentication/database/forms.py:523
+msgid "This username is not registered on our database"
+msgstr "Veritabanımızda böyle bir kullanıcı adı yok"
+
+#: kansha/authentication/database/forms.py:526
+msgid ""
+"You can not change your password since you log in by an external service."
+msgstr "Harici bir servisle giriş yaptığınızdan dolayı şifrenizi değiştiremezsiniz."
+
+#: kansha/authentication/database/forms.py:535
+msgid "This email address does not match the user's email address"
+msgstr "Bu e-posta adresi kullanıcının e-posta adresiyle eşleşmiyor"
+
+#: kansha/authentication/database/forms.py:558
+msgid ""
+"Please enter your username and your email address and you'll receive an "
+"email that contains a link to reset your password."
+msgstr "Lütfen kullanıcı adınızı ve e-posta adresinizi girin; şifrenizi sıfırlamak için sıfırlama bağlantısı içeren bir e-posta alacaksınız."
+
+#: kansha/authentication/database/forms.py:577
+#: kansha/authentication/database/forms.py:598
+#: kansha/authentication/database/forms.py:997
+msgid "Reset password"
+msgstr "Parolayı sıfırla"
+
+#: kansha/authentication/database/forms.py:580
+msgid "Remember your password?"
+msgstr "Şifrenizi mi unuttunuz?"
+
+#: kansha/authentication/database/forms.py:620
+#, python-format
+msgid ""
+"\n"
+"        Hello %(fullname)s,\n"
+"\n"
+"        We received a request to reset your password. If you are at the origin of this\n"
+"        request, please click on this confirmation link: %(confirmation_url)s. Otherwise,\n"
+"        feel free to ignore this email.\n"
+"\n"
+"        See you soon on %(app_title)s.\n"
+"        "
+msgstr "\nMerhaba %(fullname)s,\n\nŞifrenizi sıfırlamak için bir talep aldık. Eğer bu konunun muhatabı siz \niseniz , lütfen bu onay bağlantısını tıklayın: %(confirmation_url)s. Aksi takdirde,\nbu e-postayı yoksaymaktan çekinmeyin.\n\nYakında  %(app_title)s da görüşürüz.\n        "
+
+#: kansha/authentication/database/forms.py:630
+#, python-format
+msgid "%(app_title)s: Password Reset"
+msgstr "%(app_title)s: Parolayı Sıfırla"
+
+#: kansha/authentication/database/forms.py:645
+msgid "Password change successful!"
+msgstr "Parola değiştirme başarılı!"
+
+#: kansha/authentication/database/forms.py:648
+msgid "Your password have been changed successfully."
+msgstr "Parolanız başarılı bir şekilde değiştirildi."
+
+#: kansha/authentication/database/forms.py:664
+msgid "Email sent!"
+msgstr "E-posta gönderildi!"
+
+#: kansha/authentication/database/forms.py:667
+msgid "An email has been sent!"
+msgstr "Bir e-posta gönderildi!"
+
+#: kansha/authentication/database/forms.py:683
+msgid "Password reset failure!"
+msgstr "Parola sıfırlarken hata!"
+
+#: kansha/authentication/database/forms.py:686
+msgid "Password reset failure! Please try again."
+msgstr "Parola sıfırlarken hata! Lütfen tekrar deneyin."
+
+#: kansha/authentication/database/forms.py:750
+#, python-format
+msgid ""
+"\n"
+"            Hello moderator,\n"
+"\n"
+"            %(fullname)s is willing to register an account (%(login)s) on the %(app_title)s application.\n"
+"\n"
+"            Her (his) email address is %(email)s. Please verify it before accepting this account creation.\n"
+"\n"
+"            In order to confirm that email address and accept the user's registration,\n"
+"            please click on this confirmation link: %(confirmation_url)s.\n"
+"\n"
+"            If you don't accept this request, feel free to ignore this email.\n"
+"            Nothing will change into the user's pending account until your click\n"
+"            on the confirmation link.\n"
+"\n"
+"            Once confirmed, the user can login with her (his) login \"%(login)s\" and\n"
+"            the password she (he) provided.\n"
+"            "
+msgstr "\nMerhaba moderatör,\n\n%(fullname)s ,%(app_title)s uygulamasında (%(login)s) hesabını oluşturmak istiyor.\n\nOnun (kullanıcının) e-posta adresi %(email)s. Lütfen bu hesap oluşturma işlemini kabul etmeden önce doğrulayın.\n\nBu e-posta adresini onaylamak ve kullanıcının kaydını kabul etmek için \nLütfen bu onay bağlantısını tıklayın: %(confirmation_url)s.\n\nBu isteği kabul etmezseniz, bu e-postayı yok saymaktan çekinmeyin. \nOnay linkine tıklayıncaya kadar kullanıcının bekleyen hesabında\nherhangi bir şey değişmez.\n \nSiz onayladıktan sonra o (kullanıcı), \"%(login)s\"  (kullanıcı adı)\nkullanıcısı olarak daha önceden belirlediği parola ile oturum açabilir.\n           \n            "
+
+#: kansha/authentication/database/forms.py:767
+#, python-format
+msgid "%(app_title)s: Confirm user registration"
+msgstr "%(app_title)s: Kullanıcı kaydını doğrulayın"
+
+#: kansha/authentication/database/forms.py:769
+#, python-format
+msgid ""
+"\n"
+"            Hello %(fullname)s,\n"
+"\n"
+"            In order to confirm your email address in the %(app_title)s application,\n"
+"            please click on this confirmation link: %(confirmation_url)s.\n"
+"\n"
+"            If you are not at the origin of this request, feel free to ignore this\n"
+"            email. Nothing will change into your account until your click on the\n"
+"            confirmation link.\n"
+"\n"
+"            Once confirmed, you can login with your login \"%(login)s\" and the password you just provided.\n"
+"\n"
+"            See you soon on %(app_title)s.\n"
+"            "
+msgstr "\nMerhaba %(fullname)s,\n\n%(app_title)s uygulamasındaki e-posta adresinizi doğrulamak için,\nLütfen bu onay bağlantısını tıklayın: %(confirmation_url)s.\n\nBu isteğin kaynağı siz değilseniz, bu e-postayı yok saymaktan çekinmeyin. Onay bağlantısına tıklayıncaya kadar hesabınızda hiçbir şey değişmeyecek.\n\nE-posta adresinizi doğruladıktan sonra \"%(login)s\" ve daha önce belirlediğiniz parola ile oturum açabilirsiniz.\n\n %(app_title)s 'de görüşmek üzere.\n\n\n      \n            "
+
+#: kansha/authentication/database/forms.py:783
+#, python-format
+msgid "%(app_title)s: Confirm your email address"
+msgstr "%(app_title)s: E-posta adresinizi doğrulayın"
+
+#: kansha/authentication/database/forms.py:795
+msgid "Registration request sent"
+msgstr "Kayır isteği gönderildi"
+
+#: kansha/authentication/database/forms.py:795
+msgid "Confirm your email address!"
+msgstr "E-posta adresinizi doğrulayın!"
+
+#: kansha/authentication/database/forms.py:799
+msgid ""
+"An email has been sent to the moderator. You will be contacted when\n"
+"                your account is activated."
+msgstr "Moderatöre bir e-posta gönderildi. Hesabınız etkinleştirildiği zaman\nsizinle iletişime geçilecek."
+
+#: kansha/authentication/database/forms.py:802
+msgid ""
+"An email has been sent to your email address. You have to click on the\n"
+"                confirmation link in this email in order to confirm your email address in the\n"
+"                application."
+msgstr "Size bir e-posta gönderildi. E-posta adresinizi doğrulamak için\nsize gelen e-posta da ki doğrulama linkini tıklamanız\ngerekiyor."
+
+#: kansha/authentication/database/forms.py:857
+#, python-format
+msgid ""
+"\n"
+"        Hello,\n"
+"\n"
+"        You were invited by %(host_name)s (%(host_email)s) to the board \"%(board_title)s\".\n"
+"\n"
+"        To view the board, click on this link : %(confirmation_url)s.\n"
+"\n"
+"        If you don't already have an account, register with email %(email)s and you will automatically join the board.\n"
+"\n"
+"        See you soon on %(app_title)s.\n"
+"        "
+msgstr "\nMerhaba,\n\n%(host_name)s (%(host_email)s) tarafından  \"%(board_title)s\" panosuna davet edildiniz.\n\nPanoyu görmek için linki tıklayın : %(confirmation_url)s.\n\nHenüz bir hesabınız yoksa,  %(email)s  e-postası  ile kaydolun ve otomatik olarak panoda oturum açın.\n\n %(app_title)s 'de görüşmek üzere.\n        "
+
+#: kansha/authentication/database/forms.py:869
+#, python-format
+msgid "%(app_title)s: Invitation to the board \"%(board_title)s\""
+msgstr "%(app_title)s: \"%(board_title)s\" panosuna davet"
+
+#: kansha/authentication/database/forms.py:937
+#, python-format
+msgid "Registration successful for user %s"
+msgstr "%s isimli kullanıcı için kayıt başarılı"
+
+#: kansha/authentication/database/forms.py:940
+#, python-format
+msgid "Registration failure for user %s"
+msgstr "%s isimli kullanıcı için kayıt maalesef başarısız"
+
+#: kansha/authentication/database/forms.py:1030
+#, python-format
+msgid "Resetting the password for user %s"
+msgstr "%s kullanıcısının parolasını sıfırlama"
+
+#: kansha/authentication/database/forms.py:1039
+#, python-format
+msgid "Password reset failure for user %s"
+msgstr "%s kullanıcısı için parola sıfırlanırken bir hata oluştu"
+
+#: kansha/authentication/database/forms.py:1066
+msgid "Change email"
+msgstr "E-posta adresini değiştir"
+
+#: kansha/authentication/database/forms.py:1071
+msgid "Email change successful!"
+msgstr "E-posta adresi başarıyla değiştirildi!"
+
+#: kansha/authentication/database/forms.py:1073
+msgid "Email change failure!"
+msgstr "E-posta adresi değiştirilirken hata!"
+
+#: kansha/authentication/database/forms.py:1077
+msgid "Your email have been changed successfully."
+msgstr "E-posta adresiniz başarılı bir şekilde değiştirildi."
+
+#: kansha/authentication/database/forms.py:1079
+msgid "Email change failure! Please retry."
+msgstr "E-posta adresi değiştirilirken hata! Lütfen tekrar deneyin."
+
+#: kansha/authentication/ldap/forms.py:77
+msgid "Sign in with LDAP"
+msgstr "LDAP ile oturum açın"
+
+#: kansha/authentication/oauth/forms.py:42
+#, python-format
+msgid "Sign in with %s"
+msgstr "%s ile oturum açın"
+
+#: kansha/authentication/oauth/forms.py:104
+msgid "Authentication failed"
+msgstr "Kimlik doğrulama başarısız"
+
+#: kansha/authentication/oauth/forms.py:111
+#, python-format
+msgid "Please provide a full name in %s"
+msgstr "Lütfen %s için tam isim girin"
+
+#: kansha/board/boardconfig.py:38 kansha/board/view.py:395
+msgid "Card labels"
+msgstr "Kart etiketleri"
+
+#: kansha/board/boardconfig.py:39
+msgid "Card weights"
+msgstr "Kart ağırlıkları"
+
+#: kansha/board/boardconfig.py:40
+msgid "Background"
+msgstr "Arka plan"
+
+#: kansha/board/boardconfig.py:125
+msgid "Must be positive integers"
+msgstr "Pozitif tam sayı olmalı"
+
+#: kansha/board/boardconfig.py:132
+msgid "Sequence saved"
+msgstr "Dizi kaydedildi"
+
+#: kansha/board/boardsmanager.py:58 kansha/board/view.py:555
+msgid "Archive"
+msgstr "Arşiv"
+
+#: kansha/board/comp.py:120 kansha/card_addons/members/view.py:96
+#, python-format
+msgid "%s more..."
+msgstr "%s daha fazla..."
+
+#: kansha/board/comp.py:132 kansha/column/view.py:163
+msgid "Add list"
+msgstr "Liste ekle"
+
+#: kansha/board/comp.py:133 kansha/board/view.py:336
+msgid "Edit board description"
+msgstr "Pano özelliklerini düzenle"
+
+#: kansha/board/comp.py:134
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: kansha/board/comp.py:135
+msgid "Export board"
+msgstr "Panoyu dışa aktar"
+
+#: kansha/board/comp.py:136
+msgid "Save as template"
+msgstr "Şablon olarak kaydet"
+
+#: kansha/board/comp.py:137
+msgid "Archive board"
+msgstr "Arşiv panosu"
+
+#: kansha/board/comp.py:138
+msgid "Leave this board"
+msgstr "Bu panoyu terk et"
+
+#: kansha/board/comp.py:139 kansha/services/actionlog/view.py:25
+msgid "Action log"
+msgstr "İşlem günlüğü"
+
+#: kansha/board/comp.py:662 kansha/board/comp.py:679
+msgid "Can't remove last manager"
+msgstr "Son yönetici silinemez"
+
+#: kansha/board/excel_export.py:72
+msgid "Column"
+msgstr "Sütun"
+
+#: kansha/board/excel_export.py:72 kansha/board/templates.py:45
+msgid "Title"
+msgstr "Başlık"
+
+#: kansha/board/excel_export.py:79 kansha/column/comp.py:143
+msgid "Archived cards"
+msgstr "Arşivlenmiş kartlar"
+
+#: kansha/board/templates.py:41
+msgid "Save board as template"
+msgstr "Panoyu şablon olarak kaydet"
+
+#: kansha/board/templates.py:49 kansha/board/view.py:339
+#: kansha/card_addons/description/comp.py:92
+msgid "Description"
+msgstr "Açıklama"
+
+#: kansha/board/templates.py:54
+msgid "Save for"
+msgstr "Bunun için kaydet"
+
+#: kansha/board/templates.py:56
+msgid "Me only"
+msgstr "Sadece ben"
+
+#: kansha/board/templates.py:57
+msgid "All users"
+msgstr "Tüm kullanıcılar"
+
+#: kansha/board/templates.py:60 kansha/board/view.py:342
+#: kansha/board/view.py:490 kansha/board/view.py:715
+#: kansha/card_addons/comment/view.py:72
+#: kansha/card_addons/comment/view.py:102
+#: kansha/card_addons/description/view.py:75
+#: kansha/card_addons/label/view.py:59 kansha/card_addons/weight/view.py:45
+#: kansha/card_addons/weight/view.py:53 kansha/title/view.py:42
+#: kansha/user/user_profile.py:104 kansha/user/user_profile.py:323
+msgid "Save"
+msgstr "Kaydet"
+
+#: kansha/board/templates.py:71
+msgid "Please wait while board is saved..."
+msgstr "Pano kaydedilirken lütfen bekleyin..."
+
+#: kansha/board/templates.py:81
+msgid "Template saved!"
+msgstr "Şablon kaydedildi!"
+
+#: kansha/board/templates.py:83
+msgid "OK"
+msgstr "Tamam"
+
+#: kansha/board/view.py:34
+msgid "fill"
+msgstr "doldur"
+
+#: kansha/board/view.py:35
+msgid "fit"
+msgstr "sığdır"
+
+#: kansha/board/view.py:36
+msgid "stretch"
+msgstr "uzat"
+
+#: kansha/board/view.py:37
+msgid "tile"
+msgstr "kapla"
+
+#: kansha/board/view.py:38
+msgid "center"
+msgstr "ortala"
+
+#: kansha/board/view.py:62
+msgid "This board will be archived. Are you sure?"
+msgstr "Bu pano arşivlenecek. Emin misiniz?"
+
+#: kansha/board/view.py:72 kansha/board/view.py:164
+msgid ""
+"You won't be able to access this board anymore. Are you sure you want to "
+"leave it anyway?"
+msgstr "Bu panoya artık erişemeyeceksiniz. Yine de ayrılmak istediğinden emin misin?"
+
+#: kansha/board/view.py:77
+msgid "Board"
+msgstr "Pano"
+
+#: kansha/board/view.py:119 kansha/board/view.py:130
+msgid "Calendar mode"
+msgstr "Takvim modu"
+
+#: kansha/board/view.py:124 kansha/board/view.py:135
+msgid "Board mode"
+msgstr "Pano modu"
+
+#: kansha/board/view.py:161
+#, python-format
+msgid "Archive \"%s\""
+msgstr "Arşiv \"%s\""
+
+#: kansha/board/view.py:168
+#, python-format
+msgid "Leave \"%s\""
+msgstr "Ayrıl \"%s\""
+
+#: kansha/board/view.py:193
+msgid "This board will be destroyed. Are you sure?"
+msgstr "Bu pano imha edilecek. Emin misiniz?"
+
+#: kansha/board/view.py:197
+#, python-format
+msgid "Delete \"%s\""
+msgstr "Sil \"%s\""
+
+#: kansha/board/view.py:203
+#, python-format
+msgid "Restore \"%s\""
+msgstr "Geri yükle \"%s\""
+
+#: kansha/board/view.py:231 kansha/card_addons/members/view.py:59
+msgid "All members"
+msgstr "Tüm üyeler"
+
+#: kansha/board/view.py:246
+msgid "Invite members"
+msgstr "Üyeleri davet et"
+
+#: kansha/board/view.py:364
+msgid "Board configuration"
+msgstr "Pano yapılandırma"
+
+#: kansha/board/view.py:386 kansha/card_addons/label/comp.py:162
+msgid "Labels"
+msgstr "Etiketler"
+
+#: kansha/board/view.py:409
+msgid "Weights"
+msgstr "Ağırlıklar"
+
+#: kansha/board/view.py:418
+msgid "Weighting cards"
+msgstr "Ağırlık kartları"
+
+#: kansha/board/view.py:419
+msgid "Activate cards weights"
+msgstr "Aktif kartların ağırlığı"
+
+#: kansha/board/view.py:429 kansha/board/view.py:463
+msgid "All affected weights will be reset. Are you sure?"
+msgstr "Etkilenen tüm ağırlıklar sıfırlanacak. Emin misiniz?"
+
+#: kansha/board/view.py:434 kansha/board/view.py:526 kansha/board/view.py:543
+msgid "Disabled"
+msgstr "Devre dışı"
+
+#: kansha/board/view.py:444
+msgid "Free integer"
+msgstr "Serbest tam sayı"
+
+#: kansha/board/view.py:453
+msgid "Card weights can be any integer"
+msgstr "Kart ağırlıkları herhangi bir tamsayı olabilir"
+
+#: kansha/board/view.py:468
+msgid "Integer sequence"
+msgstr "Tamsayı dizisi"
+
+#: kansha/board/view.py:475
+msgid "Choosen within a sequence of integers"
+msgstr "Bir tam sayısı dizisi içinden seçildi"
+
+#: kansha/board/view.py:479
+msgid "Enter a sequence of integers"
+msgstr "Bir dizi tam sayı girin"
+
+#: kansha/board/view.py:506
+msgid "Content Visibility"
+msgstr "İçerik Görünürlüğü"
+
+#: kansha/board/view.py:507
+msgid ""
+"Choose whether the board is private, public (anyone with the URL can view it"
+" ) or shared (public + visible on homepages)."
+msgstr "Panonun özel mi, genel mi (URL'ye sahip herkes görebilir) ya da paylaşılmış mı (genel + ana sayfa görünür) olduğunu seçin"
+
+#: kansha/board/view.py:511
+msgid "Private"
+msgstr "Özel"
+
+#: kansha/board/view.py:514 kansha/board/view.py:534 kansha/board/view.py:551
+msgid "Public"
+msgstr "Genel"
+
+#: kansha/board/view.py:517
+msgid "Shared"
+msgstr "Paylaşılmış"
+
+#: kansha/board/view.py:521 kansha/card_addons/comment/comp.py:206
+msgid "Comments"
+msgstr "Yorumlar"
+
+#: kansha/board/view.py:522
+msgid ""
+"Commenting allows members to make short messages on cards. You can enable or"
+" disable this feature."
+msgstr "Yorumlama, üyelerin kartlarda kısa mesajlar vermelerine olanak tanır. Bu özelliği etkinleştirebilir veya devre dışı bırakabilirsiniz."
+
+#: kansha/board/view.py:529 kansha/board/view.py:546
+msgid "Members"
+msgstr "Üyeler"
+
+#: kansha/board/view.py:538
+msgid "Votes"
+msgstr "Oylar"
+
+#: kansha/board/view.py:539
+msgid "Allow votes"
+msgstr "Oylara izin ver"
+
+#: kansha/board/view.py:556
+msgid "View archive column"
+msgstr "Arşiv sütununu görüntüle"
+
+#: kansha/board/view.py:561
+msgid "Show"
+msgstr "Göster"
+
+#: kansha/board/view.py:563
+msgid "Hide"
+msgstr "Gizle"
+
+#: kansha/board/view.py:566
+msgid "Notifications"
+msgstr "Bildirimler"
+
+#: kansha/board/view.py:567
+msgid "You will be notified by email of changes made in this board to cards"
+msgstr "Bu panoda ki kartlarda yapılan değişlikler de e-posta ile bilgilendirileceksiniz"
+
+#: kansha/board/view.py:571 kansha/toolbox/calendar_widget.py:182
+msgid "None"
+msgstr "Hiçbiri"
+
+#: kansha/board/view.py:573
+msgid "Affected to me"
+msgstr "Beni etkileyen"
+
+#: kansha/board/view.py:575
+msgid "All"
+msgstr "Tümü"
+
+#: kansha/board/view.py:605 kansha/board/view.py:614
+msgid "Background image"
+msgstr "Arka plan resmi"
+
+#: kansha/board/view.py:621
+msgid "Choose an image"
+msgstr "Bir resim seçin"
+
+#: kansha/board/view.py:640 kansha/card_addons/gallery/view.py:110
+msgid "Max file size exceeded"
+msgstr "Maksimum dosya boyutu aşıldı"
+
+#: kansha/board/view.py:648 kansha/board/view.py:671
+msgid "or"
+msgstr "veya"
+
+#: kansha/board/view.py:649
+msgid "Reset background"
+msgstr "Arka planı sıfırla"
+
+#: kansha/board/view.py:660
+msgid "Image position"
+msgstr "Resim pozisyonu"
+
+#: kansha/board/view.py:667
+msgid "Board title color"
+msgstr "Pano başlık rengi"
+
+#: kansha/board/view.py:672
+msgid "Reset to default color"
+msgstr "Varsayılan renk yap"
+
+#: kansha/board/view.py:685
+msgid "No background selected"
+msgstr "Arka plan seçilmedi"
+
+#: kansha/board/view.py:696 kansha/card_addons/label/view.py:46
+msgid "Change color"
+msgstr "Rengi değiştir"
+
+#: kansha/board/view.py:734
+msgid "Empty board"
+msgstr "Boş pano"
+
+#: kansha/board/view.py:735
+msgid "Basic Kanban"
+msgstr "Temel Kanban"
+
+#: kansha/board/view.py:740
+msgid "Create"
+msgstr "Oluştur"
+
+#: kansha/board/view.py:741
+msgid "a new"
+msgstr "yeni bir"
+
+#: kansha/board/view.py:745
+msgid "Shared templates"
+msgstr "Paylaşılan şablonlar"
+
+#: kansha/board/view.py:749
+msgid "My templates"
+msgstr "Şablonlarım"
+
+#: kansha/board/view.py:758
+msgid "Last modified boards"
+msgstr "Değiştirilen son panolar"
+
+#: kansha/board/view.py:762
+msgid "My boards"
+msgstr "Panolarım"
+
+#: kansha/board/view.py:767
+msgid ""
+"Create a board by choosing a template in the menu above, then click on the "
+"\"Create\" button."
+msgstr "Yukarıdaki menüden bir şablon seçerek bir tahta oluşturun ve ardından \"Oluştur\" düğmesini tıklayın."
+
+#: kansha/board/view.py:770
+msgid "Guest boards"
+msgstr "Konuk panoları"
+
+#: kansha/board/view.py:775
+msgid "Shared boards"
+msgstr "Paylaşılan panolar"
+
+#: kansha/board/view.py:780
+msgid "Archived boards"
+msgstr "Arşivlenen panolar"
+
+#: kansha/board/view.py:788
+msgid "Delete the archived board"
+msgstr "Arşivlenmiş panoyu sil"
+
+#: kansha/board/view.py:788
+msgid "Delete the archived boards"
+msgstr "Arşivlenmiş panoları sil"
+
+#: kansha/board/view.py:791
+msgid "Deleted boards cannot be restored. Are you sure?"
+msgstr "Silinen panolar geri yüklenmez. Emin misiniz?"
+
+#: kansha/board_card_filter/view.py:40
+msgid "No matches"
+msgstr "Eşleşmedi"
+
+#: kansha/board_card_filter/view.py:44
+#, python-format
+msgid "%d match"
+msgid_plural "%d matches"
+msgstr[0] "%d eşleşme"
+msgstr[1] "%d eşleşme"
+
+#: kansha/board_card_filter/view.py:75
+msgid "search"
+msgstr "arama"
+
+#: kansha/card/view.py:111 kansha/card_addons/comment/view.py:41
+#: kansha/card_addons/gallery/view.py:146
+msgid "Delete"
+msgstr "Sil"
+
+#: kansha/card/view.py:113
+msgid "This card will be archived. Are you sure?"
+msgstr "Bu kart arşivlenecek. Emin misiniz?"
+
+#: kansha/card/view.py:169
+msgid "Add a card"
+msgstr "Bir kart ekle"
+
+#: kansha/card/view.py:192 kansha/card_addons/checklist/view.py:33
+#: kansha/column/view.py:194 kansha/user/view.py:189
+msgid "Add"
+msgstr "Ekle"
+
+#: kansha/card_addons/checklist/comp.py:35
+#, python-format
+msgid "User %(author)s has added the checklist \"%(list)s\" to card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartına \"%(list)s\" kontrol listesini ekledi"
+
+#: kansha/card_addons/checklist/comp.py:40
+#, python-format
+msgid "User %(author)s has deleted the checklist \"%(list)s\" from card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartından \"%(list)s\" kontrol listesini sildi"
+
+#: kansha/card_addons/checklist/comp.py:45
+#, python-format
+msgid ""
+"User %(author)s has checked the item %(item)s from the checklist "
+"\"%(list)s\", on card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartındaki \"%(list)s\" kontrol listesinde %(item)s öğesini işaretledi"
+
+#: kansha/card_addons/checklist/comp.py:50
+#, python-format
+msgid ""
+"User %(author)s has unchecked the item %(item)s from the checklist "
+"\"%(list)s\", on card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartındaki \"%(list)s\" kontrol listesinden %(item)s öğesinin işaretini kaldırdı"
+
+#: kansha/card_addons/checklist/comp.py:73
+msgid "Enter task"
+msgstr "Görevi girin"
+
+#: kansha/card_addons/checklist/comp.py:119
+msgid "Add title"
+msgstr "Başlık ekle"
+
+#: kansha/card_addons/checklist/view.py:23
+#: kansha/card_addons/checklist/view.py:32
+msgid "Add item"
+msgstr "Öğe ekle"
+
+#: kansha/card_addons/checklist/view.py:50
+msgid "Checklist"
+msgstr "Kontrol listesi"
+
+#: kansha/card_addons/checklist/view.py:116
+msgid "The checklist will be deleted. Are you sure?"
+msgstr "Kontrol listesi silinecek. Emin misiniz?"
+
+#: kansha/card_addons/checklist/view.py:162
+msgid "Click to toggle"
+msgstr "Değiştirmek için tıklayın"
+
+#: kansha/card_addons/checklist/view.py:175
+msgid "The checklist item will be deleted. Are you sure?"
+msgstr "Kontrol listesi öğesi silinecek. Emin misiniz?"
+
+#: kansha/card_addons/checklist/view.py:181
+msgid "Drag to re-order"
+msgstr "yeniden düzenlemek için sürükleyin"
+
+#: kansha/card_addons/comment/comp.py:44
+#, python-format
+msgid "User %(author)s has commented card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartına yorum yaptı"
+
+#: kansha/card_addons/comment/view.py:24
+msgid "wrote"
+msgstr "yazdı"
+
+#: kansha/card_addons/comment/view.py:26
+msgid "on"
+msgstr "üzerinde"
+
+#: kansha/card_addons/comment/view.py:37
+msgid "Your comment will be deleted. Are you sure?"
+msgstr "Yorumunuz silinecek. Emin misiniz?"
+
+#: kansha/card_addons/comment/view.py:91
+msgid "Add comment."
+msgstr "Yorum ekle."
+
+#: kansha/card_addons/description/view.py:31
+msgid ""
+"Add a description. URL in the text are automatically recognized as links."
+msgstr "Bir açıklama ekle. Metindeki URL otomatik olarak bağlantılanır."
+
+#: kansha/card_addons/description/view.py:52
+msgid "bold"
+msgstr "kalın"
+
+#: kansha/card_addons/description/view.py:54
+msgid "italic"
+msgstr "yatık"
+
+#: kansha/card_addons/description/view.py:56
+msgid "underline"
+msgstr "altı çizili"
+
+#: kansha/card_addons/description/view.py:58
+msgid "numbered list"
+msgstr "numaralandırılmış liste"
+
+#: kansha/card_addons/description/view.py:60
+msgid "bullet list"
+msgstr "Madde işareti liste"
+
+#: kansha/card_addons/description/view.py:62
+msgid "link"
+msgstr "link"
+
+#: kansha/card_addons/description/view.py:68
+msgid "Link"
+msgstr "Link"
+
+#: kansha/card_addons/due_date/comp.py:91
+#: kansha/card_addons/due_date/view.py:68
+msgid "Due date"
+msgstr "Bitiş tarihi"
+
+#: kansha/card_addons/gallery/comp.py:34
+#, python-format
+msgid "User %(author)s has added file \"%(file)s\" to card \"%(card)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartına \"%(file)s\" dosyasını ekledi"
+
+#: kansha/card_addons/gallery/comp.py:125 kansha/user/user_profile.py:247
+#, python-format
+msgid "File must be less than %d KB"
+msgstr "Dosya %d KB'dan küçük olmalıdır"
+
+#: kansha/card_addons/gallery/view.py:89
+msgid "Add file"
+msgstr "Dosya ekle"
+
+#: kansha/card_addons/gallery/view.py:144
+msgid "Are you sure you want to delete this file?"
+msgstr "Bu dosyayı silmek istediğinizden emin misiniz?"
+
+#: kansha/card_addons/gallery/view.py:149
+msgid "Configure cover"
+msgstr "Kapağı düzenle"
+
+#: kansha/card_addons/gallery/view.py:167
+msgid "Use the controls below to create the cover of your card."
+msgstr "Kartınızın kapağını oluşturmak için aşağıdaki kontrolleri kullanın."
+
+#: kansha/card_addons/gallery/view.py:187
+msgid "Create cover"
+msgstr "Kapak oluştur"
+
+#: kansha/card_addons/gallery/view.py:190
+msgid "Remove cover"
+msgstr "Kapağı sil"
+
+#: kansha/card_addons/members/comp.py:25
+#, python-format
+msgid "User %(user)s has been assigned to card \"%(card)s\""
+msgstr "%(user)s kullanıcısı \"%(card)s\" kartı için görevlendirildi"
+
+#: kansha/card_addons/members/comp.py:30
+#, python-format
+msgid "User %(user)s has been unassigned from card \"%(card)s\""
+msgstr "%(user)s kullanıcısının \"%(card)s\" kartında ki görevi iptal edildi"
+
+#: kansha/card_addons/members/view.py:77
+msgid "Add members"
+msgstr "Üyeleri ekle"
+
+#: kansha/card_addons/members/view.py:81
+msgid "Suggestions"
+msgstr "Öneriler"
+
+#: kansha/card_addons/vote/view.py:22
+#, python-format
+msgid "Unvote (%s)"
+msgstr "Oyu geri çek (%s)"
+
+#: kansha/card_addons/vote/view.py:24
+#, python-format
+msgid "Vote (%s)"
+msgstr "Oyla (%s)"
+
+#: kansha/card_addons/weight/comp.py:23
+#, python-format
+msgid "User %(author)s has weighted card \"%(card)s\" from (%(from)s) to (%(to)s)"
+msgstr "%(author)s kullanıcısı \"%(card)s\" kartının ağırlığını (%(from)s) 'dan  (%(to)s)'a değiştirdi."
+
+#: kansha/card_addons/weight/comp.py:93 kansha/card_addons/weight/view.py:63
+msgid "Weight"
+msgstr "Ağırlık"
+
+#: kansha/column/comp.py:238
+msgid "Limit of cards reached fo this list"
+msgstr "Bu liste için ulaşılan kartların limiti"
+
+#: kansha/column/comp.py:300
+msgid "Can't be empty"
+msgstr "Boş bırakılamaz"
+
+#: kansha/column/comp.py:365
+#, python-format
+msgid "Must be bigger than %s"
+msgstr "%s 'den büyük olmalı"
+
+#: kansha/column/view.py:63
+msgid "The list will be deleted. Are you sure?"
+msgstr "Bu liste silinecek. Emin misiniz?"
+
+#: kansha/column/view.py:70
+msgid "Delete this list"
+msgstr "Bu listeyi sil"
+
+#: kansha/column/view.py:79
+msgid "All the cards will be archived. Are you sure?"
+msgstr "Tüm kartlar arşivlenecek. Emin misiniz?"
+
+#: kansha/column/view.py:86
+msgid "Empty this list"
+msgstr "Bu listeyi boşalt"
+
+#: kansha/column/view.py:92
+msgid "All cards will be deleted. Are you sure?"
+msgstr "Tüm kartlar silinecek. Emin misiniz?"
+
+#: kansha/column/view.py:98
+msgid "Purge the cards"
+msgstr "Kartları temizle"
+
+#: kansha/column/view.py:167
+msgid "Name"
+msgstr "Ad"
+
+#: kansha/column/view.py:169
+msgid "List title"
+msgstr "Liste başlığı"
+
+#: kansha/column/view.py:174
+msgid "Position"
+msgstr "Pozisyon"
+
+#: kansha/column/view.py:182
+msgid "Number max of cards"
+msgstr "Maksimum kart sayısı"
+
+#: kansha/column/view.py:230
+msgid "Set card limit"
+msgstr "Kart limitini ayarla"
+
+#: kansha/column/view.py:238
+msgid "This list already holds its maximum amount of cards"
+msgstr "Bu liste zaten maksimum kart limitini barındırıyor"
+
+#: kansha/services/actionlog/messages.py:28
+#, python-format
+msgid "User %(author)s has added card \"%(card)s\" to column \"%(column)s\""
+msgstr "%(author)s kullanıcısı %(card)s\" kartını \"%(column)s\" sütununa ekledi."
+
+#: kansha/services/actionlog/messages.py:33
+#, python-format
+msgid "User %(author)s has deleted card \"%(card)s\""
+msgstr "%(author)s kullanıcısı %(card)s\" kartını sildi."
+
+#: kansha/services/actionlog/messages.py:38
+#, python-format
+msgid "User %(author)s has archived card \"%(card)s\""
+msgstr "%(author)s kullanıcısı %(card)s\" kartını arşivledi."
+
+#: kansha/services/actionlog/messages.py:43
+#, python-format
+msgid ""
+"User %(author)s has moved card \"%(card)s\" from column \"%(from)s\" to "
+"column \"%(to)s\""
+msgstr "%(author)s kullanıcısı \"%(card)s kartını \"%(from)s\" sütunundan \"%(to)s\" sütununa taşıdı "
+
+#: kansha/services/actionlog/messages.py:48
+#, python-format
+msgid "User %(author)s has renamed card \"%(from)s\" to \"%(to)s\""
+msgstr "%(author)s kullanıcısı kart ismini  \"%(from)s\" iken \"%(to)s\" olarak değiştirdi"
+
+#: kansha/services/actionlog/view.py:32
+msgid "all users"
+msgstr "tüm kullanıcılar"
+
+#: kansha/services/actionlog/view.py:37
+msgid "all cards"
+msgstr "tüm kartlar"
+
+#: kansha/toolbox/calendar_widget.py:34
+msgid "Invalid date format !"
+msgstr "Geçersiz tarih biçimi !"
+
+#: kansha/toolbox/calendar_widget.py:120 kansha/toolbox/calendar_widget.py:121
+msgid "Previous"
+msgstr "Geri"
+
+#: kansha/toolbox/calendar_widget.py:132 kansha/toolbox/calendar_widget.py:133
+msgid "Next"
+msgstr "İleri"
+
+#: kansha/toolbox/calendar_widget.py:152
+msgid "Wk"
+msgstr "Hf"
+
+#: kansha/toolbox/calendar_widget.py:152
+msgid "Week number"
+msgstr "Hafta numarası"
+
+#: kansha/toolbox/calendar_widget.py:180
+msgid "Today"
+msgstr "Bugün"
+
+#: kansha/user/user_profile.py:23
+msgid "english"
+msgstr "ingilizce"
+
+#: kansha/user/user_profile.py:24
+msgid "french"
+msgstr "fransızca"
+
+#: kansha/user/user_profile.py:25
+msgid "japanese"
+msgstr "Japonca"
+
+#: kansha/user/user_profile.py:26
+msgid "turkish"
+msgstr "türkçe"
+
+#: kansha/user/user_profile.py:87 kansha/user/user_profile.py:282
+msgid "Email"
+msgstr "E-posta"
+
+#: kansha/user/user_profile.py:90 kansha/user/user_profile.py:287
+msgid "Language"
+msgstr "Dil"
+
+#: kansha/user/user_profile.py:99 kansha/user/user_profile.py:296
+msgid "Picture"
+msgstr "Resim"
+
+#: kansha/user/user_profile.py:188
+msgid "This password doesn't match the old one."
+msgstr "Bu parola eski parolayla eşleşmiyor."
+
+#: kansha/user/user_profile.py:224
+msgid "A confirmation email has been sent."
+msgstr "Bir doğrulama e-postası gönderildi."
+
+#: kansha/user/user_profile.py:233
+msgid "The password has been changed"
+msgstr "Parola değişti"
+
+#: kansha/user/user_profile.py:251
+msgid "Invalid image file"
+msgstr "Geçersiz resim dosyası"
+
+#: kansha/user/user_profile.py:315
+msgid "New password"
+msgstr "Yeni parola"
+
+#: kansha/user/user_profile.py:318
+msgid "Repeat new password"
+msgstr "Yeni parolayı tekrar girin"
+
+#: kansha/user/view.py:83 kansha/user/view.py:103 kansha/user/view.py:231
+msgid "Remove"
+msgstr "Sil"
+
+#: kansha/user/view.py:97
+msgid "Manager"
+msgstr "Yönetici"
+
+#: kansha/user/view.py:116
+msgid "You are the last manager, you can't leave this board."
+msgstr "Burada ki son yönetici siz olduğunuz için panoyu terk edemezsiniz."
+
+#: kansha/user/view.py:123
+msgid "Home"
+msgstr "Ana Sayfa"
+
+#: kansha/user/view.py:124
+msgid "Logout"
+msgstr "Oturumu kapat"
+
+#: kansha/user/view.py:229
+msgid "Resend invitation"
+msgstr "Daveti tekrar gönder"

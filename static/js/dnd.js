@@ -7,6 +7,9 @@
 // this distribution.
 //--
 
+
+// TODO: move all column counter related stuff to extension
+
 (function () {
     'use strict';
     var Y = YAHOO.util,
@@ -127,7 +130,7 @@
             var target = new YAHOO.util.DDTarget(Dom.get('list-target'), 'list'),
                 listBody;
             NS.dnd.listMarker = document.createElement('div');
-            Dom.addClass(NS.dnd.listMarker, 'list-marker span3');
+            Dom.addClass(NS.dnd.listMarker, 'list-marker');
 
             NS.dnd.cardMarker = document.createElement('div');
             Dom.addClass(NS.dnd.cardMarker, 'card-marker');
@@ -179,7 +182,7 @@
                 this.showFrame(x, y);
                 if (YAHOO.kansha.app.isDesktop()) {
                     this.clearConstraints();
-                    this.setYConstraint(0, 0);
+                    // this.setYConstraint(0, 0);
                 } else {
                     this.clearConstraints();
                     this.setXConstraint(0, 0);
@@ -192,9 +195,6 @@
                 var src = this.getEl(),
                     dragEl = this.getDragEl(),
                     region = Dom.getRegion(src);
-                Dom.batch(Selector.query('.list-header .list-actions', src), function (elem) {
-                    YAHOO.kansha.app.show(elem, false);
-                });
                 if (YAHOO.kansha.app.isDesktop()) {
                     Dom.setAttribute(dragEl, 'class', 'list list-proxy');
                     Dom.setStyle(dragEl, 'height', dragEl.clientHeight - 4 + 'px');
@@ -253,7 +253,6 @@
                     }
                 }
                 _send_column_position({'list': list_id, 'index': index});
-                // Reset drag frame position
             };
         },
         initTargetCard: function (targetId) {
@@ -282,10 +281,6 @@
                 var src = this.getEl(),
                     dragEl = this.getDragEl(),
                     region = Dom.getRegion(src);
-                Dom.getElementsByClassName('card', 'div', src, function (elem) {
-                    YAHOO.kansha.app.highlight(elem, 'badges', true);
-                    YAHOO.kansha.app.highlight(elem, 'members', true);
-                });
                 dragEl.innerHTML = src.innerHTML;
                 Dom.addClass(dragEl, 'card-dragging');
                 if (YAHOO.kansha.app.isDesktop()) {
@@ -337,12 +332,28 @@
                         clone.parentNode.removeChild(clone);
                     }
 
-                    var data = {dest: Dom.getAttribute(dest, 'id'),
-                                orig: Dom.getAttribute(self.origin, 'id'),
+                    var dest_id = Dom.getAttribute(dest, 'id'),
+                        orig_id = Dom.getAttribute(self.origin, 'id');
+                    var data = {dest: dest_id,
+                                orig: orig_id,
                                 card: cardId, index: index};
-                    YAHOO.kansha.app.countCards(dest);
-                    YAHOO.kansha.app.countCards(self.origin);
-                    _send_card_position(data);
+
+                    if (dest === self.origin) {
+                        _send_card_position(data);
+                    } else {
+                        var send_positions = function () {
+                            _send_card_position(data);
+                        };
+                        var refresh_dest = function() {
+                            var header_refresh_dest = Dom.get(dest_id + '_refresh');
+                            header_refresh_dest.click();
+                        };
+                        var refresh_orig = function() {
+                            var header_refresh_orig = Dom.get(orig_id + '_refresh');
+                            header_refresh_orig.click();
+                        };
+                        nagare_chained_calls([send_positions, refresh_dest, refresh_orig]);
+                    }
                 });
 
                 if (this.scrollInt) {
@@ -351,12 +362,14 @@
 
                 a.animate();
 
+                Dom.removeClass(Dom.getElementsByClassName('list'), 'max-weight-highlight');
             };
+
             drag.onDrag = function (e) {
                 // copy onDrag basic instruction, is it possible to call the super method ?
                 var c = Event.getXY(e);
-                this.goingRight = (c[0] >= this.lastX);
-                this.goingDown = (c[1] >= this.lastY);
+                this.goingRight = (c[0] > this.lastX);
+                this.goingDown = (c[1] > this.lastY + 3) || (c[1] >= this.lastY - 3) && this.goingDown;
                 this.lastX = c[0];
                 this.lastY = c[1];
 
@@ -378,37 +391,50 @@
                 this.scrollTo(scrollTop);
             };
             drag.onDragEnter = function (e, id) {
-                var destEl = Dom.get(id);
-                var srcEl = this.getEl();
-                var list = Dom.getAncestorByClassName(id, 'list');
-                var limit = parseInt(localStorage[list.id],10);
-                var cards = ECN('card', null, list);
-                if (destEl.className == 'list-body') {
-                    // insert cardMarker at the end
+                var destEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list'),
+                    limit = parseInt(localStorage[list.id], 10),
+                    cards = ECN('card', null, list);
+                if (Dom.hasClass(destEl, 'list-body')) {
                     if (cards.length < limit || limit === 0) {
-                        destEl.appendChild(NS.dnd.cardMarker);
                         DDM.refreshCache();
                         this.container = Dom.get(id);
+                    } else {
+                        Dom.addClass(list, 'max-weight-highlight');
                     }
                 } else {
                     this.container = Dom.getAncestorByClassName(id, 'list-body');
                 }
             };
-            drag.onDragOver = function (e, id) {
-                var destEl = Dom.get(id);
-                var srcEl = this.getEl();
-                if (destEl.className != 'list-body') {
-                    var list = Dom.getAncestorByClassName(id, 'list');
-                    var limit = parseInt(localStorage[list.id],10);
-                    var cards = ECN('card', null, list);
 
-                    if (cards.length < limit || limit === 0) {
+            drag.onDragOut = function(e, id) {
+                var srcEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list');
+                if (Dom.hasClass(srcEl, 'list-body')) {
+                    Dom.removeClass(list, 'max-weight-highlight');
+                }
+            };
+
+            drag.onDragOver = function (e, id) {
+                var destEl = Dom.get(id),
+                    list = Dom.getAncestorByClassName(id, 'list'),
+                    limit = parseInt(localStorage[list.id], 10),
+                    cards = ECN('card', null, list),
+                    canAdd = (cards.length < limit || limit == 0);
+                if (canAdd) {
+                    if (Dom.hasClass(destEl, 'card-dnd-wrapper')) {  // We are hovering a card, add marker depending on move direction
                         if (this.goingDown) {
-                            Dom.insertAfter(NS.dnd.cardMarker, id);
                             // insert above
+                            Dom.insertAfter(NS.dnd.cardMarker, id);
                         } else {
-                            Dom.insertBefore(NS.dnd.cardMarker, id);
                             // insert below
+                            Dom.insertBefore(NS.dnd.cardMarker, id);
+                        }
+                    } else if (Dom.hasClass(destEl, 'list-body')) { // Hovering a list, add marker in it if not already present
+                        var findCardMarker = function(elem) { return Dom.hasClass(elem, 'card-marker'); },
+                            isAlreadyPlaced = Dom.getChildrenBy(destEl, findCardMarker).length != 0;
+                        if (!isAlreadyPlaced) {
+                            destEl.appendChild(NS.dnd.cardMarker);
                         }
                     }
                     DDM.refreshCache();

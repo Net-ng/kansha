@@ -9,15 +9,16 @@
 #--
 
 import unittest
+import sys
+
 from nagare import database, i18n, security, component
 from nagare.namespaces import xhtml5
-from sqlalchemy import MetaData
-from kansha.board import comp as board_module
-from kansha.board import boardsmanager
-from . import helpers
-from kansha.security import Unauthorized
 from elixir import metadata as __metadata__
 
+from kansha.board import comp as board_module
+from kansha.board import boardsmanager
+from kansha import helpers
+from kansha.security import Unauthorized
 
 database.set_metadata(__metadata__, 'sqlite:///:memory:', False, {})
 
@@ -26,7 +27,8 @@ class BoardTest(unittest.TestCase):
 
     def setUp(self):
         helpers.setup_db(__metadata__)
-        self.boards_manager = boardsmanager.BoardsManager()
+        services = helpers.create_services()
+        self.boards_manager = boardsmanager.BoardsManager('', '', '', {}, None, services)
 
     def tearDown(self):
         helpers.teardown_db(__metadata__)
@@ -79,8 +81,7 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PRIVATE)
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
         self.assertTrue(security.has_permissions('view', board))
 
     def test_view_board_5(self):
@@ -94,8 +95,7 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PUBLIC)
         user = helpers.create_user('bis')
         helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
         self.assertTrue(security.has_permissions('view', board))
 
     def test_rendering_security_view_board_1(self):
@@ -109,24 +109,26 @@ class BoardTest(unittest.TestCase):
         helpers.set_context()
 
         with self.assertRaises(Unauthorized):
-            component.Component(board).render(xhtml5.Renderer())
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())
 
     def test_rendering_security_view_board_2(self):
         """Test rendering security view board 2
 
         Test rendering (Board private / user member)
         """
+        # stackless only
+        if 'Stackless' not in sys.version:
+            return
         helpers.set_dummy_context()  # to be able to create board
         board = helpers.create_board()
         board.set_visibility(board_module.BOARD_PRIVATE)
         user = helpers.create_user('bis')
         helpers.set_context(user)
 
-        data = board.data  # don't collect
-        data.members.append(user.data)
+        board.add_member(user)
 
         with i18n.Locale('en', 'US'):
-            component.Component(board).render(xhtml5.Renderer())
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())
 
     def test_rendering_security_view_board_3(self):
         """Test rendering security view board 3
@@ -139,101 +141,4 @@ class BoardTest(unittest.TestCase):
         board.set_visibility(board_module.BOARD_PUBLIC)
 
         with i18n.Locale('en', 'US'):
-            component.Component(board).render(xhtml5.Renderer())
-
-    def test_vote_card_1(self):
-        """Test security vote card 1
-
-        Board PUBLIC/Vote PUBLIC
-        User not logged
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PUBLIC)
-        board.allow_votes(board_module.VOTES_PUBLIC)
-        helpers.set_context()
-
-        with self.assertRaises(Unauthorized):
-            board.columns[0]().cards[0]().votes().vote()
-
-    def test_vote_card_2(self):
-        """Test security vote card 2
-
-        Board PUBLIC/Vote PUBLIC
-        User logged
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PUBLIC)
-        board.allow_votes(board_module.VOTES_PUBLIC)
-        user = helpers.create_user('bis')
-        helpers.set_context(user)
-
-        board.columns[0]().cards[0]().votes().vote()
-
-    def test_vote_card_3(self):
-        """Test security vote card 3
-
-        Board PRIVATE/Vote MEMBERS
-        User logged
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PRIVATE)
-        board.allow_votes(board_module.VOTES_MEMBERS)
-        user = helpers.create_user('bis')
-        helpers.set_context(user)
-
-        with self.assertRaises(Unauthorized):
-            board.columns[0]().cards[0]().votes().vote()
-
-    def test_vote_card_4(self):
-        """Test security vote card 4
-
-        Board PRIVATE/Vote MEMBERS
-        User member
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PRIVATE)
-        board.allow_votes(board_module.VOTES_MEMBERS)
-        user = helpers.create_user('bis')
-        helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
-
-        board.columns[0]().cards[0]().votes().vote()
-
-    def test_vote_card_5(self):
-        """Test security vote card 5
-
-        Board PUBLIC/Vote OFF
-        User member
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PUBLIC)
-        board.allow_votes(board_module.VOTES_OFF)
-        user = helpers.create_user('bis')
-        helpers.set_context(user)
-        data = board.data  # don't collect
-        data.members.append(user.data)
-
-        with self.assertRaises(Unauthorized):
-            board.columns[0]().cards[0]().votes().vote()
-
-    def test_vote_card_6(self):
-        """Test security vote card 6
-
-        Board PUBLIC/Vote OFF
-        User logged
-        """
-        helpers.set_dummy_context()
-        board = helpers.create_board()
-        board.set_visibility(board_module.BOARD_PUBLIC)
-        board.allow_votes(board_module.VOTES_OFF)
-        user = helpers.create_user('bis')
-        helpers.set_context(user)
-
-        with self.assertRaises(Unauthorized):
-            board.columns[0]().cards[0]().votes().vote()
+            component.Component(board).on_answer(lambda x: None).render(xhtml5.Renderer())

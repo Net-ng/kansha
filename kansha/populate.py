@@ -8,18 +8,11 @@
 # this distribution.
 #--
 
-from .user import usermanager
-from nagare import log
-import sys
-import os
+from .board.models import create_template_empty, create_template_todo
 
 
 def populate():
     """Populate database
     """
-    usermanager.UserManager().populate()
-
-    app_path = 'kansha'
-    nagare_admin = os.path.join(os.path.dirname(sys.executable), 'nagare-admin')
-    batch_file = os.path.join(app_path, 'batch', 'populate_demo_images.py')
-    log.info('Run ``%s batch %s %s`` if you want to create demo images.' % (nagare_admin, app_path, batch_file))
+    create_template_empty()
+    create_template_todo()

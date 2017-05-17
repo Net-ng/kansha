@@ -8,37 +8,49 @@
 # this distribution.
 #--
 
-from ..assetsmanager import AssetsManager
-from nagare import log
-from PIL import Image
-from PIL import ImageOps
 import json
 import os
 import uuid
 
+from PIL import Image
+from PIL import ImageOps
+
+from nagare import log
+
+from ..assetsmanager import AssetsManager
+
 
 class SimpleAssetsManager(AssetsManager):
 
-    thumb_size = (68, 68)
-    medium_width = 425
-    cover_size = (medium_width, 250)
+    def __init__(self, config_filename,  error, basedir, baseurl, max_size):
+        super(SimpleAssetsManager, self).__init__(config_filename, error)
+        self.basedir = basedir
+        self.baseurl = baseurl
+        self.max_size = max_size
 
-    def __init__(self, basedirectory, app_name, **config):
-        self.basedirectory = basedirectory
-        self.app_name = app_name
-        self.max_size = config['max_size']
-        super(SimpleAssetsManager, self).__init__()
+    def copy_cover(self, file_id, new_file_id):
+        try:
+            data, metadata = self.load(file_id, 'cover')
+            with open(self._get_filename(new_file_id, 'cover'), "w") as f:
+                f.write(data)
+        except IOError:
+            # Cover not existing
+            pass
+
+    def copy(self, file_id):
+        data, metadata = self.load(file_id)
+        return self.save(data, metadata=metadata)
 
     def _get_filename(self, file_id, size=None):
-        filename = os.path.join(self.basedirectory, file_id)
+        filename = os.path.join(self.basedir, file_id)
         if size and size != 'large':
             filename += '.' + size
         return filename
 
     def _get_metadata_filename(self, file_id):
-        return os.path.join(self.basedirectory, '%s.metadata' % file_id)
+        return os.path.join(self.basedir, '%s.metadata' % file_id)
 
-    def save(self, data, file_id=None, metadata={}, thumb_size=()):
+    def save(self, data, file_id=None, metadata={}, THUMB_SIZE=()):
         if file_id is None:
             file_id = unicode(uuid.uuid4())
         with open(self._get_filename(file_id), "w") as f:
@@ -60,15 +72,14 @@ class SimpleAssetsManager(AssetsManager):
 
             orig_width, orig_height = img.size
 
-            medium_size = self.medium_width, int(float(self.medium_width) * orig_height / orig_width)
+            medium_size = self.MEDIUM_WIDTH, int(float(self.MEDIUM_WIDTH) * orig_height / orig_width)
             medium = img.copy()
 
             medium.thumbnail(medium_size, Image.ANTIALIAS)
             medium.save(self._get_filename(file_id, 'medium'), img.format, quality=75, **kw)  # 'JPEG')
 
-            thumb = ImageOps.fit(img, thumb_size if thumb_size else self.thumb_size, Image.ANTIALIAS)
+            thumb = ImageOps.fit(img, THUMB_SIZE if THUMB_SIZE else self.THUMB_SIZE, Image.ANTIALIAS)
             thumb.save(self._get_filename(file_id, 'thumb'), img.format, quality=75, **kw)  # 'JPEG')
-
         return file_id
 
     def delete(self, file_id):
@@ -91,12 +102,18 @@ class SimpleAssetsManager(AssetsManager):
         return data, self.get_metadata(file_id)
 
     def update_metadata(self, file_id, metadata):
-        pass
+        with open(self._get_metadata_filename(file_id), "w") as f:
+            metadata = f.write(json.dumps(metadata))
 
     def get_metadata(self, file_id):
-        with open(self._get_metadata_filename(file_id), "r") as f:
-            metadata = f.read()
-        return json.loads(metadata)
+        try:
+            f = open(self._get_metadata_filename(file_id), "r")
+            metadata = json.loads(f.read())
+            f.close()
+        except IOError:
+            log.error('unable to load metadata for ' + self._get_metadata_filename(file_id))
+            metadata = {}
+        return metadata
 
     def get_image_size(self, fileid):
         """Return the image dimensions
@@ -122,10 +139,10 @@ class SimpleAssetsManager(AssetsManager):
         Return:
             - image significant URL
         """
-        if self.app_name:
-            url = ['', self.app_name, 'assets', file_id, size or 'large']
+        if self.baseurl:
+            url = [self.baseurl, self.get_entry_name(), file_id, size or 'large']
         else:
-            url = ['', 'assets', file_id, size or 'large']
+            url = ['', self.get_entry_name(), file_id, size or 'large']
         if include_filename:
             url.append(self.get_metadata(file_id)['filename'])
         return '/'.join(url)
@@ -157,5 +174,5 @@ class SimpleAssetsManager(AssetsManager):
         top, height = int(float(top) * large_h / medium_h), int(float(height) * large_h / medium_h)
 
         n_img = large_img.crop((left, top, left + width, top + height))
-        n_img.thumbnail(self.cover_size, Image.ANTIALIAS)
+        n_img.thumbnail(self.COVER_SIZE, Image.ANTIALIAS)
         n_img.save(self._get_filename(file_id, 'cover'), large_img.format, quality=75, **kw)

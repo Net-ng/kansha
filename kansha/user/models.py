@@ -9,28 +9,42 @@
 #--
 
 import datetime
-import string
-import random
 import hashlib
+import random
+import string
 
+from elixir import Unicode, Field, DateTime
+from elixir import ManyToOne, OneToOne, OneToMany
 from elixir import using_options
-from elixir import ManyToOne, ManyToMany, OneToOne, OneToMany
-from elixir import Unicode, Integer, Field, DateTime, Boolean
+
 from sqlalchemy.dialects.mysql import VARCHAR
-from nagare import database
-from sqlalchemy import and_, func
-from sqlalchemy.orm import aliased
-from sqlalchemy.ext.associationproxy import AssociationProxy
 
 from kansha.models import Entity
 
 
-class DataBoardMember(Entity):
-    using_options(tablename='user_boards__board_members')
-    board = ManyToOne('DataBoard', primary_key=True, ondelete='CASCADE')
-    member = ManyToOne('DataUser', primary_key=True, ondelete='CASCADE', colname=[
-                       'user_username', 'user_source'])
-    notify = Field(Integer, default=lambda: 1)
+class DataToken(Entity):
+    using_options(tablename='token')
+    token = Field(Unicode(255), unique=True, nullable=False, primary_key=True)
+    username = Field(Unicode(255), nullable=True)
+    date = Field(DateTime, nullable=False)
+    action = Field(Unicode(255), nullable=True)
+    board = ManyToOne('DataBoard')
+
+    @classmethod
+    def delete_by_username(cls, username, action):
+        token = cls.get_by(username=username, action=action)
+        if token:
+            token.delete()
+
+    @classmethod
+    def new(cls, token, username, action):
+        obj = cls(
+            token=token,
+            username=username,
+            action=action,
+            date=datetime.datetime.now()
+        )
+        return obj
 
 
 class DataUser(Entity):
@@ -46,7 +60,7 @@ class DataUser(Entity):
         primary_key=True, nullable=False)
     source = Field(Unicode(255), nullable=False, primary_key=True)
     fullname = Field(Unicode(255), nullable=False)
-    email = Field(Unicode(255), nullable=True)
+    email = Field(Unicode(255), nullable=True, unique=True, index=True)
     picture = Field(Unicode(255), nullable=True)
     language = Field(Unicode(255), default=u"en", nullable=True)
     email_to_confirm = Field(Unicode(255))
@@ -54,17 +68,8 @@ class DataUser(Entity):
     _password = Field(Unicode(255), colname='password', nullable=True)
     registration_date = Field(DateTime, nullable=False)
     last_login = Field(DateTime, nullable=True)
-    display_week_numbers = Field(Boolean, default=False)
-    board_members = OneToMany('DataBoardMember')
-    boards = AssociationProxy(
-        'board_members', 'board',
-        creator=lambda board: DataBoardMember(board=board))
-    managed_boards = ManyToMany('DataBoard', inverse='managers')
     last_board = OneToOne('DataBoard', inverse='last_users')
-    cards = ManyToMany('DataCard', inverse='members', lazy='dynamic')
-    my_cards = OneToMany('DataCard', inverse='author')
-    history = OneToMany('DataHistory')
-    votes = OneToMany('DataVote')
+    # history = OneToMany('DataHistory')
 
     def __init__(self, username, password, fullname, email,
                  source=u'application', picture=None, **kw):
@@ -83,6 +88,10 @@ class DataUser(Entity):
             # External authentication
             self.change_password('passwd')
             self.email_to_confirm = None
+
+    @property
+    def id(self):
+        return self.username
 
     def update(self, fullname, email, picture=None):
         self.fullname = fullname
@@ -104,7 +113,6 @@ class DataUser(Entity):
         if email_to_confirm:
             self.email_to_confirm = email_to_confirm
 
-
     def is_validated(self):
         return self.email_to_confirm is None
 
@@ -117,24 +125,8 @@ class DataUser(Entity):
         self.email = self.email_to_confirm
         self.email_to_confirm = None
 
-    def add_board(self, board, role="member"):
-        """Add board to user's board lists
-
-        In:
-         - ``board`` -- DataBoard instance to add
-         - ``role`` -- user is member or manager
-        """
-        boards = set(dbm.board for dbm in self.board_members)
-        if board not in boards:
-            self.board_members.append(DataBoardMember(board=board))
-        if role == "manager" and board not in self.managed_boards:
-            self.managed_boards.append(board)
-
     def get_picture(self):
-        if self.picture is None:
-            return "img/member.png"
-        else:
-            return self.picture
+        return self.picture
 
     @classmethod
     def get_confirmed_users(cls):
@@ -169,25 +161,6 @@ class DataUser(Entity):
 
     @classmethod
     def search(cls, value):
-        return cls.query.filter(cls.fullname.ilike('%' + value + '%') | cls.email.ilike('%' + value + '%'))
-
-    def best_friends(self, exclude_list=(), size=None):
-        from kansha.board.models import DataBoard
-
-        cls = self.__class__
-        bm2 = aliased(DataBoardMember)
-        cnt = func.count(DataBoardMember.board_id)
-        query = database.session.query(cls, cnt)
-        query = query.join((DataBoardMember, and_(DataBoardMember.user_source == cls.source,
-                                                  DataBoardMember.user_username == cls.username)))
-        query = query.join(
-            (DataBoard, DataBoard.id == DataBoardMember.board_id))
-        query = query.join((bm2, bm2.board_id == DataBoard.id))
-        query = query.filter(bm2.member == self)
-        if exclude_list:
-            query = query.filter(~cls.email.in_(exclude_list))
-        query = query.group_by(cls)
-        query = query.order_by(cnt.desc(), cls.fullname)
-        if size:
-            query = query.limit(size)
-        return [res[0] for res in query]
+        return cls.query.filter(cls.fullname.ilike('%' + value + '%') |
+                                cls.email.ilike('%' + value + '%') |
+                                cls.email_to_confirm.ilike('%' + value + '%'))

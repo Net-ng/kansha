@@ -7,4 +7,5 @@
 # this distribution.
 #--
 
-import view
+from . import view
+from .comp import CardsCounter, Column

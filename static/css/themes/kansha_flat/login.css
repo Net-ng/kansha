@@ -1,0 +1,104 @@
+/**
+ * Copyright (c) 2012-2015 Net-ng.
+ * All rights reserved.
+ *
+ * This software is licensed under the BSD License, as described in
+ * the file LICENSE.txt, which you should have received as part of
+ * this distribution.
+ **/
+
+.logo {
+    display: block;
+    background: url(../../../img/logo.png) no-repeat top center;
+    width: 173px;
+    height: 315px;
+    left: 53px;
+    top: 0
+}
+
+.header h1 {
+    font-weight: 400;
+    font-size: 25px;
+}
+
+.title h2 {
+    font-weight: 200;
+    font-size: 60px
+}
+
+.title .error {
+    font-size: 20px;
+    font-weight: 200;
+    background: rgba(0, 0, 0, 0) url("../../../img/warning.png") no-repeat left center;
+    color: #c22e2e;
+}
+
+.container {
+    border: 1px solid #eaeaea;
+    background-color: white;
+}
+
+label {
+    font-size: 22px;
+    font-weight: 300
+}
+
+input[type="text"] {
+    border: 1px solid #eaeaea;
+    font-weight: 200;
+    font-size: 20px;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 5px rgba(230, 163, 35, 0.8);
+    border-color: #e6a323;
+    outline: none
+}
+
+input[type="password"] {
+    border: 1px solid #eaeaea;
+    font-weight: 200;
+    font-size: 20px;
+}
+
+input[type="password"]:focus {
+    box-shadow: 0 0 5px rgba(230, 163, 35, 0.8);
+    border-color: #e6a323;
+    outline: none
+}
+
+.btn {
+    background-color: #e6a323 !important;
+    color: #434343;
+    font-size: 17px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.login {
+    font-size: 16px;
+    font-weight: 200;
+    border-left: 1px solid #eaeaea;
+    background-color: white;
+}
+
+.login:first-child {
+    border-left: none;
+}
+
+.oauthLogin {
+    font-size: 16px;
+}
+
+.oauthLogin a {
+    border: 1px solid #eaeaea;
+    text-decoration: none;
+    line-height: 41px;
+    background-color: white;
+}
+
+.oauthLogin a {
+    border: 1px solid #eaeaea;
+    text-decoration: none;
+    background-color: white;
+}

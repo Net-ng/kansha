@@ -14,6 +14,9 @@ Read http://www.nagare.org/trac/wiki/NagareAdmin.
 Configuration file
 ------------------
 
+**Beware!** The configuration file format changed since Kansha 2.0.0. If you are upgrading from a 1.0.X version,
+you have to convert manually your configuration file to the new format below.
+
 Kansha features can be activated and customized with a configuration file like this:
 
 .. code-block:: INI
@@ -26,8 +29,8 @@ Kansha features can be activated and customized with a configuration file like t
     as_root = on
     title = <<APP_TITLE>> # should be short!
     banner = <<LONG_TITLE>> # or motto/slogan or empty
-    custom_css = <<CUSTOM_CSS>>  # path or empty
-    templates = <<JSON_BOARD_TEMPLATES>> # path to dir or empty
+    theme = <<CUSTOM_THEME_NAME>>
+    favicon = # path (optional)
     activity_monitor = <<MONITOR_EMAIL>> # optional
     crypto_key = <<PASSPHRASE>> # MANDATORY!!!!
     disclaimer = # message to display on login screens, below the forms (optional)
@@ -46,46 +49,50 @@ Kansha features can be activated and customized with a configuration file like t
     collection = kansha
     index_folder = <<DATA_DIR>>
 
+    [authentication]
     # built in authentication system
-    [dbauth]
+    [[dblogin]]
     activated = <<AUTH_DB>>
     # moderator email if needed
     moderator = <<MOD_EMAIL>> # or empty
+    # automatically create an identicon for new users (on|off)
+    identicons = on
     # default values to fill in the login form (useful for a demo board)
     default_username = <<DEFAULT_USERNAME>>
     default_password = <<DEFAULT_PASSWORD>>
 
     # authenticate with LDAP
-    [ldapauth]
+    [[ldaplogin]]
     activated = <<AUTH_LDAP>>
-    server = <<AUTH_LDAP_SERVER>>
+    host = <<AUTH_LDAP_SERVER>>
     users_base_dn = <<AUTH_LDAP_USERS_BASE_DN>>
-    cls = <<AUTH_LDAP_CLASS>>
+    schema = <<AUTH_LDAP_CLASS>>
 
     # authenticate with third party apps
-    [oauth]
+    [[oauthlogin]]
     activated = <<AUTH_OAUTH>>
 
     # as many oauth providers as you wish
-    [[<<PROVIDER>>]]
+    [[[<<PROVIDER>>]]]
     activated = <<AUTH_OAUTH>>
     key = <<AUTH_OAUTH_KEY>>
     secret = <<AUTH_OAUTH_SECRET>>
 
-
-    [mail]
-    activated = on
-    smtp_host = <<MAIL_HOST>>
-    smtp_port = <<MAIL_PORT>>
-    default_sender = <<MAIL_SENDER>>
-
-    [assetsmanager]
-    basedir = <<DATA_DIR>>/assets/
-    max_size = 2048
-
     [locale]
     major = fr
     minor = FR
+
+    [services]
+    [[mail_sender]]
+    activated = on
+    host = <<MAIL_HOST>>
+    port = <<MAIL_PORT>>
+    default_sender = <<MAIL_SENDER>>
+
+    [[assets_manager]]
+    basedir = <<DATA_DIR>>/assets
+    baseurl = /kansha/services
+    max_size = 20480
 
     [logging]
 
@@ -115,6 +122,8 @@ To manage and run Kansha with your own custom configuration::
 
 The different sections are detailled below.
 
+.. _application:
+
 Application
 -----------
 
@@ -141,11 +150,11 @@ title
 banner
     Longer title for your site, kind of motto or slogan. It is displayed below the logo on the login page.
 
-custom_css
-    Path to a CSS file that will be applied to every page, after the default styles, so you can amend and personalize the look of your site.
+theme
+    Name of the theme you want to use, a default one is bundled with Kansha and is named "kansha_flat".
 
-templates
-    Path to a folder containing boards in JSON format. Each new user created on your site will have private boards loaded from those templates. Leave empty if you don't use that.
+favicon
+    Path to a favicon file that will be applied to your site.
 
 activity_monitor
     Email address or nothing. If an email address is provided, activity reports will be sent to it regularly. See :ref:`periodic_tasks`.
@@ -187,6 +196,10 @@ Note for MySQL users:
         $ <VENV_DIR>/bin/easy_install kansha[mysql]
 
 
+**Note for SQLite users**: SQLite is not recommmended for production environments as it does not support schema migrations.
+If you use SQLite, you won't be able to migrate your data when you install a new version of Kansha.
+
+
 Search
 ------
 
@@ -217,7 +230,7 @@ index_folder
 ElasticSearch backend
 ^^^^^^^^^^^^^^^^^^^^^
 
-Requires ElasticSearch version 2.3.0 or above.
+Requires ElasticSearch v2.3.0 or above.
 
 You need to install the python driver first::
 
@@ -253,6 +266,9 @@ Configuration options:
 activated
     Whether to activate this module.
 
+identicons
+    Whether a unique avatar should be created for each new user instead of the default anonymous one (``on`` / ``off``). Default is ``on``.
+
 moderator
     If present, must be an email address. This activates moderation and all registration requests are fowarded to the moderator for approval. Otherwise, registration is free for humans. A CAPTCHA prevents robots from submitting.
 
@@ -271,17 +287,22 @@ Configuration options:
 activated
     Activate only if you have some LDAP Directory.
 
-server
+host
     name or address of the LDAP server.
+
+port
+    (optional) port to connect to.
 
 users_base_dn
     The base DN your users are under.
 
-cls
+schema
     The driver to use depending on your schema:
 
     * ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` for InetOrgPerson
     * ``kansha.authentication.ldap.ldap_auth:ADLDAPAuth`` for Active Directory
+
+**Note**: the ``kansha.authentication.ldap.ldap_auth:NngLDAPAuth`` driver expects the fields  "displayName" and "mail" to be set.
 
 Module ``oauth``
 ^^^^^^^^^^^^^^^^
@@ -308,6 +329,7 @@ The availble providers are:
 * Twitter,
 * Facebook,
 * Github.
+
 ..
     * Dropbox,
     * Salesforce,
@@ -325,15 +347,15 @@ Example:
 
 .. code-block:: INI
 
-    [oauth]
+    [[oauthlogin]]
     activated = on
 
-    [[google]]
+    [[[google]]]
     activated = on
     key = xxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
     secret = XXXXXXXXXXXXXXXXXXXXXXXX
 
-    [[facebook]]
+    [[[facebook]]]
     activated = on
     key = 0000000000000000000
     secret = XXXXXXXXXXXXXXXXXXXXXXXX
@@ -342,15 +364,15 @@ Example:
 
 .. _mail:
 
-Mail
-----
+Send Mail
+---------
 
 All notifications are sent by mail, so you'd better configure an outgoing SMTP server.
 
-smtp_host
+host
     SMTP server to use.
 
-smtp_port
+port
     The port the server listens on.
 
 default_sender

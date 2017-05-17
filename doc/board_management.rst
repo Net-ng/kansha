@@ -17,7 +17,8 @@ Manage access rights
 In the board list on your home, you can see all boards you have access to:
 
 * the boards you own;
-* the boards you've been invited to.
+* the boards you've been invited to;
+* the shared boards open the everybody (read only).
 
 
 When you hover a board, action icons appear.
@@ -30,7 +31,7 @@ Archive the board:
 Add members:
     The *add member* icon (pointed by the orange arrow on the screenshot above) allows you to invite members to your board.
     Invited people can already be users of the application, in which case you can find them by username or email, or you can invite
-    new people by entering their emails. The *favorites* is the list of users you are already in relation with.
+    new people by entering their emails.
 
 Revoke members:
     Click on a member, then on "Remove".
@@ -48,7 +49,9 @@ Profile
 ^^^^^^^
 
 Visibility
-    Private boards are only for invited members. Public boards are open to everybody who can log in Kansha.
+    Private boards are only for invited members. Public boards are open to everybody who can log in Kansha, but a needs to know
+    the exact URL (or a link) to the public board to access it. Shared boards are public boards that are visible on the home page of
+    every user.
 Comments
     You choose who can post comments on cards.
 Votes

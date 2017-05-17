@@ -15,11 +15,10 @@
         Selector = Y.Selector,
         ECN = Dom.getElementsByClassName,
         ACN = Dom.getAncestorByClassName,
-        NS = YAHOO.namespace('kansha');
+        NS = YAHOO.namespace('kansha'),
+        eventCache = {};
     // methods to refresh cards
     NS.reload_cards = {};
-    NS.reload_boarditems = {};
-    NS.uniqueTooltip = null;
 
     NS.app = {
         panel: undefined,
@@ -61,29 +60,6 @@
             }
         },
 
-        /**
-         * List initialization :
-         *  - set max-height
-         *  - show/hide of menu icon
-         */
-        initList: function (col) {
-            col = Dom.get(col);
-            var showHide = function (root, show) {
-                var node = ECN('list-actions', 'div', root).pop();
-                NS.app.show(node, show);
-            };
-
-            Event.on(ECN('list-header', 'div', col), 'mouseover', function (ev) {
-                Event.stopEvent(ev);
-                var show = this.getElementsByTagName('form').length === 0;
-                showHide(this, show);
-            });
-
-            Event.on(ECN('list-header', 'div', col), 'mouseout', function (ev) {
-                Event.stopEvent(ev);
-                showHide(this, false);
-            });
-        },
 
         /**
          * Basic show/hide function
@@ -94,47 +70,19 @@
             func(node, 'hidden');
         },
 
-        toggleDisplay: function (el) {
-            var node = Dom.get(el);
-            if (YAHOO.util.Dom.hasClass(node, ['hidden'])) {
-                Dom.removeClass(node, 'hidden');
-            } else {
-                Dom.addClass(node, 'hidden');
-            }
-        },
-
-        /**
-         * Basic highlight function
-         */
-        highlight: function (root, el, show) {
-            if (!NS.app.overlay) {    // If any overlay is open, suspend highlights...
-                var node = ECN(el, '', root),
-                    func = show ? Dom.removeClass : Dom.addClass;
-                func(node, 'highlight');
-            }
-        },
-
         /**
          * Hightlight cards
          * Parameter: list of card ids
          */
         highlight_cards: function (card_ids) {
             var root = Dom.get('lists'),
-                cards = ECN('card', 'div', root),
-                search_input = Dom.get('search');
+                cards = ECN('card', 'div', root);
             Dom.removeClass(cards, 'highlight');
             if (card_ids.length > 0) {
                 Dom.addClass(cards, 'hidden');
                 Dom.replaceClass(card_ids, 'hidden', 'highlight');
-                if (card_ids[0] === null) {
-                    Dom.addClass(search_input, 'nomatches');
-                } else {
-                    Dom.addClass(search_input, 'highlight');
-                }
             } else {
                 Dom.removeClass(cards, 'hidden');
-                Dom.removeClass(search_input, 'highlight');
-                Dom.removeClass(search_input, 'nomatches');
             }
         },
 
@@ -146,64 +94,6 @@
             root.find('a').click(function (e) {
                 e.stopPropagation();
             });
-        },
-
-        /**
-         * Animate menu function
-         */
-        toggleMenu: function (navId) {
-            var nextMarginTop = 0;
-            var tab = ECN('tab', 'div', navId);
-            var zone = ECN('navActions', '', navId)[0];
-            if (Dom.hasClass(tab, 'expand')[0]) {
-                nextMarginTop = -zone.clientHeight;
-                Dom.setStyle(navId, 'z-index', 25);
-                Dom.replaceClass(tab, 'tab expand', 'tab collapse');
-                Dom.setStyle('mask', 'display', 'none');
-            } else {
-                Dom.setStyle(navId, 'z-index', 30);
-                Dom.replaceClass(tab, 'tab collapse', 'tab expand');
-                Dom.setStyle('mask', 'display', 'block');
-                // Method must be called once
-                var caller = arguments[0];
-                var onMaskClick = function () {
-                    YAHOO.kansha.app.toggleMenu(caller);
-                    Event.removeListener('mask', 'click', onMaskClick);
-                };
-                Event.addListener('mask', 'click', onMaskClick);
-            }
-
-            var attributes = {'margin-top': { to: nextMarginTop }};
-            var anim_nav = new Anim(navId, attributes, 0.2);
-            anim_nav.animate();
-        },
-
-        initToggleKansha: function () {
-            YAHOO.util.Dom.batch(ECN('navbar', 'div'), function (e) {
-                var zone = ECN('navActions', '', e)[0];
-                YAHOO.util.Dom.setStyle(e, 'margin-top', -zone.clientHeight + 'px');
-            });
-        },
-
-        initTooltips: function () {
-            var nodes = Selector.query('*[data-tooltip]');
-            NS.uniqueTooltip = NS.app.tooltip(nodes, ' ');
-            NS.uniqueTooltip.contextTriggerEvent.subscribe(function (type, args) {
-                var context = args[0];
-                this.cfg.setProperty('text', Dom.getAttribute(context, 'data-tooltip'));
-            });
-        },
-
-        /**
-         * Basic tooltip function
-         */
-        tooltip: function (ctx, txt) {
-            var ttp = new YAHOO.widget.Tooltip(txt, {context: ctx,
-                text: txt,
-                zIndex: 2000,
-                effect: { effect: YAHOO.widget.ContainerEffect.FADE, duration: 0.20 }
-            });
-            return ttp;
         },
 
         /**
@@ -221,33 +111,12 @@
         },
 
         /**
-         * Handle window resize
-         */
-        columnsResize: function () {
-            // In desktop mode calculate size in percent for the columns
-            var newList = Selector.query('#lists .new', null, true);
-            var list;
-            if (newList) {
-                list = newList.firstChild;
-                Dom.get('lists').replaceChild(list, newList);
-            }
-            var lists = ECN('list', 'div', 'lists');
-            Dom.setStyle(lists, 'width', 92 / lists.length + '%');
-            if (newList) {
-                lists = Dom.get('lists');
-                lists.scrollLeft = list.offsetLeft - lists.offsetLeft;
-                list.scrollIntoView();
-            }
-        },
-
-        /**
          * Close all open overlays and popin
          */
         onClick: function (ev) {
             var target = Event.getTarget(ev),
                 inOverlay = ACN(target, 'overlay') || Dom.hasClass(target, 'overlay'),
-                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel'),
-                InCkeditor = ACN(target, 'cke') || ACN(target, 'cke_dialog') || Dom.hasClass(target, 'cke') || Dom.hasClass(target, 'cke_dialog');
+                inPanel = ACN(target, 'yui-panel') || Dom.hasClass(target, 'yui-panel');
             /* do nothing if modal active */
             if (NS.app.modal) {
                 return;
@@ -255,8 +124,32 @@
             if (NS.app.overlay && !inOverlay) {
                 NS.app.hideOverlay();
             }
-            if (NS.app.popin && !inPanel && !inOverlay && !InCkeditor) {
+            if (NS.app.popin && !inPanel && !inOverlay) {
                 NS.app.closePopin();
+            }
+            // close all menus
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+            YAHOO.util.Dom.removeClass(ECN('nav-menu'), 'menu-down');
+        },
+
+        toggleMenu: function (source) {
+            NS.app.stopEvent();
+            var menu = ACN(source, 'with-dropdown'),
+                dropdown = ECN('dropdown', 'div', menu),
+                state = YAHOO.util.Dom.getStyle(dropdown, 'display');
+            YAHOO.util.Dom.setStyle(ECN('dropdown'), 'display', 'none');
+            if (state[0] && state[0] == 'none') {
+                YAHOO.util.Dom.setStyle(dropdown, 'display', 'block');
+            }
+        },
+
+        toggleMainMenu: function(source) {
+            var target = source;
+            if (Dom.hasClass(target, 'menu-down')) {
+                Dom.removeClass(target, 'menu-down');
+            } else {
+                Dom.addClass(target, 'menu-down');
+                NS.app.stopEvent();
             }
         },
 
@@ -277,6 +170,10 @@
             return false;
         },
 
+        onHideOverlay: function(callback) {
+            NS.app.overlay.beforeHideEvent.subscribe(callback);
+        },
+
         closeOverlay: function () {
             if (NS.app.hideOverlay()) {
                 NS.app.overlay.destroy();
@@ -291,33 +188,35 @@
             Event.stopEvent(ev);
         },
 
-        showOverlay: function (overlay_id, link_id) {
+        showOverlay: function (overlay_id, link_id, centered) {
             var ev = Event.getEvent();
             Event.stopEvent(ev);
             NS.app.hideOverlay();
-            var link = Dom.get(link_id);
-            var child = Dom.getFirstChild(link);
-            var anchor = child ? child : link;
-            var x = -10,
+            var link = Dom.get(link_id),
+                child = Dom.getFirstChild(link),
+                anchor = child ? child : link;
+                x = -10,
                 y = 5;
             x += parseInt(Dom.getStyle(anchor, 'paddingLeft'), 10);
             NS.app.overlay = new YAHOO.widget.Overlay(overlay_id,
-                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize"], [x, y]],
+                {context: [anchor, 'tl', 'bl', ["beforeShow", "windowResize", "windowScroll"], [x, y]],
                     zIndex: 1500,
                     visible: true,
                     constraintoviewport: true});
             NS.app.overlay.render(document.body);
+            if (centered){
+            	NS.app.overlay.center();
+            }
+            var arrow = Selector.query('.overlay_arrow', overlay_id, true);
+            if (arrow) {
+                var region = Dom.getRegion(link);
+                Dom.setX(arrow, region.left);
+            }
+            //NS.app.overlay.close
             NS.app.overlay.show();
         },
 
-        addCloseMethodTOverlay: function (overlay_id, f) {
-            NS.app.overlay.closeMethod = f;
-        },
-
         showPopin: function (id, closeFunction) {
-            if (NS.app.isMobile()) {
-                NS.app.show('application', false);
-            }
             // Only one popin at a time
             // If we replace, don't fire previous closePopinFunction
             // (the callback must be lost anyway)
@@ -337,6 +236,7 @@
                 // Add listener on the Esc key
                 keylisteners: new YAHOO.util.KeyListener(document, {keys: 27}, NS.app.closePopin, 'keyup')
             });
+            NS.app.popin.cfg.setProperty("x", 0);
             // Register the close function
             NS.app.closePopinFunction = closeFunction;
             // Render the panel
@@ -357,9 +257,6 @@
                 // Remove the mask
                 YAHOO.util.Dom.setStyle('mask', 'display', 'none');
             }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
-            }
         },
 
 
@@ -375,7 +272,7 @@
                 zIndex: 2000,
                 underlay: 'none',
                 constraintoviewport: true,
-                monitorresize: false,
+                monitorresize: false
             });
             // No top/left offset
             NS.app.modal.cfg.setProperty("x", 0);
@@ -398,63 +295,6 @@
             if (NS.app.isMobile()) {
                 NS.app.show('application', true);
             }
-        },
-
-        deleteCard: function (deleteFunction, card_id, column_id) {
-            //Close popin
-            if (NS.app.popin) {
-                deleteFunction();
-                NS.app.popin.destroy();
-                NS.app.popin = null;
-                // Remove the mask
-                YAHOO.util.Dom.setStyle('mask', 'display', 'none');
-            }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
-            }
-            //Remove card from column
-            var el = Dom.get(card_id),
-                dndCard = el.parentNode.parentNode,
-                parent = dndCard.parentNode;
-            parent.removeChild(dndCard);
-            NS.app.countCards(column_id);
-            increase_version();
-        },
-
-        archiveCard: function (deleteFunction, card_id, column_id, archive_column_id) {
-            //Close popin
-            if (NS.app.popin) {
-                deleteFunction();
-                NS.app.popin.destroy();
-                NS.app.popin = null;
-                // Remove the mask
-                YAHOO.util.Dom.setStyle('mask', 'display', 'none');
-            }
-            if (NS.app.isMobile()) {
-                NS.app.show('application', true);
-            }
-            //Remove card from column
-            var el = Dom.get(card_id),
-                dndCard = el.parentNode.parentNode,
-                parent = dndCard.parentNode;
-            parent.removeChild(dndCard);
-            NS.app.countCards(column_id);
-
-            //Add card to archive column
-            var archive_column = Dom.get(archive_column_id);
-            if (archive_column !== null) {
-                var body = archive_column.childNodes[3];
-
-                if (body.firstChild) {
-                    body.insertBefore(dndCard, body.firstChild);
-                } else {
-                    body.appendChild(dndCard);
-                }
-
-                NS.app.countCards(archive_column_id);
-            }
-
-            increase_version();
         },
 
         /**
@@ -490,26 +330,6 @@
             });
         },
 
-        /**
-         * Autoheight
-         */
-        autoHeight: function (textarea) {
-            var zone = Dom.get(textarea);
-            var height = zone.scrollHeight;
-            Dom.setStyle(zone, 'height', height + 'px');
-
-            textarea.interval = setInterval(function () {
-                zone = Dom.get(textarea);
-                if (zone === null) {
-                    clearInterval(textarea.interval);
-                    return;
-                }
-                if (zone.clientHeight !== zone.scrollHeight) {
-                    height = zone.scrollHeight;
-                    Dom.setStyle(zone, 'height', height + 'px');
-                }
-            }, 100);
-        },
 
         /**
          * Color picker
@@ -534,22 +354,6 @@
             });
         },
 
-        /**
-         * UTC to local time conversion
-         */
-        utcToLocal: function (id, utcSeconds, atTranslation, onTranslation) {
-            var d = new Date(utcSeconds * 1000);
-            var dToTest = new Date(utcSeconds * 1000);
-            dToTest.setHours(0, 0, 0, 0);
-            var dNow = new Date();
-            dNow.setHours(0, 0, 0, 0);
-
-            var toDisplay = onTranslation + ' ' + d.toLocaleDateString() + ' ' + atTranslation + ' ' + d.toLocaleTimeString();
-            if (dToTest.getTime() === dNow.getTime()) {
-                toDisplay = atTranslation + ' ' + d.toLocaleTimeString();
-            }
-            YAHOO.util.Dom.get(id).innerHTML = toDisplay;
-        },
 
         /**
          * Image cropper
@@ -583,16 +387,18 @@
         },
 
         syncError: function (status, details) {
-            var onClick = function () {
-                Dom.get('resync-action').click();
-            };
-            Dom.setStyle('mask', 'z-index', '1750');
-            Dom.setStyle('mask', 'display', 'block');
-            Dom.setStyle('resync', 'display', 'block');
-            Event.removeListener('mask', 'click');
-            Event.addListener('mask', 'click', onClick);
-            NS.app.showPopin('resync', onClick);
-            NS.app.popin.cfg.setProperty('zIndex', 2000);
+            console.log(status);
+            console.log(details);
+            this.showWaiter();
+            Dom.get('resync-action').click();
+        },
+
+        showWaiter: function() {
+            this.showModal('oip');
+        },
+
+        hideWaiter: function() {
+            this.closeModal();
         },
 
         checkFileSize: function (input, maxSize) {
@@ -608,111 +414,46 @@
             return true;
         },
 
-        countCards: function (col) {
-            var column = Dom.get(col);
+        countCards: function (column) {
+            column = Dom.get(column);
             var counter = Dom.get(column.id + '_counter');
             if (counter) {
                 var limit = parseInt(localStorage[column.id]);
-                var header = Dom.get(column.id + '_header');
                 var footer = Dom.get(column.id + '_footer');
                 var cards = ECN('card', null, column);
                 var numCards = cards.length;
-                var textCount = limit > 0 ? numCards + '/' + limit : numCards;
-                var counter = Dom.get(column.id + '_counter');
-                var content = counter.childNodes[0];
-                content.innerHTML = textCount;
                 if (limit > 0 && numCards >= limit) {
-                    Dom.addClass(counter, 'limitReached');
                     Dom.addClass(footer, 'hidden');
-                    Dom.removeClass(counter, 'hidden');
-                } else if (limit === 0) {
-                    Dom.addClass(counter, 'hidden');
-                } else {
-                    Dom.removeClass(counter, 'limitReached');
+                } else if (limit !== 0) {
                     Dom.removeClass(footer, 'hidden');
                 }
             }
         },
 
-        refreshCardsCounters: function () {
-            Dom.batch(Selector.query('#lists .list'), this.countCards);
-        },
-
-        saveLimit: function (col, limit) {
-            localStorage[col] = limit;
-        },
-
-        hideCardsLimitEdit: function (col) {
-            var counter = Dom.get(col.id + '_counter');
-            var option = Dom.get(col.id + '_counter_option');
-            if (counter) {
-                Dom.addClass(counter, 'hidden');
-            }
-        },
-
-        showCardsLimitEdit: function (col) {
-            var counter = Dom.get(col.id + '_counter');
-            var option = Dom.get(col.id + '_counter_option');
-            var limit = parseInt(localStorage[col.id], 10);
-            if (counter && limit > 0) {
-                Dom.removeClass(counter, 'hidden');
-            }
-            NS.app.showTitleForm(col);
-        },
-
-        hideTitleForm: function (col) {
-            var title = Dom.get(col.id + '_title');
-            var form_ = ECN('title-form', null, title)[0];
-            var from_div = Dom.get(form_);
-            from_div.addClass('hidden');
-        },
-
-        showTitleForm: function (col) {
-            var title = Dom.get(col.id + '_title');
-            var form = ECN('title-form', null, title)[0];
-            if (form) {
-                form.removeClass('hidden');
-            }
-        },
-
-        set_title_color: function (color) {
-            if (color) {
-                Dom.setStyle(Selector.query('.boardTitle a'), 'color', color);
-                Dom.setStyle(Selector.query('.fc-toolbar h2'), 'color', color);
-            } else {
-                Dom.setStyle(Selector.query('.boardTitle a'), 'color', '');
-                Dom.setStyle(Selector.query('.fc-toolbar h2'), 'color', '');
-            }
-        },
-
-        set_board_background_image: function (image_url, position) {
-            var position = position || 'repeat',
-                bg = '',
-                size = '';
-            if (image_url) {
-                if (position === 'cover') {
-                    bg = 'url(' + image_url + ') no-repeat';
-                    size = 'cover';
-                } else {
-                    bg = 'url(' + image_url + ') repeat';
-                }
-            }
-
-            Dom.setStyle(Selector.query('#application .board'), 'background', bg);
-            Dom.setStyle(Selector.query('#application .board'), 'background-size', size);
+        saveLimit: function (column, limit) {
+            localStorage[Dom.get(column).id] = limit;
         },
 
         create_board_calendar: function (calendar, displayWeekNumbers) {
             calendar.fullCalendar(
                 {
+                    defaultView: 'basicWeek',
+                    header: {
+                        left: 'title',
+                        center: '',
+                        right: 'today prev,next,month,basicWeek'
+                    },
                     aspectRatio: 2,
                     eventClick: function (calEvent, jsEvent, view) {
-                        calEvent.clicked_cb();
+                        calEvent.clicked_cb(view);
                     },
                     eventDrop: function(calEvent, delta, revertFunc) {
                         calEvent.dropped_cb(calEvent.start.format());
                     },
-                    weekNumbers: displayWeekNumbers
+                    weekNumbers: displayWeekNumbers,
+                    weekNumberCalculation: "ISO",
+                    firstDay: 1, // ISO week
+                    eventDurationEditable: false,
                 });
         },
 
@@ -720,36 +461,14 @@
             var myEvent = event;
             myEvent.clicked_cb = clicked_cb;
             myEvent.dropped_cb = dropped_cb;
+            if (event._id in eventCache) {
+                calendar.fullCalendar('removeEvents', event._id);
+            }
             calendar.fullCalendar('renderEvent', myEvent, true);
+            eventCache[event._id] = true;
         },
-
-        init_ckeditor: function(id, language) {
-            var editor,
-                element = Dom.get(id);
-            editor = CKEDITOR.replace(id, {
-                title: '',
-                contentsCss: ['/static/kansha/css/bootstrap.min.css',
-                              '/static/kansha/css/fonts.css',
-                              '/static/kansha/css/ckeditor.css'],
-                language: language,
-                enterMode: CKEDITOR.ENTER_BR,
-                shiftEnterMode: CKEDITOR.ENTER_BR,
-                resize_enabled: false,
-                forcePasteAsPlainText: true,
-                removePlugins: 'stylescombo,magicline,elementspath,',
-                toolbarGroups: [{"name": "basicstyles", "groups": ["basicstyles"]},
-                    {"name": "links", "groups": ["links"]},
-                    {"name": "paragraph", "groups": ["list"]}],
-                removeButtons: 'Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
-            });
-            editor.on('change', function(ev){
-               element.innerHTML = editor.getData();
-            });
-        }
 
     };
 }());
 
 YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.init);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initToggleKansha);
-YAHOO.util.Event.onDOMReady(YAHOO.kansha.app.initTooltips);

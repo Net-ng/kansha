@@ -10,20 +10,29 @@
 
 from nagare import presentation, var, database, security
 from nagare.i18n import _
+from nagare.admin.reference import load_object
 
-from ...user import comp as user, usermanager
-from . import ldap_auth
+from ...user import usermanager
+from kansha.services.authentication_repository import Authentication
 
 
-class Login(object):
+class Login(Authentication):
 
     alt_title = None
 
-    def __init__(self, ldap_cfg, assetsmanager):
-        cls = ldap_auth.get_class(ldap_cfg['cls'])
-        self.ldap_engine = cls(ldap_cfg)
+    CONFIG_SPEC = {
+        'activated': 'boolean(default=False)',
+        'host': 'string(default="localhost")',
+        'port': 'integer(default=389)',
+        'users_base_dn': 'string(default="")',
+        'schema': 'string(default="kansha.authentication.ldap.ldap_auth:NngLDAPAuth")'
+    }
+
+    def __init__(self, app_title, app_banner, theme, assets_manager_service):
+        cls = load_object(self.config['schema'])[0]
+        self.ldap_engine = cls(self.config)
         self.error_message = ''
-        self.assetsmanager = assetsmanager
+        self.assets_manager = assets_manager_service
 
     def connect(self, uid, passwd, comp):
         if (uid != '' and passwd != '' and
@@ -32,9 +41,9 @@ class Login(object):
             profile = self.ldap_engine.get_profile(uid, passwd)
             # if user exists update data
             if profile['picture']:
-                self.assetsmanager.save(profile['picture'], uid,
-                                        {'filename': uid})
-                picture = self.assetsmanager.get_image_url(uid, 'thumb')
+                self.assets_manager.save(profile['picture'], uid,
+                                         {'filename': uid})
+                picture = self.assets_manager.get_image_url(uid, 'thumb')
             else:
                 picture = None
             if not data_user:
@@ -44,7 +53,7 @@ class Login(object):
             data_user.update(profile['name'], profile['email'],
                              picture=picture)
             database.session.flush()
-            u = usermanager.get_app_user(uid, data=data_user)
+            u = usermanager.UserManager.get_app_user(uid, data=data_user)
             security.set_user(u)
             comp.answer(u)
         else:
@@ -53,20 +62,20 @@ class Login(object):
 
 @presentation.render_for(Login)
 def render(self, h, comp, *args):
-    with h.div(class_="LDAPLogin"):
+    with h.div(class_='login LDAPLogin'):
         with h.form:
             # if self.error_message:
             #     h << h.br << h.div(self.error_message, class_="error")
             uid = var.Var()
             h << h.input(type='text', name='__ac_name',
-                         id="ldap_username", placeholder=_("Enter username")).action(uid)
+                         id='ldap_username', placeholder=_('Enter username')).action(uid)
             passwd = var.Var()
             h << h.input(
                 type='password', name='__ac_password',
-                id="ldap_password", placeholder=_("Enter password")).action(passwd)
+                id='ldap_password', placeholder=_('Enter password')).action(passwd)
             with h.div(class_='actions'):
                 h << h.input(type='submit', value=_(u'Sign in with LDAP'),
-                             class_="btn btn-primary btn-small"
+                             class_='btn btn-primary'
                              ).action(lambda: self.connect(uid(), passwd(), comp))
 
     return h.root

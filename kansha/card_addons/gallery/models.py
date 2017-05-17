@@ -10,6 +10,8 @@
 
 import datetime
 
+from nagare.database import session
+
 from sqlalchemy import func
 from elixir import ManyToOne, Field, Unicode, DateTime, using_options
 
@@ -35,8 +37,11 @@ class DataAsset(Entity):
 
     @classmethod
     def add(cls, filename, card, author):
-        return cls(filename=filename, card=card, author=author,
+        asset = cls(filename=filename, card=card, author=author,
                    creation_date=datetime.datetime.utcnow())
+        session.add(asset)
+        session.flush()
+        return asset
 
     @classmethod
     def remove(cls, card, filename):

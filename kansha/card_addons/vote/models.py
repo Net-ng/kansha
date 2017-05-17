@@ -12,6 +12,8 @@ from sqlalchemy import func
 from elixir import ManyToOne
 from elixir import using_options
 
+from nagare.database import session
+
 from kansha.models import Entity
 
 
@@ -19,6 +21,14 @@ class DataVote(Entity):
     using_options(tablename='vote')
     user = ManyToOne('DataUser', ondelete='CASCADE')
     card = ManyToOne('DataCard', ondelete='CASCADE')
+
+    @classmethod
+    def new(cls, card, user):
+        """Create and persist."""
+        vote = cls(card=card, user=user)
+        session.add(vote)
+        session.flush()
+        return vote
 
     @classmethod
     def get_vote(cls, card, user):

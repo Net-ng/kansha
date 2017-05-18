@@ -8,4 +8,5 @@ include data/assets/EMPTY_DIR
 include data/logs/EMPTY_DIR
 include README.rst
 include VERSION.txt
+include Changelog.rst
 exclude conf/kansha.cfg.local

@@ -89,10 +89,6 @@ Finally, when your virtual environment is active in your shell, type::
     $ python setup.py install
 
 
-**Why not installing directly with easy_install?** Because we depend on ``nagare-services`` which is not available on Pypi or elsewhere on internet.
-So we ship it within the source distribution of Kansha, where ``easy_install`` is unable to locate it.
-One should extract the distribution first, then install.
-
 **easy_install caveat**: :command:`easy_install` ignores completely `semantic versioning <https://www.python.org/dev/peps/pep-0440/>`_ and may install the lastest development release instead of the latest stable. In that case, you'd better specify the version you want explicitly, for example::
 
     $ easy_install -b. -e kansha==1.0.4

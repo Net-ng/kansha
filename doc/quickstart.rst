@@ -84,16 +84,18 @@ More details at https://virtualenv.pypa.io/en/latest/
 
 Finally, when your virtual environment is active in your shell, type::
 
-    $ easy_install --find-links=http://www.nagare.org/snapshots/  kansha
+    $ easy_install -b. -e kansha
+    $ cd kansha
+    $ python setup.py install
 
-.. pip install --allow-external PEAK-Rules  --allow-unverified PEAK-Rules --find-links=http://www.nagare.org/snapshots/ --trusted-host www.nagare.org kansha
 
-**Note to PIP users**: you currently should not use :command:`pip` to install :program:`Kansha` because some data files and folders would be spread all over ``site-packages``.
-The command :command:`easy_install` puts each distribution into its own folder, preventing conflicts.
+**Why not installing directly with easy_install?** Because we depend on ``nagare-services`` which is not available on Pypi or elsewhere on internet.
+So we ship it within the source distribution of Kansha, where ``easy_install`` is unable to locate it.
+One should extract the distribution first, then install.
 
 **easy_install caveat**: :command:`easy_install` ignores completely `semantic versioning <https://www.python.org/dev/peps/pep-0440/>`_ and may install the lastest development release instead of the latest stable. In that case, you'd better specify the version you want explicitly, for example::
 
-    $ easy_install --find-links=http://www.nagare.org/snapshots/  kansha==1.0.4
+    $ easy_install -b. -e kansha==1.0.4
 
 
 Test run

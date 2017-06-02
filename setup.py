@@ -52,7 +52,7 @@ setup(
         'SQLAlchemy',
         'xlwt',
     ),
-    dependency_links=['vendors/nagare-services-1.1.1.tar.gz'],
+    dependency_links=[path.join(here, 'vendors'), 'http://www.nagare.org/snapshots/'],
     extras_require={'test': ('nose',),
                     'htmldocs': ('sphinx',),
                     'debug': ('WebError',),

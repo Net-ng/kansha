@@ -84,14 +84,11 @@ More details at https://virtualenv.pypa.io/en/latest/
 
 Finally, when your virtual environment is active in your shell, type::
 
-    $ easy_install -b. -e kansha
-    $ cd kansha
-    $ python setup.py install
-
+    $ easy_install kansha
 
 **easy_install caveat**: :command:`easy_install` ignores completely `semantic versioning <https://www.python.org/dev/peps/pep-0440/>`_ and may install the lastest development release instead of the latest stable. In that case, you'd better specify the version you want explicitly, for example::
 
-    $ easy_install -b. -e kansha==1.0.4
+    $ easy_install kansha==2.0.4
 
 
 Test run

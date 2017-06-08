@@ -64,12 +64,12 @@ More details in `its documentation`_.
 
 .. _Stackless Python: http://www.stackless.com
 
-.. _its documentation: http://www.stackless.com/wiki
+.. _its documentation: http://www.stackless.com
 
 Then, we recommend using a virtual environment for deploying Kansha.
 To install `virtualenv` within your fresh Stackless Python, you can execute the following commands::
 
-    $ wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | <STACKLESS_DIR>/bin/python
+    $ wget https://bootstrap.pypa.io/ez_setup.py -O - | <STACKLESS_DIR>/bin/python
     $ <STACKLESS_DIR>/bin/easy_install virtualenv
 
 To create a virtual environment::

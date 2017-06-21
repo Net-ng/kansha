@@ -88,6 +88,8 @@ class Column(events.EventHandlerMixIn):
         self.emit_event(comp, events.SearchIndexUpdated)
 
     def ui_create_card(self, comp, title):
+        if not security.has_permissions('edit', self):
+            return
         card = self.create_card(title)
         if card:
             self.index_cards([card])

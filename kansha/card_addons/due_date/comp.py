@@ -39,8 +39,12 @@ class DueDate(CardExtension):
         """
         super(DueDate, self).__init__(card, action_log, configurator)
         self.due_date = self.get_value()
-        self.calendar = calendar_widget.Calendar(self.due_date, allow_none=True)
-        self.calendar = component.Component(self.calendar)
+        self.calendar = None
+
+    def _init_calendar(self):
+        if self.calendar is None or self.calendar().is_hidden:
+            calendar = calendar_widget.Calendar(self.due_date, allow_none=True)
+            self.calendar = component.Component(calendar)
 
     @property
     def data(self):

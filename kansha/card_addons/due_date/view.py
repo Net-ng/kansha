@@ -56,6 +56,7 @@ def render_DueDate_badge(self, h, *args):
 @presentation.render_for(DueDate, model='action')
 def render_DueDate_button(self, h, comp, *args):
     if security.has_permissions('due_date', self.card):
+        self._init_calendar()
         id_ = h.generate_id()
         if self.due_date:
             classes = ['btn', 'btn-due-date', self.get_class()]

@@ -77,7 +77,6 @@ input[type="password"] {
 .btn {
     display: inline-block;
     padding: 10px;
-    width: 240px;
     margin: 18px 0 0 0;
 }
 
@@ -85,6 +84,10 @@ input[type="password"] {
     position: relative;
     display: table-cell;
     vertical-align: top;
+}
+
+.login .btn {
+   width: 240px;
 }
 
 .regForm {

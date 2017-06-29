@@ -175,7 +175,7 @@ def render_gallery_cropper(self, h, comp, *args):
         h << h.p(render_image(self.asset, h, comp, 'medium', id=img_id))
         h << h.script(
             "YAHOO.util.Event.onContentReady(%s,"
-            "function(){YAHOO.kansha.app.initCrop(%s, %s, %s, %s)})" % (
+            "function(){setTimeout(function(){YAHOO.kansha.app.initCrop(%s, %s, %s, %s)}, 500)})" % (
                 ajax.py2js(img_id),
                 ajax.py2js(img_id),
                 ajax.py2js(form_id),

@@ -13,11 +13,11 @@ import sys
 import json
 import time
 import pstats
-import urllib
 import urlparse
 import cProfile as profile
 from collections import OrderedDict
 
+import webob
 import configobj
 import pkg_resources
 
@@ -286,17 +286,11 @@ class WSGIApp(wsgi.WSGIApp):
             self.set_locale(security.get_user().get_locale())
 
     def __call__(self, environ, start_response):
-        query = dict(urlparse.parse_qsl(environ['QUERY_STRING'], True))
-
-        if ('state' in query) and (('code' in query) or ('error' in query)):
-            state = query.pop('state')
-
-            environ['QUERY_STRING'] = urllib.urlencode(query)
-            environ['QUERY_STRING'] += '&' + state
+        query = environ['QUERY_STRING']
+        if ('state=' in query) and (('code=' in query) or ('error=' in query)):
+            request = webob.Request(environ)
+            environ['QUERY_STRING'] += ('&' + request.params['state'])
             environ['REQUEST_METHOD'] = 'POST'
-
-            # PATH_INFO cannot be empty or else Nagare will enter in `on_incomplete_url`
-            environ['PATH_INFO'] = environ['PATH_INFO'] or '/'
         if self.debug:
             perf = profile.Profile()
             start = time.time()

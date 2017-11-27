@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #--
-# Copyright (c) 2012-2014 Net-ng.
+# Copyright (c) 2012-2017 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -12,7 +12,7 @@ Plugin based Seach Engine abstraction.
 Available plugins are registered as entry points in distribution.
 '''
 
-# TODO: create plugins for whoosh, elasticsearch and solr
+# TODO: create plugins for whoosh
 
 import pkg_resources
 

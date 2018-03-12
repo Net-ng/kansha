@@ -42,7 +42,7 @@ setup(
         'docutils',
         'flup==1.0.2',
         'identicon',
-        'nagare[database,i18n]==0.4.1.post473',
+        'nagare[database,i18n]==0.5.1',
         'nagare-services',
         'oauth2==1.5.211',
         'Paste',

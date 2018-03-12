@@ -59,7 +59,7 @@ The steps are:
 Configure Kansha for FCGI
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Append these directives to your configuration file:
+Put these directives into a new file, say ``fastcgi.cfg``:
 
 .. code-block:: INI
 
@@ -147,9 +147,9 @@ If you are using Apache, Nginx or Lighttpd, you'll find the detailled instructio
 Start Kansha
 ^^^^^^^^^^^^
 
-Once you have configured the FCGI publisher, you can start Kansha as usual::
+Once you have configured the FCGI publisher, you can start Kansha by providing the additional configuration file with the ``-c`` switch on the command line::
 
-    $ <VENV_DIR>/bin/nagare-admin serve </path/to/your/kansha.cfg>
+    $ <VENV_DIR>/bin/nagare-admin serve </path/to/your/kansha.cfg> -c </path/to/your/fcgi.cfg>
 
 That command starts the backend FCGI processes.
 

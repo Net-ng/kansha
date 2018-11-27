@@ -627,9 +627,9 @@ class PasswordResetConfirmation(object):
         See you soon on %(app_title)s.
         """) % subst
 
-        mail_sender.send(_("%(app_title)s: Password Reset") % subst,
-                         [self.user.email],
-                         textwrap.dedent(message).strip())
+        return mail_sender.send(_("%(app_title)s: Password Reset") % subst,
+                                [self.user.email],
+                                textwrap.dedent(message).strip())
 
 
 @presentation.render_for(PasswordResetConfirmation, model='success')
@@ -656,7 +656,7 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
 
 
 @presentation.render_for(PasswordResetConfirmation, model='email')
-def render_password_reset_confirmation_failure(self, h, comp, *args):
+def render_password_reset_confirmation_mail_sent(self, h, comp, *args):
     """Renders a password change acknowledgment message"""
     h << self.header.render(h, 'hide')
     with h.div(class_='regForm'):
@@ -671,6 +671,25 @@ def render_password_reset_confirmation_failure(self, h, comp, *args):
                 h << h.input(type='submit',
                              class_='btn btn-primary',
                              value=_("Ok")).action(comp.answer)
+    return h.root
+
+
+@presentation.render_for(PasswordResetConfirmation, model='send_email_failed')
+def render_registration_confirmation_mail_error(self, h, comp, *args):
+    h << self.header.render(h, 'hide')
+    with h.div(class_='regForm'):
+        with h.h3:
+            h << _("SMTP Error!")
+
+        with h.p:
+            h << _("""We were unable to send the confirmation email. Please contact the site administrator.""")
+
+        with h.form:
+            with h.div(class_='actions'):
+                h << h.input(type='submit',
+                             class_='btn btn-primary',
+                             value=_("Ok")).action(comp.answer)
+
     return h.root
 
 
@@ -782,9 +801,9 @@ class EmailConfirmation(object):
             """) % subst
             subject = _("%(app_title)s: Confirm your email address") % subst
 
-        mail_sender.send(subject,
-                         [self.moderator if self.moderator else self.user.email_to_confirm],
-                         textwrap.dedent(message).strip())
+        return mail_sender.send(subject,
+                                [self.moderator if self.moderator else self.user.email_to_confirm],
+                                textwrap.dedent(message).strip())
 
 
 @presentation.render_for(EmailConfirmation)
@@ -802,6 +821,25 @@ def render_registration_confirmation(self, h, comp, *args):
                 h << _("""An email has been sent to your email address. You have to click on the
                 confirmation link in this email in order to confirm your email address in the
                 application.""")
+
+        with h.form:
+            with h.div(class_='actions'):
+                h << h.input(type='submit',
+                             class_='btn btn-primary',
+                             value=_("Ok")).action(comp.answer)
+
+    return h.root
+
+
+@presentation.render_for(EmailConfirmation, 'send_email_failed')
+def render_registration_confirmation_error(self, h, comp, *args):
+    h << self.header.render(h, 'hide')
+    with h.div(class_='regForm'):
+        with h.h3:
+            h << _("SMTP Error!")
+
+        with h.p:
+            h << _("""We were unable to send the confirmation email. Please contact the site administrator.""")
 
         with h.form:
             with h.div(class_='actions'):
@@ -866,9 +904,9 @@ class EmailInvitation(object):
         See you soon on %(app_title)s.
         """) % subst
 
-        mail_sender.send(_('%(app_title)s: Invitation to the board "%(board_title)s"') % subst,
-                         [self.email],
-                         textwrap.dedent(message).strip())
+        return mail_sender.send(_('%(app_title)s: Invitation to the board "%(board_title)s"') % subst,
+                                [self.email],
+                                textwrap.dedent(message).strip())
 
 # ----------------------------------------------------------
 
@@ -923,8 +961,10 @@ class RegistrationTask(component.Task):
                     appuser = self.user_manager.get_app_user(username)
                     appuser.reset_avatar(self.assets_manager)
                 confirmation = self._create_email_confirmation(username, application_url)
-                confirmation.send_email(self.mail_sender)
-                comp.call(confirmation)
+                if confirmation.send_email(self.mail_sender):
+                    comp.call(confirmation)
+                else:
+                    comp.call(confirmation, model='send_email_failed')
         else:
             # step 2: the user confirms his email by clicking on the
             # confirmation link
@@ -1016,8 +1056,10 @@ class PasswordResetTask(component.Task):
             if username:
                 confirmation = self._create_password_reset_confirmation(
                     username, application_url)
-                confirmation.send_email(self.mail_sender)
-                comp.call(confirmation, model='email')
+                if confirmation.send_email(self.mail_sender):
+                    comp.call(confirmation, model='email')
+                else:
+                    comp.call(confirmation, model='send_email_failed')
                 redirect_to(application_url)
         else:
             # step 2: the user clicked on the confirmation link on his email

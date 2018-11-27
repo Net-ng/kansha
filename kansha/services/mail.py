@@ -49,13 +49,19 @@ class MailSender(Service):
             log.warning('The mail service will drop all messages!')
 
     def _smtp_send(self, from_, to, contents):
-        smtp = smtplib.SMTP(self.host, self.port)
+        try:
+            smtp = smtplib.SMTP(self.host, self.port)
+        except IOError as e:
+            log.exception(e)
+            return False
         try:
             smtp.sendmail(from_, to, contents)
         except Exception as e:
             log.exception(e)
+            return False
         finally:
             smtp.close()
+        return True
 
     def send(self, subject, to, content, html_content=None, from_='', cc=[], bcc=[],
              type='plain', mpart_type='alternative'):
@@ -99,7 +105,8 @@ class MailSender(Service):
 
         # post the email to the SMTP server
         if self.activated:
-            self._smtp_send(from_, to + cc + bcc, msg.as_string())
+            return self._smtp_send(from_, to + cc + bcc, msg.as_string())
+        return True
 
 
 class DummyMailSender(MailSender):

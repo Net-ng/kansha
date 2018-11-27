@@ -220,9 +220,11 @@ class UserForm(BasicUserForm):
             # Change target email_to_confirm (need it to send mail)
             self.target.email_to_confirm = self.email_to_confirm()
             confirmation = self._create_email_confirmation(application_url)
-            confirmation.send_email(self.mail_sender)
-            self.email_to_confirm.info = _(
-                'A confirmation email has been sent.')
+            if confirmation.send_email(self.mail_sender):
+                self.email_to_confirm.info = _(
+                    'A confirmation email has been sent.')
+            else:
+                self.email_to_confirm.info = _('Unable to sent email!')
         # Test if password has changed
         if (len(self.password()) > 0 and
                 not(self.old_password.error) and
